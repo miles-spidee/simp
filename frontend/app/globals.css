@@ -33,3 +33,57 @@ body {
   animation: slideIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+@keyframes floatY1 {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes floatY2 {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes floatY3 {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-float-1 {
+  animation: floatY1 6s ease-in-out infinite;
+}
+.animate-float-2 {
+  animation: floatY2 8s ease-in-out infinite;
+}
+.animate-float-3 {
+  animation: floatY3 7s ease-in-out infinite;
+}
+
+@keyframes floatXY1 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(4px, -6px); }
+}
+@keyframes floatXY2 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-5px, -8px); }
+}
+@keyframes floatXY3 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(3px, -4px); }
+}
+
+.animate-float-sub-1 {
+  animation: floatXY1 5s ease-in-out infinite;
+}
+.animate-float-sub-2 {
+  animation: floatXY2 6.5s ease-in-out infinite;
+}
+.animate-float-sub-3 {
+  animation: floatXY3 5.5s ease-in-out infinite;
+}
+
+.tech-grid {
+  background-size: 40px 40px;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+}
+
+
+
