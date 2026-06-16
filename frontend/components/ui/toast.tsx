@@ -8,9 +8,9 @@ interface ToastProps {
 
 const Toast: React.FC<ToastProps> = ({ onClose }) => {
   return (
-    <div className="fixed bottom-8 right-8 z-50 flex w-96 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black/5">
-      <div className="w-2 bg-red-600"></div>
-      <div className="flex flex-1 items-start p-4">
+    <div className="fixed bottom-8 right-8 z-50 flex w-[420px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl bg-white shadow-2xl border border-gray-100/80 ring-1 ring-black/5 animate-slide-in">
+      <div className="w-1.5 bg-red-600 flex-shrink-0"></div>
+      <div className="flex flex-1 items-start p-5">
         <div className="flex-shrink-0">
           <svg className="h-6 w-6 text-black" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
