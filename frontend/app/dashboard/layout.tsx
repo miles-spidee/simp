@@ -2,6 +2,7 @@
 
 
 import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
@@ -29,6 +30,27 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showNotificationPopup, setShowNotificationPopup] = useState(false);
+
+  // Close notification popup when clicking anywhere outside
+  useEffect(() => {
+    if (!showNotificationPopup) return;
+
+    const handleOutsideClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target && !target.closest('#notification-bell-widget')) {
+        setShowNotificationPopup(false);
+      }
+    };
+
+    const timeoutId = setTimeout(() => {
+      document.addEventListener('click', handleOutsideClick);
+    }, 0);
+
+    return () => {
+      clearTimeout(timeoutId);
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, [showNotificationPopup]);
 
   // Close notification popup when clicking anywhere outside
   useEffect(() => {
@@ -225,20 +247,11 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
               </button>
 
               {showNotificationPopup && (
-                <div className="absolute right-0 mt-2.5 w-80 bg-white border border-slate-200/80 rounded-xl shadow-xl z-50 animate-slide-in text-slate-800 overflow-hidden">
-                  
-                  {/* Popover Header */}
-                  <div className="px-4 py-3 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
-                    <h3 className="font-extrabold text-[10px] text-slate-550 uppercase tracking-wider">
-                      Recent ERP Notices
-                    </h3>
-                    <span className="text-[9px] bg-blue-50 text-blue-600 font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                      {announcements.length} Total
-                    </span>
-                  </div>
-
-                  {/* Scrollable Container divided with borders */}
-                  <div className="max-h-72 overflow-y-auto divide-y divide-slate-100 custom-scrollbar">
+                <div className="absolute right-0 mt-2.5 w-80 bg-white border border-slate-200 rounded-xl shadow-xl p-4 z-50 animate-slide-in text-slate-800">
+                  <h3 className="font-bold text-xs text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2 mb-3">
+                    Recent ERP Notices
+                  </h3>
+                  <div className="space-y-3">
                     {announcements.map((an, idx) => (
                       <div 
                         key={idx} 
