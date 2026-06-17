@@ -1019,8 +1019,12 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
   };
 
   const announcements = [
-    { date: 'June 16, 2026', title: 'Sprint 3 Code Review Schedule', content: 'All capstone submissions must be linked by June 19 for guide inspection.' },
-    { date: 'June 14, 2026', title: 'React Server Components Guest Lecture', content: 'Guest webinar by senior software architects of pinesphere.com tomorrow at 4 PM.' }
+    { date: 'June 16, 2026', title: 'Sprint 3 Code Review & Core Audit Schedule', content: 'All capstone repositories must be synced with the main branch by June 19, 2026 for review by the architectural board.' },
+    { date: 'June 14, 2026', title: 'Guest Lecture: Hydration Patterns at Scale', content: 'Technical presentation by the core engineering group of pinesphere.com on June 18 at 04:00 PM IST.' },
+    { date: 'June 10, 2026', title: 'Attendance Policy Enforcement', content: 'A minimum threshold of 85% attendance is required for program certificate eligibility. Check your status weekly.' },
+    { date: 'June 05, 2026', title: 'Payment Reminder: Term 2 Installment', content: 'For paid/stipend track interns, the next installment is due by June 30, 2026. Please verify under payments tab.' },
+    { date: 'May 28, 2026', title: 'Vite & Turbopack Upgrade Complete', content: 'Workspace compiler infrastructure has been updated to the latest builds for 3x faster live preview builds.' },
+    { date: 'May 22, 2026', title: 'Mentor Evaluation Feedback Posted', content: 'First-phase assessment comments are published. Schedule syncs with assigned guides under assignments.' }
   ];
 
   // Load fee status depending on type parameter
