@@ -66,20 +66,13 @@ export default function ForgotPasswordPage() {
 
   const handleUsernameSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-<<<<<<< HEAD
-    
-    const validUsernames = ["admin", "Harini"];
-=======
     setError("");
 
-    const validUsernames = ["admin", "harini sarvesh"];
->>>>>>> 53d218e (refactor: modernize UI components and implement multi-step password reset flow)
-    const inputVal = username.trim().toLowerCase();
-
-    if (validUsernames.includes(inputVal)) {
+    const inputVal = username.trim();
+    if (inputVal.length >= 3) {
       setStep('ENTER_OTP');
     } else {
-      setError("Username not found. Please try 'admin' or 'harini sarvesh'.");
+      setError("Please enter a valid username (at least 3 characters).");
     }
   };
 
@@ -150,20 +143,6 @@ export default function ForgotPasswordPage() {
               </div>
             )}
 
-<<<<<<< HEAD
-            <form onSubmit={handleSubmit} className="text-left space-y-4">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Enter your username</label>
-                <input 
-                  type="text" 
-                  required
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="block w-full rounded-none border border-slate-300 px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-0 transition-all placeholder-slate-400" 
-                  placeholder="Eg: Harini" 
-                />
-              </div>
-=======
             {/* STEP 1: ENTER USERNAME */}
             {step === 'ENTER_USERNAME' && (
               <>
@@ -171,7 +150,6 @@ export default function ForgotPasswordPage() {
                 <p className="mb-8 text-xs text-slate-550 leading-relaxed">
                   Enter your username associated with the candidate account to receive your OTP reset key.
                 </p>
->>>>>>> 53d218e (refactor: modernize UI components and implement multi-step password reset flow)
 
                 <form onSubmit={handleUsernameSubmit} className="text-left space-y-5">
                   <div>

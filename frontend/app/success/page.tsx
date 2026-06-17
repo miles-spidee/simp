@@ -11,16 +11,19 @@ function SuccessPageContent() {
   const isLogin = type === 'login';
 
   return (
-    <div className="w-full max-w-lg rounded-none bg-white p-8 sm:p-10 text-center shadow-[0_8px_30px_rgba(0,0,0,0.02)] border border-slate-200/80 animate-slide-in">
+    <div className="w-full max-w-lg rounded-2xl bg-white p-8 sm:p-10 text-center shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-200 animate-slide-in">
       
-      <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-none bg-blue-600 text-white shadow-sm shadow-blue-500/10">
+      <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm shadow-blue-500/10">
         <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
         </svg>
       </div>
 
-      <div className="mb-4 inline-block rounded-none bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-600 border border-blue-100">
-        ✓ {isLogin ? "Authentication: Success" : "Application Status: Applied"}
+      <div className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-600 border border-blue-100">
+        <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+        {isLogin ? "Authentication: Success" : "Application Status: Applied"}
       </div>
 
       <h2 className="mb-4 text-3xl font-extrabold text-slate-900 leading-tight tracking-tight">
@@ -43,7 +46,10 @@ function SuccessPageContent() {
         href={isLogin ? "/dashboard" : "/"}
         className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-none bg-blue-600 hover:bg-blue-700 px-12 py-3.5 text-sm font-semibold text-white shadow-sm hover:shadow transition-all duration-200 active:scale-[0.98]"
       >
-        {isLogin ? "Enter Workspace" : "Return to Homepage"} <span className="text-xs">🏠</span>
+        <span>{isLogin ? "Enter Workspace" : "Return to Homepage"}</span>
+        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
       </Link>
       
       <div className="border-t border-slate-100 pt-6 mt-8">
@@ -68,8 +74,11 @@ export default function SuccessPage() {
           <Link href="/" className="flex items-center">
             <img src="/logo.png" alt="Pinesphere Logo" className="h-13.5 w-auto object-contain transition-transform hover:scale-[1.02]" />
           </Link>
-          <Link href="/" className="text-xs font-bold uppercase tracking-wider text-slate-600 hover:text-blue-600 transition-colors flex items-center gap-1.5">
-            <span>←</span> Return to Homepage
+          <Link href="/" className="text-xs font-bold uppercase tracking-wider text-slate-650 hover:text-blue-600 transition-colors flex items-center gap-1.5">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Return to Homepage
           </Link>
         </header>
 
