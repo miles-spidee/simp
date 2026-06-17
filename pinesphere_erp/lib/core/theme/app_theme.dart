@@ -35,14 +35,6 @@ class AppTheme {
       ),
       scaffoldBackgroundColor: AppColors.backgroundLight,
       textTheme: AppTypography.lightTextTheme,
-      cardTheme: CardTheme(
-        color: AppColors.surfaceLight,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: AppColors.borderLight),
-        ),
-      ),
       appBarTheme: const AppBarTheme(
         centerTitle: false,
         elevation: 0,
@@ -113,14 +105,6 @@ class AppTheme {
       ),
       scaffoldBackgroundColor: AppColors.backgroundDark,
       textTheme: AppTypography.darkTextTheme,
-      cardTheme: CardTheme(
-        color: AppColors.surfaceDark,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: AppColors.borderDark),
-        ),
-      ),
       appBarTheme: const AppBarTheme(
         centerTitle: false,
         elevation: 0,
