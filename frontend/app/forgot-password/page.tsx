@@ -54,6 +54,54 @@ export default function ForgotPasswordPage() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // OTP Countdown Timer (2:00 minutes = 120 seconds)
+  const [timerCount, setTimerCount] = useState(120);
+  const [canResend, setCanResend] = useState(false);
+  const [infoMessage, setInfoMessage] = useState("");
+
+  useEffect(() => {
+    if (step !== 'ENTER_OTP') return;
+    setTimerCount(120);
+    setCanResend(false);
+  }, [step]);
+
+  useEffect(() => {
+    if (step !== 'ENTER_OTP' || timerCount <= 0) {
+      if (timerCount === 0) setCanResend(true);
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setTimerCount((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setCanResend(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [step, timerCount]);
+
+  const handleResendOtp = () => {
+    setTimerCount(120);
+    setCanResend(false);
+    setError("");
+    setOtp("");
+    setInfoMessage("A new verification code has been sent to your email.");
+    setTimeout(() => {
+      setInfoMessage("");
+    }, 5000);
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
   // Auto-redirect to login after successful reset
   useEffect(() => {
     if (step === 'SUCCESS') {
@@ -79,6 +127,11 @@ export default function ForgotPasswordPage() {
   const handleOtpSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (timerCount <= 0) {
+      setError("This OTP has expired. Please click 'Resend OTP' to get a new code.");
+      return;
+    }
 
     // Verification code logic (accepts any 6-digit numeric OTP)
     if (/^\d{6}$/.test(otp.trim())) {
@@ -143,6 +196,14 @@ export default function ForgotPasswordPage() {
               </div>
             )}
 
+            {/* Info alerts */}
+            {infoMessage && (
+              <div className="mb-6 rounded-xl bg-emerald-50 border border-emerald-150 p-4 text-xs text-emerald-700 font-semibold text-left flex items-start gap-2.5 animate-slide-in">
+                <SuccessCheckIcon className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                <span>{infoMessage}</span>
+              </div>
+            )}
+
             {/* STEP 1: ENTER USERNAME */}
             {step === 'ENTER_USERNAME' && (
               <>
@@ -198,6 +259,30 @@ export default function ForgotPasswordPage() {
                       className="block w-full rounded-xl border border-slate-350 px-4 py-3.5 text-sm tracking-[0.5em] text-center font-bold focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-300 text-slate-800 transition-all" 
                       placeholder="••••••" 
                     />
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs text-slate-500 pt-1.5 pb-1">
+                    <span>
+                      {timerCount > 0 ? (
+                        <span>OTP expires in <strong className="text-slate-700 font-bold">{formatTime(timerCount)}</strong></span>
+                      ) : (
+                        <span className="text-rose-500 font-bold">OTP expired</span>
+                      )}
+                    </span>
+                    
+                    {canResend ? (
+                      <button
+                        type="button"
+                        onClick={handleResendOtp}
+                        className="font-bold text-blue-600 hover:text-blue-500 transition-colors cursor-pointer"
+                      >
+                        Resend OTP
+                      </button>
+                    ) : (
+                      <span className="text-slate-400 font-medium">
+                        Resend OTP in {formatTime(timerCount)}
+                      </span>
+                    )}
                   </div>
 
                   <div className="flex gap-4">
