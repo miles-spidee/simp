@@ -40,7 +40,7 @@ function SuccessPageContent() {
       </p>
 
       <Link
-        href="/"
+        href={isLogin ? "/dashboard" : "/"}
         className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-none bg-blue-600 hover:bg-blue-700 px-12 py-3.5 text-sm font-semibold text-white shadow-sm hover:shadow transition-all duration-200 active:scale-[0.98]"
       >
         {isLogin ? "Enter Workspace" : "Return to Homepage"} <span className="text-xs">🏠</span>

@@ -12,7 +12,7 @@ export default function ForgotPasswordPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const validUsernames = ["admin", "harini sarvesh"];
+    const validUsernames = ["admin", "Harini"];
     const inputVal = username.trim().toLowerCase();
 
     if (validUsernames.includes(inputVal)) {
@@ -73,7 +73,7 @@ export default function ForgotPasswordPage() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="block w-full rounded-none border border-slate-300 px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-0 transition-all placeholder-slate-400" 
-                  placeholder="Eg: Harini Sarvesh" 
+                  placeholder="Eg: Harini" 
                 />
               </div>
 
