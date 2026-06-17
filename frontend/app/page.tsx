@@ -162,7 +162,7 @@ export default function LandingPage() {
         <header className="h-20 w-full bg-white flex items-center justify-between px-6 lg:px-16 border-b border-slate-100 sticky top-0 z-40 animate-slide-in">
           <div className="flex items-center gap-12">
             <Link href="/" className="flex items-center">
-              <img src="/logo.png" alt="Pinesphere Logo" className="h-10 w-auto object-contain transition-transform hover:scale-[1.02]" />
+              <img src="/logo.png" alt="Pinesphere Logo" className="h-12 w-auto object-contain transition-transform hover:scale-[1.02]" />
             </Link>
  
             {/* Desktop Navbar Menu (Programs) */}
@@ -173,11 +173,11 @@ export default function LandingPage() {
  
           <div className="flex items-center gap-6">
             {/* Search Action */}
-            <button className="text-slate-900 hover:text-blue-650 transition-colors cursor-pointer" aria-label="Search">
+            {/* <button className="text-slate-900 hover:text-blue-650 transition-colors cursor-pointer" aria-label="Search">
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
-            </button>
+            </button> */}
  
             {/* Original Login Button */}
             <Link href="/login" className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-900 hover:text-blue-650 transition-colors">
