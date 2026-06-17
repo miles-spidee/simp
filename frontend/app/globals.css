@@ -10,6 +10,8 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-blue-600: #004AC6;
+  --color-blue-700: #003EA6;
 }
 
 body {
