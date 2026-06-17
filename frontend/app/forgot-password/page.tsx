@@ -60,14 +60,7 @@ export default function ForgotPasswordPage() {
   const [infoMessage, setInfoMessage] = useState("");
 
   useEffect(() => {
-    if (step !== 'ENTER_OTP') return;
-    setTimerCount(120);
-    setCanResend(false);
-  }, [step]);
-
-  useEffect(() => {
     if (step !== 'ENTER_OTP' || timerCount <= 0) {
-      if (timerCount === 0) setCanResend(true);
       return;
     }
 
@@ -118,6 +111,8 @@ export default function ForgotPasswordPage() {
 
     const inputVal = username.trim();
     if (inputVal.length >= 3) {
+      setTimerCount(120);
+      setCanResend(false);
       setStep('ENTER_OTP');
     } else {
       setError("Please enter a valid username (at least 3 characters).");

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
@@ -28,6 +28,27 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showNotificationPopup, setShowNotificationPopup] = useState(false);
+
+  // Close notification popup when clicking anywhere outside
+  useEffect(() => {
+    if (!showNotificationPopup) return;
+
+    const handleOutsideClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target && !target.closest('#notification-bell-widget')) {
+        setShowNotificationPopup(false);
+      }
+    };
+
+    const timeoutId = setTimeout(() => {
+      document.addEventListener('click', handleOutsideClick);
+    }, 0);
+
+    return () => {
+      clearTimeout(timeoutId);
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, [showNotificationPopup]);
 
   const {
     username,
@@ -181,17 +202,17 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
             </div>
 
             {/* Notification bell widget */}
-            <div className="relative">
+            <div className="relative" id="notification-bell-widget">
               <button
                 onClick={() => setShowNotificationPopup(!showNotificationPopup)}
-                className="h-9 w-9 bg-white hover:bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 transition-colors relative shadow-sm"
+                className="h-9 w-9 bg-white hover:bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 transition-colors relative shadow-sm z-50"
               >
                 <Bell className="h-4 w-4" />
                 <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-blue-500 rounded-full" />
               </button>
 
               {showNotificationPopup && (
-                <div className="absolute right-0 mt-2.5 w-80 bg-white border border-slate-200 rounded-xl shadow-xl p-4 z-40 animate-slide-in text-slate-800">
+                <div className="absolute right-0 mt-2.5 w-80 bg-white border border-slate-200 rounded-xl shadow-xl p-4 z-50 animate-slide-in text-slate-800">
                   <h3 className="font-bold text-xs text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2 mb-3">
                     Recent ERP Notices
                   </h3>

@@ -126,7 +126,7 @@ export default function DashboardOverviewPage() {
           {/* Active schedule checklist */}
           <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-4 shadow-sm hover:shadow-md hover:border-blue-500/30 transition-all duration-300">
             <h3 className="font-bold text-sm text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-3">
-              Today's Agenda
+              Today&apos;s Agenda
             </h3>
             <ul className="space-y-3.5">
               {agenda.map((item) => (

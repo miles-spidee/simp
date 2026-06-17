@@ -26,7 +26,7 @@ export default function AttendancePage() {
 
           <div className="py-4 border-y border-slate-100 space-y-2.5">
             <div className="flex justify-between text-xs">
-              <span className="text-slate-400 font-semibold">Today's Date:</span>
+              <span className="text-slate-400 font-semibold">Today&apos;s Date:</span>
               <span className="text-slate-750 font-bold">{new Date().toISOString().split('T')[0]}</span>
             </div>
             <div className="flex justify-between text-xs">

@@ -231,10 +231,10 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
 
   // --- AGENDA ---
   const [agenda, setAgenda] = useState([
-    { id: 1, task: 'Daily Scrum Check-In', time: '09:00 AM', completed: true },
-    { id: 2, task: 'RSC Module Learning', time: '11:30 AM', completed: true },
-    { id: 3, task: 'Submit API JWT middleware code', time: '03:00 PM', completed: false },
-    { id: 4, task: 'Sync with Capstone guide', time: '05:00 PM', completed: false }
+    { id: 1, task: 'Sprint Planning & Scrum Sync', time: '09:00 AM', completed: true },
+    { id: 2, task: 'Advanced Hydration Architecture Learning', time: '11:30 AM', completed: true },
+    { id: 3, task: 'Staging Deployment & Diagnostics Dry Run', time: '03:00 PM', completed: false },
+    { id: 4, task: 'Technical Evaluation Sync with Guide', time: '05:00 PM', completed: false }
   ]);
 
   const handleToggleAgendaItem = (id: number) => {
@@ -595,15 +595,29 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
   };
 
   // --- FINANCIALS ---
-  const [fees, setFees] = useState({
-    total: 0,
-    paid: 0,
-    balance: 0
+  const [fees, setFees] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const type = localStorage.getItem('pinesphere_internship_type') || 'free';
+      if (type !== 'free') {
+        return { total: 30000, paid: 15000, balance: 15000 };
+      }
+    }
+    return { total: 0, paid: 0, balance: 0 };
   });
 
-  const [paymentHistory, setPaymentHistory] = useState([
-    { id: 'ALC-2026-FREE', date: '2026-05-01', amount: 0, method: 'System Grant', status: 'Free Internship' }
-  ]);
+  const [paymentHistory, setPaymentHistory] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const type = localStorage.getItem('pinesphere_internship_type') || 'free';
+      if (type !== 'free') {
+        return [
+          { id: 'INV-2026-001', date: '2026-05-10', amount: 15000, method: 'Credit Card', status: 'Cleared' }
+        ];
+      }
+    }
+    return [
+      { id: 'ALC-2026-FREE', date: '2026-05-01', amount: 0, method: 'System Grant', status: 'Free Internship' }
+    ];
+  });
 
   const [isPayModalOpen, setIsPayModalOpen] = useState(false);
   const [payAmountInput, setPayAmountInput] = useState('15000');
@@ -830,35 +844,9 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
   };
 
   const announcements = [
-    { date: 'June 16, 2026', title: 'Sprint 3 Code Review Schedule', content: 'All capstone submissions must be linked by June 19 for guide inspection.' },
-    { date: 'June 14, 2026', title: 'React Server Components Guest Lecture', content: 'Guest webinar by senior software architects of pinesphere.com tomorrow at 4 PM.' }
+    { date: 'June 16, 2026', title: 'Sprint 3 Code Review & Core Audit Schedule', content: 'All capstone repositories must be synced with the main branch by June 19, 2026 for review by the architectural board.' },
+    { date: 'June 14, 2026', title: 'Guest Lecture: Hydration Patterns at Scale', content: 'Technical presentation by the core engineering group of pinesphere.com on June 18 at 04:00 PM IST.' }
   ];
-
-  // Load fee status depending on type parameter
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const type = localStorage.getItem('pinesphere_internship_type') || 'free';
-      if (type !== 'free') {
-        setFees({
-          total: 30000,
-          paid: 15000,
-          balance: 15000
-        });
-        setPaymentHistory([
-          { id: 'INV-2026-001', date: '2026-05-10', amount: 15000, method: 'Credit Card', status: 'Cleared' }
-        ]);
-      } else {
-        setFees({
-          total: 0,
-          paid: 0,
-          balance: 0
-        });
-        setPaymentHistory([
-          { id: 'ALC-2026-FREE', date: '2026-05-01', amount: 0, method: 'System Grant', status: 'Free Internship' }
-        ]);
-      }
-    }
-  }, []);
 
   return (
     <DashboardContext.Provider value={{
