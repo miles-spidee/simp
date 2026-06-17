@@ -289,6 +289,10 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     { id: 2, task: 'Advanced Hydration Architecture Learning', time: '11:30 AM', completed: true },
     { id: 3, task: 'Staging Deployment & Diagnostics Dry Run', time: '03:00 PM', completed: false },
     { id: 4, task: 'Technical Evaluation Sync with Guide', time: '05:00 PM', completed: false }
+    { id: 1, task: 'Sprint Planning & Scrum Sync', time: '09:00 AM', completed: true },
+    { id: 2, task: 'Advanced Hydration Architecture Learning', time: '11:30 AM', completed: true },
+    { id: 3, task: 'Staging Deployment & Diagnostics Dry Run', time: '03:00 PM', completed: false },
+    { id: 4, task: 'Technical Evaluation Sync with Guide', time: '05:00 PM', completed: false }
   ]);
 
   const handleToggleAgendaItem = async (id: number) => {
@@ -761,8 +765,29 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
       }
     }
     return { total: 0, paid: 0, balance: 0 };
+  const [fees, setFees] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const type = localStorage.getItem('pinesphere_internship_type') || 'free';
+      if (type !== 'free') {
+        return { total: 30000, paid: 15000, balance: 15000 };
+      }
+    }
+    return { total: 0, paid: 0, balance: 0 };
   });
 
+  const [paymentHistory, setPaymentHistory] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const type = localStorage.getItem('pinesphere_internship_type') || 'free';
+      if (type !== 'free') {
+        return [
+          { id: 'INV-2026-001', date: '2026-05-10', amount: 15000, method: 'Credit Card', status: 'Cleared' }
+        ];
+      }
+    }
+    return [
+      { id: 'ALC-2026-FREE', date: '2026-05-01', amount: 0, method: 'System Grant', status: 'Free Internship' }
+    ];
+  });
   const [paymentHistory, setPaymentHistory] = useState(() => {
     if (typeof window !== 'undefined') {
       const type = localStorage.getItem('pinesphere_internship_type') || 'free';
@@ -1020,11 +1045,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
 
   const announcements = [
     { date: 'June 16, 2026', title: 'Sprint 3 Code Review & Core Audit Schedule', content: 'All capstone repositories must be synced with the main branch by June 19, 2026 for review by the architectural board.' },
-    { date: 'June 14, 2026', title: 'Guest Lecture: Hydration Patterns at Scale', content: 'Technical presentation by the core engineering group of pinesphere.com on June 18 at 04:00 PM IST.' },
-    { date: 'June 10, 2026', title: 'Attendance Policy Enforcement', content: 'A minimum threshold of 85% attendance is required for program certificate eligibility. Check your status weekly.' },
-    { date: 'June 05, 2026', title: 'Payment Reminder: Term 2 Installment', content: 'For paid/stipend track interns, the next installment is due by June 30, 2026. Please verify under payments tab.' },
-    { date: 'May 28, 2026', title: 'Vite & Turbopack Upgrade Complete', content: 'Workspace compiler infrastructure has been updated to the latest builds for 3x faster live preview builds.' },
-    { date: 'May 22, 2026', title: 'Mentor Evaluation Feedback Posted', content: 'First-phase assessment comments are published. Schedule syncs with assigned guides under assignments.' }
+    { date: 'June 14, 2026', title: 'Guest Lecture: Hydration Patterns at Scale', content: 'Technical presentation by the core engineering group of pinesphere.com on June 18 at 04:00 PM IST.' }
   ];
 
   return (
