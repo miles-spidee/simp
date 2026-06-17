@@ -52,6 +52,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
 
   const {
     username,
+    profilePicture,
     notificationToast,
     announcements
   } = useDashboard();
@@ -104,9 +105,17 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
           {/* User profile capsule */}
           <div className="p-5 border-b border-slate-100/60 bg-slate-50/50">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-bold text-white shadow-sm rounded-xl">
-                {username.split(' ').map(n => n[0]).join('')}
-              </div>
+              {profilePicture ? (
+                <img 
+                  src={profilePicture} 
+                  alt="Profile" 
+                  className="h-10 w-10 object-cover shadow-sm rounded-xl border border-slate-200" 
+                />
+              ) : (
+                <div className="h-10 w-10 bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-bold text-white shadow-sm rounded-xl">
+                  {username.split(' ').map(n => n[0]).join('')}
+                </div>
+              )}
               <div className="overflow-hidden">
                 <div className="text-sm font-bold text-slate-800 truncate">{username}</div>
                 <div className="text-[10px] text-blue-600 font-bold uppercase tracking-wider">Intern Developer</div>
@@ -232,9 +241,21 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
             </div>
 
             {/* User Initials capsule */}
-            <div className="h-9 w-9 bg-slate-100 border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-700 rounded-full uppercase">
-              {username.split(' ').map(n => n[0]).join('')}
-            </div>
+            <Link 
+              href="/dashboard/profile"
+              className="h-9 w-9 bg-slate-100 hover:bg-blue-50 hover:text-blue-650 hover:border-blue-300 border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-700 rounded-full uppercase transition-all shadow-sm cursor-pointer overflow-hidden"
+              title="View Profile"
+            >
+              {profilePicture ? (
+                <img 
+                  src={profilePicture} 
+                  alt="Profile" 
+                  className="h-full w-full object-cover" 
+                />
+              ) : (
+                username.split(' ').map(n => n[0]).join('')
+              )}
+            </Link>
           </div>
         </header>
 

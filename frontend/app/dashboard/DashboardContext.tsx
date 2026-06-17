@@ -82,6 +82,8 @@ export interface CertificateInfo {
 interface DashboardContextType {
   username: string;
   setUsername: (name: string) => void;
+  profilePicture: string | null;
+  setProfilePicture: (pic: string | null) => void;
   isCheckedIn: boolean;
   clockInTime: string | null;
   attendanceLogs: AttendanceLog[];
@@ -193,15 +195,38 @@ interface DashboardContextType {
 const DashboardContext = createContext<DashboardContextType | undefined>(undefined);
 
 export function DashboardProvider({ children }: { children: React.ReactNode }) {
-  const [username, setUsername] = useState('Harini');
+  const [username, setUsernameState] = useState('Harini');
+  const [profilePicture, setProfilePictureState] = useState<string | null>(null);
   const [notificationToast, setNotificationToast] = useState<string | null>(null);
 
-  // Initialize username on mount
+  const setUsername = (name: string) => {
+    setUsernameState(name);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('pinesphere_username', name);
+    }
+  };
+
+  const setProfilePicture = (pic: string | null) => {
+    setProfilePictureState(pic);
+    if (typeof window !== 'undefined') {
+      if (pic) {
+        localStorage.setItem('pinesphere_profile_picture', pic);
+      } else {
+        localStorage.removeItem('pinesphere_profile_picture');
+      }
+    }
+  };
+
+  // Initialize username and profile picture on mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('pinesphere_username');
       if (stored) {
-        setUsername(stored);
+        setUsernameState(stored);
+      }
+      const storedPic = localStorage.getItem('pinesphere_profile_picture');
+      if (storedPic) {
+        setProfilePictureState(storedPic);
       }
     }
   }, []);
@@ -851,6 +876,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
   return (
     <DashboardContext.Provider value={{
       username, setUsername,
+      profilePicture, setProfilePicture,
       isCheckedIn, clockInTime, attendanceLogs, handleCheckInToggle,
       notificationToast, showToastNotification,
       agenda, handleToggleAgendaItem,
