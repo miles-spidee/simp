@@ -14,13 +14,17 @@ export default function LoginPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Accept either "admin" with "password123" OR "Harini Sarvesh" with any password
-    const isValidUsername = username.trim().toLowerCase() === "admin" || username.trim() === "Harini Sarvesh";
+    // Accept either "admin" with "password123" OR "Harini" with any password
+    const isValidUsername = username.trim().toLowerCase() === "admin" || username.trim() === "Harini";
     const isValidPassword = username.trim().toLowerCase() === "admin" ? password === "password123" : password.length >= 4;
 
     if (isValidUsername && isValidPassword) {
       setShowToast(false);
-      router.push('/success?type=login');
+      // Save authenticated user info
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('pinesphere_username', username.trim());
+      }
+      router.push('/dashboard');
     } else {
       setShowToast(true);
       // Auto-hide the toast after 4 seconds
@@ -146,7 +150,7 @@ export default function LoginPage() {
                   <div className="mt-2">
                     <input 
                       type="text" 
-                      placeholder="Eg: Harini Sarvesh" 
+                      placeholder="Eg: Harini" 
                       required 
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
@@ -184,15 +188,6 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Right division matching footer (White background) */}
-          <footer className="border-t border-slate-100 py-6 px-8 sm:px-16 lg:px-24 text-[10px] font-bold text-slate-400 flex justify-between items-center gap-4 bg-white">
-            <div>© 2026 PINESPHERE.</div>
-            <div className="flex gap-6">
-              <Link href="#" className="hover:text-blue-600 transition-colors">PRIVACY POLICY</Link>
-              <Link href="#" className="hover:text-blue-600 transition-colors">TERMS</Link>
-              <Link href="#" className="hover:text-blue-600 transition-colors">SUPPORT</Link>
-            </div>
-          </footer>
         </div>
 
       </div>
