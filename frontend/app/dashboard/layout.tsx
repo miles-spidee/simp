@@ -221,21 +221,53 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
               </button>
 
               {showNotificationPopup && (
-                <div className="absolute right-0 mt-2.5 w-80 bg-white border border-slate-200 rounded-xl shadow-xl p-4 z-50 animate-slide-in text-slate-800">
-                  <h3 className="font-bold text-xs text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2 mb-3">
-                    Recent ERP Notices
-                  </h3>
-                  <div className="space-y-3">
+                <div className="absolute right-0 mt-2.5 w-80 bg-white border border-slate-200/80 rounded-xl shadow-xl z-50 animate-slide-in text-slate-800 overflow-hidden">
+                  
+                  {/* Popover Header */}
+                  <div className="px-4 py-3 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
+                    <h3 className="font-extrabold text-[10px] text-slate-550 uppercase tracking-wider">
+                      Recent ERP Notices
+                    </h3>
+                    <span className="text-[9px] bg-blue-50 text-blue-600 font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                      {announcements.length} Total
+                    </span>
+                  </div>
+
+                  {/* Scrollable Container divided with borders */}
+                  <div className="max-h-72 overflow-y-auto divide-y divide-slate-100 custom-scrollbar">
                     {announcements.map((an, idx) => (
-                      <div key={idx} className="text-[11px] leading-relaxed">
-                        <div className="flex items-center justify-between text-blue-600 font-bold mb-1">
-                          <span>{an.title}</span>
-                          <span className="text-[9px] text-slate-400">{an.date}</span>
+                      <div 
+                        key={idx} 
+                        className="p-4 hover:bg-slate-50/50 transition-colors duration-150 flex gap-3 items-start"
+                      >
+                        <span className="h-1.5 w-1.5 rounded-full bg-blue-600 shrink-0 mt-1.5" />
+                        
+                        <div className="space-y-1 flex-1">
+                          <h4 className="text-[11px] font-bold text-slate-800 leading-snug">
+                            {an.title}
+                          </h4>
+                          <p className="text-[10px] text-slate-500 leading-relaxed font-medium">
+                            {an.content}
+                          </p>
+                          <div className="text-[9px] text-slate-400 font-semibold pt-1">
+                            {an.date}
+                          </div>
                         </div>
-                        <p className="text-slate-500">{an.content}</p>
                       </div>
                     ))}
                   </div>
+
+                  {/* Popover Footer Action */}
+                  <div className="px-4 py-2.5 bg-slate-50/50 border-t border-slate-100 text-center">
+                    <Link 
+                      href="/dashboard"
+                      onClick={() => setShowNotificationPopup(false)}
+                      className="text-[10px] font-bold text-blue-600 hover:text-blue-700 transition-colors uppercase tracking-wider"
+                    >
+                      View All Announcements
+                    </Link>
+                  </div>
+
                 </div>
               )}
             </div>
