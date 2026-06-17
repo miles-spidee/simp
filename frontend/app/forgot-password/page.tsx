@@ -72,6 +72,7 @@ export default function ForgotPasswordPage() {
   // OTP Countdown Timer (2:00 minutes = 120 seconds)
   const [timerCount, setTimerCount] = useState(120);
   const [canResend, setCanResend] = useState(false);
+  const [infoMessage, setInfoMessage] = useState("");
 
   useEffect(() => {
     if (step !== 'ENTER_OTP' || timerCount <= 0) {
@@ -120,24 +121,9 @@ export default function ForgotPasswordPage() {
 
     const inputVal = username.trim();
     if (inputVal.length >= 3) {
-      try {
-        const response = await fetch(API_ENDPOINTS.FORGOT_PASSWORD_REQUEST, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: inputVal })
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to request OTP');
-        }
-        
-        setTimerCount(120);
-        setCanResend(false);
-        setStep('ENTER_OTP');
-      } catch (err) {
-        console.error(err);
-        showToast("Error", "Error requesting OTP. Please try again.", "error");
-      }
+      setTimerCount(120);
+      setCanResend(false);
+      setStep('ENTER_OTP');
     } else {
       showToast("Invalid Input", "Please enter a valid username (at least 3 characters).", "warning");
     }
