@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { API_ENDPOINTS } from '@/src/config';
 
 export interface AttendanceLog {
   date: string;
@@ -80,6 +81,7 @@ export interface CertificateInfo {
 }
 
 interface DashboardContextType {
+  isDashboardLoading: boolean;
   username: string;
   setUsername: (name: string) => void;
   profilePicture: string | null;
@@ -231,6 +233,33 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const [isDashboardLoading, setIsDashboardLoading] = useState(true);
+
+  // Fetch initial dashboard data
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await fetch(API_ENDPOINTS.DASHBOARD_DATA);
+        if (response.ok) {
+          const data = await response.json();
+          // Assume the backend returns structured data like:
+          // { agenda, courses, assignments, capstoneStatus, capstoneSubtasks, etc }
+          if (data.agenda) setAgenda(data.agenda);
+          if (data.courses) setCourses(data.courses);
+          if (data.assignments) setAssignments(data.assignments);
+          if (data.capstoneStatus) setCapstoneStatus(data.capstoneStatus);
+          if (data.capstoneSubtasks) setCapstoneSubtasks(data.capstoneSubtasks);
+        }
+      } catch (err) {
+        console.error("Failed to fetch dashboard data:", err);
+      } finally {
+        setIsDashboardLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
   const showToastNotification = (msg: string) => {
     setNotificationToast(msg);
     setTimeout(() => {
@@ -262,15 +291,42 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     { id: 4, task: 'Technical Evaluation Sync with Guide', time: '05:00 PM', completed: false }
   ]);
 
-  const handleToggleAgendaItem = (id: number) => {
+  const handleToggleAgendaItem = async (id: number) => {
+    let nextCompletedState = false;
+    
+    // Optimistic update
     setAgenda(prev => prev.map(item => {
       if (item.id === id) {
-        const nextCompleted = !item.completed;
-        showToastNotification(`Agenda item marked as ${nextCompleted ? 'completed' : 'pending'}`);
-        return { ...item, completed: nextCompleted };
+        nextCompletedState = !item.completed;
+        return { ...item, completed: nextCompletedState };
       }
       return item;
     }));
+
+    try {
+      const response = await fetch(`${API_ENDPOINTS.AGENDA}/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ completed: nextCompletedState }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update agenda item');
+      }
+      showToastNotification(`Agenda item marked as ${nextCompletedState ? 'completed' : 'pending'}`);
+    } catch (error) {
+      console.error(error);
+      showToastNotification("Failed to update agenda item. Please try again.");
+      // Revert optimistic update
+      setAgenda(prev => prev.map(item => {
+        if (item.id === id) {
+          return { ...item, completed: !nextCompletedState };
+        }
+        return item;
+      }));
+    }
   };
 
   // --- LMS ---
@@ -327,12 +383,19 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     setIsVideoPlaying(false);
   };
 
-  const handleMarkLectureComplete = (courseId: string, lectureIndex: number) => {
+  const handleMarkLectureComplete = async (courseId: string, lectureIndex: number) => {
     let completedTransition = false;
+    let oldCourses = [...courses];
+    let newProgress = 0;
+    let isCompleted = false;
+
     const updated = courses.map(c => {
       if (c.id === courseId) {
         const updatedLectures = c.lectures.map((l, idx) => {
-          if (idx === lectureIndex) return { ...l, completed: !l.completed };
+          if (idx === lectureIndex) {
+            isCompleted = !l.completed;
+            return { ...l, completed: isCompleted };
+          }
           return l;
         });
         const completedCount = updatedLectures.filter(l => l.completed).length;
@@ -340,6 +403,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
         if (progress === 100 && c.progress < 100) {
           completedTransition = true;
         }
+        newProgress = progress;
         return { ...c, lectures: updatedLectures, progress };
       }
       return c;
@@ -349,11 +413,32 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     if (selectedCourse && selectedCourse.id === courseId) {
       setSelectedCourse(updated.find(c => c.id === courseId) || null);
     }
-    
-    if (completedTransition) {
-      showToastNotification("🎉 Learning pathway completed! Certificate is now claimable in Documents Vault.");
-    } else {
-      showToastNotification("Course progress updated!");
+
+    try {
+      const response = await fetch(`${API_ENDPOINTS.COURSES}/${courseId}/lecture/${lectureIndex}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ completed: isCompleted, progress: newProgress }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update course progress');
+      }
+
+      if (completedTransition) {
+        showToastNotification("🎉 Learning pathway completed! Certificate is now claimable in Documents Vault.");
+      } else {
+        showToastNotification("Course progress updated!");
+      }
+    } catch (error) {
+      console.error(error);
+      showToastNotification("Failed to update course progress. Please try again.");
+      setCourses(oldCourses);
+      if (selectedCourse && selectedCourse.id === courseId) {
+        setSelectedCourse(oldCourses.find(c => c.id === courseId) || null);
+      }
     }
   };
 
@@ -440,8 +525,10 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     showToastNotification("File removed.");
   };
 
-  const handleSimulateSubmit = (asgId: string) => {
+  const handleSimulateSubmit = async (asgId: string) => {
     const file = uploadedFiles[asgId] || (asgId === 'PS-2026-W3' ? 'frame_selection_script.zip' : 'lightweight_model_metrics.pdf');
+    
+    // Optimistic update
     setAssignments(prev => prev.map(a => {
       if (a.id === asgId) {
         return { ...a, status: 'review' };
@@ -449,7 +536,31 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
       return a;
     }));
     setActiveUploadAssignmentId(null);
-    showToastNotification(`Successfully uploaded ${file}. Assignment status is now "Under Review".`);
+
+    try {
+      const response = await fetch(`${API_ENDPOINTS.ASSIGNMENTS}/${asgId}/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ file }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit assignment');
+      }
+      showToastNotification(`Successfully uploaded ${file}. Assignment status is now "Under Review".`);
+    } catch (error) {
+      console.error(error);
+      showToastNotification("Failed to submit assignment. Please try again.");
+      // Revert optimistic update
+      setAssignments(prev => prev.map(a => {
+        if (a.id === asgId) {
+          return { ...a, status: 'pending' };
+        }
+        return a;
+      }));
+    }
   };
 
   // --- CAPSTONE ---
@@ -500,11 +611,33 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     }, 1000);
   };
 
-  const handleSaveCapstone = (e: React.FormEvent) => {
+  const handleSaveCapstone = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsEditingCapstone(false);
-    setCapstoneStatus('Under Review');
-    showToastNotification("Capstone project parameters updated successfully!");
+    
+    try {
+      const response = await fetch(API_ENDPOINTS.CAPSTONE, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          repoLink: capstoneRepoLink,
+          liveLink: capstoneLiveLink,
+          status: 'Under Review'
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update capstone details');
+      }
+      setCapstoneStatus('Under Review');
+      showToastNotification("Capstone project parameters updated successfully!");
+    } catch (error) {
+      console.error(error);
+      showToastNotification("Failed to update capstone. Please try again.");
+      setIsEditingCapstone(true); // Re-open editing if failed
+    }
   };
 
   // --- ASSESSMENT ---
@@ -768,7 +901,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     { id: 's3', sender: 'system', text: 'Guide ratings are synced at the end of every week. Please expect updates by Friday.', time: '10:16 AM' }
   ]);
 
-  const handleSendChatMessage = (e: React.FormEvent) => {
+  const handleSendChatMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatInputText.trim()) return;
 
@@ -783,28 +916,45 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
 
     if (activeChatThread === 'mentor') {
       setMentorMessages(prev => [...prev, userMsg]);
-      setChatInputText('');
-      setTimeout(() => {
-        const replyMsg: ChatMessage = {
-          id: `reply-${Date.now()}`,
-          sender: 'mentor',
-          text: `Got your message! I'm reviewing the logs now. Keep up the great work.`,
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        };
-        setMentorMessages(prev => [...prev, replyMsg]);
-      }, 1500);
     } else {
       setSupportMessages(prev => [...prev, userMsg]);
-      setChatInputText('');
-      setTimeout(() => {
-        const replyMsg: ChatMessage = {
-          id: `reply-${Date.now()}`,
-          sender: 'system',
-          text: `Thank you for the update. Ticket #5819 has been refreshed. A support agent will review it shortly.`,
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        };
+    }
+    
+    setChatInputText('');
+
+    try {
+      const response = await fetch(API_ENDPOINTS.CHAT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          thread: activeChatThread,
+          message: userMsg.text
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
+
+      const data = await response.json();
+      
+      const replyMsg: ChatMessage = {
+        id: `reply-${Date.now()}`,
+        sender: activeChatThread === 'mentor' ? 'mentor' : 'system',
+        text: data.reply || (activeChatThread === 'mentor' ? `Got your message! I'm reviewing the logs now. Keep up the great work.` : `Thank you for the update. Ticket #5819 has been refreshed. A support agent will review it shortly.`),
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+
+      if (activeChatThread === 'mentor') {
+        setMentorMessages(prev => [...prev, replyMsg]);
+      } else {
         setSupportMessages(prev => [...prev, replyMsg]);
-      }, 1500);
+      }
+    } catch (error) {
+      console.error(error);
+      showToastNotification("Failed to send message. Please try again.");
     }
   };
 
@@ -879,6 +1029,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <DashboardContext.Provider value={{
+      isDashboardLoading,
       username, setUsername,
       profilePicture, setProfilePicture,
       isCheckedIn, clockInTime, attendanceLogs, handleCheckInToggle,
