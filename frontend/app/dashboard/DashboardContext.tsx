@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { API_ENDPOINTS } from '@/src/config';
 
 export interface AttendanceLog {
   date: string;
@@ -80,8 +81,11 @@ export interface CertificateInfo {
 }
 
 interface DashboardContextType {
+  isDashboardLoading: boolean;
   username: string;
   setUsername: (name: string) => void;
+  profilePicture: string | null;
+  setProfilePicture: (pic: string | null) => void;
   isCheckedIn: boolean;
   clockInTime: string | null;
   attendanceLogs: AttendanceLog[];
@@ -193,17 +197,67 @@ interface DashboardContextType {
 const DashboardContext = createContext<DashboardContextType | undefined>(undefined);
 
 export function DashboardProvider({ children }: { children: React.ReactNode }) {
-  const [username, setUsername] = useState('Harini');
+  const [username, setUsernameState] = useState('Harini');
+  const [profilePicture, setProfilePictureState] = useState<string | null>(null);
   const [notificationToast, setNotificationToast] = useState<string | null>(null);
 
-  // Initialize username on mount
+  const setUsername = (name: string) => {
+    setUsernameState(name);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('pinesphere_username', name);
+    }
+  };
+
+  const setProfilePicture = (pic: string | null) => {
+    setProfilePictureState(pic);
+    if (typeof window !== 'undefined') {
+      if (pic) {
+        localStorage.setItem('pinesphere_profile_picture', pic);
+      } else {
+        localStorage.removeItem('pinesphere_profile_picture');
+      }
+    }
+  };
+
+  // Initialize username and profile picture on mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('pinesphere_username');
       if (stored) {
-        setUsername(stored);
+        setUsernameState(stored);
+      }
+      const storedPic = localStorage.getItem('pinesphere_profile_picture');
+      if (storedPic) {
+        setProfilePictureState(storedPic);
       }
     }
+  }, []);
+
+  const [isDashboardLoading, setIsDashboardLoading] = useState(true);
+
+  // Fetch initial dashboard data
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await fetch(API_ENDPOINTS.DASHBOARD_DATA);
+        if (response.ok) {
+          const data = await response.json();
+          // Assume the backend returns structured data like:
+          // { agenda, courses, assignments, capstoneStatus, capstoneSubtasks, etc }
+          if (data.agenda) setAgenda(data.agenda);
+          if (data.courses) setCourses(data.courses);
+          if (data.assignments) setAssignments(data.assignments);
+          if (data.capstoneStatus) setCapstoneStatus(data.capstoneStatus);
+          if (data.capstoneSubtasks) setCapstoneSubtasks(data.capstoneSubtasks);
+        }
+      } catch (err) {
+        console.error("Failed to fetch dashboard data:", err);
+      } finally {
+        setIsDashboardLoading(false);
+      }
+    };
+
+    fetchDashboardData();
   }, []);
 
   const showToastNotification = (msg: string) => {
@@ -231,21 +285,48 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
 
   // --- AGENDA ---
   const [agenda, setAgenda] = useState([
-    { id: 1, task: 'Daily Scrum Check-In', time: '09:00 AM', completed: true },
-    { id: 2, task: 'RSC Module Learning', time: '11:30 AM', completed: true },
-    { id: 3, task: 'Submit API JWT middleware code', time: '03:00 PM', completed: false },
-    { id: 4, task: 'Sync with Capstone guide', time: '05:00 PM', completed: false }
+    { id: 1, task: 'Sprint Planning & Scrum Sync', time: '09:00 AM', completed: true },
+    { id: 2, task: 'Advanced Hydration Architecture Learning', time: '11:30 AM', completed: true },
+    { id: 3, task: 'Staging Deployment & Diagnostics Dry Run', time: '03:00 PM', completed: false },
+    { id: 4, task: 'Technical Evaluation Sync with Guide', time: '05:00 PM', completed: false }
   ]);
 
-  const handleToggleAgendaItem = (id: number) => {
+  const handleToggleAgendaItem = async (id: number) => {
+    let nextCompletedState = false;
+    
+    // Optimistic update
     setAgenda(prev => prev.map(item => {
       if (item.id === id) {
-        const nextCompleted = !item.completed;
-        showToastNotification(`Agenda item marked as ${nextCompleted ? 'completed' : 'pending'}`);
-        return { ...item, completed: nextCompleted };
+        nextCompletedState = !item.completed;
+        return { ...item, completed: nextCompletedState };
       }
       return item;
     }));
+
+    try {
+      const response = await fetch(`${API_ENDPOINTS.AGENDA}/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ completed: nextCompletedState }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update agenda item');
+      }
+      showToastNotification(`Agenda item marked as ${nextCompletedState ? 'completed' : 'pending'}`);
+    } catch (error) {
+      console.error(error);
+      showToastNotification("Failed to update agenda item. Please try again.");
+      // Revert optimistic update
+      setAgenda(prev => prev.map(item => {
+        if (item.id === id) {
+          return { ...item, completed: !nextCompletedState };
+        }
+        return item;
+      }));
+    }
   };
 
   // --- LMS ---
@@ -302,12 +383,19 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     setIsVideoPlaying(false);
   };
 
-  const handleMarkLectureComplete = (courseId: string, lectureIndex: number) => {
+  const handleMarkLectureComplete = async (courseId: string, lectureIndex: number) => {
     let completedTransition = false;
+    let oldCourses = [...courses];
+    let newProgress = 0;
+    let isCompleted = false;
+
     const updated = courses.map(c => {
       if (c.id === courseId) {
         const updatedLectures = c.lectures.map((l, idx) => {
-          if (idx === lectureIndex) return { ...l, completed: !l.completed };
+          if (idx === lectureIndex) {
+            isCompleted = !l.completed;
+            return { ...l, completed: isCompleted };
+          }
           return l;
         });
         const completedCount = updatedLectures.filter(l => l.completed).length;
@@ -315,6 +403,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
         if (progress === 100 && c.progress < 100) {
           completedTransition = true;
         }
+        newProgress = progress;
         return { ...c, lectures: updatedLectures, progress };
       }
       return c;
@@ -324,11 +413,32 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     if (selectedCourse && selectedCourse.id === courseId) {
       setSelectedCourse(updated.find(c => c.id === courseId) || null);
     }
-    
-    if (completedTransition) {
-      showToastNotification("🎉 Learning pathway completed! Certificate is now claimable in Documents Vault.");
-    } else {
-      showToastNotification("Course progress updated!");
+
+    try {
+      const response = await fetch(`${API_ENDPOINTS.COURSES}/${courseId}/lecture/${lectureIndex}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ completed: isCompleted, progress: newProgress }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update course progress');
+      }
+
+      if (completedTransition) {
+        showToastNotification("🎉 Learning pathway completed! Certificate is now claimable in Documents Vault.");
+      } else {
+        showToastNotification("Course progress updated!");
+      }
+    } catch (error) {
+      console.error(error);
+      showToastNotification("Failed to update course progress. Please try again.");
+      setCourses(oldCourses);
+      if (selectedCourse && selectedCourse.id === courseId) {
+        setSelectedCourse(oldCourses.find(c => c.id === courseId) || null);
+      }
     }
   };
 
@@ -415,8 +525,10 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     showToastNotification("File removed.");
   };
 
-  const handleSimulateSubmit = (asgId: string) => {
+  const handleSimulateSubmit = async (asgId: string) => {
     const file = uploadedFiles[asgId] || (asgId === 'PS-2026-W3' ? 'frame_selection_script.zip' : 'lightweight_model_metrics.pdf');
+    
+    // Optimistic update
     setAssignments(prev => prev.map(a => {
       if (a.id === asgId) {
         return { ...a, status: 'review' };
@@ -424,7 +536,31 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
       return a;
     }));
     setActiveUploadAssignmentId(null);
-    showToastNotification(`Successfully uploaded ${file}. Assignment status is now "Under Review".`);
+
+    try {
+      const response = await fetch(`${API_ENDPOINTS.ASSIGNMENTS}/${asgId}/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ file }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit assignment');
+      }
+      showToastNotification(`Successfully uploaded ${file}. Assignment status is now "Under Review".`);
+    } catch (error) {
+      console.error(error);
+      showToastNotification("Failed to submit assignment. Please try again.");
+      // Revert optimistic update
+      setAssignments(prev => prev.map(a => {
+        if (a.id === asgId) {
+          return { ...a, status: 'pending' };
+        }
+        return a;
+      }));
+    }
   };
 
   // --- CAPSTONE ---
@@ -475,11 +611,33 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     }, 1000);
   };
 
-  const handleSaveCapstone = (e: React.FormEvent) => {
+  const handleSaveCapstone = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsEditingCapstone(false);
-    setCapstoneStatus('Under Review');
-    showToastNotification("Capstone project parameters updated successfully!");
+    
+    try {
+      const response = await fetch(API_ENDPOINTS.CAPSTONE, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          repoLink: capstoneRepoLink,
+          liveLink: capstoneLiveLink,
+          status: 'Under Review'
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update capstone details');
+      }
+      setCapstoneStatus('Under Review');
+      showToastNotification("Capstone project parameters updated successfully!");
+    } catch (error) {
+      console.error(error);
+      showToastNotification("Failed to update capstone. Please try again.");
+      setIsEditingCapstone(true); // Re-open editing if failed
+    }
   };
 
   // --- ASSESSMENT ---
@@ -595,15 +753,29 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
   };
 
   // --- FINANCIALS ---
-  const [fees, setFees] = useState({
-    total: 0,
-    paid: 0,
-    balance: 0
+  const [fees, setFees] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const type = localStorage.getItem('pinesphere_internship_type') || 'free';
+      if (type !== 'free') {
+        return { total: 30000, paid: 15000, balance: 15000 };
+      }
+    }
+    return { total: 0, paid: 0, balance: 0 };
   });
 
-  const [paymentHistory, setPaymentHistory] = useState([
-    { id: 'ALC-2026-FREE', date: '2026-05-01', amount: 0, method: 'System Grant', status: 'Free Internship' }
-  ]);
+  const [paymentHistory, setPaymentHistory] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const type = localStorage.getItem('pinesphere_internship_type') || 'free';
+      if (type !== 'free') {
+        return [
+          { id: 'INV-2026-001', date: '2026-05-10', amount: 15000, method: 'Credit Card', status: 'Cleared' }
+        ];
+      }
+    }
+    return [
+      { id: 'ALC-2026-FREE', date: '2026-05-01', amount: 0, method: 'System Grant', status: 'Free Internship' }
+    ];
+  });
 
   const [isPayModalOpen, setIsPayModalOpen] = useState(false);
   const [payAmountInput, setPayAmountInput] = useState('15000');
@@ -729,7 +901,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     { id: 's3', sender: 'system', text: 'Guide ratings are synced at the end of every week. Please expect updates by Friday.', time: '10:16 AM' }
   ]);
 
-  const handleSendChatMessage = (e: React.FormEvent) => {
+  const handleSendChatMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatInputText.trim()) return;
 
@@ -744,28 +916,45 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
 
     if (activeChatThread === 'mentor') {
       setMentorMessages(prev => [...prev, userMsg]);
-      setChatInputText('');
-      setTimeout(() => {
-        const replyMsg: ChatMessage = {
-          id: `reply-${Date.now()}`,
-          sender: 'mentor',
-          text: `Got your message! I'm reviewing the logs now. Keep up the great work.`,
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        };
-        setMentorMessages(prev => [...prev, replyMsg]);
-      }, 1500);
     } else {
       setSupportMessages(prev => [...prev, userMsg]);
-      setChatInputText('');
-      setTimeout(() => {
-        const replyMsg: ChatMessage = {
-          id: `reply-${Date.now()}`,
-          sender: 'system',
-          text: `Thank you for the update. Ticket #5819 has been refreshed. A support agent will review it shortly.`,
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        };
+    }
+    
+    setChatInputText('');
+
+    try {
+      const response = await fetch(API_ENDPOINTS.CHAT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          thread: activeChatThread,
+          message: userMsg.text
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
+
+      const data = await response.json();
+      
+      const replyMsg: ChatMessage = {
+        id: `reply-${Date.now()}`,
+        sender: activeChatThread === 'mentor' ? 'mentor' : 'system',
+        text: data.reply || (activeChatThread === 'mentor' ? `Got your message! I'm reviewing the logs now. Keep up the great work.` : `Thank you for the update. Ticket #5819 has been refreshed. A support agent will review it shortly.`),
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+
+      if (activeChatThread === 'mentor') {
+        setMentorMessages(prev => [...prev, replyMsg]);
+      } else {
         setSupportMessages(prev => [...prev, replyMsg]);
-      }, 1500);
+      }
+    } catch (error) {
+      console.error(error);
+      showToastNotification("Failed to send message. Please try again.");
     }
   };
 
@@ -830,39 +1019,19 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
   };
 
   const announcements = [
-    { date: 'June 16, 2026', title: 'Sprint 3 Code Review Schedule', content: 'All capstone submissions must be linked by June 19 for guide inspection.' },
-    { date: 'June 14, 2026', title: 'React Server Components Guest Lecture', content: 'Guest webinar by senior software architects of pinesphere.com tomorrow at 4 PM.' }
+    { date: 'June 16, 2026', title: 'Sprint 3 Code Review & Core Audit Schedule', content: 'All capstone repositories must be synced with the main branch by June 19, 2026 for review by the architectural board.' },
+    { date: 'June 14, 2026', title: 'Guest Lecture: Hydration Patterns at Scale', content: 'Technical presentation by the core engineering group of pinesphere.com on June 18 at 04:00 PM IST.' },
+    { date: 'June 10, 2026', title: 'Attendance Policy Enforcement', content: 'A minimum threshold of 85% attendance is required for program certificate eligibility. Check your status weekly.' },
+    { date: 'June 05, 2026', title: 'Payment Reminder: Term 2 Installment', content: 'For paid/stipend track interns, the next installment is due by June 30, 2026. Please verify under payments tab.' },
+    { date: 'May 28, 2026', title: 'Vite & Turbopack Upgrade Complete', content: 'Workspace compiler infrastructure has been updated to the latest builds for 3x faster live preview builds.' },
+    { date: 'May 22, 2026', title: 'Mentor Evaluation Feedback Posted', content: 'First-phase assessment comments are published. Schedule syncs with assigned guides under assignments.' }
   ];
-
-  // Load fee status depending on type parameter
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const type = localStorage.getItem('pinesphere_internship_type') || 'free';
-      if (type !== 'free') {
-        setFees({
-          total: 30000,
-          paid: 15000,
-          balance: 15000
-        });
-        setPaymentHistory([
-          { id: 'INV-2026-001', date: '2026-05-10', amount: 15000, method: 'Credit Card', status: 'Cleared' }
-        ]);
-      } else {
-        setFees({
-          total: 0,
-          paid: 0,
-          balance: 0
-        });
-        setPaymentHistory([
-          { id: 'ALC-2026-FREE', date: '2026-05-01', amount: 0, method: 'System Grant', status: 'Free Internship' }
-        ]);
-      }
-    }
-  }, []);
 
   return (
     <DashboardContext.Provider value={{
+      isDashboardLoading,
       username, setUsername,
+      profilePicture, setProfilePicture,
       isCheckedIn, clockInTime, attendanceLogs, handleCheckInToggle,
       notificationToast, showToastNotification,
       agenda, handleToggleAgendaItem,

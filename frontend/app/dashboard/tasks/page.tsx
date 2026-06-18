@@ -77,7 +77,7 @@ export default function TasksPage() {
           return (
             <button
               key={tab.key}
-              onClick={() => setAssignmentFilter(tab.key as any)}
+              onClick={() => setAssignmentFilter(tab.key as 'all' | 'pending' | 'review' | 'completed')}
               className={`py-3 relative flex items-center gap-2 transition-all cursor-pointer ${
                 isActive ? 'text-blue-600 font-extrabold' : 'text-slate-500 hover:text-slate-800'
               }`}

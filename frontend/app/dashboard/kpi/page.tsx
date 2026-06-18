@@ -75,33 +75,64 @@ export default function KpiPage() {
         {/* Left Column */}
         <div className="lg:col-span-2 space-y-6">
           {/* Performance dimensions */}
-          <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-6 shadow-sm">
-            <div className="border-b border-slate-100 pb-3 flex justify-between items-center">
-              <h3 className="font-bold text-sm text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                <BarChart3 className="h-4.5 w-4.5 text-blue-600" />
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 space-y-6 shadow-sm card-premium-hover">
+            <div className="border-b border-slate-100 pb-3.5 flex justify-between items-center">
+              <h3 className="font-bold text-xs text-slate-800 uppercase tracking-widest flex items-center gap-2">
+                <BarChart3 className="h-4.5 w-4.5 text-[#3794d1]" />
                 <span>KPI Performance Dimensions</span>
               </h3>
-              <span className="text-[10px] text-blue-600 font-bold uppercase tracking-wider">Updated 1 day ago</span>
+              <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Synced 1 day ago</span>
             </div>
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
-                { label: 'Technical Implementation (TypeScript, Next.js)', score: kpiStats.technical, color: 'bg-blue-600' },
-                { label: 'Task Delivery & Timeline Punctuality', score: kpiStats.delivery, color: 'bg-indigo-600' },
-                { label: 'Communication & Active Coordinator Syncs', score: kpiStats.communication, color: 'bg-purple-650' },
-                { label: 'Attendance Rate', score: kpiStats.attendance, color: 'bg-emerald-500' },
-                { label: 'Collaboration & Team Peer Syncs', score: kpiStats.collaboration, color: 'bg-teal-500' }
-              ].map((stat, idx) => (
-                <div key={idx} className="space-y-1.5">
-                  <div className="flex justify-between text-xs font-bold">
-                    <span className="text-slate-500">{stat.label}</span>
-                    <span className="text-slate-850">{stat.score}/100</span>
+                { label: 'Technical Implementation', details: 'TypeScript, Next.js, APIs', score: kpiStats.technical, stroke: '#3794d1', bg: 'bg-blue-50/50 text-[#3794d1] border-blue-100/50' },
+                { label: 'Task Delivery & Punctuality', details: 'Sprint submissions timelines', score: kpiStats.delivery, stroke: '#6366f1', bg: 'bg-indigo-50/50 text-indigo-600 border-indigo-100/50' },
+                { label: 'Communication & Coordinator Syncs', details: 'Direct chats & reviews response', score: kpiStats.communication, stroke: '#a855f7', bg: 'bg-purple-50/50 text-purple-600 border-purple-100/50' },
+                { label: 'ERP Session Check-In Rate', details: 'Daily scrap attendance checks', score: kpiStats.attendance, stroke: '#10b981', bg: 'bg-emerald-50/50 text-emerald-600 border-emerald-100/50' },
+                { label: 'Collaboration & Team Syncs', details: 'Peer evaluations & milestones support', score: kpiStats.collaboration, stroke: '#14b8a6', bg: 'bg-teal-50/50 text-teal-600 border-teal-100/50' }
+              ].map((stat, idx) => {
+                const radius = 22;
+                const circumference = 2 * Math.PI * radius;
+                const offset = circumference * (1 - stat.score / 100);
+
+                return (
+                  <div key={idx} className="bg-slate-50/50 border border-slate-150 p-4 rounded-xl flex items-center gap-4 hover:border-slate-300 transition-all duration-300 group">
+                    {/* Sleek Radial Progress Meter */}
+                    <div className="relative h-14 w-14 shrink-0 flex items-center justify-center bg-white rounded-full shadow-inner border border-slate-100">
+                      <svg className="w-full h-full transform -rotate-90">
+                        <circle
+                          cx="28"
+                          cy="28"
+                          r={radius}
+                          className="stroke-slate-100 fill-none"
+                          strokeWidth="3.5"
+                        />
+                        <circle
+                          cx="28"
+                          cy="28"
+                          r={radius}
+                          className="fill-none transition-all duration-1000"
+                          strokeWidth="3.5"
+                          stroke={stat.stroke}
+                          strokeDasharray={circumference}
+                          strokeDashoffset={offset}
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                      <span className="absolute text-[10px] font-black text-slate-805 font-mono">{stat.score}%</span>
+                    </div>
+
+                    <div className="space-y-1 min-w-0 flex-1">
+                      <span className="text-[11px] font-bold text-slate-800 leading-tight block truncate">{stat.label}</span>
+                      <span className="text-[9px] text-slate-450 font-bold block leading-relaxed">{stat.details}</span>
+                      <span className={`inline-block text-[8px] font-black uppercase tracking-wider border px-2 py-0.5 rounded-md mt-1.5 ${stat.bg}`}>
+                        {stat.score >= 90 ? 'Excellent' : stat.score >= 80 ? 'Ahead' : 'On Track'}
+                      </span>
+                    </div>
                   </div>
-                  <div className="h-2 w-full bg-slate-100 overflow-hidden">
-                    <div className={`h-full transition-all duration-700 ${stat.color}`} style={{ width: `${stat.score}%` }} />
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -271,7 +302,7 @@ export default function KpiPage() {
                     <span className="text-slate-400">{rev.date}</span>
                   </div>
                   <p className="text-slate-500 leading-relaxed italic">
-                    "{rev.comment}"
+                    &ldquo;{rev.comment}&rdquo;
                   </p>
                 </div>
               ))}
