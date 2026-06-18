@@ -8,7 +8,7 @@ export interface Opportunity {
   title: string;
   type: string;
   value: string;
-  desc: string;
+  description: string;
   duration: string;
   mode: string;
   seats: string;
@@ -265,7 +265,7 @@ export default function LandingPage() {
                   </span>
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 mb-2">{opp.title}</h3>
-                <p className="text-sm text-slate-500 flex-1 leading-relaxed mb-6">{opp.desc}</p>
+                <p className="text-sm text-slate-500 flex-1 leading-relaxed mb-6">{opp.description}</p>
                 
                 <div className="space-y-3 border-t border-slate-100 pt-5 mb-6 text-slate-650 text-sm">
                   <div className="flex items-center gap-3">
