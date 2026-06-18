@@ -4,32 +4,70 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Toast from '../../components/ui/toast'; 
+import { API_ENDPOINTS } from '@/src/config'; 
 
 export default function LoginPage() {
   const router = useRouter();
-  const [showToast, setShowToast] = useState(false);
+  const [toastConfig, setToastConfig] = useState<{ show: boolean, title: string, message: string, type: 'success' | 'error' | 'warning' | 'info' }>({
+    show: false,
+    title: '',
+    message: '',
+    type: 'error'
+  });
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Accept either "admin" with "password123" OR "Harini" with any password
-    const isValidUsername = username.trim().toLowerCase() === "admin" || username.trim() === "Harini";
-    const isValidPassword = username.trim().toLowerCase() === "admin" ? password === "password123" : password.length >= 4;
+    try {
+      const response = await fetch(API_ENDPOINTS.LOGIN, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: username.trim(), password }),
+      });
 
-    if (isValidUsername && isValidPassword) {
-      setShowToast(false);
-      // Save authenticated user info
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('pinesphere_username', username.trim());
+      if (response.ok) {
+        setToastConfig({
+          show: true,
+          title: 'Login Successful',
+          message: 'Redirecting to your workspace...',
+          type: 'success'
+        });
+        
+        // Save authenticated user info
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('pinesphere_username', username.trim());
+        }
+        
+        // Brief delay to let the toast show
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 800);
+      } else {
+        setToastConfig({
+          show: true,
+          title: 'Authentication Failed',
+          message: 'Invalid username or password. Please try again.',
+          type: 'error'
+        });
+        
+        setTimeout(() => {
+          setToastConfig(prev => ({ ...prev, show: false }));
+        }, 4000);
       }
-      router.push('/dashboard');
-    } else {
-      setShowToast(true);
-      // Auto-hide the toast after 4 seconds
-      const timer = setTimeout(() => {
-        setShowToast(false);
+    } catch (error) {
+      console.error("Login failed:", error);
+      setToastConfig({
+        show: true,
+        title: 'Connection Error',
+        message: 'Unable to reach the authentication server. Please check your network.',
+        type: 'error'
+      });
+      setTimeout(() => {
+        setToastConfig(prev => ({ ...prev, show: false }));
       }, 4000);
     }
   };
@@ -192,8 +230,15 @@ export default function LoginPage() {
 
       </div>
 
-      {/* Toast only shows when showToast state is true */}
-      {showToast && <Toast onClose={() => setShowToast(false)} />}
+      {/* Toast Notification */}
+      {toastConfig.show && (
+        <Toast 
+          title={toastConfig.title}
+          message={toastConfig.message}
+          type={toastConfig.type}
+          onClose={() => setToastConfig(prev => ({ ...prev, show: false }))} 
+        />
+      )}
     </div>
   );
 }
