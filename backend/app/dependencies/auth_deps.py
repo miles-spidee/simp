@@ -6,7 +6,7 @@ from sqlalchemy import select
 from app.core.config import settings
 
 # Assumed imports from the DB team
-from app.db_team_package.models import User
+from app.modules.auth.models import User
 from app.db_team_package.database import get_db_session
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login")
