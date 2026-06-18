@@ -4,28 +4,70 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Toast from '../../components/ui/toast'; 
+import { API_ENDPOINTS } from '@/src/config'; 
 
 export default function LoginPage() {
   const router = useRouter();
-  const [showToast, setShowToast] = useState(false);
+  const [toastConfig, setToastConfig] = useState<{ show: boolean, title: string, message: string, type: 'success' | 'error' | 'warning' | 'info' }>({
+    show: false,
+    title: '',
+    message: '',
+    type: 'error'
+  });
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Accept either "admin" with "password123" OR "Harini Sarvesh" with any password
-    const isValidUsername = username.trim().toLowerCase() === "admin" || username.trim() === "Harini Sarvesh";
-    const isValidPassword = username.trim().toLowerCase() === "admin" ? password === "password123" : password.length >= 4;
+    try {
+      const response = await fetch(API_ENDPOINTS.LOGIN, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: username.trim(), password }),
+      });
 
-    if (isValidUsername && isValidPassword) {
-      setShowToast(false);
-      router.push('/success?type=login');
-    } else {
-      setShowToast(true);
-      // Auto-hide the toast after 4 seconds
-      const timer = setTimeout(() => {
-        setShowToast(false);
+      if (response.ok) {
+        setToastConfig({
+          show: true,
+          title: 'Login Successful',
+          message: 'Redirecting to your workspace...',
+          type: 'success'
+        });
+        
+        // Save authenticated user info
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('pinesphere_username', username.trim());
+        }
+        
+        // Brief delay to let the toast show
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 800);
+      } else {
+        setToastConfig({
+          show: true,
+          title: 'Authentication Failed',
+          message: 'Invalid username or password. Please try again.',
+          type: 'error'
+        });
+        
+        setTimeout(() => {
+          setToastConfig(prev => ({ ...prev, show: false }));
+        }, 4000);
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+      setToastConfig({
+        show: true,
+        title: 'Connection Error',
+        message: 'Unable to reach the authentication server. Please check your network.',
+        type: 'error'
+      });
+      setTimeout(() => {
+        setToastConfig(prev => ({ ...prev, show: false }));
       }, 4000);
     }
   };
@@ -146,7 +188,7 @@ export default function LoginPage() {
                   <div className="mt-2">
                     <input 
                       type="text" 
-                      placeholder="Eg: Harini Sarvesh" 
+                      placeholder="Eg: Harini" 
                       required 
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
@@ -184,21 +226,19 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Right division matching footer (White background) */}
-          <footer className="border-t border-slate-100 py-6 px-8 sm:px-16 lg:px-24 text-[10px] font-bold text-slate-400 flex justify-between items-center gap-4 bg-white">
-            <div>© 2026 PINESPHERE.</div>
-            <div className="flex gap-6">
-              <Link href="#" className="hover:text-blue-600 transition-colors">PRIVACY POLICY</Link>
-              <Link href="#" className="hover:text-blue-600 transition-colors">TERMS</Link>
-              <Link href="#" className="hover:text-blue-600 transition-colors">SUPPORT</Link>
-            </div>
-          </footer>
         </div>
 
       </div>
 
-      {/* Toast only shows when showToast state is true */}
-      {showToast && <Toast onClose={() => setShowToast(false)} />}
+      {/* Toast Notification */}
+      {toastConfig.show && (
+        <Toast 
+          title={toastConfig.title}
+          message={toastConfig.message}
+          type={toastConfig.type}
+          onClose={() => setToastConfig(prev => ({ ...prev, show: false }))} 
+        />
+      )}
     </div>
   );
 }
