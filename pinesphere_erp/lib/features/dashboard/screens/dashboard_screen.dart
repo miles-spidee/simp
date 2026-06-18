@@ -100,7 +100,7 @@ class DashboardScreen extends StatelessWidget {
                       const Icon(
                         Icons.assessment,
                         size: 48,
-                        color: AppColors.secondary,
+                        color: AppColors.primaryDark,
                       ),
                       const SizedBox(height: AppSpacing.s12),
                       Text(
