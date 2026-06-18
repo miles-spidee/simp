@@ -124,7 +124,7 @@ function HRDashboardLayoutContent({ children }: { children: React.ReactNode }) {
 
             <SectionTitle title="COMMUNICATION" />
             <NavItem tab={{ id: 'notifications', label: 'Notifications', icon: Bell, path: '/hr-dashboard/notifications' }} />
-            <NavItem tab={{ id: 'escalations', label: 'Escalations', icon: AlertTriangle, path: '/hr-dashboard/escalations' }} />
+            <NavItem tab={{ id: 'escalations', label: 'Escalations', icon: AlertTriangle, path: '/hr-dashboard/escalations', badge: '14' }} />
 
             <SectionTitle title="ANALYTICS" />
             <NavItem tab={{ id: 'analytics', label: 'Reports & Analytics', icon: PieChart, path: '/hr-dashboard/analytics' }} />

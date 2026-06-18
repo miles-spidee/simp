@@ -156,7 +156,7 @@ export default function ProgramDetailsModal({ program, onClose }: ProgramDetails
                     <div className="text-[10px] text-slate-500 font-medium mt-1">Seats Occupied</div>
                   </div>
                   <div className="text-right">
-                    <span className={`text-xl font-black ${isCritical ? 'text-rose-500' : 'text-emerald-500'} tracking-tight`}>
+                    <span className={`text-xl font-black ${isCritical ? 'text-rose-500' : 'text-[#003B95]'} tracking-tight`}>
                       {(program.capacity - program.filled).toString().padStart(2, '0')}
                     </span>
                     <div className="text-[10px] text-slate-500 font-medium mt-1">Available</div>

@@ -1027,6 +1027,32 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     { date: 'May 22, 2026', title: 'Mentor Evaluation Feedback Posted', content: 'First-phase assessment comments are published. Schedule syncs with assigned guides under assignments.' }
   ];
 
+  // Load fee status depending on type parameter
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const type = localStorage.getItem('pinesphere_internship_type') || 'free';
+      if (type !== 'free') {
+        setFees({
+          total: 30000,
+          paid: 15000,
+          balance: 15000
+        });
+        setPaymentHistory([
+          { id: 'INV-2026-001', date: '2026-05-10', amount: 15000, method: 'Credit Card', status: 'Cleared' }
+        ]);
+      } else {
+        setFees({
+          total: 0,
+          paid: 0,
+          balance: 0
+        });
+        setPaymentHistory([
+          { id: 'ALC-2026-FREE', date: '2026-05-01', amount: 0, method: 'System Grant', status: 'Free Internship' }
+        ]);
+      }
+    }
+  }, []);
+
   return (
     <DashboardContext.Provider value={{
       isDashboardLoading,
