@@ -73,6 +73,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   }, [showNotificationPopup]);
 
   const {
+    isDashboardLoading,
     username,
     profilePicture,
     notificationToast,
@@ -318,7 +319,14 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
         {/* Inner panels content */}
         <main className="flex-1 p-6 lg:p-8 relative">
           <div className="max-w-7xl mx-auto space-y-6">
-            {children}
+            {isDashboardLoading ? (
+              <div className="flex flex-col items-center justify-center min-h-[60vh]">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                <p className="mt-4 text-slate-500 text-sm font-bold animate-pulse">Loading Workspace...</p>
+              </div>
+            ) : (
+              children
+            )}
           </div>
         </main>
       </div>
