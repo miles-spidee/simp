@@ -2,9 +2,23 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { API_ENDPOINTS } from '@/src/config';
+
+export interface Opportunity {
+  title: string;
+  type: string;
+  value: string;
+  desc: string;
+  duration: string;
+  mode: string;
+  seats: string;
+  eligibility: string;
+  startDate: string;
+  color: string;
+}
 
 export default function LandingPage() {
-  const opportunities = [
+  const fallbackOpportunities: Opportunity[] = [
     { 
       title: "Free Internship", 
       type: "Free", 
@@ -79,16 +93,82 @@ export default function LandingPage() {
     },
   ];
 
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch opportunities from the backend
+  useEffect(() => {
+    const fetchOpportunities = async () => {
+      try {
+        const response = await fetch(API_ENDPOINTS.OPPORTUNITIES);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setOpportunities(data);
+      } catch (error) {
+        console.error("Failed to fetch opportunities from backend, using fallback data:", error);
+        setOpportunities(fallbackOpportunities);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOpportunities();
+  }, []);
+
   // Scroll reveal trigger state
-  const [programsVisible, setProgramsVisible] = useState(false);
+  const [programsVisible, setProgramsVisible] = useState(true);
   const programsRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Force play of background video to resolve React/browser autoplay constraints
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = true;
+    
+    const handlePlay = () => {
+      video.play().catch((err) => {
+        console.warn("Autoplay was prevented by browser:", err);
+      });
+    };
+
+    if (video.readyState >= 3) {
+      handlePlay();
+    } else {
+      video.addEventListener('canplay', handlePlay);
+    }
+    return () => {
+      video.removeEventListener('canplay', handlePlay);
+    };
+  }, []);
+
+  // Auto-scroll to #programs if hash is present in URL on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash === '#programs') {
+      const timeoutId = setTimeout(() => {
+        const target = document.getElementById('programs');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+          setProgramsVisible(true);
+        }
+      }, 300);
+      return () => clearTimeout(timeoutId);
+    }
+  }, []);
 
   useEffect(() => {
+    // Robust fallback timer to guarantee program card visibility after 1.5 seconds
+    const timer = setTimeout(() => {
+      setProgramsVisible(true);
+    }, 1500);
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setProgramsVisible(true);
-          // Stop observing once visible to maintain animation state
+          clearTimeout(timer);
           if (programsRef.current) observer.unobserve(programsRef.current);
         }
       },
@@ -100,6 +180,7 @@ export default function LandingPage() {
     }
 
     return () => {
+      clearTimeout(timer);
       observer.disconnect();
     };
   }, []);
@@ -119,7 +200,7 @@ export default function LandingPage() {
         <header className="h-20 w-full bg-white flex items-center justify-between px-6 lg:px-16 border-b border-slate-100 sticky top-0 z-40 animate-slide-in">
           <div className="flex items-center gap-12">
             <Link href="/" className="flex items-center">
-              <img src="/logo.png" alt="Pinesphere Logo" className="h-10 w-auto object-contain transition-transform hover:scale-[1.02]" />
+              <img src="/logo.png" alt="Pinesphere Logo" className="h-12 w-auto object-contain transition-transform hover:scale-[1.02]" />
             </Link>
  
             {/* Desktop Navbar Menu (Programs) */}
@@ -130,11 +211,11 @@ export default function LandingPage() {
  
           <div className="flex items-center gap-6">
             {/* Search Action */}
-            <button className="text-slate-900 hover:text-blue-650 transition-colors cursor-pointer" aria-label="Search">
+            {/* <button className="text-slate-900 hover:text-blue-650 transition-colors cursor-pointer" aria-label="Search">
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
-            </button>
+            </button> */}
  
             {/* Original Login Button */}
             <Link href="/login" className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-900 hover:text-blue-650 transition-colors">
@@ -149,22 +230,21 @@ export default function LandingPage() {
           {/* Background Video playing behind the black section */}
           <div className="absolute inset-0 w-full h-full z-0">
             <video
+              ref={videoRef}
               autoPlay
               muted
               loop
               playsInline
-              preload="metadata"
+              preload="auto"
+              src="https://pinesphere.com/static/assets/videos/pines_banner2.mp4"
               className="absolute inset-0 w-full h-full object-cover"
-            >
-              <source src="https://pinesphere.com/static/assets/videos/pines_banner2.mp4" type="video/mp4" />
-            </video>
-            <div className="absolute inset-0 bg-[#050505]/75" />
+            />
+            <div className="absolute inset-0 bg-slate-950/30" />
           </div>
  
           {/* Upper-Left White Background Slant Overlay (Hides video on top left) */}
           <div 
-            className="absolute inset-0 bg-white z-1"
-            style={{ clipPath: 'polygon(0 0, 100% 0, 100% 32%, 0 68%)' }}
+            className="absolute inset-0 bg-white z-1 hero-slant"
           />
  
           {/* Vertical lines overlay on the black section (decorations) */}
@@ -177,16 +257,16 @@ export default function LandingPage() {
           </div>
  
           {/* Content Wrapper */}
-          <div className="relative z-10 w-full h-full max-w-7xl mx-auto px-6 lg:px-16 py-12 md:py-16 flex flex-col justify-between">
+          <div className="relative z-10 w-full h-full max-w-7xl mx-auto pl-4 sm:pl-8 lg:pl-10 pr-6 lg:pr-16 pt-4 pb-12 md:pt-6 md:pb-16 flex flex-col justify-between">
             
             {/* Top Text Content (Original text, lies on the white background overlay) */}
-            <div className="text-left mt-8 md:mt-12 max-w-3xl z-10">
-              <h1 className="text-3xl sm:text-5xl lg:text-7xl font-normal tracking-tight text-[#0a0a0a] leading-[1.15] mb-6 animate-slide-in">
+            <div className="text-left mt-2 md:mt-3 max-w-3xl z-10">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-normal tracking-tight text-slate-950 leading-[1.15] mb-6 animate-slide-in">
                 Start Your <br />
                 Internship Journey <br />
                 With Enterprise Leaders
               </h1>
-              <p className="text-sm sm:text-base leading-relaxed text-slate-650 max-w-xl animate-slide-in" style={{ animationDelay: '70ms' }}>
+              <p className="text-sm sm:text-base leading-relaxed text-slate-600 max-w-xl animate-slide-in font-medium" style={{ animationDelay: '70ms' }}>
                 Pinesphere ERP offers a diverse range of internship programs designed to bridge the gap between academic learning and industrial excellence. Join our global talent ecosystem today.
               </p>
             </div>
@@ -233,7 +313,12 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {opportunities.map((opp, idx) => (
+            {loading ? (
+              <div className="col-span-full flex flex-col items-center justify-center py-12 text-slate-500">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mb-4"></div>
+                <p>Loading opportunities...</p>
+              </div>
+            ) : opportunities.map((opp, idx) => (
               <div 
                 key={idx} 
                 className={`flex flex-col h-full rounded-2xl border border-slate-200 bg-white p-8 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.06)] hover:-translate-y-1.5 transition-all duration-300 ${

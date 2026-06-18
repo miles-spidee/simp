@@ -13,6 +13,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import jwt
 
 from app.core.config import settings
+
+# Assumed imports from the DB team
+from app.modules.auth.models import User
 from app.core.database import get_db_session
 
 from app.modules.auth.models import User, UserRole

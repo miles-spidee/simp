@@ -3,6 +3,8 @@
 import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { API_ENDPOINTS } from '@/src/config';
+import Toast, { ToastType } from '../../components/ui/toast';
 
 function SuccessPageContent() {
   const searchParams = useSearchParams();
@@ -10,8 +12,61 @@ function SuccessPageContent() {
   
   const isLogin = type === 'login';
 
+  const [toastConfig, setToastConfig] = React.useState<{ show: boolean, title: string, message: string, type: ToastType }>({
+    show: false,
+    title: '',
+    message: '',
+    type: 'info'
+  });
+
+  React.useEffect(() => {
+    // Optionally fetch or send success data to the backend
+    if (type) {
+      fetch(`${API_ENDPOINTS.SUCCESS_DATA}?type=${type}`)
+        .then((res) => {
+          if (!res.ok) {
+            console.warn('Failed to record success data');
+            setToastConfig({
+              show: true,
+              title: 'Warning',
+              message: 'Failed to record success data telemetry.',
+              type: 'warning'
+            });
+            setTimeout(() => setToastConfig(prev => ({ ...prev, show: false })), 4000);
+          } else {
+            setToastConfig({
+              show: true,
+              title: 'Success Data Synced',
+              message: 'Your activity has been successfully logged.',
+              type: 'success'
+            });
+            setTimeout(() => setToastConfig(prev => ({ ...prev, show: false })), 4000);
+          }
+        })
+        .catch((err) => {
+          console.error('Error fetching success data:', err);
+          setToastConfig({
+            show: true,
+            title: 'Connection Error',
+            message: 'Unable to connect to the server.',
+            type: 'error'
+          });
+          setTimeout(() => setToastConfig(prev => ({ ...prev, show: false })), 4000);
+        });
+    }
+  }, [type]);
+
   return (
     <div className="w-full max-w-lg rounded-2xl bg-white p-8 sm:p-10 text-center shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-200 animate-slide-in">
+      {/* Toast Notification */}
+      {toastConfig.show && (
+        <Toast 
+          title={toastConfig.title}
+          message={toastConfig.message}
+          type={toastConfig.type}
+          onClose={() => setToastConfig(prev => ({ ...prev, show: false }))} 
+        />
+      )}
       
       <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm shadow-blue-500/10">
         <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>

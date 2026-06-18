@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
@@ -29,8 +30,52 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showNotificationPopup, setShowNotificationPopup] = useState(false);
 
+  // Close notification popup when clicking anywhere outside
+  useEffect(() => {
+    if (!showNotificationPopup) return;
+
+    const handleOutsideClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target && !target.closest('#notification-bell-widget')) {
+        setShowNotificationPopup(false);
+      }
+    };
+
+    const timeoutId = setTimeout(() => {
+      document.addEventListener('click', handleOutsideClick);
+    }, 0);
+
+    return () => {
+      clearTimeout(timeoutId);
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, [showNotificationPopup]);
+
+  // Close notification popup when clicking anywhere outside
+  useEffect(() => {
+    if (!showNotificationPopup) return;
+
+    const handleOutsideClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target && !target.closest('#notification-bell-widget')) {
+        setShowNotificationPopup(false);
+      }
+    };
+
+    const timeoutId = setTimeout(() => {
+      document.addEventListener('click', handleOutsideClick);
+    }, 0);
+
+    return () => {
+      clearTimeout(timeoutId);
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, [showNotificationPopup]);
+
   const {
+    isDashboardLoading,
     username,
+    profilePicture,
     notificationToast,
     announcements
   } = useDashboard();
@@ -83,9 +128,17 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
           {/* User profile capsule */}
           <div className="p-5 border-b border-slate-100/60 bg-slate-50/50">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-bold text-white shadow-sm rounded-xl">
-                {username.split(' ').map(n => n[0]).join('')}
-              </div>
+              {profilePicture ? (
+                <img 
+                  src={profilePicture} 
+                  alt="Profile" 
+                  className="h-10 w-10 object-cover shadow-sm rounded-xl border border-slate-200" 
+                />
+              ) : (
+                <div className="h-10 w-10 bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-bold text-white shadow-sm rounded-xl">
+                  {username.split(' ').map(n => n[0]).join('')}
+                </div>
+              )}
               <div className="overflow-hidden">
                 <div className="text-sm font-bold text-slate-800 truncate">{username}</div>
                 <div className="text-[10px] text-blue-600 font-bold uppercase tracking-wider">Intern Developer</div>
@@ -181,46 +234,88 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
             </div>
 
             {/* Notification bell widget */}
-            <div className="relative">
+            <div className="relative" id="notification-bell-widget">
               <button
                 onClick={() => setShowNotificationPopup(!showNotificationPopup)}
-                className="h-9 w-9 bg-white hover:bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 transition-colors relative shadow-sm"
+                className="h-9 w-9 bg-white hover:bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 transition-colors relative shadow-sm z-50"
               >
                 <Bell className="h-4 w-4" />
                 <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-blue-500 rounded-full" />
               </button>
 
               {showNotificationPopup && (
-                <div className="absolute right-0 mt-2.5 w-80 bg-white border border-slate-200 rounded-xl shadow-xl p-4 z-40 animate-slide-in text-slate-800">
+                <div className="absolute right-0 mt-2.5 w-80 bg-white border border-slate-200 rounded-xl shadow-xl p-4 z-50 animate-slide-in text-slate-800">
                   <h3 className="font-bold text-xs text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2 mb-3">
                     Recent ERP Notices
                   </h3>
                   <div className="space-y-3">
                     {announcements.map((an, idx) => (
-                      <div key={idx} className="text-[11px] leading-relaxed">
-                        <div className="flex items-center justify-between text-blue-600 font-bold mb-1">
-                          <span>{an.title}</span>
-                          <span className="text-[9px] text-slate-400">{an.date}</span>
+                      <div 
+                        key={idx} 
+                        className="p-4 hover:bg-slate-50/50 transition-colors duration-150 flex gap-3 items-start"
+                      >
+                        <span className="h-1.5 w-1.5 rounded-full bg-blue-600 shrink-0 mt-1.5" />
+                        
+                        <div className="space-y-1 flex-1">
+                          <h4 className="text-[11px] font-bold text-slate-800 leading-snug">
+                            {an.title}
+                          </h4>
+                          <p className="text-[10px] text-slate-500 leading-relaxed font-medium">
+                            {an.content}
+                          </p>
+                          <div className="text-[9px] text-slate-400 font-semibold pt-1">
+                            {an.date}
+                          </div>
                         </div>
-                        <p className="text-slate-500">{an.content}</p>
                       </div>
                     ))}
                   </div>
+
+                  {/* Popover Footer Action */}
+                  <div className="px-4 py-2.5 bg-slate-50/50 border-t border-slate-100 text-center">
+                    <Link 
+                      href="/dashboard"
+                      onClick={() => setShowNotificationPopup(false)}
+                      className="text-[10px] font-bold text-blue-600 hover:text-blue-700 transition-colors uppercase tracking-wider"
+                    >
+                      View All Announcements
+                    </Link>
+                  </div>
+
                 </div>
               )}
             </div>
 
             {/* User Initials capsule */}
-            <div className="h-9 w-9 bg-slate-100 border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-700 rounded-full uppercase">
-              {username.split(' ').map(n => n[0]).join('')}
-            </div>
+            <Link 
+              href="/dashboard/profile"
+              className="h-9 w-9 bg-slate-100 hover:bg-blue-50 hover:text-blue-650 hover:border-blue-300 border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-700 rounded-full uppercase transition-all shadow-sm cursor-pointer overflow-hidden"
+              title="View Profile"
+            >
+              {profilePicture ? (
+                <img 
+                  src={profilePicture} 
+                  alt="Profile" 
+                  className="h-full w-full object-cover" 
+                />
+              ) : (
+                username.split(' ').map(n => n[0]).join('')
+              )}
+            </Link>
           </div>
         </header>
 
         {/* Inner panels content */}
         <main className="flex-1 p-6 lg:p-8 relative">
           <div className="max-w-7xl mx-auto space-y-6">
-            {children}
+            {isDashboardLoading ? (
+              <div className="flex flex-col items-center justify-center min-h-[60vh]">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                <p className="mt-4 text-slate-500 text-sm font-bold animate-pulse">Loading Workspace...</p>
+              </div>
+            ) : (
+              children
+            )}
           </div>
         </main>
       </div>
