@@ -2,9 +2,23 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { API_ENDPOINTS } from '@/src/config';
+
+export interface Opportunity {
+  title: string;
+  type: string;
+  value: string;
+  desc: string;
+  duration: string;
+  mode: string;
+  seats: string;
+  eligibility: string;
+  startDate: string;
+  color: string;
+}
 
 export default function LandingPage() {
-  const opportunities = [
+  const fallbackOpportunities: Opportunity[] = [
     { 
       title: "Free Internship", 
       type: "Free", 
@@ -78,6 +92,30 @@ export default function LandingPage() {
       color: "text-blue-700 bg-blue-50 border border-blue-100 rounded-full" 
     },
   ];
+
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch opportunities from the backend
+  useEffect(() => {
+    const fetchOpportunities = async () => {
+      try {
+        const response = await fetch(API_ENDPOINTS.OPPORTUNITIES);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setOpportunities(data);
+      } catch (error) {
+        console.error("Failed to fetch opportunities from backend, using fallback data:", error);
+        setOpportunities(fallbackOpportunities);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOpportunities();
+  }, []);
 
   // Scroll reveal trigger state
   const [programsVisible, setProgramsVisible] = useState(true);
@@ -275,7 +313,12 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {opportunities.map((opp, idx) => (
+            {loading ? (
+              <div className="col-span-full flex flex-col items-center justify-center py-12 text-slate-500">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mb-4"></div>
+                <p>Loading opportunities...</p>
+              </div>
+            ) : opportunities.map((opp, idx) => (
               <div 
                 key={idx} 
                 className={`flex flex-col h-full rounded-2xl border border-slate-200 bg-white p-8 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.06)] hover:-translate-y-1.5 transition-all duration-300 ${
