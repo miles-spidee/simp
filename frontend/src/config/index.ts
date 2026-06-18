@@ -10,9 +10,10 @@ export const API_ENDPOINTS = {
   ASSIGNMENTS: `${API_BASE_URL}/api/assignments`,
   CAPSTONE: `${API_BASE_URL}/api/capstone`,
   CHAT: `${API_BASE_URL}/api/chat`,
-
   LOGIN: `${API_BASE_URL}/api/auth/login`,
+
   // Student Portal sub-modules
+
   ATTENDANCE: `${API_BASE_URL}/api/attendance`,
   ASSESSMENT: `${API_BASE_URL}/api/assessment`,
   DOCUMENTS: `${API_BASE_URL}/api/documents`,
@@ -24,7 +25,9 @@ export const API_ENDPOINTS = {
   FORGOT_PASSWORD_VERIFY: `${API_BASE_URL}/api/auth/forgot-password/verify`,
   FORGOT_PASSWORD_RESET: `${API_BASE_URL}/api/auth/forgot-password/reset`,
   SUCCESS_DATA: `${API_BASE_URL}/api/success`,
+
   // HR Dashboard endpoints
+
   HR_METRICS: `${API_BASE_URL}/api/hr/metrics`,
   HR_STUDENTS: `${API_BASE_URL}/api/hr/students`,
   HR_PROGRAMS: `${API_BASE_URL}/api/hr/programs`,

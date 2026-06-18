@@ -91,10 +91,11 @@ interface ChatMessage {
 
 export default function StudentDashboard() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState<string>('overview');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showNotificationPopup, setShowNotificationPopup] = useState(false);
   const [notificationToast, setNotificationToast] = useState<string | null>(null);
+  const [username, setUsername] = useState('Harini');
 
   // Close notification popup when clicking anywhere outside
   useEffect(() => {
@@ -533,7 +534,7 @@ export default function StudentDashboard() {
     });
   };
 
-  const handleSubmitExam = (forceFail = false) => {
+  function handleSubmitExam(forceFail = false) {
     let score = 0;
     if (!forceFail) {
       mockExamQuestions.forEach((q, idx) => {
@@ -545,7 +546,7 @@ export default function StudentDashboard() {
     setExamHUDScore(score);
     setExamHUDCompleted(true);
     showToastNotification("Assessment exam completed and logged.");
-  };
+  }
 
   const handleExitExamHUD = () => {
     setShowExamHUD(false);
@@ -941,18 +942,15 @@ export default function StudentDashboard() {
 
             {/* Notification bell widget */}
             <div className="relative" id="notification-bell-widget">
-            <div className="relative" id="notification-bell-widget">
               <button
                 onClick={() => setShowNotificationPopup(!showNotificationPopup)}
-                className="h-9 w-9 bg-white hover:bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 transition-colors relative shadow-sm z-50"
                 className="h-9 w-9 bg-white hover:bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 transition-colors relative shadow-sm z-50"
               >
                 <Bell className="h-4 w-4" />
                 <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-blue-500 rounded-full" />
               </button>
-
+ 
               {showNotificationPopup && (
-                <div className="absolute right-0 mt-2.5 w-80 bg-white border border-slate-200 rounded-xl shadow-xl p-4 z-50 animate-slide-in text-slate-850">
                 <div className="absolute right-0 mt-2.5 w-80 bg-white border border-slate-200 rounded-xl shadow-xl p-4 z-50 animate-slide-in text-slate-850">
                   <h3 className="font-bold text-xs text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2 mb-3">
                     Recent ERP Notices
@@ -961,7 +959,6 @@ export default function StudentDashboard() {
                     {announcements.map((an, idx) => (
                       <div key={idx} className="text-[11px] leading-relaxed">
                         <div className="flex items-center justify-between text-blue-600 font-bold mb-1">
-                          <span className="hover:text-blue-700 transition-colors cursor-pointer">{an.title}</span>
                           <span className="hover:text-blue-700 transition-colors cursor-pointer">{an.title}</span>
                           <span className="text-[9px] text-slate-400">{an.date}</span>
                         </div>
@@ -1124,8 +1121,6 @@ export default function StudentDashboard() {
                     {/* Internship Roadmap Progress (Circular Indicator) */}
                     <div className="bg-white border border-slate-200/80 rounded-2xl p-6 space-y-4 shadow-sm flex flex-col justify-between card-premium-hover transition-all duration-300">
                       <h3 className="font-bold text-xs text-slate-800 uppercase tracking-widest border-b border-slate-100 pb-3">
-                    <div className="bg-white border border-slate-200/80 rounded-2xl p-6 space-y-4 shadow-sm flex flex-col justify-between card-premium-hover transition-all duration-300">
-                      <h3 className="font-bold text-xs text-slate-800 uppercase tracking-widest border-b border-slate-100 pb-3">
                         Internship Timeline
                       </h3>
                       <div className="flex items-center justify-around gap-4 py-2">
@@ -1133,19 +1128,13 @@ export default function StudentDashboard() {
                           <svg className="w-full h-full transform -rotate-90">
                             <circle cx="48" cy="48" r="40" strokeWidth="5" stroke="#f1f5f9" fill="transparent" />
                             <circle cx="48" cy="48" r="40" strokeWidth="5" stroke="#3794d1" fill="transparent" strokeDasharray="251.2" strokeDashoffset={251.2 * (1 - 0.50)} strokeLinecap="round" className="transition-all duration-1000" />
-                            <circle cx="48" cy="48" r="40" strokeWidth="5" stroke="#f1f5f9" fill="transparent" />
-                            <circle cx="48" cy="48" r="40" strokeWidth="5" stroke="#3794d1" fill="transparent" strokeDasharray="251.2" strokeDashoffset={251.2 * (1 - 0.50)} strokeLinecap="round" className="transition-all duration-1000" />
                           </svg>
                           <div className="absolute flex flex-col items-center">
                             <span className="text-lg font-black text-slate-800">Week 6</span>
                             <span className="text-[7px] text-slate-450 font-bold uppercase">of 12 Weeks</span>
-                            <span className="text-[7px] text-slate-450 font-bold uppercase">of 12 Weeks</span>
                           </div>
                         </div>
                         <div className="text-xs space-y-1">
-                          <div className="font-bold text-slate-800">Timeline: 50% Complete</div>
-                          <div className="text-slate-455 font-medium">Enrolled: May 05, 2026</div>
-                          <div className="text-slate-455 font-semibold">Graduation: July 28, 2026</div>
                           <div className="font-bold text-slate-800">Timeline: 50% Complete</div>
                           <div className="text-slate-455 font-medium">Enrolled: May 05, 2026</div>
                           <div className="text-slate-455 font-semibold">Graduation: July 28, 2026</div>
