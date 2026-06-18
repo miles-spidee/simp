@@ -3,6 +3,7 @@
 import React, { Suspense, useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { API_ENDPOINTS } from '@/src/config';
 
 // SVG Icon Sub-components for professional visual representation
 const UserIcon = ({ className = "h-4 w-4" }) => (
@@ -525,11 +526,30 @@ function ApplicationFormContent() {
       }
     }
 
-    setTimeout(() => {
+    try {
+      const response = await fetch(API_ENDPOINTS.APPLY, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          internshipType,
+          ...formState,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit application');
+      }
+
       localStorage.removeItem(`pinesphere_internship_draft_${internshipType}`);
-      setIsSubmitting(false);
       router.push(`/success?type=${internshipType}`);
-    }, 2000);
+    } catch (error) {
+      console.error('Submission error:', error);
+      alert('There was an error submitting your application. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
