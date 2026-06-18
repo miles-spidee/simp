@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { API_ENDPOINTS } from '@/src/config';
+import Toast, { ToastType } from '../../components/ui/toast';
 
 // Reusable SVG Icon Components
 const LockIcon = ({ className = "h-6 w-6" }) => (
@@ -51,13 +53,25 @@ export default function ForgotPasswordPage() {
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [toastConfig, setToastConfig] = useState<{ show: boolean, title: string, message: string, type: ToastType }>({
+    show: false,
+    title: '',
+    message: '',
+    type: 'info'
+  });
+
+  const showToast = (title: string, message: string, type: ToastType) => {
+    setToastConfig({ show: true, title, message, type });
+    setTimeout(() => {
+      setToastConfig(prev => ({ ...prev, show: false }));
+    }, 5000);
+  };
 
   // OTP Countdown Timer (2:00 minutes = 120 seconds)
   const [timerCount, setTimerCount] = useState(120);
   const [canResend, setCanResend] = useState(false);
-  const [infoMessage, setInfoMessage] = useState("");
 
   useEffect(() => {
     if (step !== 'ENTER_OTP' || timerCount <= 0) {
@@ -81,12 +95,8 @@ export default function ForgotPasswordPage() {
   const handleResendOtp = () => {
     setTimerCount(120);
     setCanResend(false);
-    setError("");
     setOtp("");
-    setInfoMessage("A new verification code has been sent to your email.");
-    setTimeout(() => {
-      setInfoMessage("");
-    }, 5000);
+    showToast("OTP Resent", "A new verification code has been sent to your email.", "info");
   };
 
   const formatTime = (seconds: number) => {
@@ -105,58 +115,98 @@ export default function ForgotPasswordPage() {
     }
   }, [step, router]);
 
-  const handleUsernameSubmit = (e: React.FormEvent) => {
+  const handleUsernameSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
 
     const inputVal = username.trim();
     if (inputVal.length >= 3) {
-      setTimerCount(120);
-      setCanResend(false);
-      setStep('ENTER_OTP');
+      try {
+        const response = await fetch(API_ENDPOINTS.FORGOT_PASSWORD_REQUEST, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: inputVal })
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to request OTP');
+        }
+        
+        setTimerCount(120);
+        setCanResend(false);
+        setStep('ENTER_OTP');
+      } catch (err) {
+        console.error(err);
+        showToast("Error", "Error requesting OTP. Please try again.", "error");
+      }
     } else {
-      setError("Please enter a valid username (at least 3 characters).");
+      showToast("Invalid Input", "Please enter a valid username (at least 3 characters).", "warning");
     }
   };
 
-  const handleOtpSubmit = (e: React.FormEvent) => {
+  const handleOtpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
 
     if (timerCount <= 0) {
-      setError("This OTP has expired. Please click 'Resend OTP' to get a new code.");
+      showToast("Expired OTP", "This OTP has expired. Please click 'Resend OTP' to get a new code.", "error");
       return;
     }
 
-    // Verification code logic (accepts any 6-digit numeric OTP)
     if (/^\d{6}$/.test(otp.trim())) {
-      setStep('RESET_PASSWORD');
+      try {
+        const response = await fetch(API_ENDPOINTS.FORGOT_PASSWORD_VERIFY, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: username.trim(), otp: otp.trim() })
+        });
+
+        if (!response.ok) {
+          throw new Error('Invalid OTP verification code');
+        }
+
+        setStep('RESET_PASSWORD');
+      } catch (err) {
+        console.error(err);
+        showToast("Verification Failed", "Invalid OTP verification code. Please try again.", "error");
+      }
     } else {
-      setError("Invalid OTP verification code. Please enter a valid 6-digit OTP.");
+      showToast("Invalid Input", "Invalid OTP verification code. Please enter a valid 6-digit OTP.", "warning");
     }
   };
 
-  const handlePasswordSubmit = (e: React.FormEvent) => {
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
 
     if (newPassword.length < 6) {
-      setError("Password must be at least 6 characters.");
+      showToast("Invalid Password", "Password must be at least 6 characters.", "warning");
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setError("Passwords do not match. Please verify passwords.");
+      showToast("Mismatch", "Passwords do not match. Please verify passwords.", "warning");
       return;
     }
 
     setIsSubmitting(true);
 
-    // Mock API trigger
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const response = await fetch(API_ENDPOINTS.FORGOT_PASSWORD_RESET, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: username.trim(), otp: otp.trim(), newPassword })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to reset password');
+      }
+
       setStep('SUCCESS');
-    }, 1500);
+      showToast("Success", "Password reset successfully.", "success");
+    } catch (err) {
+      console.error(err);
+      showToast("Reset Failed", "Failed to reset password. Please try again.", "error");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -182,22 +232,6 @@ export default function ForgotPasswordPage() {
               {step === 'RESET_PASSWORD' && <LockIcon className="h-6 w-6 text-blue-600" />}
               {step === 'SUCCESS' && <ShieldCheckIcon className="h-6 w-6 text-blue-600" />}
             </div>
-
-            {/* Error alerts */}
-            {error && (
-              <div className="mb-6 rounded-xl bg-rose-50 border border-rose-150 p-4 text-xs text-rose-700 font-semibold text-left flex items-start gap-2.5 animate-slide-in">
-                <WarningIcon className="h-4 w-4 text-rose-500 shrink-0 mt-0.5" />
-                <span>{error}</span>
-              </div>
-            )}
-
-            {/* Info alerts */}
-            {infoMessage && (
-              <div className="mb-6 rounded-xl bg-emerald-50 border border-emerald-150 p-4 text-xs text-emerald-700 font-semibold text-left flex items-start gap-2.5 animate-slide-in">
-                <SuccessCheckIcon className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                <span>{infoMessage}</span>
-              </div>
-            )}
 
             {/* STEP 1: ENTER USERNAME */}
             {step === 'ENTER_USERNAME' && (
@@ -384,6 +418,16 @@ export default function ForgotPasswordPage() {
           <Link href="#" className="hover:text-blue-650 transition-colors">SUPPORT</Link>
         </div>
       </footer>
+
+      {/* Toast Notification */}
+      {toastConfig.show && (
+        <Toast 
+          title={toastConfig.title}
+          message={toastConfig.message}
+          type={toastConfig.type}
+          onClose={() => setToastConfig(prev => ({ ...prev, show: false }))} 
+        />
+      )}
     </div>
   );
 }
