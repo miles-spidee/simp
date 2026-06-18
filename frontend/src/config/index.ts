@@ -11,7 +11,7 @@ export const API_ENDPOINTS = {
   CAPSTONE: `${API_BASE_URL}/api/capstone`,
   CHAT: `${API_BASE_URL}/api/chat`,
 
-  LOGIN: `${API_BASE_URL}/api/auth/login`,
+  LOGIN: `${API_BASE_URL}/auth/login`,
   // Student Portal sub-modules
   ATTENDANCE: `${API_BASE_URL}/api/attendance`,
   ASSESSMENT: `${API_BASE_URL}/api/assessment`,
