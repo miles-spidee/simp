@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import (
     AsyncSession
 )
 
-from app.db_team_package.database import (
+from app.core.database import (
     get_db_session
 )
 

@@ -12,7 +12,7 @@ from .schemas import (
 from .service import ApplicationService
 
 # DB Team Dependency
-from app.db_team_package.database import (
+from app.core.database import (
     get_db_session
 )
 
