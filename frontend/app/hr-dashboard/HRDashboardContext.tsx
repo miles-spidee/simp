@@ -162,136 +162,64 @@ export function HRDashboardProvider({ children }: { children: ReactNode }) {
 
   // States
   const [metrics, setMetrics] = useState({
-    activeInterns: 12482,
-    registrations: 2450,
-    completionRate: 92.5,
-    hiringRate: 42.8,
-    totalRevenue: 450200,
-    certificatesIssued: 12482,
+    activeInterns: 0,
+    registrations: 0,
+    completionRate: 0,
+    hiringRate: 0,
+    totalRevenue: 0,
+    certificatesIssued: 0,
   });
 
   const [funnelData, setFunnelData] = useState({
-    applied: 4201,
-    screening: 1840,
-    interview: 800,
-    selected: 600,
-    joined: 450,
-    active: 422,
-    completed: 382,
-    certified: 382,
-    hired: 190,
+    applied: 0,
+    screening: 0,
+    interview: 0,
+    selected: 0,
+    joined: 0,
+    active: 0,
+    completed: 0,
+    certified: 0,
+    hired: 0,
   });
 
-  const [students, setStudents] = useState<StudentData[]>([
-    { id: 'STU-2024-8841', name: 'Julianne Smith', college: 'Stanford University', email: 'jsmith@edu.stanford.com', department: 'CS & Data Science', dept: 'CS & Data Science', prog: 'Java Fullstack', batch: 'Fall 2024', manager: 'Sarah Thorne', status: 'Active', createdDate: 'Sep 12, 2024', performance: 92, initials: 'JS' },
-    { id: 'STU-2024-8842', name: 'Marcus Liang', college: 'MIT Institute', email: 'm.liang@mit.edu', department: 'Mechanical Eng.', dept: 'Mechanical Eng.', prog: 'AI/ML Research', batch: 'Batch #482', manager: 'Arjun V.', status: 'Joined', createdDate: 'Oct 05, 2024', performance: 88, initials: 'ML' },
-    { id: 'STU-2024-8843', name: 'Devi Kumar', college: 'IIT Delhi', email: 'dkumar@iitd.ac.in', department: 'Business Admin', dept: 'Business Admin', prog: 'Backend Enterprise', batch: 'Batch #482', manager: 'Sarah Thorne', status: 'Screening', createdDate: 'Nov 01, 2024', performance: 0, initials: 'DK' },
-    { id: 'STU-2024-8844', name: 'Ahmed El-Sayed', college: 'Cairo University', email: 'ahmed.e@cairo.uni', department: 'Software Eng.', dept: 'Software Eng.', prog: 'Data Engineering', batch: 'Spring 2024', manager: 'Dr. Thorne', status: 'Hired', createdDate: 'Aug 20, 2024', performance: 100, initials: 'AE' }
-  ]);
+  const [students, setStudents] = useState<StudentData[]>([]);
 
-  const [programs, setPrograms] = useState<ProgramData[]>([
-    { id: 'PRG-1', name: 'AI/ML Research Internship', department: 'Data Science', dept: 'Data Science', type: 'Research Based', duration: '24 Weeks', manager: 'Arjun V.', filled: 45, capacity: 50, total: 50, status: 'Active', mentors: 'Arjun V., Priya S.' },
-    { id: 'PRG-2', name: 'Data Engineering Co-op', department: 'Analytics', dept: 'Analytics', type: 'Stipend Based', duration: '12 Weeks', manager: 'Dr. Thorne', filled: 120, capacity: 150, total: 150, status: 'Active', mentors: 'Dr. Thorne' },
-    { id: 'PRG-3', name: 'Enterprise Backend Focus', department: 'Engineering', dept: 'Engineering', type: 'Paid', duration: '8 Weeks', manager: 'Sarah Chen', filled: 30, capacity: 30, total: 30, status: 'Active', mentors: 'Sarah Chen' },
-    { id: 'PRG-4', name: 'Corporate Sponsored Java', department: 'Engineering', dept: 'Engineering', type: 'Corporate Sponsored', duration: '16 Weeks', manager: 'Priya Sharma', filled: 12, capacity: 60, total: 60, status: 'Active', mentors: 'Priya Sharma' }
-  ]);
+  const [programs, setPrograms] = useState<ProgramData[]>([]);
 
-  const [colleges, setColleges] = useState<CollegeData[]>([
-    { name: 'Stanford University', coord: 'Julianne Smith (j.smith@st.edu)', students: 120, completion: '92.5%', placement: '42.8%', status: 'Active' },
-    { name: 'MIT Institute', coord: 'Marcus Liang (m.liang@mit.edu)', students: 85, completion: '88.0%', placement: '38.0%', status: 'Active' },
-    { name: 'IIT Delhi', coord: 'Devi Kumar (d.kumar@iit.ac.in)', students: 15, completion: '--', placement: '--', status: 'Pending Review' }
-  ]);
+  const [colleges, setColleges] = useState<CollegeData[]>([]);
 
-  const [attendanceStats, setAttendanceStats] = useState<AttendanceStat[]>([
-    { label: 'Average Attendance', value: '88.5%' },
-    { label: 'Below 75%', value: '14 Students', alert: true },
-    { label: "Today's Absentees", value: '8 Students' },
-    { label: 'Pending Approvals', value: '3 Cases' }
-  ]);
+  const [attendanceStats, setAttendanceStats] = useState<AttendanceStat[]>([]);
 
   const [attendanceAlert, setAttendanceAlert] = useState({
-    name: 'Julianne Smith',
-    college: 'Stanford University',
-    days: 3,
-    status: 'Automated Level 1 reminder dispatched to Reporting Manager'
+    name: '',
+    college: '',
+    days: 0,
+    status: ''
   });
 
-  const [assessmentsStats, setAssessmentsStats] = useState([
-    { label: 'Total Assessments', value: '18 Active' },
-    { label: 'Completed', value: '1,248 Submissions' },
-    { label: 'Pending Evaluations', value: '45 Papers' },
-    { label: 'Average Class Score', value: '82.4/100' }
-  ]);
+  const [assessmentsStats, setAssessmentsStats] = useState<{ label: string; value: string }[]>([]);
 
-  const [assessments, setAssessments] = useState<AssessmentData[]>([
-    { name: 'Julianne Smith', title: 'React Hooks & State Flow', type: 'Coding Test', score: '92/100', status: 'Evaluated' },
-    { name: 'Marcus Liang', title: 'Sprint 3 Core Review', type: 'Project Evaluation', score: '88/100', status: 'Evaluated' },
-    { name: 'Devi Kumar', title: 'Database Relational Mapping', type: 'MCQ', score: '--', status: 'Pending Evaluation' }
-  ]);
+  const [assessments, setAssessments] = useState<AssessmentData[]>([]);
 
-  const [paymentsStats, setPaymentsStats] = useState([
-    { label: 'Total Revenue Collected', value: '$450.2k' },
-    { label: 'Pending Dues', value: '$12,400' },
-    { label: 'Confirmed Payments', value: '412 Ledger entries' },
-    { label: 'Overdue Reminders Out', value: '8 Alerts' }
-  ]);
+  const [paymentsStats, setPaymentsStats] = useState<{ label: string; value: string }[]>([]);
 
-  const [payments, setPayments] = useState<PaymentData[]>([
-    { name: 'Julianne Smith', prog: 'Java Fullstack Program', fee: 1200, paid: 1200, pending: 0, date: 'Paid', status: 'Cleared' },
-    { name: 'Marcus Liang', prog: 'AI/ML Research Co-op', fee: 1500, paid: 750, pending: 750, date: 'June 30, 2026', status: 'Partially Paid' },
-    { name: 'Vikas Gupta', prog: 'Backend Enterprise Focus', fee: 1200, paid: 0, pending: 1200, date: 'June 15, 2026', status: 'Overdue' }
-  ]);
+  const [payments, setPayments] = useState<PaymentData[]>([]);
 
-  const [certificatesStats, setCertificatesStats] = useState([
-    { label: 'Generated Certificates', value: '12,482 Issued' },
-    { label: 'Ineligibility Alerts', value: '45 Pending Completion Checks' },
-    { label: 'Revoked Certificates', value: '2 Revoked', revoked: true }
-  ]);
+  const [certificatesStats, setCertificatesStats] = useState<{ label: string; value: string; revoked?: boolean }[]>([]);
 
-  const [certificates, setCertificates] = useState<CertificateData[]>([
-    { code: 'CERT-2026-9912', name: 'Ananya Krishnan', type: 'Completion Certificate', date: 'June 01, 2026', status: 'Verified' },
-    { code: 'OFFR-2026-0041', name: 'Devi Kumar', type: 'Offer Letter', date: 'May 10, 2026', status: 'Issued' },
-    { code: 'CERT-2026-9900', name: 'Julianne Smith', type: 'Internship Letter', date: 'June 18, 2026', status: 'Pending Review' }
-  ]);
+  const [certificates, setCertificates] = useState<CertificateData[]>([]);
 
-  const [placementsStats, setPlacementsStats] = useState([
-    { label: 'Hired Interns', value: '190' },
-    { label: 'Hiring Rate', value: '42.8%' }
-  ]);
+  const [placementsStats, setPlacementsStats] = useState<{ label: string; value: string }[]>([]);
 
-  const [placements, setPlacements] = useState<PlacementData[]>([
-    { name: 'Ahmed El-Sayed', prog: 'Data Engineering Co-op', dept: 'Analytics Dept.', place: 'Hired', offer: 'Uploaded & Verified', date: 'Aug 20, 2024' },
-    { name: 'Julianne Smith', prog: 'Java Fullstack Focus', dept: 'Engineering Dept.', place: 'Eligible', offer: 'Pending Upload', date: '--' },
-    { name: 'Vikas Gupta', prog: 'Enterprise Backend Focus', dept: 'Engineering Dept.', place: 'Not Placed', offer: '--', date: '--' }
-  ]);
+  const [placements, setPlacements] = useState<PlacementData[]>([]);
 
-  const [notificationStats, setNotificationStats] = useState([
-    { channel: 'Emails Sent', count: '14,282', status: '99.2% Delivered', icon: 'Mail' },
-    { channel: 'SMS Sent', count: '5,800', status: '94.8% Delivered', icon: 'Smartphone' },
-    { channel: 'WhatsApp Dispatches', count: '8,412', status: '97.4% Delivered', icon: 'MessageSquare' },
-    { channel: 'Push Alerts Sent', count: '12,940', status: '12 Delivery Failures', icon: 'Clock' }
-  ]);
+  const [notificationStats, setNotificationStats] = useState<{ channel: string; count: string; status: string; icon: string }[]>([]);
 
-  const [notificationsLog, setNotificationsLog] = useState<NotificationLog[]>([
-    { title: 'Lecture Path Alert: Spring 3 Review Agenda', target: 'Batch #482', time: '12 minutes ago', status: 'Sent via Email/SMS' },
-    { title: 'Late fee warning reminder: Payment overdue notice', target: '4 Students', time: '2 hours ago', status: 'Sent via WhatsApp' }
-  ]);
+  const [notificationsLog, setNotificationsLog] = useState<NotificationLog[]>([]);
 
-  const [escalations, setEscalations] = useState<EscalationData[]>([
-    { name: 'Vikas Gupta', reason: 'Absent for 4 consecutive days', level: 'Level 2 Escalation', color: 'text-amber-700 border-amber-250 bg-amber-50' },
-    { name: 'Julianne Smith', reason: 'Assignment React Hooks overdue 6 days', level: 'Level 2 Escalation', color: 'text-rose-700 border-rose-250 bg-rose-50' }
-  ]);
+  const [escalations, setEscalations] = useState<EscalationData[]>([]);
 
-  const [activities, setActivities] = useState<ActivityLog[]>([
-    { event: 'Student Registered', detail: 'Rahul Sharma registered for Java Fullstack Program', time: '2 minutes ago', user: 'Automated' },
-    { event: 'Program Created', detail: 'New Co-op Data Engineering Program finalized', time: '15 minutes ago', user: 'Admin: Sarah' },
-    { event: 'Payment Recorded', detail: 'Batch #482 payment of $1,200 confirmed', time: '30 minutes ago', user: 'System Sync' },
-    { event: 'Certificate Generated', detail: 'Certificate Issued: Ananya Krishnan', time: '1 hour ago', user: 'HR System Manager' },
-    { event: 'Assessment Published', detail: 'React Hooks and State coding evaluation published', time: '2 hours ago', user: 'Mentor: Arjun' },
-    { event: 'Notification Sent', detail: 'Late fee warning broadcast sent via WhatsApp', time: '4 hours ago', user: 'Automated Trigger' },
-    { event: 'Escalation Raised', detail: 'Julianne Smith low attendance warning raised to RM', time: '6 hours ago', user: 'System Clock' },
-    { event: 'Placement Updated', detail: 'Ahmed El-Sayed offer letter verified for Co-op', time: '12 hours ago', user: 'Corporate Placement Lead' }
-  ]);
+  const [activities, setActivities] = useState<ActivityLog[]>([]);
 
   // Load from local storage and backend APIs
   const refreshAll = async () => {

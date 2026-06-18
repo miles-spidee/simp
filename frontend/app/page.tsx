@@ -18,81 +18,6 @@ export interface Opportunity {
 }
 
 export default function LandingPage() {
-  const fallbackOpportunities: Opportunity[] = [
-    { 
-      title: "Free Internship", 
-      type: "Free", 
-      value: "free", 
-      desc: "Build practical skills through guided learning and real-world projects.", 
-      duration: "4 Weeks",
-      mode: "Online",
-      seats: "15 Left",
-      eligibility: "B.E / B.Tech / MCA / BCA",
-      startDate: "July 1, 2026",
-      color: "text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-full" 
-    },
-    { 
-      title: "Paid Internship", 
-      type: "Paid", 
-      value: "paid", 
-      desc: "Work on live enterprise projects while earning industry experience and compensation.", 
-      duration: "12 Weeks",
-      mode: "Hybrid",
-      seats: "5 Left",
-      eligibility: "B.E / B.Tech / MCA",
-      startDate: "July 10, 2026",
-      color: "text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-full" 
-    },
-    { 
-      title: "Stipend Internship", 
-      type: "Stipend", 
-      value: "stipend", 
-      desc: "Gain hands-on experience with monthly stipend support.", 
-      duration: "24 Weeks",
-      mode: "Offline",
-      seats: "8 Left",
-      eligibility: "Graduates / Postgraduates",
-      startDate: "July 15, 2026",
-      color: "text-purple-700 bg-purple-50 border border-purple-100 rounded-full" 
-    },
-    { 
-      title: "Corporate Sponsored Internship", 
-      type: "Corporate", 
-      value: "corporate", 
-      desc: "Contribute to enterprise-grade initiatives backed by corporate partners.", 
-      duration: "16 Weeks",
-      mode: "Hybrid",
-      seats: "12 Left",
-      eligibility: "Final Year Students",
-      startDate: "July 20, 2026",
-      color: "text-amber-700 bg-amber-50 border border-amber-100 rounded-full" 
-    },
-    { 
-      title: "Research Internship", 
-      type: "Research", 
-      value: "research", 
-      desc: "Explore advanced research, methodologies, and emerging tech.", 
-      duration: "24 Weeks",
-      mode: "Online",
-      seats: "4 Left",
-      eligibility: "M.Tech / MS / Ph.D Candidates",
-      startDate: "August 1, 2026",
-      color: "text-rose-700 bg-rose-50 border border-rose-100 rounded-full" 
-    },
-    { 
-      title: "Industrial Internship", 
-      type: "Industrial", 
-      value: "industrial", 
-      desc: "Acquire essential industrial engineering and planning experience.", 
-      duration: "8 Weeks",
-      mode: "Offline",
-      seats: "10 Left",
-      eligibility: "B.E / B.Tech / MCA",
-      startDate: "July 5, 2026",
-      color: "text-blue-700 bg-blue-50 border border-blue-100 rounded-full" 
-    },
-  ];
-
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -107,8 +32,8 @@ export default function LandingPage() {
         const data = await response.json();
         setOpportunities(data);
       } catch (error) {
-        console.error("Failed to fetch opportunities from backend, using fallback data:", error);
-        setOpportunities(fallbackOpportunities);
+        console.error("Failed to fetch opportunities from backend:", error);
+        setOpportunities([]);
       } finally {
         setLoading(false);
       }
