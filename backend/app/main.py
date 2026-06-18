@@ -1,5 +1,6 @@
 import app.models
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.modules.auth.router import router as auth_router
 from app.modules.internship_types.router import router as internship_router
@@ -14,6 +15,15 @@ from app.modules.stipend_application_details.router import router as stipend_app
 
 app = FastAPI(
     title="Pinesphere ERP"
+)
+
+# Configure CORS for frontend access
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:8000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(auth_router)

@@ -36,6 +36,24 @@ class UserRepository:
 
         return result.scalars().first()
 
+    async def get_by_username(
+        self,
+        username: str
+    ) -> User | None:
+
+        stmt = (
+            select(User)
+            .options(
+                selectinload(User.user_role)
+                .selectinload(UserRole.role)
+            )
+            .where(User.username == username)
+        )
+
+        result = await self.db.execute(stmt)
+
+        return result.scalars().first()
+
     async def get_by_id(
         self,
         user_id: UUID

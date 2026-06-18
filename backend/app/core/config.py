@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Pinesphere Internship ERP"
-    API_V1_STR: str = "/api/v1"
+    #API_V1_STR: str = "/api/v1"
     
     # Security (The Master Keys)
     SECRET_KEY: str

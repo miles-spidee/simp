@@ -3,7 +3,7 @@ from uuid import UUID
 
 
 class UserLogin(BaseModel):
-    email: EmailStr
+    username: str
     password: str
 
 

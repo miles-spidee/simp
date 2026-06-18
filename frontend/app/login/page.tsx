@@ -188,7 +188,7 @@ export default function LoginPage() {
                   <div className="mt-2">
                     <input 
                       type="text" 
-                      placeholder="Eg: Harini" 
+                      placeholder="Eg: admin" 
                       required 
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
