@@ -88,7 +88,7 @@ function HRDashboardLayoutContent({ children }: { children: React.ReactNode }) {
           </div>
 
           {/* Profile Switcher */}
-          <div className="p-5 border-b border-slate-100/60 bg-slate-50/50 shrink-0">
+          <div className="p-5 border-b border-slate-100/60 bg-slate-50/50 shrink-0 hidden">
             <div className="flex items-center gap-3 w-full p-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer border border-transparent hover:border-slate-200">
               <div className="h-10 w-10 bg-gradient-to-tr from-blue-700 to-indigo-700 flex items-center justify-center font-bold text-white shadow-sm rounded-xl shrink-0">
                 HR
