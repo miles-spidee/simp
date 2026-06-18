@@ -100,100 +100,17 @@ export default function ProfilePage() {
     setUsername, 
     profilePicture, 
     setProfilePicture, 
+    profile,
+    setProfile,
+    handleSaveProfile: handleSaveProfileInContext,
     showToastNotification 
   } = useDashboard();
 
-  const [profile, setProfile] = useState<UserProfile>(defaultProfile);
   const [activeTab, setActiveTab] = useState<'personal' | 'academic' | 'professional' | 'internship'>('personal');
   const [isSaving, setIsSaving] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const resumeInputRef = useRef<HTMLInputElement>(null);
-
-  // Load profile data on mount
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedProfile = localStorage.getItem('pinesphere_user_profile');
-      if (storedProfile) {
-        try {
-          setProfile(JSON.parse(storedProfile));
-        } catch (e) {
-          console.error("Failed to parse stored user profile", e);
-        }
-      } else {
-        // Fallback to check for drafts
-        const types = ["free", "paid", "stipend", "industrial", "corporate", "research"];
-        let draftFound = false;
-        
-        for (const type of types) {
-          const draft = localStorage.getItem(`pinesphere_internship_draft_${type}`);
-          if (draft) {
-            try {
-              const parsed = JSON.parse(draft);
-              const merged: UserProfile = {
-                personalInformation: {
-                  firstName: parsed.personalInformation?.firstName || defaultProfile.personalInformation.firstName,
-                  lastName: parsed.personalInformation?.lastName || defaultProfile.personalInformation.lastName,
-                  email: parsed.personalInformation?.email || defaultProfile.personalInformation.email,
-                  mobileNumber: parsed.personalInformation?.mobileNumber || defaultProfile.personalInformation.mobileNumber,
-                  dateOfBirth: parsed.personalInformation?.dateOfBirth || defaultProfile.personalInformation.dateOfBirth,
-                  gender: parsed.personalInformation?.gender || defaultProfile.personalInformation.gender,
-                  city: parsed.personalInformation?.city || defaultProfile.personalInformation.city,
-                  state: parsed.personalInformation?.state || defaultProfile.personalInformation.state,
-                },
-                academicInformation: {
-                  collegeName: parsed.academicInformation?.collegeName || defaultProfile.academicInformation.collegeName,
-                  department: parsed.academicInformation?.department || defaultProfile.academicInformation.department,
-                  degree: parsed.academicInformation?.degree || defaultProfile.academicInformation.degree,
-                  currentYear: parsed.academicInformation?.currentYear || defaultProfile.academicInformation.currentYear,
-                  cgpaPercentage: parsed.academicInformation?.cgpaPercentage || defaultProfile.academicInformation.cgpaPercentage,
-                  graduationYear: parsed.academicInformation?.graduationYear || defaultProfile.academicInformation.graduationYear,
-                },
-                professionalInformation: {
-                  skills: parsed.professionalInformation?.skills || defaultProfile.professionalInformation.skills,
-                  githubUrl: parsed.professionalInformation?.githubUrl || defaultProfile.professionalInformation.githubUrl,
-                  linkedinUrl: parsed.professionalInformation?.linkedinUrl || defaultProfile.professionalInformation.linkedinUrl,
-                  portfolioUrl: parsed.professionalInformation?.portfolioUrl || defaultProfile.professionalInformation.portfolioUrl,
-                  projectExperience: parsed.professionalInformation?.projectExperience || defaultProfile.professionalInformation.projectExperience,
-                },
-                internshipSpecificData: {
-                  internshipType: type.charAt(0).toUpperCase() + type.slice(1),
-                  preferredTechStack: parsed.internshipSpecificData?.preferredTechStack || defaultProfile.internshipSpecificData.preferredTechStack,
-                  relevantExperience: parsed.internshipSpecificData?.relevantExperience || parsed.internshipSpecificData?.relevantTechnicalExperience || ""
-                },
-                documents: {
-                  resumeName: parsed.documents?.resume?.name || defaultProfile.documents.resumeName,
-                  resumeBase64: parsed.documents?.resume?.base64 || null
-                }
-              };
-              setProfile(merged);
-              draftFound = true;
-              break;
-            } catch (err) {
-              console.error("Failed to parse draft", err);
-            }
-          }
-        }
-        
-        // If username exists in localStorage but no profile is saved, pre-populate first/last name
-        const storedName = localStorage.getItem('pinesphere_username');
-        if (storedName && !draftFound) {
-          const parts = storedName.split(' ');
-          const fName = parts[0] || "Harini";
-          const lName = parts.slice(1).join(' ') || "S";
-          setProfile(prev => ({
-            ...prev,
-            personalInformation: {
-              ...prev.personalInformation,
-              firstName: fName,
-              lastName: lName,
-              email: `${fName.toLowerCase()}@pinesphere.com`
-            }
-          }));
-        }
-      }
-    }
-  }, []);
 
   const handleInputChange = (section: keyof UserProfile, field: string, value: string) => {
     setProfile(prev => ({
@@ -245,29 +162,23 @@ export default function ProfilePage() {
           }
         };
         setProfile(updatedProfile);
-        localStorage.setItem('pinesphere_user_profile', JSON.stringify(updatedProfile));
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('pinesphere_user_profile', JSON.stringify(updatedProfile));
+        }
         showToastNotification("Resume document updated and saved!");
       }
     };
     reader.readAsDataURL(file);
   };
 
-  const handleSaveProfile = (e?: React.FormEvent) => {
+  const handleSaveProfile = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setIsSaving(true);
  
-    // Sync context username
-    const fullName = `${profile.personalInformation.firstName.trim()} ${profile.personalInformation.lastName.trim()}`;
-    setUsername(fullName);
+    await handleSaveProfileInContext(profile);
  
-    // Save full profile configuration
-    localStorage.setItem('pinesphere_user_profile', JSON.stringify(profile));
- 
-    setTimeout(() => {
-      setIsSaving(false);
-      setIsDirty(false);
-      showToastNotification("Profile updated successfully!");
-    }, 800);
+    setIsSaving(false);
+    setIsDirty(false);
   };
 
   const removeProfilePic = () => {
