@@ -4,17 +4,23 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
-  LayoutDashboard,
+  Home,
   Users,
-  Building2,
-  FolderOpen,
-  CalendarCheck,
+  Building,
+  Briefcase,
+  Layers,
+  BadgeCheck,
+  BookOpen,
+  ClipboardEdit,
+  LineChart,
   CreditCard,
-  FileText,
-  AlertTriangle,
-  BarChart4,
-  Settings,
+  Award,
+  UserCheck,
   Bell,
+  AlertTriangle,
+  PieChart,
+  History,
+  Settings,
   Search,
   Menu,
   X,
@@ -37,6 +43,32 @@ function HRDashboardLayoutContent({ children }: { children: React.ReactNode }) {
 
   const activeTab = getActiveTab();
 
+  // Helper component for section titles
+  const SectionTitle = ({ title }: { title: string }) => (
+    <div className="px-4 pt-5 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+      {title}
+    </div>
+  );
+
+  // Helper component for Nav Items
+  const NavItem = ({ tab }: { tab: any }) => (
+    <Link
+      href={tab.path}
+      onClick={() => { if (window.innerWidth < 1024) setIsSidebarOpen(false); }}
+      className={`flex items-center gap-3 px-4 py-2.5 text-xs font-bold tracking-wide transition-all duration-200 rounded-xl ${
+        activeTab === tab.id
+          ? 'bg-blue-100/50 text-blue-600'
+          : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
+      }`}
+    >
+      <tab.icon className={`h-4.5 w-4.5 ${activeTab === tab.id ? 'text-blue-600' : 'text-slate-400'}`} />
+      <span>{tab.label}</span>
+      {tab.badge && (
+        <span className="ml-auto bg-rose-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">{tab.badge}</span>
+      )}
+    </Link>
+  );
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans flex text-slate-800 selection:bg-blue-600 selection:text-white overflow-x-hidden">
       
@@ -56,7 +88,7 @@ function HRDashboardLayoutContent({ children }: { children: React.ReactNode }) {
           </div>
 
           {/* Profile Switcher */}
-          <div className="p-5 border-b border-slate-100/60 bg-slate-50/50 shrink-0">
+          <div className="p-5 border-b border-slate-100/60 bg-slate-50/50 shrink-0 hidden">
             <div className="flex items-center gap-3 w-full p-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer border border-transparent hover:border-slate-200">
               <div className="h-10 w-10 bg-gradient-to-tr from-blue-700 to-indigo-700 flex items-center justify-center font-bold text-white shadow-sm rounded-xl shrink-0">
                 HR
@@ -70,55 +102,36 @@ function HRDashboardLayoutContent({ children }: { children: React.ReactNode }) {
           </div>
 
           {/* Nav List */}
-          <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-1">
-            <div className="px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Main Menu</div>
-            {[
-              { id: 'overview', label: 'Dashboard Overview', icon: LayoutDashboard, path: '/hr-dashboard' },
-              { id: 'students', label: 'Student Management', icon: Users, path: '/hr-dashboard/students' },
-              { id: 'programs', label: 'Internship Programs', icon: FolderOpen, path: '/hr-dashboard/programs' },
-              { id: 'college', label: 'College Management', icon: Building2, path: '/hr-dashboard/college' },
-              { id: 'attendance', label: 'Attendance Management', icon: CalendarCheck, path: '/hr-dashboard/attendance' },
-            ].map(tab => (
-              <Link
-                key={tab.id}
-                href={tab.path}
-                onClick={() => { if (window.innerWidth < 1024) setIsSidebarOpen(false); }}
-                className={`flex items-center gap-3 px-4 py-3 text-xs font-bold tracking-wide transition-all duration-200 rounded-xl ${
-                  activeTab === tab.id
-                    ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-blue-600'
-                }`}
-              >
-                <tab.icon className={`h-4.5 w-4.5 ${activeTab === tab.id ? 'text-white' : 'text-slate-400'}`} />
-                <span>{tab.label}</span>
-              </Link>
-            ))}
+          <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-0.5">
+            <NavItem tab={{ id: 'overview', label: 'Dashboard', icon: Home, path: '/hr-dashboard' }} />
 
-            <div className="px-4 pt-6 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Operations</div>
-            {[
-              { id: 'finance', label: 'Fee & Payment', icon: CreditCard, path: '/hr-dashboard/finance' },
-              { id: 'certificates', label: 'Certificates', icon: FileText, path: '/hr-dashboard/certificates' },
-              { id: 'escalations', label: 'Escalations', icon: AlertTriangle, path: '/hr-dashboard/escalations' },
-              { id: 'analytics', label: 'Reports & Analytics', icon: BarChart4, path: '/hr-dashboard/analytics' },
-              { id: 'settings', label: 'Settings & Config', icon: Settings, path: '/hr-dashboard/settings' },
-            ].map(tab => (
-              <Link
-                key={tab.id}
-                href={tab.path}
-                onClick={() => { if (window.innerWidth < 1024) setIsSidebarOpen(false); }}
-                className={`flex items-center gap-3 px-4 py-3 text-xs font-bold tracking-wide transition-all duration-200 rounded-xl ${
-                  activeTab === tab.id
-                    ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-blue-600'
-                }`}
-              >
-                <tab.icon className={`h-4.5 w-4.5 ${activeTab === tab.id ? 'text-white' : 'text-slate-400'}`} />
-                <span>{tab.label}</span>
-                {tab.id === 'escalations' && (
-                  <span className="ml-auto bg-rose-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">14</span>
-                )}
-              </Link>
-            ))}
+            <SectionTitle title="INTERNSHIP MANAGEMENT" />
+            <NavItem tab={{ id: 'students', label: 'Student Management', icon: Users, path: '/hr-dashboard/students' }} />
+            <NavItem tab={{ id: 'college', label: 'College Management', icon: Building, path: '/hr-dashboard/college' }} />
+            <NavItem tab={{ id: 'programs', label: 'Internship Programs', icon: Briefcase, path: '/hr-dashboard/programs' }} />
+            <NavItem tab={{ id: 'batch', label: 'Batch & Group', icon: Layers, path: '/hr-dashboard/batch' }} />
+
+            <SectionTitle title="ACADEMIC OPERATIONS" />
+            <NavItem tab={{ id: 'attendance', label: 'Attendance Management', icon: BadgeCheck, path: '/hr-dashboard/attendance' }} />
+            <NavItem tab={{ id: 'lms', label: 'LMS', icon: BookOpen, path: '/hr-dashboard/lms' }} />
+            <NavItem tab={{ id: 'assessment', label: 'Assessment', icon: ClipboardEdit, path: '/hr-dashboard/assessment' }} />
+            <NavItem tab={{ id: 'performance', label: 'Performance', icon: LineChart, path: '/hr-dashboard/performance' }} />
+
+            <SectionTitle title="BUSINESS OPERATIONS" />
+            <NavItem tab={{ id: 'finance', label: 'Fee & Payment', icon: CreditCard, path: '/hr-dashboard/finance' }} />
+            <NavItem tab={{ id: 'certificates', label: 'Certificates', icon: Award, path: '/hr-dashboard/certificates' }} />
+            <NavItem tab={{ id: 'placement', label: 'Placement', icon: UserCheck, path: '/hr-dashboard/placement' }} />
+
+            <SectionTitle title="COMMUNICATION" />
+            <NavItem tab={{ id: 'notifications', label: 'Notifications', icon: Bell, path: '/hr-dashboard/notifications' }} />
+            <NavItem tab={{ id: 'escalations', label: 'Escalations', icon: AlertTriangle, path: '/hr-dashboard/escalations' }} />
+
+            <SectionTitle title="ANALYTICS" />
+            <NavItem tab={{ id: 'analytics', label: 'Reports & Analytics', icon: PieChart, path: '/hr-dashboard/analytics' }} />
+            <NavItem tab={{ id: 'audit', label: 'Audit Logs', icon: History, path: '/hr-dashboard/audit' }} />
+
+            <SectionTitle title="SYSTEM" />
+            <NavItem tab={{ id: 'settings', label: 'Settings & Config', icon: Settings, path: '/hr-dashboard/settings' }} />
           </div>
         </div>
 
