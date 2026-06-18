@@ -29,18 +29,13 @@ export default function ProgramDetailsModal({ program, onClose }: ProgramDetails
         setLoadingStudents(true);
         setError('');
         try {
-          // Attempt to fetch from the APPLY endpoint (or a specific endpoint if exists)
-          // We will fetch all applications and filter by this program's type (mocking actual backend behavior if needed)
           const res = await fetch(API_ENDPOINTS.APPLY);
           if (!res.ok) {
             throw new Error('Failed to fetch students data');
           }
           const data = await res.json();
           
-          // Assuming the backend returns an array of applications
           if (Array.isArray(data)) {
-            // Filter by program type if the backend doesn't do it
-            // For now we'll just show the data we get
             setEnrolledStudents(data);
           } else if (data.applications && Array.isArray(data.applications)) {
             setEnrolledStudents(data.applications);
@@ -49,7 +44,6 @@ export default function ProgramDetailsModal({ program, onClose }: ProgramDetails
           }
         } catch (err) {
           console.error(err);
-          // Set error, but we can also provide mock fallback if backend is unreachable during demo
           setError('Could not connect to the backend to fetch enrolled students.');
         } finally {
           setLoadingStudents(false);
@@ -65,7 +59,6 @@ export default function ProgramDetailsModal({ program, onClose }: ProgramDetails
   const utilization = Math.round((program.filled / program.capacity) * 100);
   const isCritical = utilization >= 90;
 
-  // Mock dates for demonstration
   const startDate = "Jan 15, 2024";
   const endDate = "Jun 30, 2024";
 
@@ -165,7 +158,7 @@ export default function ProgramDetailsModal({ program, onClose }: ProgramDetails
                 
                 <div className="h-3 w-full bg-emerald-100 rounded-full overflow-hidden mb-4">
                   <div 
-                    className={`h-full ${isCritical ? 'bg-[#003B95]' : 'bg-[#003B95]'}`} 
+                    className={`h-full bg-[#003B95]`} 
                     style={{ width: `${utilization}%` }}
                   ></div>
                 </div>
@@ -243,7 +236,6 @@ export default function ProgramDetailsModal({ program, onClose }: ProgramDetails
                   <h3 className="text-sm font-bold text-rose-900 mb-1">Connection Error</h3>
                   <p className="text-xs text-rose-700">{error}</p>
                   
-                  {/* Provide Mock Data for Demo Purposes if backend is offline */}
                   <div className="mt-6 pt-6 border-t border-rose-200 text-left">
                     <p className="text-xs font-semibold text-slate-500 mb-4 text-center">Below is placeholder data since the backend is unreachable:</p>
                     <div className="space-y-3">
@@ -285,7 +277,6 @@ export default function ProgramDetailsModal({ program, onClose }: ProgramDetails
                         </thead>
                         <tbody className="text-xs divide-y divide-slate-100">
                           {enrolledStudents.map((student, idx) => {
-                            // Extract data safely based on the form structure we know
                             const info = student.personalInformation || {};
                             const edu = student.academicDetails || {};
                             
