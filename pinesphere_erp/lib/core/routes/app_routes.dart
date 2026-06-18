@@ -9,6 +9,8 @@ import 'package:pinesphere_erp/features/notifications/screens/notifications_scre
 import 'package:pinesphere_erp/features/profile/screens/profile_screen.dart';
 import 'package:pinesphere_erp/features/settings/screens/settings_screen.dart';
 import 'package:pinesphere_erp/features/tasks/screens/tasks_screen.dart';
+import 'package:pinesphere_erp/student_portal/student_portal_shell.dart';
+import 'package:pinesphere_erp/features/placement/screens/placement_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -21,6 +23,7 @@ class AppRoutes {
   static const String certificates = 'certificates';
   static const String notifications = 'notifications';
   static const String settings = 'settings';
+  static const String placement = 'placement';
 
   static final router = GoRouter(
     initialLocation: splash,
@@ -32,6 +35,10 @@ class AppRoutes {
       GoRoute(
         path: login,
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/student',
+        builder: (context, state) => const StudentPortalShell(),
       ),
       GoRoute(
         path: dashboard,
@@ -64,6 +71,10 @@ class AppRoutes {
           GoRoute(
             path: 'settings',
             builder: (context, state) => const SettingsScreen(),
+          ),
+          GoRoute(
+            path: 'placement',
+            builder: (context, state) => const PlacementScreen(),
           ),
         ],
       ),
