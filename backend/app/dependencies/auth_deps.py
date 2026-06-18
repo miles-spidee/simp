@@ -15,8 +15,8 @@ import jwt
 from app.core.config import settings
 
 # Assumed imports from the DB team
-from app.db_team_package.models import User
-from app.db_team_package.database import get_db_session
+from app.modules.auth.models import User
+from app.core.database import get_db_session
 
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="/auth/login"
