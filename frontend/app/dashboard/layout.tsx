@@ -234,10 +234,8 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
 
             {/* Notification bell widget */}
             <div className="relative" id="notification-bell-widget">
-            <div className="relative" id="notification-bell-widget">
               <button
                 onClick={() => setShowNotificationPopup(!showNotificationPopup)}
-                className="h-9 w-9 bg-white hover:bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 transition-colors relative shadow-sm z-50"
                 className="h-9 w-9 bg-white hover:bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 transition-colors relative shadow-sm z-50"
               >
                 <Bell className="h-4 w-4" />

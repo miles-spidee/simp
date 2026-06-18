@@ -289,10 +289,6 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     { id: 2, task: 'Advanced Hydration Architecture Learning', time: '11:30 AM', completed: true },
     { id: 3, task: 'Staging Deployment & Diagnostics Dry Run', time: '03:00 PM', completed: false },
     { id: 4, task: 'Technical Evaluation Sync with Guide', time: '05:00 PM', completed: false }
-    { id: 1, task: 'Sprint Planning & Scrum Sync', time: '09:00 AM', completed: true },
-    { id: 2, task: 'Advanced Hydration Architecture Learning', time: '11:30 AM', completed: true },
-    { id: 3, task: 'Staging Deployment & Diagnostics Dry Run', time: '03:00 PM', completed: false },
-    { id: 4, task: 'Technical Evaluation Sync with Guide', time: '05:00 PM', completed: false }
   ]);
 
   const handleToggleAgendaItem = async (id: number) => {
@@ -765,29 +761,8 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
       }
     }
     return { total: 0, paid: 0, balance: 0 };
-  const [fees, setFees] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const type = localStorage.getItem('pinesphere_internship_type') || 'free';
-      if (type !== 'free') {
-        return { total: 30000, paid: 15000, balance: 15000 };
-      }
-    }
-    return { total: 0, paid: 0, balance: 0 };
   });
 
-  const [paymentHistory, setPaymentHistory] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const type = localStorage.getItem('pinesphere_internship_type') || 'free';
-      if (type !== 'free') {
-        return [
-          { id: 'INV-2026-001', date: '2026-05-10', amount: 15000, method: 'Credit Card', status: 'Cleared' }
-        ];
-      }
-    }
-    return [
-      { id: 'ALC-2026-FREE', date: '2026-05-01', amount: 0, method: 'System Grant', status: 'Free Internship' }
-    ];
-  });
   const [paymentHistory, setPaymentHistory] = useState(() => {
     if (typeof window !== 'undefined') {
       const type = localStorage.getItem('pinesphere_internship_type') || 'free';
