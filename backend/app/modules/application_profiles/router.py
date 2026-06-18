@@ -13,7 +13,7 @@ from .service import (
     ApplicationProfileService
 )
 
-from app.db_team_package.database import (
+from app.core.database import (
     get_db_session
 )
 

@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 # DB Team Model
-from app.db_team_package.models import (
+from .models import (
     CorporateApplicationDetails
 )
 

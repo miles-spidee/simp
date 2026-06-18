@@ -12,7 +12,7 @@ from .schemas import (
 from .service import InternshipOpeningService
 
 # DB Team Dependency
-from app.db_team_package.database import get_db_session
+from app.core.database import get_db_session
 
 router = APIRouter(
     prefix="/internship-openings",

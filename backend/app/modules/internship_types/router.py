@@ -12,7 +12,7 @@ from .schemas import (
 from .service import InternshipTypeService
 
 # DB Team Imports
-from app.db.database import get_db_session
+from app.core.database import get_db_session
 
 router = APIRouter(
     prefix="/internship-types",

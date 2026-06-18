@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 # DB Team Model
-from app.db_team_package.models import (
-    ResearchApplicationDetails
+from .models import (
+    ResearchApplicationDetail
 )
 
 

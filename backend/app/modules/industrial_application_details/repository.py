@@ -1,9 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 # DB Team Model
-from app.db_team_package.models import (
-    IndustrialApplicationDetails
-)
+from .models import IndustrialApplicationDetail
 
 
 class IndustrialApplicationDetailsRepository:
