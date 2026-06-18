@@ -18,6 +18,9 @@ from app.core.config import settings
 from app.modules.auth.models import User
 from app.core.database import get_db_session
 
+from app.modules.auth.models import User, UserRole
+
+
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="/auth/login"
 )
@@ -59,7 +62,7 @@ async def get_current_user(
         select(User)
         .options(
             joinedload(User.user_role)
-            .joinedload("role")
+            .joinedload(UserRole.role)
         )
         .where(
             User.user_id == user_id

@@ -10,6 +10,7 @@ import app.models
 # Import your Base and models
 from app.core.database import Base
 from app.modules.auth.models import *
+from app.modules.internship_types.models import *
 
 # Alembic Config object
 config = context.config
