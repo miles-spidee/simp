@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import { useHRDashboard } from './HRDashboardContext';
 import {
   Users,
   Briefcase,
@@ -28,10 +29,42 @@ import {
   PlusCircle,
   RefreshCw,
   Building,
-  UserCheck
+  UserCheck,
+  X,
+  Send,
+  Loader2
 } from 'lucide-react';
 
 export default function HRDashboardOverview() {
+  const {
+    isHRDataLoading,
+    metrics,
+    funnelData,
+    students,
+    programs,
+    colleges,
+    escalations,
+    attendanceStats,
+    attendanceAlert,
+    assessmentsStats,
+    assessments,
+    paymentsStats,
+    payments,
+    certificatesStats,
+    certificates,
+    placementsStats,
+    placements,
+    notificationStats,
+    notificationsLog,
+    activities,
+    addStudent,
+    createProgram,
+    recordPayment,
+    generateCertificate,
+    sendNotification,
+    resolveEscalation
+  } = useHRDashboard();
+
   // Navigation jump list
   const rows = [
     { id: 'kpi', label: 'Executive KPIs' },
@@ -53,10 +86,125 @@ export default function HRDashboardOverview() {
   const [activeJump, setActiveJump] = useState('kpi');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
+  // Modal toggle states
+  const [isAddStudentOpen, setIsAddStudentOpen] = useState(false);
+  const [isCreateProgramOpen, setIsCreateProgramOpen] = useState(false);
+  const [isRecordPaymentOpen, setIsRecordPaymentOpen] = useState(false);
+  const [isGenerateCertificateOpen, setIsGenerateCertificateOpen] = useState(false);
+  const [isSendNotificationOpen, setIsSendNotificationOpen] = useState(false);
+
+  // Form states
+  const [newStudent, setNewStudent] = useState({ name: '', college: '', dept: '', prog: 'AI/ML Research Internship', batch: 'Batch #482', manager: 'Arjun V.', status: 'Active' });
+  const [newProgram, setNewProgram] = useState({ name: '', dept: '', type: 'Research Internship', duration: '12 Weeks', filled: 0, total: 100, mentors: '' });
+  const [newPayment, setNewPayment] = useState({ name: 'Julianne Smith', prog: 'Java Fullstack Program', fee: 1200, paid: 0, dueDate: '' });
+  const [newCert, setNewCert] = useState({ name: 'Julianne Smith', type: 'Completion Certificate' });
+  const [newNotif, setNewNotif] = useState({ title: '', target: 'Batch #482', channels: [] as string[] });
+
   const triggerToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3000);
   };
+
+  // Form handlers
+  const handleAddStudentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newStudent.name || !newStudent.college || !newStudent.dept) {
+      triggerToast("Please fill in all student details.");
+      return;
+    }
+    const success = await addStudent(newStudent);
+    if (success) {
+      triggerToast(`Student ${newStudent.name} registered successfully!`);
+      setIsAddStudentOpen(false);
+      setNewStudent({ name: '', college: '', dept: '', prog: 'AI/ML Research Internship', batch: 'Batch #482', manager: 'Arjun V.', status: 'Active' });
+    }
+  };
+
+  const handleCreateProgramSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newProgram.name || !newProgram.dept || !newProgram.duration || !newProgram.mentors) {
+      triggerToast("Please fill in all program fields.");
+      return;
+    }
+    const success = await createProgram({ ...newProgram, total: Number(newProgram.total) });
+    if (success) {
+      triggerToast(`Program "${newProgram.name}" created successfully!`);
+      setIsCreateProgramOpen(false);
+      setNewProgram({ name: '', dept: '', type: 'Research Internship', duration: '12 Weeks', filled: 0, total: 100, mentors: '' });
+    }
+  };
+
+  const handleRecordPaymentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPayment.name || !newPayment.prog || !newPayment.fee || newPayment.paid === undefined) {
+      triggerToast("Please fill in all payment details.");
+      return;
+    }
+    const success = await recordPayment(newPayment);
+    if (success) {
+      triggerToast(`Payment recorded for ${newPayment.name}!`);
+      setIsRecordPaymentOpen(false);
+      setNewPayment({ name: 'Julianne Smith', prog: 'Java Fullstack Program', fee: 1200, paid: 0, dueDate: '' });
+    }
+  };
+
+  const handleGenerateCertificateSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCert.name || !newCert.type) {
+      triggerToast("Please fill in all certificate fields.");
+      return;
+    }
+    const success = await generateCertificate(newCert);
+    if (success) {
+      triggerToast(`Certificate generated successfully for ${newCert.name}!`);
+      setIsGenerateCertificateOpen(false);
+      setNewCert({ name: 'Julianne Smith', type: 'Completion Certificate' });
+    }
+  };
+
+  const handleSendNotificationSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newNotif.title || !newNotif.target) {
+      triggerToast("Please fill in notification fields.");
+      return;
+    }
+    if (newNotif.channels.length === 0) {
+      triggerToast("Please check at least one delivery channel.");
+      return;
+    }
+    const success = await sendNotification(newNotif);
+    if (success) {
+      triggerToast(`Broadcast notification dispatched to ${newNotif.target}!`);
+      setIsSendNotificationOpen(false);
+      setNewNotif({ title: '', target: 'Batch #482', channels: [] });
+    }
+  };
+
+  const handleResolveEscalation = async (name: string) => {
+    const success = await resolveEscalation(name);
+    if (success) {
+      triggerToast(`Escalation resolved for ${name}.`);
+    }
+  };
+
+  const handleChannelCheckbox = (channel: string) => {
+    setNewNotif(prev => {
+      const exists = prev.channels.includes(channel);
+      const updated = exists 
+        ? prev.channels.filter(c => c !== channel) 
+        : [...prev.channels, channel];
+      return { ...prev, channels: updated };
+    });
+  };
+
+  if (isHRDataLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-slate-500">
+        <Loader2 className="h-10 w-10 animate-spin text-blue-600 mb-4" />
+        <p className="text-sm font-semibold">Syncing HR Workspace logs with servers...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 animate-slide-in max-w-7xl mx-auto">
@@ -89,12 +237,12 @@ export default function HRDashboardOverview() {
         <h3 className="font-extrabold text-[10px] text-slate-400 uppercase tracking-widest">HR System Quick Actions</h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           {[
-            { label: 'Add Student', action: () => triggerToast('Student Registration drawer initiated.') },
-            { label: 'Create Program', action: () => triggerToast('Program Builder template opened.') },
-            { label: 'Create Batch', action: () => triggerToast('Batch Allocation tool active.') },
-            { label: 'Record Payment', action: () => triggerToast('Payment collection entry created.') },
-            { label: 'Generate Certificate', action: () => triggerToast('Batch eligibility audit compiled.') },
-            { label: 'Send Notification', action: () => triggerToast('Global broadcast simulator active.') }
+            { label: 'Add Student', action: () => setIsAddStudentOpen(true) },
+            { label: 'Create Program', action: () => setIsCreateProgramOpen(true) },
+            { label: 'Create Batch', action: () => triggerToast('Batch Allocation tool initiated.') },
+            { label: 'Record Payment', action: () => setIsRecordPaymentOpen(true) },
+            { label: 'Generate Certificate', action: () => setIsGenerateCertificateOpen(true) },
+            { label: 'Send Notification', action: () => setIsSendNotificationOpen(true) }
           ].map((act, idx) => (
             <button
               key={idx}
@@ -141,10 +289,10 @@ export default function HRDashboardOverview() {
               <h2 className="text-sm font-black text-slate-800 uppercase tracking-widest border-b border-slate-150 pb-2">Row 1: Executive KPI Cards</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                  { label: 'Active Interns', value: '2,450', desc: 'Status: Joined / Active', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50 border-blue-100' },
-                  { label: 'New Registrations', value: '382', desc: 'Current Month Applications', icon: Briefcase, color: 'text-blue-600', bg: 'bg-blue-50 border-blue-100' },
-                  { label: 'Completion Rate', value: '92.5%', desc: '% Reaching Completed Status', icon: CheckCircle, color: 'text-blue-600', bg: 'bg-blue-50 border-blue-100' },
-                  { label: 'Hiring Rate', value: '42.8%', desc: '% Interns Hired Internally', icon: TrendingUp, color: 'text-blue-600', bg: 'bg-blue-50 border-blue-100' }
+                  { label: 'Active Interns', value: metrics.activeInterns.toLocaleString(), desc: 'Status: Joined / Active', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50 border-blue-100' },
+                  { label: 'New Registrations', value: metrics.registrations.toLocaleString(), desc: 'Current Month Applications', icon: Briefcase, color: 'text-blue-600', bg: 'bg-blue-50 border-blue-100' },
+                  { label: 'Completion Rate', value: `${metrics.completionRate}%`, desc: '% Reaching Completed Status', icon: CheckCircle, color: 'text-blue-600', bg: 'bg-blue-50 border-blue-100' },
+                  { label: 'Hiring Rate', value: `${metrics.hiringRate}%`, desc: '% Interns Hired Internally', icon: TrendingUp, color: 'text-blue-600', bg: 'bg-blue-50 border-blue-100' }
                 ].map((kpi, idx) => (
                   <div key={idx} className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-slate-355 transition-all flex flex-col justify-between">
                     <div className="flex justify-between items-start">
@@ -156,16 +304,16 @@ export default function HRDashboardOverview() {
                         <kpi.icon className="h-4.5 w-4.5" />
                       </div>
                     </div>
-                    <p className="text-[10px] text-slate-450 mt-3 pt-2 border-t border-slate-50 font-bold">{kpi.desc}</p>
+                    <p className="text-[10px] text-slate-455 mt-3 pt-2 border-t border-slate-50 font-bold">{kpi.desc}</p>
                   </div>
                 ))}
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {[
-                  { label: 'Total Revenue', value: '$450.2k', desc: 'Confirmed payments sum', icon: DollarSign, color: 'text-blue-600', bg: 'bg-blue-50 border-blue-100' },
-                  { label: 'Certificates Issued', value: '12,482', desc: 'Current cycle generated', icon: Award, color: 'text-blue-600', bg: 'bg-blue-50 border-blue-100' },
-                  { label: 'Open Escalations', value: '42', desc: 'Cases requiring HR closure', icon: AlertTriangle, color: 'text-rose-600', bg: 'bg-rose-50 border-rose-100' }
+                  { label: 'Total Revenue', value: `$${(metrics.totalRevenue / 1000).toFixed(1)}k`, desc: 'Confirmed payments sum', icon: DollarSign, color: 'text-blue-600', bg: 'bg-blue-50 border-blue-100' },
+                  { label: 'Certificates Issued', value: metrics.certificatesIssued.toLocaleString(), desc: 'Current cycle generated', icon: Award, color: 'text-blue-600', bg: 'bg-blue-50 border-blue-100' },
+                  { label: 'Open Escalations', value: escalations.length.toString(), desc: 'Cases requiring HR closure', icon: AlertTriangle, color: 'text-rose-600', bg: 'bg-rose-50 border-rose-100' }
                 ].map((kpi, idx) => (
                   <div key={idx} className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-slate-355 transition-all flex flex-col justify-between">
                     <div className="flex justify-between items-start">
@@ -177,7 +325,7 @@ export default function HRDashboardOverview() {
                         <kpi.icon className="h-4.5 w-4.5" />
                       </div>
                     </div>
-                    <p className="text-[10px] text-slate-450 mt-3 pt-2 border-t border-slate-50 font-bold">{kpi.desc}</p>
+                    <p className="text-[10px] text-slate-455 mt-3 pt-2 border-t border-slate-50 font-bold">{kpi.desc}</p>
                   </div>
                 ))}
               </div>
@@ -197,16 +345,16 @@ export default function HRDashboardOverview() {
               
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                 {[
-                  { stage: 'Applied', count: 4201, color: 'bg-slate-100 text-slate-700' },
-                  { stage: 'Screening', count: 1840, color: 'bg-slate-200 text-slate-800' },
-                  { stage: 'Interview', count: 800, color: 'bg-slate-300 text-slate-900' },
-                  { stage: 'Selected', count: 600, color: 'bg-blue-50 text-blue-700' },
-                  { stage: 'Offer Released', count: 450, color: 'bg-blue-100 text-blue-800' },
-                  { stage: 'Joined', count: 422, color: 'bg-blue-600 text-white' },
-                  { stage: 'Active', count: 400, color: 'bg-indigo-650 text-white' },
-                  { stage: 'Completed', count: 382, color: 'bg-emerald-50 text-emerald-700' },
-                  { stage: 'Certified', count: 382, color: 'bg-emerald-600 text-white' },
-                  { stage: 'Hired', count: 190, color: 'bg-teal-600 text-white' }
+                  { stage: 'Applied', count: funnelData.applied, color: 'bg-slate-100 text-slate-700' },
+                  { stage: 'Screening', count: funnelData.screening, color: 'bg-slate-200 text-slate-800' },
+                  { stage: 'Interview', count: funnelData.interview, color: 'bg-slate-300 text-slate-900' },
+                  { stage: 'Selected', count: funnelData.selected, color: 'bg-blue-50 text-blue-700' },
+                  { stage: 'Offer Released', count: funnelData.joined, color: 'bg-blue-100 text-blue-800' },
+                  { stage: 'Joined', count: funnelData.joined, color: 'bg-blue-600 text-white' },
+                  { stage: 'Active', count: funnelData.active, color: 'bg-indigo-650 text-white' },
+                  { stage: 'Completed', count: funnelData.completed, color: 'bg-emerald-50 text-emerald-700' },
+                  { stage: 'Certified', count: funnelData.certified, color: 'bg-emerald-600 text-white' },
+                  { stage: 'Hired', count: funnelData.hired, color: 'bg-teal-600 text-white' }
                 ].map((item) => (
                   <div key={item.stage} className={`p-4 rounded-xl border border-slate-150 shadow-sm flex flex-col justify-between hover:scale-[1.02] transition-transform ${item.color}`}>
                     <span className="text-[10px] uppercase font-bold tracking-wider opacity-90 truncate">{item.stage}</span>
@@ -226,7 +374,7 @@ export default function HRDashboardOverview() {
                   <p className="text-[11px] text-slate-400 mt-1 font-semibold">Verification records and state distribution</p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                  {['Total: 4,201', 'Applied: 1,840', 'Selected: 600', 'Active: 422', 'Completed: 382', 'Hired: 190'].map((itm, i) => (
+                  {[`Total: ${funnelData.applied}`, `Applied: ${funnelData.screening}`, `Selected: ${funnelData.selected}`, `Active: ${funnelData.active}`, `Completed: ${funnelData.completed}`, `Hired: ${funnelData.hired}`].map((itm, i) => (
                     <span key={i} className="text-[9px] font-extrabold uppercase bg-slate-100 text-slate-500 border border-slate-200 px-2 py-0.5 rounded-lg">{itm}</span>
                   ))}
                 </div>
@@ -245,12 +393,7 @@ export default function HRDashboardOverview() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 text-slate-600 font-semibold">
-                    {[
-                      { id: 'STU-2024-8841', name: 'Julianne Smith', college: 'Stanford University', dept: 'CS & Data Science', prog: 'Java Fullstack', batch: 'Fall 2024', manager: 'Sarah Thorne', status: 'Active' },
-                      { id: 'STU-2024-8842', name: 'Marcus Liang', college: 'MIT Institute', dept: 'Mechanical Eng.', prog: 'AI/ML Research', batch: 'Batch #482', manager: 'Arjun V.', status: 'Joined' },
-                      { id: 'STU-2024-8843', name: 'Devi Kumar', college: 'IIT Delhi', dept: 'Business Admin', prog: 'Backend Enterprise', batch: 'Batch #482', manager: 'Sarah Thorne', status: 'Screening' },
-                      { id: 'STU-2024-8844', name: 'Ahmed El-Sayed', college: 'Cairo University', dept: 'Software Eng.', prog: 'Data Engineering', batch: 'Spring 2024', manager: 'Dr. Thorne', status: 'Hired' }
-                    ].map((stu) => (
+                    {students.map((stu) => (
                       <tr key={stu.id} className="hover:bg-slate-50/50">
                         <td className="p-3 font-extrabold text-blue-600 whitespace-nowrap">{stu.id}</td>
                         <td className="p-3 font-extrabold text-slate-800 whitespace-nowrap">{stu.name}</td>
@@ -262,10 +405,10 @@ export default function HRDashboardOverview() {
                           <span className="block text-slate-800">{stu.prog}</span>
                           <span className="text-[10px] text-slate-400 block mt-0.5">{stu.batch}</span>
                         </td>
-                        <td className="p-3 whitespace-nowrap text-slate-500">{stu.manager}</td>
+                        <td className="p-3 whitespace-nowrap text-slate-550">{stu.manager}</td>
                         <td className="p-3 whitespace-nowrap">
                           <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase border ${
-                            stu.status === 'Active' || stu.status === 'Hired'
+                            stu.status === 'Active' || stu.status === 'Hired' || stu.status === 'Completed'
                               ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                               : stu.status === 'Joined'
                                 ? 'bg-blue-50 text-blue-700 border-blue-200'
@@ -291,9 +434,9 @@ export default function HRDashboardOverview() {
                   <p className="text-[11px] text-slate-400 mt-1 font-semibold">Seat allocations across 6 spec-defined internship models</p>
                 </div>
                 <div className="flex gap-4 text-xs font-bold text-slate-500">
-                  <span>Total Programs: <span className="text-slate-850 font-black">4</span></span>
-                  <span>Filled: <span className="text-slate-850 font-black">207</span></span>
-                  <span>Available: <span className="text-slate-850 font-black">83</span></span>
+                  <span>Total Programs: <span className="text-slate-850 font-black">{programs.length}</span></span>
+                  <span>Filled: <span className="text-slate-850 font-black">{programs.reduce((acc, c) => acc + c.filled, 0)}</span></span>
+                  <span>Available: <span className="text-slate-850 font-black">{programs.reduce((acc, c) => acc + (c.total || 100) - c.filled, 0)}</span></span>
                 </div>
               </div>
 
@@ -310,12 +453,7 @@ export default function HRDashboardOverview() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 text-slate-600 font-semibold">
-                    {[
-                      { name: 'AI/ML Research Internship', dept: 'Data Science', type: 'Research Internship', duration: '24 Weeks', filled: 45, total: 50, mentors: 'Arjun V., Priya S.' },
-                      { name: 'Data Engineering Co-op', dept: 'Analytics', type: 'Stipend Based', duration: '12 Weeks', filled: 120, total: 150, mentors: 'Dr. Thorne' },
-                      { name: 'Enterprise Backend Focus', dept: 'Engineering', type: 'Paid', duration: '8 Weeks', filled: 30, total: 30, mentors: 'Sarah Chen' },
-                      { name: 'Corporate Sponsored Java', dept: 'Engineering', type: 'Corporate Sponsored', duration: '16 Weeks', filled: 12, total: 60, mentors: 'Priya Sharma' }
-                    ].map((prg, i) => (
+                    {programs.map((prg, i) => (
                       <tr key={i} className="hover:bg-slate-50/50">
                         <td className="p-3 font-extrabold text-slate-800 whitespace-nowrap">{prg.name}</td>
                         <td className="p-3 whitespace-nowrap text-slate-550">{prg.dept}</td>
@@ -328,12 +466,12 @@ export default function HRDashboardOverview() {
                         <td className="p-3 whitespace-nowrap">
                           <div className="flex items-center gap-2">
                             <div className="w-12 bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                              <div className="h-full bg-blue-600" style={{ width: `${(prg.filled / prg.total) * 100}%` }} />
+                              <div className="h-full bg-blue-600" style={{ width: `${(prg.filled / (prg.total || 100)) * 100}%` }} />
                             </div>
-                            <span className="font-extrabold text-slate-700">{prg.filled}/{prg.total}</span>
+                            <span className="font-extrabold text-slate-700">{prg.filled}/{prg.total || 100}</span>
                           </div>
                         </td>
-                        <td className="p-3 whitespace-nowrap text-slate-500">{prg.mentors}</td>
+                        <td className="p-3 whitespace-nowrap text-slate-550">{prg.mentors}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -369,11 +507,7 @@ export default function HRDashboardOverview() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 text-slate-600 font-semibold">
-                    {[
-                      { name: 'Stanford University', coord: 'Julianne Smith (j.smith@st.edu)', students: 120, completion: '92.5%', placement: '42.8%', status: 'Active' },
-                      { name: 'MIT Institute', coord: 'Marcus Liang (m.liang@mit.edu)', students: 85, completion: '88.0%', placement: '38.0%', status: 'Active' },
-                      { name: 'IIT Delhi', coord: 'Devi Kumar (d.kumar@iit.ac.in)', students: 15, completion: '--', placement: '--', status: 'Pending Review' }
-                    ].map((clg, i) => (
+                    {colleges.map((clg, i) => (
                       <tr key={i} className="hover:bg-slate-50/50">
                         <td className="p-3 font-extrabold text-slate-800 whitespace-nowrap">{clg.name}</td>
                         <td className="p-3 whitespace-nowrap text-slate-550">{clg.coord}</td>
@@ -413,12 +547,7 @@ export default function HRDashboardOverview() {
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[
-                  { label: 'Average Attendance', value: '88.5%' },
-                  { label: 'Below 75%', value: '14 Students', alert: true },
-                  { label: "Today's Absentees", value: '8 Students' },
-                  { label: 'Pending Approvals', value: '3 Cases' }
-                ].map((item, idx) => (
+                {attendanceStats.map((item, idx) => (
                   <div key={idx} className="bg-slate-50 border border-slate-200 p-4 rounded-xl">
                     <span className="text-[10px] text-slate-400 font-extrabold uppercase block">{item.label}</span>
                     <span className={`text-lg font-black block mt-1 ${item.alert ? 'text-rose-600' : 'text-slate-800'}`}>{item.value}</span>
@@ -430,7 +559,7 @@ export default function HRDashboardOverview() {
                 <AlertTriangle className="h-4 w-4 shrink-0 text-rose-500 mt-0.5" />
                 <div>
                   <span className="block font-black text-rose-800 uppercase tracking-wider text-[10px] mb-1">Escalation Alert Triggered</span>
-                  <span>Low Attendance flag raised: Julianne Smith ( Stanford University ) has missed 3 consecutive days. Automated Level 1 reminder dispatched to Reporting Manager.</span>
+                  <span>Low Attendance flag raised: {attendanceAlert.name} ( {attendanceAlert.college} ) has missed {attendanceAlert.days} consecutive days. {attendanceAlert.status}.</span>
                 </div>
               </div>
             </section>
@@ -452,12 +581,7 @@ export default function HRDashboardOverview() {
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[
-                  { label: 'Total Assessments', value: '18 Active' },
-                  { label: 'Completed', value: '1,248 Submissions' },
-                  { label: 'Pending Evaluations', value: '45 Papers' },
-                  { label: 'Average Class Score', value: '82.4/100' }
-                ].map((item, idx) => (
+                {assessmentsStats.map((item, idx) => (
                   <div key={idx} className="bg-slate-50 border border-slate-200 p-4 rounded-xl">
                     <span className="text-[10px] text-slate-400 font-extrabold uppercase block">{item.label}</span>
                     <span className="text-lg font-black block mt-1 text-slate-800">{item.value}</span>
@@ -477,11 +601,7 @@ export default function HRDashboardOverview() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 text-slate-600 font-semibold">
-                    {[
-                      { name: 'Julianne Smith', title: 'React Hooks & State Flow', type: 'Coding Test', score: '92/100', status: 'Evaluated' },
-                      { name: 'Marcus Liang', title: 'Sprint 3 Core Review', type: 'Project Evaluation', score: '88/100', status: 'Evaluated' },
-                      { name: 'Devi Kumar', title: 'Database Relational Mapping', type: 'MCQ', score: '--', status: 'Pending Evaluation' }
-                    ].map((ass, i) => (
+                    {assessments.map((ass, i) => (
                       <tr key={i} className="hover:bg-slate-50/50">
                         <td className="p-3 font-extrabold text-slate-800 whitespace-nowrap">{ass.name}</td>
                         <td className="p-3 whitespace-nowrap text-slate-800">{ass.title}</td>
@@ -571,12 +691,7 @@ export default function HRDashboardOverview() {
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[
-                  { label: 'Total Revenue Collected', value: '$450.2k' },
-                  { label: 'Pending Dues', value: '$12,400' },
-                  { label: 'Confirmed Payments', value: '412 Ledger entries' },
-                  { label: 'Overdue Reminders Out', value: '8 Alerts' }
-                ].map((item, idx) => (
+                {paymentsStats.map((item, idx) => (
                   <div key={idx} className="bg-slate-50 border border-slate-200 p-4 rounded-xl">
                     <span className="text-[10px] text-slate-400 font-extrabold uppercase block">{item.label}</span>
                     <span className="text-lg font-black block mt-1 text-slate-800">{item.value}</span>
@@ -598,11 +713,7 @@ export default function HRDashboardOverview() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 text-slate-600 font-semibold">
-                    {[
-                      { name: 'Julianne Smith', prog: 'Java Fullstack Program', fee: 1200, paid: 1200, pending: 0, date: 'Paid', status: 'Cleared' },
-                      { name: 'Marcus Liang', prog: 'AI/ML Research Co-op', fee: 1500, paid: 750, pending: 750, date: 'June 30, 2026', status: 'Partially Paid' },
-                      { name: 'Vikas Gupta', prog: 'Backend Enterprise Focus', fee: 1200, paid: 0, pending: 1200, date: 'June 15, 2026', status: 'Overdue' }
-                    ].map((pay, i) => (
+                    {payments.map((pay, i) => (
                       <tr key={i} className="hover:bg-slate-50/50">
                         <td className="p-3 font-extrabold text-slate-800 whitespace-nowrap">{pay.name}</td>
                         <td className="p-3 whitespace-nowrap text-slate-500">{pay.prog}</td>
@@ -645,18 +756,12 @@ export default function HRDashboardOverview() {
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-xs font-semibold">
-                <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl">
-                  <span className="text-[10px] text-slate-400 font-bold uppercase block">Generated Certificates</span>
-                  <span className="text-lg font-black text-slate-800 block mt-1">12,482 Issued</span>
-                </div>
-                <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl">
-                  <span className="text-[10px] text-slate-400 font-bold uppercase block">Ineligibility Alerts</span>
-                  <span className="text-lg font-black text-slate-800 block mt-1">45 Pending Completion Checks</span>
-                </div>
-                <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl">
-                  <span className="text-[10px] text-slate-400 font-bold uppercase block">Revoked Certificates</span>
-                  <span className="text-lg font-black text-rose-600 block mt-1">2 Revoked</span>
-                </div>
+                {certificatesStats.map((item, idx) => (
+                  <div key={idx} className="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase block">{item.label}</span>
+                    <span className={`text-lg font-black block mt-1 ${item.revoked ? 'text-rose-600' : 'text-slate-800'}`}>{item.value}</span>
+                  </div>
+                ))}
               </div>
 
               <div className="overflow-x-auto">
@@ -671,18 +776,14 @@ export default function HRDashboardOverview() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 text-slate-600 font-semibold">
-                    {[
-                      { code: 'CERT-2026-9912', name: 'Ananya Krishnan', type: 'Completion Certificate', date: 'June 01, 2026', status: 'Verified' },
-                      { code: 'OFFR-2026-0041', name: 'Devi Kumar', type: 'Offer Letter', date: 'May 10, 2026', status: 'Issued' },
-                      { code: 'CERT-2026-9900', name: 'Julianne Smith', type: 'Internship Letter', date: 'June 18, 2026', status: 'Pending Review' }
-                    ].map((cert, i) => (
+                    {certificates.map((cert, i) => (
                       <tr key={i} className="hover:bg-slate-50/50">
                         <td className="p-3 font-extrabold text-blue-600 whitespace-nowrap">{cert.code}</td>
                         <td className="p-3 font-extrabold text-slate-800 whitespace-nowrap">{cert.name}</td>
                         <td className="p-3 whitespace-nowrap">
                           <span className="text-[10px] font-bold text-slate-500 uppercase">{cert.type}</span>
                         </td>
-                        <td className="p-3 whitespace-nowrap text-slate-500">{cert.date}</td>
+                        <td className="p-3 whitespace-nowrap text-slate-550">{cert.date}</td>
                         <td className="p-3 whitespace-nowrap">
                           <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded border uppercase ${
                             cert.status === 'Verified' || cert.status === 'Issued'
@@ -709,8 +810,8 @@ export default function HRDashboardOverview() {
                   <p className="text-[11px] text-slate-400 mt-1 font-semibold">Corporate selections logs and hiring analytics</p>
                 </div>
                 <div className="flex gap-4 text-xs font-bold text-slate-500">
-                  <span>Hired Interns: <span className="text-slate-800 font-black">190</span></span>
-                  <span>Hiring Rate: <span className="text-slate-800 font-black">42.8%</span></span>
+                  <span>Hired Interns: <span className="text-slate-805 font-black">{placementsStats[0].value}</span></span>
+                  <span>Hiring Rate: <span className="text-slate-805 font-black">{placementsStats[1].value}</span></span>
                 </div>
               </div>
 
@@ -727,15 +828,11 @@ export default function HRDashboardOverview() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 text-slate-600 font-semibold">
-                    {[
-                      { name: 'Ahmed El-Sayed', prog: 'Data Engineering Co-op', dept: 'Analytics Dept.', place: 'Hired', offer: 'Uploaded & Verified', date: 'Aug 20, 2024' },
-                      { name: 'Julianne Smith', prog: 'Java Fullstack Focus', dept: 'Engineering Dept.', place: 'Eligible', offer: 'Pending Upload', date: '--' },
-                      { name: 'Vikas Gupta', prog: 'Enterprise Backend Focus', dept: 'Engineering Dept.', place: 'Not Placed', offer: '--', date: '--' }
-                    ].map((plc, i) => (
+                    {placements.map((plc, i) => (
                       <tr key={i} className="hover:bg-slate-50/50">
                         <td className="p-3 font-extrabold text-slate-800 whitespace-nowrap">{plc.name}</td>
-                        <td className="p-3 whitespace-nowrap text-slate-500">{plc.prog}</td>
-                        <td className="p-3 whitespace-nowrap text-slate-500">{plc.dept}</td>
+                        <td className="p-3 whitespace-nowrap text-slate-550">{plc.prog}</td>
+                        <td className="p-3 whitespace-nowrap text-slate-550">{plc.dept}</td>
                         <td className="p-3 whitespace-nowrap">
                           <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded border uppercase ${
                             plc.place === 'Hired'
@@ -747,7 +844,7 @@ export default function HRDashboardOverview() {
                             {plc.place}
                           </span>
                         </td>
-                        <td className="p-3 whitespace-nowrap font-bold text-slate-500">{plc.offer}</td>
+                        <td className="p-3 whitespace-nowrap font-bold text-slate-550">{plc.offer}</td>
                         <td className="p-3 whitespace-nowrap text-slate-550">{plc.date}</td>
                       </tr>
                     ))}
@@ -773,34 +870,32 @@ export default function HRDashboardOverview() {
               </div>
 
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                {[
-                  { channel: 'Emails Sent', count: '14,282', icon: Mail, status: '99.2% Delivered' },
-                  { channel: 'SMS Sent', count: '5,800', icon: Smartphone, status: '94.8% Delivered' },
-                  { channel: 'WhatsApp Dispatches', count: '8,412', icon: MessageSquare, status: '97.4% Delivered' },
-                  { channel: 'Push Alerts Sent', count: '12,940', icon: Clock, status: '12 Delivery Failures' }
-                ].map((ch, idx) => (
-                  <div key={idx} className="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center justify-between">
-                    <div className="space-y-1">
-                      <span className="text-[10px] text-slate-450 uppercase tracking-wider block font-bold">{ch.channel}</span>
-                      <span className="text-lg font-black text-slate-800 block">{ch.count}</span>
-                      <span className="text-[9px] text-slate-400 font-bold block">{ch.status}</span>
+                {notificationStats.map((ch, idx) => {
+                  let Icon = Mail;
+                  if (ch.icon === 'Smartphone') Icon = Smartphone;
+                  else if (ch.icon === 'MessageSquare') Icon = MessageSquare;
+                  else if (ch.icon === 'Clock') Icon = Clock;
+                  return (
+                    <div key={idx} className="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center justify-between animate-slide-in">
+                      <div className="space-y-1">
+                        <span className="text-[10px] text-slate-450 uppercase tracking-wider block font-bold">{ch.channel}</span>
+                        <span className="text-lg font-black text-slate-800 block">{ch.count}</span>
+                        <span className="text-[9px] text-slate-400 font-bold block">{ch.status}</span>
+                      </div>
+                      <Icon className="h-5 w-5 text-slate-400" />
                     </div>
-                    <ch.icon className="h-5 w-5 text-slate-400" />
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               <div className="space-y-2">
                 <h4 className="font-extrabold text-[10px] text-slate-400 uppercase tracking-widest">Recent Dispatched Log Broadcasts</h4>
                 <div className="divide-y divide-slate-100 border border-slate-150 p-4 rounded-xl space-y-3 bg-slate-50/50">
-                  {[
-                    { title: 'Lecture Path Alert: Spring 3 Review Agenda', target: 'Batch #482', time: '12 minutes ago', status: 'Sent via Email/SMS' },
-                    { title: 'Late fee warning reminder: Payment overdue notice', target: '4 Students', time: '2 hours ago', status: 'Sent via WhatsApp' }
-                  ].map((l, i) => (
-                    <div key={i} className="flex justify-between items-center text-xs py-2 first:pt-0 last:pb-0 font-semibold text-slate-650">
+                  {notificationsLog.map((l, i) => (
+                    <div key={i} className="flex justify-between items-center text-xs py-2 first:pt-0 last:pb-0 font-semibold text-slate-650 animate-slide-in">
                       <div>
                         <span className="text-slate-800 font-extrabold block">{l.title}</span>
-                        <span className="text-[9px] text-slate-450 block mt-0.5">Target: {l.target}</span>
+                        <span className="text-[9px] text-slate-455 block mt-0.5">Target: {l.target}</span>
                       </div>
                       <div className="text-right text-[10px]">
                         <span className="text-slate-400 block">{l.time}</span>
@@ -829,7 +924,7 @@ export default function HRDashboardOverview() {
                   <span className="block font-black text-slate-800 uppercase tracking-wider text-[10px] border-b border-slate-100 pb-1.5 mb-2">Attendance Escalation rules</span>
                   <div className="flex justify-between">
                     <span>1 Day Absent:</span>
-                    <span className="font-bold text-slate-500">Reminder Notification</span>
+                    <span className="font-bold text-slate-505">Reminder Notification</span>
                   </div>
                   <div className="flex justify-between">
                     <span>3 Days Absent:</span>
@@ -849,7 +944,7 @@ export default function HRDashboardOverview() {
                   <span className="block font-black text-slate-800 uppercase tracking-wider text-[10px] border-b border-slate-100 pb-1.5 mb-2">Assignment Escalation rules</span>
                   <div className="flex justify-between">
                     <span>Due Date Missed:</span>
-                    <span className="font-bold text-slate-500">Reminder Notification</span>
+                    <span className="font-bold text-slate-505">Reminder Notification</span>
                   </div>
                   <div className="flex justify-between">
                     <span>2 Days Overdue:</span>
@@ -866,22 +961,29 @@ export default function HRDashboardOverview() {
               <div className="space-y-2">
                 <h4 className="font-extrabold text-[10px] text-slate-400 uppercase tracking-widest">Active Escalation List (Action Needed)</h4>
                 <div className="divide-y divide-slate-100 border border-slate-155 p-4 rounded-xl space-y-3 bg-rose-50/20 text-xs font-semibold">
-                  {[
-                    { name: 'Vikas Gupta', reason: 'Absent for 4 consecutive days', level: 'Level 2 Escalation', color: 'text-amber-700 border-amber-250 bg-amber-50' },
-                    { name: 'Julianne Smith', reason: 'Assignment React Hooks overdue 6 days', level: 'Level 2 Escalation', color: 'text-rose-700 border-rose-250 bg-rose-50' }
-                  ].map((esc, i) => (
-                    <div key={i} className="flex justify-between items-center py-2 first:pt-0 last:pb-0">
-                      <div>
-                        <span className="text-slate-800 font-extrabold block">{esc.name}</span>
-                        <span className="text-[10px] text-slate-500 block mt-0.5">{esc.reason}</span>
+                  {escalations.length === 0 ? (
+                    <div className="text-center py-6 text-slate-500 font-bold">No active escalations. Good job!</div>
+                  ) : (
+                    escalations.map((esc, i) => (
+                      <div key={i} className="flex justify-between items-center py-2 first:pt-0 last:pb-0 animate-slide-in">
+                        <div>
+                          <span className="text-slate-800 font-extrabold block">{esc.name}</span>
+                          <span className="text-[10px] text-slate-500 block mt-0.5">{esc.reason}</span>
+                        </div>
+                        <div className="text-right flex items-center gap-3">
+                          <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded border uppercase ${esc.color}`}>
+                            {esc.level}
+                          </span>
+                          <button
+                            onClick={() => handleResolveEscalation(esc.name)}
+                            className="px-2.5 py-1 text-[9px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 rounded hover:bg-emerald-100 transition-colors uppercase tracking-wider cursor-pointer"
+                          >
+                            Resolve
+                          </button>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded border uppercase ${esc.color}`}>
-                          {esc.level}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </div>
             </section>
@@ -932,24 +1034,15 @@ export default function HRDashboardOverview() {
           )}
 
           {/* RECENT ACTIVITY PANEL */}
-          <section className="bg-slate-900 border border-slate-950 text-white rounded-2xl p-6 shadow-sm space-y-4">
+          <section className="bg-slate-900 border border-slate-955 text-white rounded-2xl p-6 shadow-sm space-y-4">
             <div className="border-b border-slate-800 pb-3">
               <h2 className="text-sm font-black text-slate-100 uppercase tracking-widest">Recent Activity Panel</h2>
               <p className="text-[11px] text-slate-400 mt-1 font-semibold">Immutable system event log registry feed</p>
             </div>
             
-            <div className="space-y-4">
-              {[
-                { event: 'Student Registered', detail: 'Rahul Sharma registered for Java Fullstack Program', time: '2 minutes ago', user: 'Automated' },
-                { event: 'Program Created', detail: 'New Co-op Data Engineering Program finalized', time: '15 minutes ago', user: 'Admin: Sarah' },
-                { event: 'Payment Recorded', detail: 'Batch #482 payment of $1,200 confirmed', time: '30 minutes ago', user: 'System Sync' },
-                { event: 'Certificate Generated', detail: 'Certificate Issued: Ananya Krishnan', time: '1 hour ago', user: 'HR System Manager' },
-                { event: 'Assessment Published', detail: 'React Hooks and State coding evaluation published', time: '2 hours ago', user: 'Mentor: Arjun' },
-                { event: 'Notification Sent', detail: 'Late fee warning broadcast sent via WhatsApp', time: '4 hours ago', user: 'Automated Trigger' },
-                { event: 'Escalation Raised', detail: 'Julianne Smith low attendance warning raised to RM', time: '6 hours ago', user: 'System Clock' },
-                { event: 'Placement Updated', detail: 'Ahmed El-Sayed offer letter verified for Co-op', time: '12 hours ago', user: 'Corporate Placement Lead' }
-              ].map((item, idx) => (
-                <div key={idx} className="flex gap-4 items-start text-xs font-semibold">
+            <div className="space-y-4 max-h-[400px] overflow-y-auto custom-scrollbar">
+              {activities.map((item, idx) => (
+                <div key={idx} className="flex gap-4 items-start text-xs font-semibold animate-slide-in">
                   <span className="h-2 w-2 rounded-full bg-blue-500 shrink-0 mt-1.5" />
                   <div className="flex-1 space-y-1">
                     <div className="flex justify-between items-center">
@@ -966,7 +1059,421 @@ export default function HRDashboardOverview() {
 
         </div>
       </div>
-      
+
+      {/* ================================================== */}
+      {/* MODALS GATEWAYS */}
+      {/* ================================================== */}
+
+      {/* MODAL 1: ADD STUDENT */}
+      {isAddStudentOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-slide-in">
+            <div className="bg-[#0047b3] text-white p-5 flex justify-between items-center">
+              <h3 className="font-extrabold text-sm uppercase tracking-wider">Add New Student</h3>
+              <button onClick={() => setIsAddStudentOpen(false)} className="text-white/80 hover:text-white"><X className="h-5 w-5" /></button>
+            </div>
+            <form onSubmit={handleAddStudentSubmit} className="p-6 space-y-4">
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Full Name</label>
+                <input 
+                  type="text" 
+                  required
+                  placeholder="e.g. John Doe"
+                  value={newStudent.name}
+                  onChange={(e) => setNewStudent({...newStudent, name: e.target.value})}
+                  className="w-full border border-slate-200 px-3 py-2 text-xs rounded-xl bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">College / University</label>
+                <input 
+                  type="text" 
+                  required
+                  placeholder="e.g. Stanford University"
+                  value={newStudent.college}
+                  onChange={(e) => setNewStudent({...newStudent, college: e.target.value})}
+                  className="w-full border border-slate-200 px-3 py-2 text-xs rounded-xl bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Department</label>
+                <input 
+                  type="text" 
+                  required
+                  placeholder="e.g. Computer Science"
+                  value={newStudent.dept}
+                  onChange={(e) => setNewStudent({...newStudent, dept: e.target.value})}
+                  className="w-full border border-slate-200 px-3 py-2 text-xs rounded-xl bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Internship Program</label>
+                <select 
+                  value={newStudent.prog}
+                  onChange={(e) => setNewStudent({...newStudent, prog: e.target.value})}
+                  className="w-full border border-slate-200 px-3 py-2.5 text-xs rounded-xl bg-slate-50 focus:bg-white focus:outline-none"
+                >
+                  {programs.map((p, idx) => (
+                    <option key={idx} value={p.name}>{p.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Batch ID</label>
+                  <input 
+                    type="text" 
+                    value={newStudent.batch}
+                    onChange={(e) => setNewStudent({...newStudent, batch: e.target.value})}
+                    className="w-full border border-slate-200 px-3 py-2 text-xs rounded-xl bg-slate-50"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Reporting Manager</label>
+                  <input 
+                    type="text" 
+                    value={newStudent.manager}
+                    onChange={(e) => setNewStudent({...newStudent, manager: e.target.value})}
+                    className="w-full border border-slate-200 px-3 py-2 text-xs rounded-xl bg-slate-50"
+                  />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Status</label>
+                <select 
+                  value={newStudent.status}
+                  onChange={(e) => setNewStudent({...newStudent, status: e.target.value})}
+                  className="w-full border border-slate-200 px-3 py-2.5 text-xs rounded-xl bg-slate-50 focus:bg-white focus:outline-none"
+                >
+                  {['Applied', 'Screening', 'Interview', 'Selected', 'Joined', 'Active', 'Completed', 'Hired'].map(st => (
+                    <option key={st} value={st}>{st}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="pt-4 flex gap-3">
+                <button 
+                  type="button" 
+                  onClick={() => setIsAddStudentOpen(false)} 
+                  className="flex-1 py-2.5 border border-slate-200 text-xs font-bold text-slate-700 rounded-xl hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  className="flex-1 py-2.5 bg-[#003B95] text-white text-xs font-bold rounded-xl hover:bg-[#002f78]"
+                >
+                  Add Student
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 2: CREATE PROGRAM */}
+      {isCreateProgramOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-slide-in">
+            <div className="bg-[#0047b3] text-white p-5 flex justify-between items-center">
+              <h3 className="font-extrabold text-sm uppercase tracking-wider">Create Internship Program</h3>
+              <button onClick={() => setIsCreateProgramOpen(false)} className="text-white/80 hover:text-white"><X className="h-5 w-5" /></button>
+            </div>
+            <form onSubmit={handleCreateProgramSubmit} className="p-6 space-y-4">
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Program Name</label>
+                <input 
+                  type="text" 
+                  required
+                  placeholder="e.g. Fullstack Automation Co-op"
+                  value={newProgram.name}
+                  onChange={(e) => setNewProgram({...newProgram, name: e.target.value})}
+                  className="w-full border border-slate-200 px-3 py-2 text-xs rounded-xl bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Department Name</label>
+                <input 
+                  type="text" 
+                  required
+                  placeholder="e.g. Quality Engineering"
+                  value={newProgram.dept}
+                  onChange={(e) => setNewProgram({...newProgram, dept: e.target.value})}
+                  className="w-full border border-slate-200 px-3 py-2 text-xs rounded-xl bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Internship Model</label>
+                <select 
+                  value={newProgram.type}
+                  onChange={(e) => setNewProgram({...newProgram, type: e.target.value})}
+                  className="w-full border border-slate-200 px-3 py-2.5 text-xs rounded-xl bg-slate-50 focus:bg-white focus:outline-none"
+                >
+                  {['Research Internship', 'Stipend Based', 'Paid', 'Corporate Sponsored'].map(t => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Duration</label>
+                  <input 
+                    type="text" 
+                    required
+                    placeholder="e.g. 12 Weeks"
+                    value={newProgram.duration}
+                    onChange={(e) => setNewProgram({...newProgram, duration: e.target.value})}
+                    className="w-full border border-slate-200 px-3 py-2 text-xs rounded-xl bg-slate-50"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Total Seat Capacity</label>
+                  <input 
+                    type="number" 
+                    required
+                    value={newProgram.total}
+                    onChange={(e) => setNewProgram({...newProgram, total: Number(e.target.value)})}
+                    className="w-full border border-slate-200 px-3 py-2 text-xs rounded-xl bg-slate-50"
+                  />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Assigned Mentors</label>
+                <input 
+                  type="text" 
+                  required
+                  placeholder="e.g. Arjun V., Priya Sharma"
+                  value={newProgram.mentors}
+                  onChange={(e) => setNewProgram({...newProgram, mentors: e.target.value})}
+                  className="w-full border border-slate-200 px-3 py-2 text-xs rounded-xl bg-slate-50 focus:bg-white"
+                />
+              </div>
+              <div className="pt-4 flex gap-3">
+                <button 
+                  type="button" 
+                  onClick={() => setIsCreateProgramOpen(false)} 
+                  className="flex-1 py-2.5 border border-slate-200 text-xs font-bold text-slate-700 rounded-xl hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  className="flex-1 py-2.5 bg-[#003B95] text-white text-xs font-bold rounded-xl hover:bg-[#002f78]"
+                >
+                  Create Program
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 3: RECORD PAYMENT */}
+      {isRecordPaymentOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-slide-in">
+            <div className="bg-[#0047b3] text-white p-5 flex justify-between items-center">
+              <h3 className="font-extrabold text-sm uppercase tracking-wider">Record Student Payment</h3>
+              <button onClick={() => setIsRecordPaymentOpen(false)} className="text-white/80 hover:text-white"><X className="h-5 w-5" /></button>
+            </div>
+            <form onSubmit={handleRecordPaymentSubmit} className="p-6 space-y-4">
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Student Recipient</label>
+                <select 
+                  value={newPayment.name}
+                  onChange={(e) => setNewPayment({...newPayment, name: e.target.value})}
+                  className="w-full border border-slate-200 px-3 py-2.5 text-xs rounded-xl bg-slate-50 focus:bg-white focus:outline-none"
+                >
+                  {students.map((s, idx) => (
+                    <option key={idx} value={s.name}>{s.name} ({s.id})</option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Internship Program</label>
+                <select 
+                  value={newPayment.prog}
+                  onChange={(e) => setNewPayment({...newPayment, prog: e.target.value})}
+                  className="w-full border border-slate-200 px-3 py-2.5 text-xs rounded-xl bg-slate-50 focus:bg-white"
+                >
+                  {programs.map((p, idx) => (
+                    <option key={idx} value={p.name}>{p.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Fee Amount ($)</label>
+                  <input 
+                    type="number" 
+                    required
+                    value={newPayment.fee}
+                    onChange={(e) => setNewPayment({...newPayment, fee: Number(e.target.value)})}
+                    className="w-full border border-slate-200 px-3 py-2 text-xs rounded-xl bg-slate-50"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Paid Amount ($)</label>
+                  <input 
+                    type="number" 
+                    required
+                    value={newPayment.paid}
+                    onChange={(e) => setNewPayment({...newPayment, paid: Number(e.target.value)})}
+                    className="w-full border border-slate-200 px-3 py-2 text-xs rounded-xl bg-slate-50"
+                  />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Payment Due Date (If partially paid)</label>
+                <input 
+                  type="date" 
+                  value={newPayment.dueDate}
+                  onChange={(e) => setNewPayment({...newPayment, dueDate: e.target.value})}
+                  className="w-full border border-slate-200 px-3 py-2 text-xs rounded-xl bg-slate-50"
+                />
+              </div>
+              <div className="pt-4 flex gap-3">
+                <button 
+                  type="button" 
+                  onClick={() => setIsRecordPaymentOpen(false)} 
+                  className="flex-1 py-2.5 border border-slate-200 text-xs font-bold text-slate-700 rounded-xl hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  className="flex-1 py-2.5 bg-[#003B95] text-white text-xs font-bold rounded-xl hover:bg-[#002f78]"
+                >
+                  Record Payment
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 4: GENERATE CERTIFICATE */}
+      {isGenerateCertificateOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-slide-in">
+            <div className="bg-[#0047b3] text-white p-5 flex justify-between items-center">
+              <h3 className="font-extrabold text-sm uppercase tracking-wider">Generate Certificate</h3>
+              <button onClick={() => setIsGenerateCertificateOpen(false)} className="text-white/80 hover:text-white"><X className="h-5 w-5" /></button>
+            </div>
+            <form onSubmit={handleGenerateCertificateSubmit} className="p-6 space-y-4">
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Student Recipient</label>
+                <select 
+                  value={newCert.name}
+                  onChange={(e) => setNewCert({...newCert, name: e.target.value})}
+                  className="w-full border border-slate-200 px-3 py-2.5 text-xs rounded-xl bg-slate-50 focus:bg-white focus:outline-none"
+                >
+                  {students.map((s, idx) => (
+                    <option key={idx} value={s.name}>{s.name} ({s.id})</option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Certificate / Letter Type</label>
+                <select 
+                  value={newCert.type}
+                  onChange={(e) => setNewCert({...newCert, type: e.target.value})}
+                  className="w-full border border-slate-200 px-3 py-2.5 text-xs rounded-xl bg-slate-50 focus:bg-white"
+                >
+                  {['Completion Certificate', 'Offer Letter', 'Joining Letter', 'Internship Letter', 'Recommendation Letter'].map(t => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="pt-4 flex gap-3">
+                <button 
+                  type="button" 
+                  onClick={() => setIsGenerateCertificateOpen(false)} 
+                  className="flex-1 py-2.5 border border-slate-200 text-xs font-bold text-slate-700 rounded-xl hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  className="flex-1 py-2.5 bg-[#003B95] text-white text-xs font-bold rounded-xl hover:bg-[#002f78]"
+                >
+                  Generate
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 5: SEND NOTIFICATION */}
+      {isSendNotificationOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-slide-in">
+            <div className="bg-[#0047b3] text-white p-5 flex justify-between items-center">
+              <h3 className="font-extrabold text-sm uppercase tracking-wider">Send Global Broadcast</h3>
+              <button onClick={() => setIsSendNotificationOpen(false)} className="text-white/80 hover:text-white"><X className="h-5 w-5" /></button>
+            </div>
+            <form onSubmit={handleSendNotificationSubmit} className="p-6 space-y-4">
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Notification Title / Subject</label>
+                <input 
+                  type="text" 
+                  required
+                  placeholder="e.g. Scrum Sync Postponed to 11 AM"
+                  value={newNotif.title}
+                  onChange={(e) => setNewNotif({...newNotif, title: e.target.value})}
+                  className="w-full border border-slate-200 px-3 py-2 text-xs rounded-xl bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Target Audience</label>
+                <input 
+                  type="text" 
+                  required
+                  placeholder="e.g. Batch #482, All Active Interns"
+                  value={newNotif.target}
+                  onChange={(e) => setNewNotif({...newNotif, target: e.target.value})}
+                  className="w-full border border-slate-200 px-3 py-2 text-xs rounded-xl bg-slate-50 focus:bg-white"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Delivery Channels</label>
+                <div className="grid grid-cols-2 gap-2 text-xs font-semibold text-slate-700">
+                  {['Email', 'SMS', 'WhatsApp', 'Push'].map((ch) => {
+                    const isChecked = newNotif.channels.includes(ch);
+                    return (
+                      <label key={ch} className="flex items-center gap-2 bg-slate-50 border border-slate-200 p-2.5 rounded-xl cursor-pointer hover:bg-slate-100">
+                        <input 
+                          type="checkbox" 
+                          checked={isChecked}
+                          onChange={() => handleChannelCheckbox(ch)}
+                          className="rounded text-blue-600 focus:ring-blue-500"
+                        />
+                        <span>{ch}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="pt-4 flex gap-3">
+                <button 
+                  type="button" 
+                  onClick={() => setIsSendNotificationOpen(false)} 
+                  className="flex-1 py-2.5 border border-slate-200 text-xs font-bold text-slate-700 rounded-xl hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  className="flex-1 py-2.5 bg-[#003B95] text-white text-xs font-bold rounded-xl hover:bg-[#002f78] flex items-center justify-center gap-2"
+                >
+                  <Send className="h-4 w-4" /> Send Dispatch
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
