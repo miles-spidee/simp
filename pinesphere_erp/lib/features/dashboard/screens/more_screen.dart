@@ -22,11 +22,19 @@ class MoreScreen extends StatelessWidget {
             child: Column(
               children: [
                 ListTile(
+<<<<<<< HEAD
                   leading: const Icon(Icons.trending_up_outlined),
                   title: const Text('Placement Tracking'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
                     context.push('/dashboard/${AppRoutes.placement}');
+=======
+                  leading: const Icon(Icons.school_outlined),
+                  title: const Text('Student Portal'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    context.push('/student');
+>>>>>>> 708ed9a706056458cabd2442894787e32071c8dd
                   },
                 ),
                 const Divider(height: 1),
@@ -35,7 +43,7 @@ class MoreScreen extends StatelessWidget {
                   title: const Text('Certificates'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
-                    context.push(AppRoutes.certificates);
+                    context.push('/dashboard/certificates');
                   },
                 ),
                 const Divider(height: 1),
@@ -44,7 +52,16 @@ class MoreScreen extends StatelessWidget {
                   title: const Text('Assessments'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
-                    context.push(AppRoutes.assessments);
+                    context.push('/dashboard/assessments');
+                  },
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  leading: const Icon(Icons.business_center_outlined),
+                  title: const Text('Placements'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    context.push('/dashboard/placement');
                   },
                 ),
                 const Divider(height: 1),
@@ -53,7 +70,7 @@ class MoreScreen extends StatelessWidget {
                   title: const Text('Notifications'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
-                    context.push(AppRoutes.notifications);
+                    context.push('/dashboard/notifications');
                   },
                 ),
                 const Divider(height: 1),
@@ -62,7 +79,7 @@ class MoreScreen extends StatelessWidget {
                   title: const Text('Settings'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
-                    context.push(AppRoutes.settings);
+                    context.push('/dashboard/settings');
                   },
                 ),
               ],
