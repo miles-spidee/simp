@@ -9,10 +9,7 @@ import 'package:pinesphere_erp/features/notifications/screens/notifications_scre
 import 'package:pinesphere_erp/features/profile/screens/profile_screen.dart';
 import 'package:pinesphere_erp/features/settings/screens/settings_screen.dart';
 import 'package:pinesphere_erp/features/tasks/screens/tasks_screen.dart';
-<<<<<<< HEAD
-=======
 import 'package:pinesphere_erp/student_portal/student_portal_shell.dart';
->>>>>>> 708ed9a706056458cabd2442894787e32071c8dd
 import 'package:pinesphere_erp/features/placement/screens/placement_screen.dart';
 
 class AppRoutes {
