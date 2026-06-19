@@ -1,4 +1,4 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart' show AndroidOptions, FlutterSecureStorage, IOSOptions, KeychainAccessibility;
 
 class SecureStorageService {
   static const FlutterSecureStorage _storage = FlutterSecureStorage(

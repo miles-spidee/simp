@@ -22,6 +22,15 @@ class MoreScreen extends StatelessWidget {
             child: Column(
               children: [
                 ListTile(
+                  leading: const Icon(Icons.trending_up_outlined),
+                  title: const Text('Placement Tracking'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    context.push('/dashboard/${AppRoutes.placement}');
+                  },
+                ),
+                const Divider(height: 1),
+                ListTile(
                   leading: const Icon(Icons.workspace_premium_outlined),
                   title: const Text('Certificates'),
                   trailing: const Icon(Icons.chevron_right),
