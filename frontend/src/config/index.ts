@@ -1,7 +1,7 @@
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export const API_ENDPOINTS = {
-  OPPORTUNITIES: `${API_BASE_URL}/api/opportunities`,
+  OPPORTUNITIES: `${API_BASE_URL}/internship-types`,
   APPLY: `${API_BASE_URL}/api/apply`,
 
   DASHBOARD_DATA: `${API_BASE_URL}/api/dashboard`,

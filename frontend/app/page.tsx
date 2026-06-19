@@ -5,15 +5,12 @@ import Link from 'next/link';
 import { API_ENDPOINTS } from '@/src/config';
 
 export interface Opportunity {
-  title: string;
-  type: string;
-  value: string;
+  internship_type_id: string;
+  type_code: string;
+  type_name: string;
   description: string;
-  duration: string;
-  mode: string;
-  seats: string;
-  eligibility: string;
-  startDate: string;
+  is_active: boolean;
+  created_at: string;
   color: string;
 }
 
@@ -261,10 +258,10 @@ export default function LandingPage() {
                     </svg>
                   </div>
                   <span className={`text-xs font-bold px-3 py-1 border tracking-wide uppercase ${opp.color}`}>
-                    {opp.type}
+                    {opp.type_code}
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-2">{opp.title}</h3>
+                <h3 className="text-xl font-bold text-slate-900 mb-2">{opp.type_name}</h3>
                 <p className="text-sm text-slate-500 flex-1 leading-relaxed mb-6">{opp.description}</p>
                 
                 <div className="space-y-3 border-t border-slate-100 pt-5 mb-6 text-slate-650 text-sm">
