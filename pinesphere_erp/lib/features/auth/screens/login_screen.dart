@@ -31,20 +31,22 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
         child: SafeArea(
-          child: SingleChildScrollView(
+          child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.s24,
-              vertical: AppSpacing.s40,
+              vertical: AppSpacing.s24,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
               children: [
+                const SizedBox(height: AppSpacing.s16),
                 // Logo
                 Image.asset(
                   'assets/images/image.png',
-                  height: 140,
+                  height: 120,
                 ),
-                const SizedBox(height: AppSpacing.s16),
+                const SizedBox(height: AppSpacing.s12),
                 // Tagline
                 const Text(
                   'Transforming Internships Into Careers',
@@ -54,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: AppSpacing.s40),
+                const SizedBox(height: AppSpacing.s24),
 
                 // Login Card
                 Container(
@@ -73,6 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       // Welcome Heading
                       const Text(
@@ -285,7 +288,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: AppSpacing.s64),
+                const Spacer(),
 
                 // Footer
                 Column(
