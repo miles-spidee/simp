@@ -26,7 +26,7 @@ export function Drawer({ isOpen, onClose, title, children }: DrawerProps) {
   return (
     <>
       <div 
-        className="fixed inset-0 z-50 bg-slate-950/20 backdrop-blur-sm transition-opacity" 
+        className="fixed inset-0 z-50 bg-slate-900/50 transition-opacity" 
         onClick={onClose}
       />
       <div 

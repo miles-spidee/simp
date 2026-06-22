@@ -8,7 +8,7 @@ interface StepperProps {
 
 export function Stepper({ steps, currentStep }: StepperProps) {
   return (
-    <div className="w-full px-4 pt-6 pb-12 mb-2 bg-slate-50/50 border-b border-slate-100">
+    <div className="w-full px-16 pt-6 pb-12 mb-2 bg-slate-50/50 border-b border-slate-100">
       <div className="flex items-center justify-between relative">
         {/* Progress bar background */}
         <div className="absolute left-0 top-1/2 h-0.5 w-full -translate-y-1/2 bg-slate-100 z-0" />

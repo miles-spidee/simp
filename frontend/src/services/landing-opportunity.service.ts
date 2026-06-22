@@ -17,6 +17,20 @@ class LandingOpportunityService {
       }, 300);
     });
   }
+
+  async createOpportunity(opp: Omit<Opportunity, 'id'>): Promise<Opportunity> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const newOpp: Opportunity = {
+          ...opp,
+          id: `opp-l-${Math.random().toString(36).substring(2, 9)}`
+        };
+        MOCK_LANDING_OPPORTUNITIES.push(newOpp);
+        resolve(newOpp);
+      }, 500);
+    });
+  }
 }
 
 export const landingOpportunityService = new LandingOpportunityService();
+

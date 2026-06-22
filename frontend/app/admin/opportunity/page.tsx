@@ -6,6 +6,7 @@ import { opportunityService } from '@/src/services/opportunity.service';
 import { Opportunity } from '@/src/data/mock-opportunities';
 import { programService } from '@/src/services/program.service';
 import { Program } from '@/src/data/mock-programs';
+import { CreateOpportunityWizard } from '@/components/admin/opportunity/CreateOpportunityWizard';
 
 interface OpportunityWithProgram extends Opportunity {
   programData?: Program;
@@ -15,25 +16,28 @@ export default function OpportunityPage() {
   const [opportunities, setOpportunities] = useState<OpportunityWithProgram[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isCreateWizardOpen, setIsCreateWizardOpen] = useState(false);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const oppData = await opportunityService.getOpportunities();
+      const progData = await programService.getPrograms();
+      
+      const mergedData = oppData.map(opp => ({
+        ...opp,
+        programData: progData.find(p => p.id === opp.programId)
+      }));
+      
+      setOpportunities(mergedData);
+    } catch (err) {
+      console.error('Failed to load opportunities', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function loadData() {
-      try {
-        const oppData = await opportunityService.getOpportunities();
-        const progData = await programService.getPrograms();
-        
-        const mergedData = oppData.map(opp => ({
-          ...opp,
-          programData: progData.find(p => p.id === opp.programId)
-        }));
-        
-        setOpportunities(mergedData);
-      } catch (err) {
-        console.error('Failed to load opportunities', err);
-      } finally {
-        setLoading(false);
-      }
-    }
     loadData();
   }, []);
 
@@ -70,7 +74,10 @@ export default function OpportunityPage() {
         </div>
         
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-sm transition-all duration-200 cursor-pointer">
+          <button 
+            onClick={() => setIsCreateWizardOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-sm transition-all duration-200 cursor-pointer"
+          >
             <Plus className="h-3.5 w-3.5" />
             <span>Post Opportunity</span>
           </button>
@@ -183,6 +190,12 @@ export default function OpportunityPage() {
           )}
         </div>
       </div>
+
+      <CreateOpportunityWizard 
+        isOpen={isCreateWizardOpen} 
+        onClose={() => setIsCreateWizardOpen(false)} 
+        onOpportunityCreated={loadData} 
+      />
     </div>
   );
 }

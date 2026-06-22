@@ -264,8 +264,10 @@ export default function LandingPage() {
                     <svg className="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                     </svg>
-                    <span className="text-slate-400 font-medium">Internship type:</span>
-                    <span className="font-semibold text-slate-800 ml-auto">{opp.interntype}</span>
+                    <span className="text-slate-400 font-medium">Internship Type:</span>
+                    <span className="font-semibold text-slate-800 ml-auto capitalize">
+                      {opp.internshipType === 'will paid' ? 'Will Be Paid' : opp.internshipType === 'pay' ? 'Paid' : opp.internshipType || 'Free'}
+                    </span>
                   </div>
                   
                   <div className="flex items-center gap-3">
@@ -292,21 +294,7 @@ export default function LandingPage() {
                     <span className="font-semibold text-slate-800 ml-auto">{opp.eligibility}</span>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <svg className="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
-                    </svg>
-                    <span className="text-slate-400 font-medium">Amount Type:</span>
-                    <span className="font-semibold text-slate-800 ml-auto">{opp.amountType}</span>
-                  </div>
 
-                  <div className="flex items-center gap-3">
-                    <svg className="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
-                    </svg>
-                    <span className="text-slate-400 font-medium">Amount paid:</span>
-                    <span className="font-semibold text-slate-800 ml-auto">{opp.amountPaid}</span>
-                  </div>
 
                   <div className="flex items-center gap-3">
                     <svg className="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -315,6 +303,21 @@ export default function LandingPage() {
                     <span className="text-slate-400 font-medium">Start Date:</span>
                     <span className="font-semibold text-slate-800 ml-auto">{opp.startDate}</span>
                   </div>
+
+                  {opp.internshipType && (
+                    <div className="flex items-center gap-3">
+                      <svg className="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="text-slate-400 font-medium">Compensation:</span>
+                      <span className="font-semibold text-slate-800 ml-auto">
+                        {opp.internshipType === 'free' ? 'Free / Unpaid' : 
+                         opp.internshipType === 'stipend' ? `Stipend (${opp.amount || 'Yes'})` :
+                         opp.internshipType === 'will paid' || opp.internshipType === 'pay' ? `Paid (${opp.amount || 'Yes'})` : 
+                         opp.internshipType}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 <Link 
