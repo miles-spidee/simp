@@ -6,7 +6,7 @@ import 'package:pinesphere_erp/student_portal/widgets/custom_line_chart.dart';
 import 'package:pinesphere_erp/student_portal/widgets/kpi_card.dart';
 
 class KPIScreen extends ConsumerWidget {
-  KPIScreen({super.key});
+  const KPIScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -59,7 +59,7 @@ class KPIScreen extends ConsumerWidget {
                     decoration: BoxDecoration(
                       color: PortalTheme.cardSurface(context),
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
                     ),
                     padding: EdgeInsets.all(16),
                     child: Column(

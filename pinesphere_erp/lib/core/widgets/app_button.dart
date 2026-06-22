@@ -38,7 +38,7 @@ class AppButton extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
-              disabledBackgroundColor: AppColors.primary.withOpacity(0.5),
+              disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.5),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -68,7 +68,7 @@ class AppButton extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.secondary,
               foregroundColor: Colors.white,
-              disabledBackgroundColor: AppColors.secondary.withOpacity(0.5),
+              disabledBackgroundColor: AppColors.secondary.withValues(alpha: 0.5),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -97,7 +97,7 @@ class AppButton extends StatelessWidget {
             onPressed: isEnabled ? onPressed : null,
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.primary,
-              disabledForegroundColor: AppColors.primary.withOpacity(0.5),
+              disabledForegroundColor: AppColors.primary.withValues(alpha: 0.5),
               side: BorderSide(color: AppColors.primary),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -126,7 +126,7 @@ class AppButton extends StatelessWidget {
             onPressed: isEnabled ? onPressed : null,
             style: TextButton.styleFrom(
               foregroundColor: AppColors.primary,
-              disabledForegroundColor: AppColors.primary.withOpacity(0.5),
+              disabledForegroundColor: AppColors.primary.withValues(alpha: 0.5),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),

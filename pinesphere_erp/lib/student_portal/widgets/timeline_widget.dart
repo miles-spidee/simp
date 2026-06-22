@@ -6,7 +6,7 @@ class TimelineWidget extends StatelessWidget {
   final List<CapstoneSubtask> subtasks;
   final ValueChanged<int> onToggle;
 
-  TimelineWidget({
+  const TimelineWidget({
     super.key,
     required this.subtasks,
     required this.onToggle,
@@ -39,8 +39,8 @@ class TimelineWidget extends StatelessWidget {
                   Container(
                     decoration: BoxDecoration(
                       color: phaseDone
-                          ? PortalTheme.successGreen(context).withOpacity(0.1)
-                          : PortalTheme.primaryBlue(context).withOpacity(0.1),
+                          ? PortalTheme.successGreen(context).withValues(alpha: 0.1)
+                          : PortalTheme.primaryBlue(context).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(6),
                       border: Border.all(
                         color: phaseDone ? PortalTheme.successGreen(context) : PortalTheme.accentBlue(context),
@@ -98,8 +98,8 @@ class TimelineWidget extends StatelessWidget {
                         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
                           color: Theme.of(context).brightness == Brightness.dark
-                              ? Colors.white.withOpacity(0.02)
-                              : Colors.black.withOpacity(0.02),
+                              ? Colors.white.withValues(alpha: 0.02)
+                              : Colors.black.withValues(alpha: 0.02),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: PortalTheme.borderLight(context)),
                         ),

@@ -5,7 +5,7 @@ import 'package:pinesphere_erp/student_portal/portal_theme.dart';
 import 'package:pinesphere_erp/student_portal/widgets/certificate_viewer.dart';
 
 class DocumentsScreen extends ConsumerStatefulWidget {
-  DocumentsScreen({super.key});
+  const DocumentsScreen({super.key});
 
   @override
   ConsumerState<DocumentsScreen> createState() => _DocumentsScreenState();
@@ -201,8 +201,8 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
                         Container(
                           decoration: BoxDecoration(
                             color: file.verified
-                                ? PortalTheme.successGreen(context).withOpacity(0.1)
-                                : PortalTheme.warningAmber(context).withOpacity(0.1),
+                                ? PortalTheme.successGreen(context).withValues(alpha: 0.1)
+                                : PortalTheme.warningAmber(context).withValues(alpha: 0.1),
                             border: Border.all(
                               color: file.verified ? PortalTheme.successGreen(context) : PortalTheme.warningAmber(context),
                             ),
@@ -272,9 +272,9 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: PortalTheme.accentBlue(context).withOpacity(0.1),
+                        color: PortalTheme.accentBlue(context).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: PortalTheme.accentBlue(context).withOpacity(0.2)),
+                        border: Border.all(color: PortalTheme.accentBlue(context).withValues(alpha: 0.2)),
                       ),
                       padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       child: Text(

@@ -4,7 +4,7 @@ import 'package:pinesphere_erp/student_portal/providers/attendance_provider.dart
 import 'package:pinesphere_erp/student_portal/portal_theme.dart';
 
 class AttendanceScreen extends ConsumerWidget {
-  AttendanceScreen({super.key});
+  const AttendanceScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -15,7 +15,7 @@ class AttendanceScreen extends ConsumerWidget {
         title: Text("Workstation Attendance"),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: 100.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -24,14 +24,14 @@ class AttendanceScreen extends ConsumerWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    PortalTheme.primaryBlue(context).withOpacity(0.8),
-                    PortalTheme.accentBlue(context).withOpacity(0.8),
+                    PortalTheme.primaryBlue(context).withValues(alpha: 0.8),
+                    PortalTheme.accentBlue(context).withValues(alpha: 0.8),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.white.withOpacity(0.08)),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
               ),
               padding: EdgeInsets.all(20),
               child: Row(
@@ -75,7 +75,7 @@ class AttendanceScreen extends ConsumerWidget {
                         Text(
                           "Clocked in today at: ${state.clockInTime ?? '09:00 AM'}",
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 0.7),
                             fontSize: 12,
                           ),
                         ),
@@ -91,7 +91,7 @@ class AttendanceScreen extends ConsumerWidget {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white.withOpacity(0.15),
+                      backgroundColor: Colors.white.withValues(alpha: 0.15),
                       foregroundColor: Colors.white,
                       elevation: 0,
                     ),
@@ -195,7 +195,7 @@ class AttendanceScreen extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: isCurrent
-                            ? PortalTheme.accentBlue(context).withOpacity(0.3)
+                            ? PortalTheme.accentBlue(context).withValues(alpha: 0.3)
                             : PortalTheme.borderLight(context),
                       ),
                     ),
@@ -230,8 +230,8 @@ class AttendanceScreen extends ConsumerWidget {
                             Container(
                               decoration: BoxDecoration(
                                 color: isCurrent
-                                    ? PortalTheme.accentBlue(context).withOpacity(0.1)
-                                    : PortalTheme.successGreen(context).withOpacity(0.1),
+                                    ? PortalTheme.accentBlue(context).withValues(alpha: 0.1)
+                                    : PortalTheme.successGreen(context).withValues(alpha: 0.1),
                                 border: Border.all(
                                   color: isCurrent
                                       ? PortalTheme.accentBlue(context)

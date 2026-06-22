@@ -6,7 +6,7 @@ class CustomLineChart extends StatelessWidget {
   final List<String> xAxisLabels; // E.g. ['W1', 'W2', 'W3', 'W4', 'W5', 'W6']
   final double height;
 
-  CustomLineChart({
+  const CustomLineChart({
     super.key,
     required this.values,
     required this.xAxisLabels,
@@ -63,11 +63,11 @@ class _LineChartPainter extends CustomPainter {
 
     // Draw horizontal grid lines and Y-axis labels
     final gridPaint = Paint()
-      ..color = textColor.withOpacity(0.08)
+      ..color = textColor.withValues(alpha: 0.08)
       ..strokeWidth = 1;
 
     final textStyle = TextStyle(
-      color: textColor.withOpacity(0.6),
+      color: textColor.withValues(alpha: 0.6),
       fontSize: 9,
       fontWeight: FontWeight.bold,
     );
@@ -123,8 +123,8 @@ class _LineChartPainter extends CustomPainter {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          accentColor.withOpacity(0.35),
-          accentColor.withOpacity(0.0),
+          accentColor.withValues(alpha: 0.35),
+          accentColor.withValues(alpha: 0.0),
         ],
       );
 

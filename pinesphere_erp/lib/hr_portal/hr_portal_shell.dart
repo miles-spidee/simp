@@ -3,10 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:pinesphere_erp/core/theme/app_colors.dart';
 import 'dart:ui';
 
-class StudentPortalShell extends StatelessWidget {
+class HRPortalShell extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
-  const StudentPortalShell({super.key, required this.navigationShell});
+  const HRPortalShell({super.key, required this.navigationShell});
 
   void _goBranch(int index) {
     navigationShell.goBranch(
@@ -57,26 +57,26 @@ class StudentPortalShell extends StatelessWidget {
                       onTap: () => _goBranch(0),
                     ),
                     _NavBarItem(
-                      icon: Icons.calendar_month_rounded,
-                      label: 'Attendance',
+                      icon: Icons.people_rounded,
+                      label: 'Students',
                       isSelected: navigationShell.currentIndex == 1,
                       onTap: () => _goBranch(1),
                     ),
                     _NavBarItem(
-                      icon: Icons.assignment_rounded,
-                      label: 'Tasks',
+                      icon: Icons.school_rounded,
+                      label: 'Programs',
                       isSelected: navigationShell.currentIndex == 2,
                       onTap: () => _goBranch(2),
                     ),
                     _NavBarItem(
-                      icon: Icons.person_rounded,
-                      label: 'Profile',
+                      icon: Icons.assessment_rounded,
+                      label: 'Audit',
                       isSelected: navigationShell.currentIndex == 3,
                       onTap: () => _goBranch(3),
                     ),
                     _NavBarItem(
-                      icon: Icons.more_horiz_rounded,
-                      label: 'More',
+                      icon: Icons.person_rounded,
+                      label: 'Profile',
                       isSelected: navigationShell.currentIndex == 4,
                       onTap: () => _goBranch(4),
                     ),

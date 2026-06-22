@@ -5,7 +5,7 @@ import 'package:pinesphere_erp/student_portal/providers/financials_provider.dart
 import 'package:pinesphere_erp/student_portal/portal_theme.dart';
 
 class FinancialsScreen extends ConsumerStatefulWidget {
-  FinancialsScreen({super.key});
+  const FinancialsScreen({super.key});
 
   @override
   ConsumerState<FinancialsScreen> createState() => _FinancialsScreenState();
@@ -91,7 +91,7 @@ class _FinancialsScreenState extends ConsumerState<FinancialsScreen> {
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.white.withOpacity(0.08)),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
               ),
               padding: EdgeInsets.all(20),
               child: Column(
@@ -100,7 +100,7 @@ class _FinancialsScreenState extends ConsumerState<FinancialsScreen> {
                    Text(
                     "OUTSTANDING FEE BALANCE",
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1.2,
@@ -119,7 +119,7 @@ class _FinancialsScreenState extends ConsumerState<FinancialsScreen> {
                   Text(
                     state.fees.total == 0 ? "Non-paying Scholarship Grant" : "Next installment due: June 30, 2026",
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.6),
+                      color: Colors.white.withValues(alpha: 0.6),
                       fontSize: 11,
                     ),
                   ),
@@ -132,7 +132,7 @@ class _FinancialsScreenState extends ConsumerState<FinancialsScreen> {
                        Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("TOTAL INVOICED", style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 8, fontWeight: FontWeight.bold)),
+                          Text("TOTAL INVOICED", style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 8, fontWeight: FontWeight.bold)),
                           SizedBox(height: 4),
                           Text("₹${state.fees.total.toStringAsFixed(0)}", style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold)),
                         ],
@@ -140,7 +140,7 @@ class _FinancialsScreenState extends ConsumerState<FinancialsScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text("TOTAL PAID", style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 8, fontWeight: FontWeight.bold)),
+                          Text("TOTAL PAID", style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 8, fontWeight: FontWeight.bold)),
                           SizedBox(height: 4),
                           Text("₹${state.fees.paid.toStringAsFixed(0)}", style: TextStyle(color: PortalTheme.successGreen(context), fontSize: 13, fontWeight: FontWeight.bold)),
                         ],

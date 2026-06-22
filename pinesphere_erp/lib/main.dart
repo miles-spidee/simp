@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:pinesphere_erp/core/providers/theme_provider.dart';
 import 'package:pinesphere_erp/core/routes/app_routes.dart';
 import 'package:pinesphere_erp/core/theme/app_theme.dart';
@@ -20,7 +19,7 @@ class MyApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.light,
+      themeMode: themeMode == AppThemeMode.dark ? ThemeMode.dark : ThemeMode.light,
       routerConfig: AppRoutes.router,
     );
   }

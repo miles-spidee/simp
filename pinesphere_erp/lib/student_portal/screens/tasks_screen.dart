@@ -5,7 +5,7 @@ import 'package:pinesphere_erp/student_portal/providers/tasks_provider.dart';
 import 'package:pinesphere_erp/student_portal/portal_theme.dart';
 
 class TasksScreen extends ConsumerWidget {
-  TasksScreen({super.key});
+  const TasksScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -49,7 +49,7 @@ class TasksScreen extends ConsumerWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.check_circle_outline, color: PortalTheme.textMuted(context).withOpacity(0.5), size: 48),
+                        Icon(Icons.check_circle_outline, color: PortalTheme.textMuted(context).withValues(alpha: 0.5), size: 48),
                         SizedBox(height: 12),
                         Text(
                           "No assignments in this column",
@@ -59,7 +59,7 @@ class TasksScreen extends ConsumerWidget {
                     ),
                   )
                 : ListView.builder(
-                    padding: EdgeInsets.all(16),
+                    padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: 100.0),
                     itemCount: filteredTasks.length,
                     itemBuilder: (context, index) {
                       final task = filteredTasks[index];
@@ -175,9 +175,9 @@ class TasksScreen extends ConsumerWidget {
               SizedBox(height: 10),
               Container(
                 decoration: BoxDecoration(
-                  color: PortalTheme.errorRed(context).withOpacity(0.1),
+                  color: PortalTheme.errorRed(context).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: PortalTheme.errorRed(context).withOpacity(0.2)),
+                  border: Border.all(color: PortalTheme.errorRed(context).withValues(alpha: 0.2)),
                 ),
                 padding: EdgeInsets.all(10),
                 child: Row(
@@ -234,7 +234,7 @@ class TasksScreen extends ConsumerWidget {
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.03),
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.03),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: PortalTheme.divider(context)),
                         ),

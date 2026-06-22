@@ -7,7 +7,7 @@ class KpiCard extends StatelessWidget {
   final IconData icon;
   final Color color;
 
-  KpiCard({
+  const KpiCard({
     super.key,
     required this.title,
     required this.score,
@@ -31,7 +31,7 @@ class KpiCard extends StatelessWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 padding: EdgeInsets.all(8),
@@ -63,7 +63,7 @@ class KpiCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: score / 100,
-              backgroundColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.05),
+              backgroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05),
               valueColor: AlwaysStoppedAnimation<Color>(color),
               minHeight: 6,
             ),

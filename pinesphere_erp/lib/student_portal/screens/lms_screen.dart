@@ -5,7 +5,7 @@ import 'package:pinesphere_erp/student_portal/providers/lms_provider.dart';
 import 'package:pinesphere_erp/student_portal/portal_theme.dart';
 
 class LMSScreen extends ConsumerWidget {
-  LMSScreen({super.key});
+  const LMSScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -72,7 +72,7 @@ class LMSScreen extends ConsumerWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.video_library_outlined, color: PortalTheme.textMuted(context).withOpacity(0.5), size: 48),
+                        Icon(Icons.video_library_outlined, color: PortalTheme.textMuted(context).withValues(alpha: 0.5), size: 48),
                         SizedBox(height: 12),
                         Text(
                           "No learning pathways found",
@@ -151,7 +151,7 @@ class LMSScreen extends ConsumerWidget {
               child: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.black.withOpacity(0.6), Colors.transparent],
+                    colors: [Colors.black.withValues(alpha: 0.6), Colors.transparent],
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
                   ),
@@ -338,7 +338,7 @@ class LMSScreen extends ConsumerWidget {
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: isCurrent
-                                      ? PortalTheme.primaryBlue(context).withOpacity(0.1)
+                                      ? PortalTheme.primaryBlue(context).withValues(alpha: 0.1)
                                       : PortalTheme.cardSurface(context),
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(

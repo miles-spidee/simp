@@ -27,10 +27,10 @@ class NotificationsScreen extends StatelessWidget {
                   height: 48,
                   decoration: BoxDecoration(
                     color: index % 3 == 0
-                        ? AppColors.primary.withOpacity(0.1)
+                        ? AppColors.primary.withValues(alpha: 0.1)
                         : index % 3 == 1
-                            ? AppColors.success.withOpacity(0.1)
-                            : AppColors.warning.withOpacity(0.1),
+                            ? AppColors.success.withValues(alpha: 0.1)
+                            : AppColors.warning.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(

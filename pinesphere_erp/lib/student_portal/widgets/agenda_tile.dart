@@ -7,7 +7,7 @@ class AgendaTile extends StatelessWidget {
   final bool completed;
   final ValueChanged<bool?> onChanged;
 
-  AgendaTile({
+  const AgendaTile({
     super.key,
     required this.task,
     required this.time,
@@ -34,7 +34,7 @@ class AgendaTile extends StatelessWidget {
               activeColor: PortalTheme.successGreen(context),
               checkColor: Colors.white,
               side: BorderSide(
-                color: PortalTheme.textMuted(context).withOpacity(0.5),
+                color: PortalTheme.textMuted(context).withValues(alpha: 0.5),
                 width: 1.5,
               ),
               shape: RoundedRectangleBorder(

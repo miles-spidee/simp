@@ -5,7 +5,7 @@ import 'package:pinesphere_erp/student_portal/portal_theme.dart';
 class CertificateViewer extends StatelessWidget {
   final CertificateInfo certificate;
 
-  CertificateViewer({
+  const CertificateViewer({
     super.key,
     required this.certificate,
   });
@@ -21,7 +21,7 @@ class CertificateViewer extends StatelessWidget {
           border: Border.all(color: PortalTheme.borderLight(context)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               blurRadius: 24,
               offset: Offset(0, 8),
             ),
@@ -40,7 +40,7 @@ class CertificateViewer extends StatelessWidget {
             ),
             Container(
               decoration: BoxDecoration(
-                border: Border.all(color: PortalTheme.accentBlue(context).withOpacity(0.3), width: 2),
+                border: Border.all(color: PortalTheme.accentBlue(context).withValues(alpha: 0.3), width: 2),
                 borderRadius: BorderRadius.circular(16),
                 color: PortalTheme.backgroundSlate(context),
               ),

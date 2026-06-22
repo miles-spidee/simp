@@ -32,7 +32,7 @@ class TrackingCard extends StatelessWidget {
         border: Border.all(color: AppColors.borderLight),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 6,
             offset: const Offset(0, 1),
           ),
@@ -49,7 +49,7 @@ class TrackingCard extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Center(
@@ -93,7 +93,7 @@ class TrackingCard extends StatelessWidget {
           // Divider
           Container(
             height: 1,
-            color: AppColors.borderLight.withOpacity(0.6),
+            color: AppColors.borderLight.withValues(alpha: 0.6),
           ),
           const SizedBox(height: AppSpacing.s12),
           // Details row
@@ -144,7 +144,7 @@ class TrackingCard extends StatelessWidget {
         icon = null;
         break;
       case PlacementStatus.inProcess:
-        bgColor = AppColors.primary.withOpacity(0.1);
+        bgColor = AppColors.primary.withValues(alpha: 0.1);
         textColor = AppColors.primary;
         label = 'IN PROCESS';
         icon = null;

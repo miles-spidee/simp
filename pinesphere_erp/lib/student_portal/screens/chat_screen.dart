@@ -5,7 +5,7 @@ import 'package:pinesphere_erp/student_portal/portal_theme.dart';
 import 'package:pinesphere_erp/student_portal/widgets/chat_bubble.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
-  ChatScreen({super.key});
+  const ChatScreen({super.key});
 
   @override
   ConsumerState<ChatScreen> createState() => _ChatScreenState();
@@ -159,7 +159,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       borderRadius: BorderRadius.circular(10),
       child: Container(
         decoration: BoxDecoration(
-          color: isActive ? PortalTheme.primaryBlue(context).withOpacity(0.15) : Colors.transparent,
+          color: isActive ? PortalTheme.primaryBlue(context).withValues(alpha: 0.15) : Colors.transparent,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: isActive ? PortalTheme.accentBlue(context) : PortalTheme.borderLight(context),
@@ -186,7 +186,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         children: [
           CircleAvatar(
             radius: 14,
-            backgroundColor: PortalTheme.accentBlue(context).withOpacity(0.1),
+            backgroundColor: PortalTheme.accentBlue(context).withValues(alpha: 0.1),
             child: Icon(Icons.support_agent, size: 14, color: PortalTheme.accentBlue(context)),
           ),
           SizedBox(width: 8),

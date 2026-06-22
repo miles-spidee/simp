@@ -4,7 +4,7 @@ import 'package:pinesphere_erp/student_portal/providers/assessment_provider.dart
 import 'package:pinesphere_erp/student_portal/portal_theme.dart';
 
 class AssessmentScreen extends ConsumerWidget {
-  AssessmentScreen({super.key});
+  const AssessmentScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,7 +37,7 @@ class AssessmentScreen extends ConsumerWidget {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: PortalTheme.accentBlue(context).withOpacity(0.1),
+                      color: PortalTheme.accentBlue(context).withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                     padding: EdgeInsets.all(12),
@@ -226,8 +226,8 @@ class AssessmentScreen extends ConsumerWidget {
                               res.status,
                               style: TextStyle(
                                 color: res.score >= 50
-                                    ? PortalTheme.successGreen(context).withOpacity(0.7)
-                                    : PortalTheme.errorRed(context).withOpacity(0.7),
+                                    ? PortalTheme.successGreen(context).withValues(alpha: 0.7)
+                                    : PortalTheme.errorRed(context).withValues(alpha: 0.7),
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -262,7 +262,7 @@ class AssessmentScreen extends ConsumerWidget {
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: verified
-                ? PortalTheme.successGreen(context).withOpacity(0.3)
+                ? PortalTheme.successGreen(context).withValues(alpha: 0.3)
                 : PortalTheme.borderLight(context),
           ),
         ),
@@ -552,7 +552,7 @@ class AssessmentScreen extends ConsumerWidget {
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: isSelected
-                                      ? PortalTheme.primaryBlue(context).withOpacity(0.15)
+                                      ? PortalTheme.primaryBlue(context).withValues(alpha: 0.15)
                                       : PortalTheme.cardSurface(context),
                                   border: Border.all(
                                     color: isSelected
@@ -596,7 +596,7 @@ class AssessmentScreen extends ConsumerWidget {
                               ),
                             ),
                           );
-                        }).toList(),
+                        }),
                       ],
                     ),
                   ),
@@ -604,7 +604,7 @@ class AssessmentScreen extends ConsumerWidget {
 
                 // Proctor simulation triggers (for testing and verification)
                 Container(
-                  color: Colors.red.withOpacity(0.05),
+                  color: Colors.red.withValues(alpha: 0.05),
                   padding: EdgeInsets.all(8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,

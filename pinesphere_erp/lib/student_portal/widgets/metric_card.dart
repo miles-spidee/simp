@@ -9,7 +9,7 @@ class MetricCard extends StatefulWidget {
   final Color leftBorderColor;
   final VoidCallback? onTap;
 
-  MetricCard({
+  const MetricCard({
     super.key,
     required this.title,
     required this.value,
@@ -46,8 +46,8 @@ class _MetricCardState extends State<MetricCard> with SingleTickerProviderStateM
             boxShadow: [
               BoxShadow(
                 color: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.black.withOpacity(0.2)
-                    : Colors.black.withOpacity(0.04),
+                    ? Colors.black.withValues(alpha: 0.2)
+                    : Colors.black.withValues(alpha: 0.04),
                 blurRadius: 8,
                 offset: Offset(0, 4),
               ),

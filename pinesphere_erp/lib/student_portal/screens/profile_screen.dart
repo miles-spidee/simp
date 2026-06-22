@@ -5,7 +5,7 @@ import 'package:pinesphere_erp/student_portal/providers/profile_provider.dart';
 import 'package:pinesphere_erp/student_portal/portal_theme.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
-  ProfileScreen({super.key});
+  const ProfileScreen({super.key});
 
   @override
   ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
@@ -278,7 +278,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 40),
+            SizedBox(height: 100),
           ],
         ),
       ),
@@ -387,7 +387,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           _buildFieldTitle("SUBMITTED RESUME"),
           Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.04),
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.04),
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: PortalTheme.borderLight(context)),
             ),
@@ -430,7 +430,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             controller: TextEditingController(text: profile.internship.internshipType),
             enabled: false,
             decoration: InputDecoration(
-              fillColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.06),
+              fillColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.06),
             ),
             style: TextStyle(color: PortalTheme.textMuted(context)),
           ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pinesphere_erp/core/routes/app_routes.dart';
-import 'package:pinesphere_erp/core/theme/app_colors.dart';
 import 'package:pinesphere_erp/core/widgets/loading_widget.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -27,26 +26,26 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.business_center,
-              size: 120,
-              color: AppColors.primary,
+            Image.asset(
+              'assets/images/image.png',
+              height: 120,
+              fit: BoxFit.contain,
             ),
-            SizedBox(height: 24),
-            Text(
+            const SizedBox(height: 24),
+            const Text(
               'Pinesphere ERP',
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 40),
-            LoadingWidget(),
+            const SizedBox(height: 40),
+            const LoadingWidget(),
           ],
         ),
       ),

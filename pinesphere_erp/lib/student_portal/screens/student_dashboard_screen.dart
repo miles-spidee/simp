@@ -25,7 +25,7 @@ import 'package:pinesphere_erp/student_portal/screens/profile_screen.dart';
 import 'package:pinesphere_erp/student_portal/screens/tasks_screen.dart';
 
 class StudentDashboardScreen extends ConsumerWidget {
-  StudentDashboardScreen({super.key});
+  const StudentDashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -88,7 +88,7 @@ class StudentDashboardScreen extends ConsumerWidget {
         },
         child: SingleChildScrollView(
           physics: AlwaysScrollableScrollPhysics(),
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: 100.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -104,7 +104,7 @@ class StudentDashboardScreen extends ConsumerWidget {
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.white.withOpacity(0.08)),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
                 ),
                 padding: EdgeInsets.all(20),
                 width: double.infinity,
@@ -123,7 +123,7 @@ class StudentDashboardScreen extends ConsumerWidget {
                     Text(
                       "Track your performance scorecards, attend lecture paths, submit project code assignments, and keep tabs on payments from one workspace.",
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.7),
+                        color: Colors.white.withValues(alpha: 0.7),
                         fontSize: 12,
                         height: 1.4,
                       ),

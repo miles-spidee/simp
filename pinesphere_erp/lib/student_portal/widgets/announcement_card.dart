@@ -6,7 +6,7 @@ class AnnouncementCard extends StatelessWidget {
   final String title;
   final String content;
 
-  AnnouncementCard({
+  const AnnouncementCard({
     super.key,
     required this.date,
     required this.title,
@@ -38,9 +38,9 @@ class AnnouncementCard extends StatelessWidget {
               ),
               Container(
                 decoration: BoxDecoration(
-                  color: PortalTheme.primaryBlue(context).withOpacity(0.1),
+                  color: PortalTheme.primaryBlue(context).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(4),
-                  border: Border.all(color: PortalTheme.primaryBlue(context).withOpacity(0.2)),
+                  border: Border.all(color: PortalTheme.primaryBlue(context).withValues(alpha: 0.2)),
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 child: Text(

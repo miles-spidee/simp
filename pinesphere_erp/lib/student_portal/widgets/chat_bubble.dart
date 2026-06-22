@@ -5,7 +5,7 @@ import 'package:pinesphere_erp/student_portal/portal_theme.dart';
 class ChatBubble extends StatelessWidget {
   final ChatMessage message;
 
-  ChatBubble({
+  const ChatBubble({
     super.key,
     required this.message,
   });
@@ -19,7 +19,7 @@ class ChatBubble extends StatelessWidget {
       return Center(
         child: Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.03),
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.03),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: PortalTheme.borderLight(context)),
           ),
@@ -59,7 +59,7 @@ class ChatBubble extends StatelessWidget {
           if (!isMe) ...[
             CircleAvatar(
               radius: 14,
-              backgroundColor: PortalTheme.accentBlue(context).withOpacity(0.2),
+              backgroundColor: PortalTheme.accentBlue(context).withValues(alpha: 0.2),
               child: Icon(Icons.person, size: 14, color: PortalTheme.accentBlue(context)),
             ),
             SizedBox(width: 8),
@@ -99,13 +99,13 @@ class ChatBubble extends StatelessWidget {
                       Text(
                         message.time,
                         style: TextStyle(
-                          color: isMe ? Theme.of(context).colorScheme.onPrimary.withOpacity(0.7) : PortalTheme.textMuted(context),
+                          color: isMe ? Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.7) : PortalTheme.textMuted(context),
                           fontSize: 8,
                         ),
                       ),
                       if (isMe) ...[
                         SizedBox(width: 4),
-                        Icon(Icons.done_all, size: 10, color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.7)),
+                        Icon(Icons.done_all, size: 10, color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.7)),
                       ]
                     ],
                   ),

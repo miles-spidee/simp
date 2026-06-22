@@ -5,7 +5,7 @@ import 'package:pinesphere_erp/student_portal/portal_theme.dart';
 import 'package:pinesphere_erp/student_portal/widgets/timeline_widget.dart';
 
 class CapstoneScreen extends ConsumerStatefulWidget {
-  CapstoneScreen({super.key});
+  const CapstoneScreen({super.key});
 
   @override
   ConsumerState<CapstoneScreen> createState() => _CapstoneScreenState();
@@ -72,7 +72,7 @@ class _CapstoneScreenState extends ConsumerState<CapstoneScreen> {
                     children: [
                       CircleAvatar(
                         radius: 18,
-                        backgroundColor: PortalTheme.primaryBlue(context).withOpacity(0.2),
+                        backgroundColor: PortalTheme.primaryBlue(context).withValues(alpha: 0.2),
                         child: Text("AJ", style: TextStyle(color: PortalTheme.accentBlue(context), fontSize: 12, fontWeight: FontWeight.bold)),
                       ),
                       SizedBox(width: 12),
@@ -94,8 +94,8 @@ class _CapstoneScreenState extends ConsumerState<CapstoneScreen> {
                       Container(
                         decoration: BoxDecoration(
                           color: state.status == 'Approved'
-                              ? PortalTheme.successGreen(context).withOpacity(0.1)
-                              : PortalTheme.warningAmber(context).withOpacity(0.1),
+                              ? PortalTheme.successGreen(context).withValues(alpha: 0.1)
+                              : PortalTheme.warningAmber(context).withValues(alpha: 0.1),
                           border: Border.all(
                             color: state.status == 'Approved'
                                 ? PortalTheme.successGreen(context)

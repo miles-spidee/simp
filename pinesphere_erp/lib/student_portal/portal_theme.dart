@@ -16,6 +16,6 @@ class PortalTheme {
   static Color textTertiary(BuildContext context) => Theme.of(context).textTheme.bodySmall?.color ?? Theme.of(context).colorScheme.outline;
   
   static Color border(BuildContext context) => Theme.of(context).colorScheme.outline;
-  static Color borderLight(BuildContext context) => Theme.of(context).colorScheme.outline.withOpacity(0.12);
+  static Color borderLight(BuildContext context) => Theme.of(context).colorScheme.outline.withValues(alpha: 0.12);
   static Color divider(BuildContext context) => Theme.of(context).dividerColor;
 }

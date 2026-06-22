@@ -9,7 +9,7 @@ class ProgressCircle extends StatelessWidget {
   final double size;
   final Color strokeColor;
 
-  ProgressCircle({
+  const ProgressCircle({
     super.key,
     required this.progress,
     required this.centerHeader,
@@ -81,8 +81,8 @@ class _CircularProgressPainter extends CustomPainter {
 
     final backgroundPaint = Paint()
       ..color = brightness == Brightness.dark
-          ? Colors.white.withOpacity(0.05)
-          : Colors.black.withOpacity(0.05)
+          ? Colors.white.withValues(alpha: 0.05)
+          : Colors.black.withValues(alpha: 0.05)
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth;
 
