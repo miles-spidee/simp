@@ -10,6 +10,9 @@ export interface Opportunity {
   eligibility: string;
   startDate: string;
   color: string;
+  interntype?: string;
+  amountType?: string;
+  amountPaid?: string;
 }
 
 export const MOCK_LANDING_OPPORTUNITIES: Opportunity[] = [
@@ -24,7 +27,10 @@ export const MOCK_LANDING_OPPORTUNITIES: Opportunity[] = [
     seats: "5 Openings",
     eligibility: "B.Tech CS/IT (3rd or 4th Year)",
     startDate: "Starts Jan 2024",
-    color: "from-blue-600/20 to-cyan-600/20 border-blue-500/30 text-blue-400"
+    color: "from-blue-600/20 to-cyan-600/20 border-blue-500/30 text-blue-400",
+    interntype: "Full-time",
+    amountType: "Stipend",
+    amountPaid: "$1500/mo"
   },
   {
     id: "opp-l2",
@@ -37,7 +43,10 @@ export const MOCK_LANDING_OPPORTUNITIES: Opportunity[] = [
     seats: "2 Openings",
     eligibility: "Any Degree with Design Portfolio",
     startDate: "Starts Feb 2024",
-    color: "from-purple-600/20 to-pink-600/20 border-purple-500/30 text-purple-400"
+    color: "from-purple-600/20 to-pink-600/20 border-purple-500/30 text-purple-400",
+    interntype: "Part-time",
+    amountType: "Stipend",
+    amountPaid: "$800/mo"
   },
   {
     id: "opp-l3",
@@ -50,6 +59,9 @@ export const MOCK_LANDING_OPPORTUNITIES: Opportunity[] = [
     seats: "3 Openings",
     eligibility: "M.Tech / B.Tech CS with ML knowledge",
     startDate: "Starts March 2024",
-    color: "from-emerald-600/20 to-teal-600/20 border-emerald-500/30 text-emerald-400"
+    color: "from-emerald-600/20 to-teal-600/20 border-emerald-500/30 text-emerald-400",
+    interntype: "Full-time",
+    amountType: "Unpaid",
+    amountPaid: "N/A"
   }
 ];

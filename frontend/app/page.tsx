@@ -259,6 +259,14 @@ export default function LandingPage() {
                     <span className="text-slate-400 font-medium">Duration:</span>
                     <span className="font-semibold text-slate-800 ml-auto">{opp.duration}</span>
                   </div>
+
+                  <div className="flex items-center gap-3">
+                    <svg className="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                    </svg>
+                    <span className="text-slate-400 font-medium">Internship type:</span>
+                    <span className="font-semibold text-slate-800 ml-auto">{opp.interntype}</span>
+                  </div>
                   
                   <div className="flex items-center gap-3">
                     <svg className="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -282,6 +290,22 @@ export default function LandingPage() {
                     </svg>
                     <span className="text-slate-400 font-medium">Eligibility:</span>
                     <span className="font-semibold text-slate-800 ml-auto">{opp.eligibility}</span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <svg className="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
+                    </svg>
+                    <span className="text-slate-400 font-medium">Amount Type:</span>
+                    <span className="font-semibold text-slate-800 ml-auto">{opp.amountType}</span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <svg className="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
+                    </svg>
+                    <span className="text-slate-400 font-medium">Amount paid:</span>
+                    <span className="font-semibold text-slate-800 ml-auto">{opp.amountPaid}</span>
                   </div>
 
                   <div className="flex items-center gap-3">
