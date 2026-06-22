@@ -2,7 +2,7 @@ export interface Opportunity {
   id: string;
   title: string;
   type: string;
-  value: string;
+  value: "free" | "paid" | "stipend" | "industrial" | "corporate" | "research";
   description: string;
   duration: string;
   mode: string;
@@ -19,7 +19,7 @@ export const MOCK_LANDING_OPPORTUNITIES: Opportunity[] = [
     id: "opp-l1",
     title: "Software Engineering Intern",
     type: "Tech",
-    value: "High Demand",
+    value: "stipend",
     description: "Join our core platform team to build scalable microservices using FastAPI and React. You will be paired with a senior mentor.",
     duration: "6 Months",
     mode: "Remote",
@@ -34,7 +34,7 @@ export const MOCK_LANDING_OPPORTUNITIES: Opportunity[] = [
     id: "opp-l2",
     title: "UI/UX Design Intern",
     type: "Design",
-    value: "Creative",
+    value: "free",
     description: "Work on the next generation of our ERP platform. Create wireframes, interactive prototypes, and design systems.",
     duration: "3 Months",
     mode: "Hybrid",
@@ -48,7 +48,7 @@ export const MOCK_LANDING_OPPORTUNITIES: Opportunity[] = [
     id: "opp-l3",
     title: "Data Science Intern",
     type: "Analytics",
-    value: "Research",
+    value: "research",
     description: "Analyze large educational datasets to build predictive models for student performance and drop-out risks.",
     duration: "6 Months",
     mode: "Remote",

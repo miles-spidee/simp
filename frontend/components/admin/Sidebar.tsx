@@ -16,25 +16,25 @@ interface SidebarProps {
 // Map module IDs to Lucide icons for visual variety
 const iconMap: Record<string, any> = {
   identity: Shield,
-  employee: UsersIcon,
-  organization: Building2,
-  program: GraduationCap,
+  // employee: UsersIcon,
+  // organization: Building2,
+  // program: GraduationCap,
   opportunity: Briefcase,
   application: FileText,
-  student: UsersRound,
-  batch: Package,
-  allocation: Network,
-  mentor: Award,
-  lms: MonitorPlay,
-  task: CheckSquare,
-  assessment: FileText,
-  submission: Package,
-  attendance: Calendar,
-  performance: PieChart,
-  college_coordinator: Users,
-  dashboard: LayoutDashboard,
-  common_file: FolderOpen,
-  super_admin: Settings,
+  // student: UsersRound,
+  // batch: Package,
+  // allocation: Network,
+  // mentor: Award,
+  // lms: MonitorPlay,
+  // task: CheckSquare,
+  // assessment: FileText,
+  // submission: Package,
+  // attendance: Calendar,
+  // performance: PieChart,
+  // college_coordinator: Users,
+  // dashboard: LayoutDashboard,
+  // common_file: FolderOpen,
+  // super_admin: Settings,
 };
 
 export function Sidebar({ isMobileOpen, setMobileOpen }: SidebarProps) {
@@ -47,8 +47,12 @@ export function Sidebar({ isMobileOpen, setMobileOpen }: SidebarProps) {
       if (!user) return;
       try {
         const data = await userService.getUserModules(user.id);
-        // Filter out dashboard and super_admin as they are usually handled separately
-        const visibleModules = data.filter(m => m.id !== 'dashboard' && m.id !== 'super_admin');
+        // Filter out dashboard, super_admin, and any modules that are commented out in iconMap
+        const visibleModules = data.filter(m => 
+          m.id !== 'dashboard' && 
+          m.id !== 'super_admin' && 
+          iconMap[m.id] !== undefined
+        );
         setModules(visibleModules);
       } catch (err) {
         console.error("Failed to load modules for sidebar", err);
