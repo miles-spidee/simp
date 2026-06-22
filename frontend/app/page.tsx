@@ -2,37 +2,21 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { API_ENDPOINTS } from '@/src/config';
-
-export interface Opportunity {
-  title: string;
-  type: string;
-  value: string;
-  description: string;
-  duration: string;
-  mode: string;
-  seats: string;
-  eligibility: string;
-  startDate: string;
-  color: string;
-}
+import { landingOpportunityService } from '@/src/services/landing-opportunity.service';
+import { Opportunity } from '@/src/data/mock-landing-opportunities';
 
 export default function LandingPage() {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch opportunities from the backend
+  // Fetch opportunities from the mock service layer
   useEffect(() => {
     const fetchOpportunities = async () => {
       try {
-        const response = await fetch(API_ENDPOINTS.OPPORTUNITIES);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
+        const data = await landingOpportunityService.getOpportunities();
         setOpportunities(data);
       } catch (error) {
-        console.error("Failed to fetch opportunities from backend:", error);
+        console.error("Failed to fetch opportunities from service:", error);
         setOpportunities([]);
       } finally {
         setLoading(false);
