@@ -12,6 +12,7 @@ export interface User {
 }
 
 export const MOCK_USERS: User[] = [
+  { id: '0', name: 'System Admin', username: 'admin', email: 'admin@pinesphere.com', roleId: 'role-5', roleName: 'Super Admin', status: 'Active', date: 'Oct 25, 2023', avatar: 'SA', moduleOverrides: [] },
   { id: '1', name: 'Alice Freeman', username: 'alice_f', email: 'alice@example.com', roleId: 'role-1', roleName: 'Student', status: 'Active', date: 'Oct 24, 2023', avatar: 'AF', moduleOverrides: [] },
   { id: '2', name: 'Bob Johnson', username: 'bjohnson', email: 'bob@example.com', roleId: 'role-2', roleName: 'Mentor', status: 'Active', date: 'Oct 23, 2023', avatar: 'BJ', moduleOverrides: ['student'] },
   { id: '3', name: 'Charlie Davis', username: 'charlie_d', email: 'charlie@example.com', roleId: 'role-3', roleName: 'HR', status: 'Inactive', date: 'Oct 22, 2023', avatar: 'CD', moduleOverrides: [] },
