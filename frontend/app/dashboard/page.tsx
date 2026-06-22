@@ -1,23 +1,30 @@
 "use client";
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useAuth } from '@/src/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import SuperAdminDashboard from '@/components/dashboards/SuperAdminDashboard';
+import StudentDashboard from '@/components/dashboards/StudentDashboard';
 
 export default function DynamicDashboardRouter() {
   const { user, loading } = useAuth();
   const router = useRouter();
 
-  React.useEffect(() => {
-    if (!loading && user) {
-      if (user.roleName === 'Super Admin') {
-        router.push('/admin');
-      } else {
-        // Fallback for missing dashboards currently, or generic user dashboard
-        router.push('/admin'); // Temporarily route all to /admin until role dashboards are separated
-      }
+  const DashboardComponent = useMemo(() => {
+    if (!user) return null;
+    switch (user.roleName) {
+      case 'Super Admin':
+      case 'Admin':
+        return SuperAdminDashboard;
+      case 'Student':
+        return StudentDashboard;
+      // case 'HR': return HRDashboard;
+      // case 'Mentor': return MentorDashboard;
+      default:
+        // Default to student dashboard for now if role not strictly matched
+        return StudentDashboard;
     }
-  }, [user, loading, router]);
+  }, [user]);
 
   if (loading) {
     return (
@@ -27,7 +34,7 @@ export default function DynamicDashboardRouter() {
     );
   }
 
-  if (!user) {
+  if (!user || !DashboardComponent) {
     return (
       <div className="flex h-screen items-center justify-center bg-slate-50">
         <div className="text-center space-y-2">
@@ -38,17 +45,20 @@ export default function DynamicDashboardRouter() {
     );
   }
 
+  // Notice we don't redirect, we simply render the dashboard component. 
+  // However, this page currently doesn't have the Admin layout (sidebar/TopNav).
+  // Ideally, the dynamic dashboard router is wrapped by the app shell layout.
+  // For now, if SuperAdmin, redirect to /admin so they get the layout. 
+  // Others redirect to /dashboard which currently has no layout, or they render their component here.
+  
+  if (user.roleName === 'Super Admin') {
+    router.push('/admin');
+    return null;
+  }
+
   return (
-    <div className="flex h-screen items-center justify-center bg-slate-50">
-      <div className="text-center space-y-4 max-w-md mx-auto p-6">
-        <div className="h-12 w-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-          <span className="font-bold text-lg">{user.avatar}</span>
-        </div>
-        <h2 className="text-xl font-bold text-slate-800">Routing to {user.roleName} Dashboard...</h2>
-        <p className="text-sm text-slate-500 leading-relaxed">
-          Loading the personalized workspace for {user.name} based on dynamic role permissions.
-        </p>
-      </div>
+    <div className="p-6 md:p-8">
+      <DashboardComponent />
     </div>
   );
 }
