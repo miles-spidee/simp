@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Card, CardContent } from '@/components/admin/ui/Card';
 import { Button } from '@/components/admin/ui/Button';
 import { Badge } from '@/components/admin/ui/Badge';
@@ -9,6 +9,7 @@ import { Search, Filter, Plus, Eye, Edit, Trash, UserX } from 'lucide-react';
 import { CreateUserWizard } from '../../../components/admin/users/CreateUserWizard';
 import { User } from '@/src/data/mock-users';
 import { userService } from '@/src/services/user.service';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   createColumnHelper,
   flexRender,
@@ -20,13 +21,17 @@ import {
 
 const columnHelper = createColumnHelper<User>();
 
-export default function UsersPage() {
+function UsersPageContent() {
   const [isCreateWizardOpen, setIsCreateWizardOpen] = useState(false);
   const [data, setData] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [globalFilter, setGlobalFilter] = useState('');
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [viewMode, setViewMode] = useState(false);
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const [autofillData, setAutofillData] = useState<{ name: string; email: string; phone: string } | null>(null);
 
   const loadUsers = async () => {
     try {
@@ -43,6 +48,27 @@ export default function UsersPage() {
   useEffect(() => {
     loadUsers();
   }, []);
+
+  // Listen to autofill query params
+  useEffect(() => {
+    const isAutofill = searchParams.get('autofill');
+    if (isAutofill) {
+      const name = searchParams.get('name') || '';
+      const email = searchParams.get('email') || '';
+      const phone = searchParams.get('phone') || '';
+      setAutofillData({ name, email, phone });
+      setIsCreateWizardOpen(true);
+    }
+  }, [searchParams]);
+
+  const handleUserCreated = () => {
+    loadUsers();
+    if (autofillData) {
+      // Clear autofill state and redirect back to application lifecycle overview
+      setAutofillData(null);
+      router.push('/admin/application');
+    }
+  };
 
   const handleView = (user: User) => {
     setSelectedUser(user);
@@ -184,6 +210,7 @@ export default function UsersPage() {
           onClick={() => {
             setSelectedUser(null);
             setViewMode(false);
+            setAutofillData(null);
             setIsCreateWizardOpen(true);
           }} 
           className="w-full sm:w-auto"
@@ -290,11 +317,21 @@ export default function UsersPage() {
           setIsCreateWizardOpen(false);
           setSelectedUser(null);
           setViewMode(false);
+          setAutofillData(null);
         }} 
-        onUserCreated={loadUsers}
+        onUserCreated={handleUserCreated}
         userToEdit={selectedUser}
         viewMode={viewMode}
+        autofillData={autofillData}
       />
     </div>
+  );
+}
+
+export default function UsersPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-xs font-semibold text-slate-500">Loading Users Portal...</div>}>
+      <UsersPageContent />
+    </Suspense>
   );
 }

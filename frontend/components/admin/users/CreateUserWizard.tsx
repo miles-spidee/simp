@@ -19,11 +19,16 @@ interface CreateUserWizardProps {
   onUserCreated?: () => void;
   userToEdit?: User | null;
   viewMode?: boolean;
+  autofillData?: {
+    name: string;
+    email: string;
+    phone: string;
+  } | null;
 }
 
 const STEPS = ['Basic Information', 'Role Assignment', 'Module Override', 'Review & Create'];
 
-export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, viewMode }: CreateUserWizardProps) {
+export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, viewMode, autofillData }: CreateUserWizardProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const [assignedModules, setAssignedModules] = useState<string[]>([]);
@@ -67,55 +72,84 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
 
   // Pre-populate fields if in Edit/View mode
   useEffect(() => {
+    let isMounted = true;
     if (isOpen) {
-      if (userToEdit) {
-        setFullName(userToEdit.name);
-        setUsername(userToEdit.username);
-        setEmail(userToEdit.email);
-        setPhone('');
-        setPassword('••••••••');
-        setConfirmPassword('••••••••');
-        setSelectedRole(userToEdit.roleId);
-        
-        const loadAssigned = async () => {
-          const uMods = await userService.getUserModules(userToEdit.id);
-          setAssignedModules(uMods.map(m => m.id));
-        };
-        loadAssigned();
-        
-        setAvatar(typeof userToEdit.avatar === 'string' && userToEdit.avatar.length > 2 ? userToEdit.avatar : null);
-        setAvatarName(null);
-        
-        if (viewMode) {
-          setCurrentStep(3);
+      Promise.resolve().then(() => {
+        if (!isMounted) return;
+        if (userToEdit) {
+          setFullName(userToEdit.name);
+          setUsername(userToEdit.username);
+          setEmail(userToEdit.email);
+          setPhone('');
+          setPassword('••••••••');
+          setConfirmPassword('••••••••');
+          setSelectedRole(userToEdit.roleId);
+          
+          const loadAssigned = async () => {
+            const uMods = await userService.getUserModules(userToEdit.id);
+            if (isMounted) {
+              setAssignedModules(uMods.map(m => m.id));
+            }
+          };
+          loadAssigned();
+          
+          setAvatar(typeof userToEdit.avatar === 'string' && userToEdit.avatar.length > 2 ? userToEdit.avatar : null);
+          setAvatarName(null);
+          
+          if (viewMode) {
+            setCurrentStep(3);
+          } else {
+            setCurrentStep(0);
+          }
+        } else if (autofillData) {
+          setFullName(autofillData.name);
+          setUsername(autofillData.email.split('@')[0] || '');
+          setEmail(autofillData.email);
+          setPhone(autofillData.phone);
+          setPassword('');
+          setConfirmPassword('');
+          setSelectedRole(null);
+          setAssignedModules([]);
+          setAvatar(null);
+          setAvatarName(null);
+          setCurrentStep(0);
         } else {
+          setFullName('');
+          setUsername('');
+          setEmail('');
+          setPhone('');
+          setPassword('');
+          setConfirmPassword('');
+          setSelectedRole(null);
+          setAssignedModules([]);
+          setAvatar(null);
+          setAvatarName(null);
           setCurrentStep(0);
         }
-      } else {
-        setFullName('');
-        setUsername('');
-        setEmail('');
-        setPhone('');
-        setPassword('');
-        setConfirmPassword('');
-        setSelectedRole(null);
-        setAssignedModules([]);
-        setAvatar(null);
-        setAvatarName(null);
-        setCurrentStep(0);
-      }
+      });
     }
-  }, [isOpen, userToEdit, viewMode]);
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen, userToEdit, viewMode, autofillData]);
 
   // When role changes, update assigned modules to match the role's default modules
   useEffect(() => {
+    let isMounted = true;
     // Only auto-update default modules for NEW users, not during edit mode initialization
     if (!userToEdit && selectedRole && modules.length > 0) {
       const roleObj = roles.find(r => r.id === selectedRole);
       if (roleObj && roleObj.moduleIds) {
-        setAssignedModules(roleObj.moduleIds);
+        Promise.resolve().then(() => {
+          if (isMounted) {
+            setAssignedModules(roleObj.moduleIds);
+          }
+        });
       }
     }
+    return () => {
+      isMounted = false;
+    };
   }, [selectedRole, modules, roles, userToEdit]);
 
   const handleNext = () => {
