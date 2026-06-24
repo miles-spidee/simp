@@ -26,7 +26,7 @@ export interface ApplicationCreate {
   profile: ApplicationProfileCreate;
 }
 
-export interface ApplicationProfileResponse extends ApplicationProfileCreate {}
+export type ApplicationProfileResponse = ApplicationProfileCreate;
 
 export interface ApplicationResponse {
   opening_id: string;

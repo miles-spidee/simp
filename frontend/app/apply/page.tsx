@@ -157,6 +157,22 @@ const steps = [
   { id: 7, label: "Review & Submit" }
 ];
 
+const toPlainBase64 = (value: string) => {
+  const commaIndex = value.indexOf(',');
+  return commaIndex >= 0 ? value.slice(commaIndex + 1) : value;
+};
+
+const sanitizeFileData = (file: FileData | null): FileData | null => {
+  if (!file) return null;
+
+  return {
+    ...file,
+    base64: toPlainBase64(file.base64),
+  };
+};
+
+const sanitizeText = (value: string) => value.trim();
+
 function ApplicationFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -209,7 +225,7 @@ function ApplicationFormContent() {
   }, [formState, internshipType]);
 
   // Handle simple input modifications
-  const handleInputChange = (section: keyof ApplicationState, field: string, value: any) => {
+  const handleInputChange = (section: keyof ApplicationState, field: string, value: string | boolean) => {
     setFormState((prev) => ({
       ...prev,
       [section]: {
@@ -487,19 +503,76 @@ function ApplicationFormContent() {
     }
 
     try {
+      const payload = {
+        internshipType,
+        personalInformation: {
+          firstName: sanitizeText(formState.personalInformation.firstName),
+          lastName: sanitizeText(formState.personalInformation.lastName),
+          email: sanitizeText(formState.personalInformation.email),
+          mobileNumber: sanitizeText(formState.personalInformation.mobileNumber),
+          dateOfBirth: sanitizeText(formState.personalInformation.dateOfBirth),
+          gender: sanitizeText(formState.personalInformation.gender),
+          city: sanitizeText(formState.personalInformation.city),
+          state: sanitizeText(formState.personalInformation.state),
+        },
+        academicInformation: {
+          collegeName: sanitizeText(formState.academicInformation.collegeName),
+          department: sanitizeText(formState.academicInformation.department),
+          degree: sanitizeText(formState.academicInformation.degree),
+          currentYear: sanitizeText(formState.academicInformation.currentYear),
+          cgpaPercentage: sanitizeText(formState.academicInformation.cgpaPercentage),
+          graduationYear: sanitizeText(formState.academicInformation.graduationYear),
+        },
+        professionalInformation: {
+          skills: sanitizeText(formState.professionalInformation.skills),
+          githubUrl: sanitizeText(formState.professionalInformation.githubUrl),
+          linkedinUrl: sanitizeText(formState.professionalInformation.linkedinUrl),
+          portfolioUrl: sanitizeText(formState.professionalInformation.portfolioUrl),
+          projectExperience: sanitizeText(formState.professionalInformation.projectExperience),
+        },
+        internshipSpecificData: {
+          ...formState.internshipSpecificData,
+          paymentMode: sanitizeText(formState.internshipSpecificData.paymentMode),
+          transactionId: sanitizeText(formState.internshipSpecificData.transactionId),
+          relevantExperience: sanitizeText(formState.internshipSpecificData.relevantExperience),
+          preferredTechStack: sanitizeText(formState.internshipSpecificData.preferredTechStack),
+          relevantTechnicalExperience: sanitizeText(formState.internshipSpecificData.relevantTechnicalExperience),
+          researchAreaOfInterest: sanitizeText(formState.internshipSpecificData.researchAreaOfInterest),
+          researchInterestStatement: sanitizeText(formState.internshipSpecificData.researchInterestStatement),
+          publicationLinks: sanitizeText(formState.internshipSpecificData.publicationLinks),
+          paymentScreenshot: sanitizeFileData(formState.internshipSpecificData.paymentScreenshot),
+        },
+        documents: {
+          resume: sanitizeFileData(formState.documents.resume),
+        },
+        motivation: {
+          whyInternship: sanitizeText(formState.motivation.whyInternship),
+        },
+      };
+
       const response = await fetch(API_ENDPOINTS.APPLY, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Accept: 'application/json',
         },
-        body: JSON.stringify({
-          internshipType,
-          ...formState,
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to submit application');
+        const responseText = await response.text();
+        let message = `Failed to submit application (${response.status})`;
+
+        if (responseText) {
+          try {
+            const parsed = JSON.parse(responseText);
+            message = parsed?.detail || parsed?.message || parsed?.error || message;
+          } catch {
+            message = responseText;
+          }
+        }
+
+        throw new Error(message);
       }
 
       localStorage.removeItem(`pinesphere_internship_draft_${internshipType}`);
