@@ -76,7 +76,7 @@ export default function OpportunityPage() {
   const totalApplications = applications.length;
   
   const totalSeats = opportunities.reduce((acc, curr) => acc + (parseInt(curr.seats) || 0), 0);
-  const selectedApps = applications.filter(a => a.status === 'SELECTED').length;
+  const selectedApps = applications.filter(a => a.status === 'Selected').length;
   const fillRate = totalSeats > 0 ? Math.round((selectedApps / totalSeats) * 100) : 0;
   
   const opportunitiesWithMentors = new Set(opportunityMentors.map(m => m.opportunityId)).size;
@@ -128,8 +128,8 @@ export default function OpportunityPage() {
           <div className="space-y-4">
             {[
               { label: 'Applied', value: applications.length, color: 'bg-blue-500' },
-              { label: 'Reviewing', value: applications.filter(a => a.status === 'REVIEW').length, color: 'bg-indigo-500' },
-              { label: 'Shortlisted', value: applications.filter(a => a.status === 'SHORTLISTED').length, color: 'bg-amber-500' },
+              { label: 'Reviewing', value: applications.filter(a => a.status === 'Under Review').length, color: 'bg-indigo-500' },
+              { label: 'Shortlisted', value: applications.filter(a => a.status === 'Shortlisted').length, color: 'bg-amber-500' },
               { label: 'Selected', value: selectedApps, color: 'bg-emerald-500' }
             ].map((step, idx) => (
               <div key={idx} className="flex items-center gap-4">
@@ -441,10 +441,10 @@ export default function OpportunityPage() {
                       <div key={app.id} className="bg-white p-4 rounded-xl border border-slate-200 flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className="h-10 w-10 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center font-bold">
-                            {app.applicantName.charAt(0)}
+                            {app.candidateName.charAt(0)}
                           </div>
                           <div>
-                            <div className="font-semibold text-sm text-slate-900">{app.applicantName}</div>
+                            <div className="font-semibold text-sm text-slate-900">{app.candidateName}</div>
                             <div className="text-xs text-slate-500">{app.appliedDate}</div>
                           </div>
                         </div>
