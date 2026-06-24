@@ -25,7 +25,7 @@ export const opportunityService = {
     await landingOpportunityService.createOpportunity({
       title: opp.title,
       type: opp.type || 'Tech',
-      value: opp.value || 'High Demand',
+      value: (opp.value || 'High Demand') as any,
       description: opp.description || '',
       duration: opp.duration || '6 Months',
       mode: opp.location,
@@ -33,7 +33,7 @@ export const opportunityService = {
       eligibility: opp.eligibility || 'Open to all majors',
       startDate: opp.startDate || `Starts ${new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}`,
       color: opp.color || 'from-blue-600/20 to-cyan-600/20 border-blue-500/30 text-blue-400',
-      internshipType: opp.internshipType,
+      internshipType: opp.internshipType as any,
       amount: opp.amount
     });
 

@@ -3,10 +3,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { FileText, Search, Filter, Plus, ChevronRight, Mail, Phone, Calendar as CalendarIcon, Briefcase } from 'lucide-react';
 import { applicationService } from '@/src/services/application.service';
-import { Application } from '@/src/data/mock-applications';
 import { landingOpportunityService } from '@/src/services/landing-opportunity.service';
 import { Opportunity } from '@/src/data/mock-landing-opportunities';
 import { ReviewApplicationDrawer, ApplicationWithOpp } from '@/components/admin/application/ReviewApplicationDrawer';
+import { AddCandidateDrawer } from '@/components/admin/application/AddCandidateDrawer';
 
 export default function ApplicationPage() {
   const [applications, setApplications] = useState<ApplicationWithOpp[]>([]);
@@ -14,33 +14,43 @@ export default function ApplicationPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [isReviewDrawerOpen, setIsReviewDrawerOpen] = useState(false);
+  const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState<ApplicationWithOpp | null>(null);
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const appData = await applicationService.getApplications();
-        const oppData = await landingOpportunityService.getOpportunities();
-        
-        const mergedData = appData.map(app => ({
-          ...app,
-          opportunityData: oppData.find(o => o.id === app.opportunityId)
-        }));
-        
-        setApplications(mergedData);
-      } catch (err) {
-        console.error('Failed to load applications', err);
-      } finally {
-        setLoading(false);
-      }
+  async function loadData(showLoader: boolean = true) {
+    if (showLoader) setLoading(true);
+    try {
+      const appData = await applicationService.getApplications();
+      const oppData = await landingOpportunityService.getOpportunities();
+      
+      const mergedData = appData.map(app => ({
+        ...app,
+        opportunityData: oppData.find(o => o.id === app.opportunityId)
+      }));
+      
+      setApplications(mergedData);
+      setOpportunities(oppData);
+    } catch (err) {
+      console.error('Failed to load applications', err);
+    } finally {
+      setLoading(false);
     }
-  };
+  }
 
   useEffect(() => {
-    loadData(true);
+    let isMounted = true;
+    Promise.resolve().then(() => {
+      if (isMounted) {
+        loadData(true);
+      }
+    });
+
+    const currentTimer = toastTimerRef.current;
     return () => {
-      if (toastTimerRef.current) {
-        clearTimeout(toastTimerRef.current);
+      isMounted = false;
+      if (currentTimer) {
+        clearTimeout(currentTimer);
       }
     };
   }, []);
@@ -253,6 +263,13 @@ export default function ApplicationPage() {
             setApplications(mergedData);
           });
         }}
+      />
+
+      <AddCandidateDrawer
+        isOpen={isAddDrawerOpen}
+        onClose={() => setIsAddDrawerOpen(false)}
+        onCandidateAdded={() => loadData(false)}
+        opportunities={opportunities}
       />
     </>
   );

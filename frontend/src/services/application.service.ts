@@ -23,5 +23,16 @@ export const applicationService = {
       app.status = newStatus;
     }
     return app;
+  },
+
+  async createApplication(data: Omit<Application, 'id' | 'appliedDate'>): Promise<Application> {
+    await new Promise(resolve => setTimeout(resolve, 300));
+    const newApp: Application = {
+      ...data,
+      id: `app-${MOCK_APPLICATIONS.length + 1}`,
+      appliedDate: new Date().toISOString().split('T')[0]
+    };
+    MOCK_APPLICATIONS.push(newApp);
+    return newApp;
   }
 };

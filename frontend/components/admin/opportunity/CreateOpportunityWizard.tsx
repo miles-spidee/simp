@@ -46,7 +46,7 @@ export function CreateOpportunityWizard({
   const [eligibility, setEligibility] = useState('B.Tech CS/IT (3rd or 4th Year)');
   const [startDate, setStartDate] = useState('Starts Jan 2024');
   const [color, setColor] = useState('from-blue-600/20 to-cyan-600/20 border-blue-500/30 text-blue-400');
-  const [internshipType, setInternshipType] = useState<'will paid' | 'pay' | 'free' | 'stipend'>('free');
+  const [internshipType, setInternshipType] = useState<"free" | "paid" | "stipend" | "industrial" | "corporate" | "research" >('free');
   const [amount, setAmount] = useState('');
 
   // Error state
@@ -279,8 +279,8 @@ export function CreateOpportunityWizard({
                 >
                   <option value="free">Free / Unpaid</option>
                   <option value="stipend">Stipend</option>
-                  <option value="pay">Pay</option>
-                  <option value="will paid">Will Be Paid</option>
+                  <option value="paid">Pay</option>
+                  <option value="corporate">Will Be Paid</option>
                 </select>
               </div>
 

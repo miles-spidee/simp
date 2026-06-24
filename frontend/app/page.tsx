@@ -266,7 +266,7 @@ export default function LandingPage() {
                     </svg>
                     <span className="text-slate-400 font-medium">Internship Type:</span>
                     <span className="font-semibold text-slate-800 ml-auto capitalize">
-                      {opp.internshipType === 'will paid' ? 'Will Be Paid' : opp.internshipType === 'pay' ? 'Paid' : opp.internshipType || 'Free'}
+                      {opp.internshipType || 'Free'}
                     </span>
                   </div>
                   
@@ -313,7 +313,7 @@ export default function LandingPage() {
                       <span className="font-semibold text-slate-800 ml-auto">
                         {opp.internshipType === 'free' ? 'Free / Unpaid' : 
                          opp.internshipType === 'stipend' ? `Stipend (${opp.amount || 'Yes'})` :
-                         opp.internshipType === 'will paid' || opp.internshipType === 'pay' ? `Paid (${opp.amount || 'Yes'})` : 
+                         opp.internshipType === 'paid' ? `Paid (${opp.amount || 'Yes'})` : 
                          opp.internshipType}
                       </span>
                     </div>

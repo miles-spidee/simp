@@ -5,7 +5,7 @@ import { Drawer } from '@/components/admin/ui/Drawer';
 import { Button } from '@/components/admin/ui/Button';
 import { Briefcase, User, Mail, Phone } from 'lucide-react';
 import { applicationService } from '@/src/services/application.service';
-import { Opportunity } from '@/src/data/mock-opportunities';
+import { Opportunity } from '@/src/data/mock-landing-opportunities';
 
 interface AddCandidateDrawerProps {
   isOpen: boolean;
@@ -32,14 +32,22 @@ export function AddCandidateDrawer({
 
   // Reset form when drawer opens
   useEffect(() => {
+    let isMounted = true;
     if (isOpen) {
-      setName('');
-      setEmail('');
-      setPhone('');
-      setOpportunityId('');
-      setStatus('Pending');
-      setErrors({});
+      Promise.resolve().then(() => {
+        if (isMounted) {
+          setName('');
+          setEmail('');
+          setPhone('');
+          setOpportunityId('');
+          setStatus('Pending');
+          setErrors({});
+        }
+      });
     }
+    return () => {
+      isMounted = false;
+    };
   }, [isOpen]);
 
   const validate = () => {
@@ -197,7 +205,7 @@ export function AddCandidateDrawer({
               <option value="">Select Opportunity</option>
               {opportunities.map((opp) => (
                 <option key={opp.id} value={opp.id}>
-                  {opp.title} ({opp.location})
+                  {opp.title} ({opp.mode})
                 </option>
               ))}
             </select>
@@ -211,7 +219,7 @@ export function AddCandidateDrawer({
             <label className="text-sm font-bold text-slate-700">Initial Pipeline Status</label>
             <select
               value={status}
-              onChange={(e) => setStatus(e.target.value as any)}
+              onChange={(e) => setStatus(e.target.value as 'Pending' | 'Interview' | 'Accepted' | 'Rejected')}
               className="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all bg-white"
             >
               <option value="Pending">Pending Review</option>

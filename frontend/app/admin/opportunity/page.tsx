@@ -27,7 +27,15 @@ export default function OpportunityPage() {
   };
 
   useEffect(() => {
-    loadData();
+    let isMounted = true;
+    Promise.resolve().then(() => {
+      if (isMounted) {
+        loadData();
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const filteredOpportunities = opportunities.filter(opp => 

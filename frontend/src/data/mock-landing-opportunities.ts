@@ -10,7 +10,7 @@ export interface Opportunity {
   eligibility: string;
   startDate: string;
   color: string;
-  internshipType?: "free" | "paid" | "stipend" | "industrial" | "corporate" | "research";
+  internshipType?: "free" | "paid" | "stipend" | "industrial" | "corporate" | "research" ;
   amount?: string;
 }
 
