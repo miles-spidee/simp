@@ -1,4 +1,4 @@
-import { Task, MOCK_TASKS } from '../data/mock-tasks';
+import { Task, TaskAssignee, MOCK_TASKS, MOCK_TASK_ASSIGNEES } from '../data/mock-tasks';
 
 export const taskService = {
   async getTasks(): Promise<Task[]> {
@@ -14,5 +14,10 @@ export const taskService = {
   async getTasksByBatch(batchId: string): Promise<Task[]> {
     await new Promise(resolve => setTimeout(resolve, 300));
     return MOCK_TASKS.filter(task => task.batchId === batchId);
+  },
+
+  async getAssignees(taskId: string): Promise<TaskAssignee[]> {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    return MOCK_TASK_ASSIGNEES.filter(a => a.taskId === taskId);
   }
 };

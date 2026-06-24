@@ -1,13 +1,17 @@
-import { Course, MOCK_LMS_COURSES } from '../data/mock-lms-courses';
+import { LearningModule, MOCK_LEARNING_MODULES } from '../data/mock-learning-modules';
 
-export const lmsService = {
-  async getCourses(): Promise<Course[]> {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return MOCK_LMS_COURSES;
-  },
-
-  async getCourse(id: string): Promise<Course | undefined> {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    return MOCK_LMS_COURSES.find(c => c.id === id);
+class LMSService {
+  async getModules(): Promise<LearningModule[]> {
+    return [...MOCK_LEARNING_MODULES];
   }
-};
+
+  async getModule(id: string): Promise<LearningModule | undefined> {
+    return MOCK_LEARNING_MODULES.find(m => m.id === id);
+  }
+
+  async getModulesForProgram(programId: string): Promise<LearningModule[]> {
+    return MOCK_LEARNING_MODULES.filter(m => m.programId === programId);
+  }
+}
+
+export const lmsService = new LMSService();

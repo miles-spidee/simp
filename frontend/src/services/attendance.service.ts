@@ -1,13 +1,29 @@
-import { AttendanceLog, AttendanceStatus, MOCK_ATTENDANCE_LOGS, MOCK_ATTENDANCE_STATUS } from '../data/mock-attendance';
+import { AttendanceSession, AttendanceRecord, AttendanceStatus, MOCK_ATTENDANCE_SESSIONS, MOCK_ATTENDANCE_RECORDS, MOCK_ATTENDANCE_STATUS } from '../data/mock-attendance';
 
-export const attendanceService = {
-  async getAttendanceLogs(): Promise<AttendanceLog[]> {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return MOCK_ATTENDANCE_LOGS;
-  },
-
-  async getAttendanceStatus(): Promise<AttendanceStatus> {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return MOCK_ATTENDANCE_STATUS;
+class AttendanceService {
+  async getSessions(): Promise<AttendanceSession[]> {
+    return [...MOCK_ATTENDANCE_SESSIONS];
   }
-};
+
+  async getRecordsForSession(sessionId: string): Promise<AttendanceRecord[]> {
+    return MOCK_ATTENDANCE_RECORDS.filter(r => r.sessionId === sessionId);
+  }
+
+  async getStudentStatus(studentId: string): Promise<AttendanceStatus> {
+    return { ...MOCK_ATTENDANCE_STATUS, studentId };
+  }
+
+  async createSession(batchId: string, createdBy: string, date: string): Promise<AttendanceSession> {
+    const newSession: AttendanceSession = {
+      id: `sess-${Date.now()}`,
+      batchId,
+      date,
+      createdBy,
+      status: 'Open'
+    };
+    MOCK_ATTENDANCE_SESSIONS.push(newSession);
+    return newSession;
+  }
+}
+
+export const attendanceService = new AttendanceService();

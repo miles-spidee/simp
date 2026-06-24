@@ -10,6 +10,13 @@ export interface Task {
   isOverdue: boolean;
   isLocked: boolean;
   alert?: string;
+  fileIds?: string[];
+}
+
+export interface TaskAssignee {
+  taskId: string;
+  studentId: string;
+  status: 'pending' | 'submitted' | 'graded';
 }
 
 export const MOCK_TASKS: Task[] = [
@@ -24,7 +31,8 @@ export const MOCK_TASKS: Task[] = [
     status: 'pending',
     isOverdue: true,
     isLocked: false,
-    alert: 'Level 1 Escalation Active'
+    alert: 'Level 1 Escalation Active',
+    fileIds: ['file-1']
   },
   {
     id: 'TSK-102',
@@ -50,4 +58,9 @@ export const MOCK_TASKS: Task[] = [
     isOverdue: false,
     isLocked: false
   }
+];
+
+export const MOCK_TASK_ASSIGNEES: TaskAssignee[] = [
+  { taskId: 'TSK-101', studentId: 'stu-1', status: 'pending' },
+  { taskId: 'TSK-102', studentId: 'stu-2', status: 'graded' }
 ];
