@@ -1,4 +1,4 @@
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://13.60.249.106:8000';
 
 export const API_ENDPOINTS = {
   OPPORTUNITIES: `${API_BASE_URL}/api/opportunities`,
