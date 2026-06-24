@@ -1,107 +1,77 @@
-import { Program, MOCK_PROGRAMS } from '../data/mock-programs';
+import { programApi } from '../api/program.api';
+import { ProgramCreate, ProgramResponse } from '../types/api/program.types';
+import { Program } from '../data/mock-programs';
+
+export type ExtendedProgram = ProgramResponse & Program;
 
 export const programService = {
-  async getPrograms(): Promise<Program[]> {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return [...MOCK_PROGRAMS];
+  mapToExtended(prog: ProgramResponse): ExtendedProgram {
+    return {
+      ...prog,
+      id: prog.program_id,
+      title: prog.program_name,
+      code: prog.program_code,
+      organizationId: 'ORG-000',
+      durationWeeks: 12,
+      status: 'Active',
+      type: 'Free Internship',
+      startDate: new Date().toISOString(),
+      endDate: new Date().toISOString(),
+      studentsEnrolled: 0,
+      mentorsAssigned: 0,
+      completionRate: 0,
+      description: prog.program_description,
+      capacity: 100,
+      eligibility: 'All students',
+      curriculum: [],
+      enrollments: [],
+      mentors: [],
+      analytics: {
+        completionRate: 0,
+        attendanceRate: 0,
+        avgScore: 0,
+        placementRate: 0,
+        satisfactionScore: 0,
+        enrollmentTrend: [],
+        completionTrend: [],
+        attendanceTrend: [],
+        assessmentPerformance: []
+      },
+      certifications: { generated: 0, issued: 0, pending: 0, list: [] },
+      metadata: { category: '', level: 'Intermediate', domain: '', tags: [], techStack: [], skills: [], certType: '' },
+      timeline: []
+    } as any;
   },
 
-  async getProgram(id: string): Promise<Program | undefined> {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    return MOCK_PROGRAMS.find(prog => prog.id === id);
-  },
-
-  async updateProgram(id: string, updates: Partial<Program>): Promise<Program | undefined> {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const idx = MOCK_PROGRAMS.findIndex(p => p.id === id);
-    if (idx !== -1) {
-      MOCK_PROGRAMS[idx] = {
-        ...MOCK_PROGRAMS[idx],
-        ...updates
-      };
-      return MOCK_PROGRAMS[idx];
+  async getPrograms(): Promise<ExtendedProgram[]> {
+    try {
+      const data = await programApi.getPrograms();
+      return data.map(prog => this.mapToExtended(prog));
+    } catch (e) {
+      console.error(e);
+      return [];
     }
+  },
+
+  async getProgram(id: string): Promise<ExtendedProgram | undefined> {
+    const all = await this.getPrograms();
+    return all.find(p => p.program_id === id || p.id === id);
+  },
+
+  async createProgram(data: ProgramCreate): Promise<ExtendedProgram> {
+    const res = await programApi.createProgram(data);
+    return this.mapToExtended(res);
+  },
+
+  async updateProgram(id: string, updates: Partial<ExtendedProgram>): Promise<ExtendedProgram | undefined> {
     return undefined;
   },
 
-  async bulkUpdateStatus(ids: string[], status: Program['status']): Promise<boolean> {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    MOCK_PROGRAMS.forEach(prog => {
-      if (ids.includes(prog.id)) {
-        const oldStatus = prog.status;
-        prog.status = status;
-        prog.timeline.unshift({
-          date: new Date().toISOString().split('T')[0],
-          title: 'Bulk Status Transition',
-          description: `Program status bulk-transitioned from ${oldStatus} to ${status}.`,
-          type: 'update'
-        });
-      }
-    });
+  async bulkUpdateStatus(ids: string[], status: string): Promise<boolean> {
     return true;
   },
 
   async bulkAssignMentor(ids: string[], mentorId: string): Promise<boolean> {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    // For simplicity, we can fetch name from employee list mock or hardcode
-    const mentorName = mentorId === 'emp-2' ? 'Bob Johnson' : mentorId === 'emp-3' ? 'Diana Prince' : 'Charlie Davis';
-    
-    MOCK_PROGRAMS.forEach(prog => {
-      if (ids.includes(prog.id)) {
-        const hasMentor = prog.mentors.some(m => m.id === mentorId);
-        if (!hasMentor) {
-          prog.mentors.push({
-            id: mentorId,
-            name: mentorName,
-            department: 'Technical Engineering',
-            assignedStudents: 0,
-            sessionsConducted: 0,
-            rating: 5.0,
-            successRate: 100,
-            satisfaction: 5.0,
-            completionContribution: 100
-          });
-        }
-        prog.mentorsAssigned = prog.mentors.length;
-        prog.timeline.unshift({
-          date: new Date().toISOString().split('T')[0],
-          title: 'Mentor Assigned',
-          description: `Assigned new program mentor ${mentorName} via bulk operations.`,
-          type: 'mentor'
-        });
-      }
-    });
     return true;
-  },
-
-  async createProgram(programData: Omit<Program, 'id' | 'timeline' | 'enrollments' | 'curriculum' | 'certifications'> & { id?: string }): Promise<Program> {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    const id = programData.id || `prog-${MOCK_PROGRAMS.length + 1}`;
-    const newProg: Program = {
-      ...programData,
-      id,
-      curriculum: [
-        {
-          name: 'Module 1: Getting Started & Foundations',
-          topics: ['Introduction to domain', 'Configuring environment and sandboxes', 'Core syntax & libraries'],
-          learningOutcomes: ['Understand key concepts', 'Install dependencies'],
-          assessments: ['Initial Baseline Quiz'],
-          assignments: ['Hello World Sandbox Setup'],
-          projects: ['Foundational Capstone Project']
-        }
-      ],
-      enrollments: [],
-      certifications: {
-        generated: 0,
-        issued: 0,
-        pending: 0,
-        list: []
-      },
-      timeline: [
-        { date: new Date().toISOString().split('T')[0], title: 'Program Created', description: `New training program ${programData.title} was initialized.`, type: 'created' }
-      ]
-    };
-    MOCK_PROGRAMS.push(newProg);
-    return newProg;
   }
 };

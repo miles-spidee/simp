@@ -82,12 +82,13 @@ export function AddCandidateDrawer({
     try {
       setIsSubmitting(true);
       await applicationService.createApplication({
-        candidateName: name.trim(),
+        first_name: name.trim().split(' ')[0] || '',
+        last_name: name.trim().split(' ').slice(1).join(' ') || '',
         email: email.trim(),
-        phone: phone.trim(),
-        opportunityId: opportunityId,
-        status: status
-      });
+        mobile_number: phone.trim(),
+        opening_id: opportunityId,
+        resume_url: 'https://example.com/resume.pdf' // Fake resume for now
+      } as any);
       if (onShowNotification) {
         onShowNotification(
           'Candidate Added',

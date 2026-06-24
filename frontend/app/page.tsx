@@ -6,7 +6,7 @@ import { opportunitiesService } from '@/src/services/opportunities.service';
 import { Opportunity } from '@/src/data/mock-opportunities';
 
 export default function LandingPage() {
-  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [opportunities, setOpportunities] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Fetch opportunities from the mock service layer
@@ -14,7 +14,7 @@ export default function LandingPage() {
     const fetchOpportunities = async () => {
       try {
         const data = await opportunitiesService.getOpportunities();
-        setOpportunities(data);
+        setOpportunities(data as any);
       } catch (error) {
         console.error("Failed to fetch opportunities from service:", error);
         setOpportunities([]);

@@ -1,36 +1,55 @@
-import { Opportunity, MOCK_OPPORTUNITIES } from '../data/mock-opportunities';
+import { opportunityApi } from '../api/opportunity.api';
+import { OpeningCreate, OpeningResponse } from '../types/api/opportunity.types';
+import { Opportunity } from '../data/mock-opportunities';
+
+export type ExtendedOpening = OpeningResponse & Opportunity;
 
 class OpportunitiesService {
-  async getOpportunities(): Promise<Opportunity[]> {
-    return new Promise((resolve) => {
-      // Simulate network delay for realistic loading state
-      setTimeout(() => {
-        resolve([...MOCK_OPPORTUNITIES]);
-      }, 500);
-    });
+  mapToExtended(opp: OpeningResponse): ExtendedOpening {
+    return {
+      ...opp,
+      id: opp.opening_id,
+      title: opp.project_title || opp.role_name,
+      type: 'Internship',
+      value: 'stipend',
+      description: opp.role_description,
+      duration: '6 Months',
+      mode: 'Remote',
+      seats: '10',
+      eligibility: 'Any Degree',
+      startDate: opp.created_at || new Date().toISOString(),
+      color: 'from-blue-600/20 to-cyan-600/20 border-blue-500/30 text-blue-400',
+      internshipType: 'stipend',
+      amount: '$0',
+      programId: opp.program_id,
+      status: 'Open' as any,
+      postedDate: opp.created_at?.split('T')[0] || ''
+    } as any;
   }
 
-  async getOpportunity(id: string): Promise<Opportunity | undefined> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(MOCK_OPPORTUNITIES.find(opp => opp.id === id));
-      }, 300);
-    });
+  async getOpportunities(): Promise<ExtendedOpening[]> {
+    try {
+      const data = await opportunityApi.getOpenings();
+      return data.map(opp => this.mapToExtended(opp));
+    } catch (e) {
+      console.error(e);
+      return [];
+    }
   }
 
-  async createOpportunity(opp: Omit<Opportunity, 'id'>): Promise<Opportunity> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const newOpp: Opportunity = {
-          ...opp,
-          id: `opp-${Math.random().toString(36).substring(2, 9)}`,
-          status: opp.status || 'Draft',
-          postedDate: opp.postedDate || new Date().toISOString().split('T')[0]
-        };
-        MOCK_OPPORTUNITIES.push(newOpp);
-        resolve(newOpp);
-      }, 500);
-    });
+  async getOpportunity(id: string): Promise<ExtendedOpening | undefined> {
+    try {
+      const opp = await opportunityApi.getOpening(id);
+      return this.mapToExtended(opp);
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+  }
+
+  async createOpportunity(opp: OpeningCreate): Promise<ExtendedOpening> {
+    const res = await opportunityApi.createOpening(opp);
+    return this.mapToExtended(res);
   }
 }
 

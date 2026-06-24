@@ -134,19 +134,11 @@ export function CreateOpportunityWizard({
       setIsSubmitting(true);
       
       await opportunitiesService.createOpportunity({
-        title: title.trim(),
-        type: type.trim(),
-        value,
-        description: description.trim(),
-        duration: duration.trim(),
-        mode: mode.trim(),
-        seats: seats.trim(),
-        eligibility: eligibility.trim(),
-        startDate: startDate.trim(),
-        color,
-        internshipType,
-        amount: internshipType === 'free' ? undefined : amount.trim()
-      });
+        role_name: title.trim(),
+        role_description: description.trim(),
+        project_title: title.trim(),
+        opening_status: 'Active',
+      } as any);
 
       if (onOpportunityCreated) {
         onOpportunityCreated();

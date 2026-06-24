@@ -397,44 +397,20 @@ export default function OrganizationManagementPage() {
         }
       } else if (type === 'onboard') {
         const newOrg = await organizationService.createOrganization({
-          name: collegeForm.name,
-          code: collegeForm.code,
-          type: collegeForm.type,
-          location: collegeForm.location,
-          university: collegeForm.university,
-          website: collegeForm.website,
-          email: collegeForm.email,
-          phone: collegeForm.phone,
-          address: collegeForm.address,
-          affiliation: collegeForm.affiliation,
+          college_name: collegeForm.name,
+          college_code: collegeForm.code,
+          address_line_1: collegeForm.location,
+          address_line_2: collegeForm.address,
+          website_url: collegeForm.website,
+          college_email: collegeForm.email,
+          college_phone: collegeForm.phone,
           accreditation: collegeForm.accreditation,
-          establishmentYear: Number(collegeForm.establishmentYear),
-          naacGrade: collegeForm.naacGrade,
-          nbaStatus: collegeForm.nbaStatus,
-          autonomousStatus: collegeForm.autonomousStatus,
-          nationalRanking: Number(collegeForm.nationalRanking),
-          status: 'Active',
-          partnershipStatus: 'Active',
-          partnershipSince: new Date().toISOString().split('T')[0],
-          logo: collegeForm.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 3),
-          headcount: 0,
-          managerId: 'emp-3',
-          departments: [],
-          coordinators: [],
-          students: [],
-          programs: [],
-          placementAnalytics: {
-            placementPercentage: 0,
-            studentsPlaced: 0,
-            companiesParticipated: 0,
-            avgPackage: '0 LPA',
-            placementTrend: [],
-            deptPlacementRate: [],
-            companyHiring: [],
-            salaryDistribution: [],
-            yoyGrowth: []
-          }
-        });
+          city: '',
+          state: '',
+          country: '',
+          postal_code: '',
+          status: 'ACTIVE'
+        } as any);
         setOrganizations([...organizations, newOrg]);
         showToast(`Successfully onboarded institutional partner: ${newOrg.name}`);
       } else if (type === 'uploadDoc') {

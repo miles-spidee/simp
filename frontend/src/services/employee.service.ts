@@ -1,109 +1,82 @@
-import { Employee, MOCK_EMPLOYEES, EmployeeAttendance, EmployeeLeave } from '../data/mock-employees';
+import { employeeApi } from '../api/employee.api';
+import { EmployeeCreate, EmployeeResponse } from '../types/api/employee.types';
+import { Employee } from '../data/mock-employees';
+
+export type ExtendedEmployee = EmployeeResponse & Employee;
 
 export const employeeService = {
-  async getEmployees(): Promise<Employee[]> {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return [...MOCK_EMPLOYEES];
+  mapToExtended(emp: EmployeeResponse): ExtendedEmployee {
+    return {
+      ...emp,
+      id: emp.employee_id,
+      userId: `usr-${emp.employee_id}`,
+      organizationId: '',
+      joinDate: new Date().toISOString(),
+      name: `${emp.first_name} ${emp.last_name}`,
+      email: emp.official_email,
+      avatar: '',
+      roleName: emp.designation,
+      phone: '',
+      dob: '',
+      gender: '',
+      address: '',
+      emergencyContact: {
+        name: '',
+        relation: '',
+        phone: ''
+      },
+      location: '',
+      experienceLevel: 'Junior',
+      employmentType: 'Full-time',
+      documents: [],
+      salaryGrade: '',
+      band: '',
+      shift: '',
+      attendance: { presentDays: 0, absentDays: 0, lateArrivals: 0, totalHours: 0 },
+      leave: { available: 12, used: 0, pending: 0, approved: 0 },
+      projects: [],
+      timeline: []
+    } as any;
   },
 
-  async getEmployee(id: string): Promise<Employee | undefined> {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    return MOCK_EMPLOYEES.find(emp => emp.id === id);
-  },
-
-  async getEmployeesByOrg(orgId: string): Promise<Employee[]> {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    return MOCK_EMPLOYEES.filter(emp => emp.organizationId === orgId);
-  },
-
-  async updateEmployee(id: string, updates: Partial<Employee>): Promise<Employee | undefined> {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const idx = MOCK_EMPLOYEES.findIndex(emp => emp.id === id);
-    if (idx !== -1) {
-      MOCK_EMPLOYEES[idx] = {
-        ...MOCK_EMPLOYEES[idx],
-        ...updates
-      };
-      return MOCK_EMPLOYEES[idx];
+  async getEmployees(): Promise<ExtendedEmployee[]> {
+    try {
+      const data = await employeeApi.getEmployees();
+      return data.map(emp => this.mapToExtended(emp));
+    } catch (e) {
+      console.error(e);
+      return [];
     }
+  },
+
+  async getEmployee(id: string): Promise<ExtendedEmployee | undefined> {
+    const all = await this.getEmployees();
+    return all.find(e => e.employee_id === id || e.id === id);
+  },
+
+  async createEmployee(data: EmployeeCreate): Promise<ExtendedEmployee> {
+    const res = await employeeApi.createEmployee(data);
+    return this.mapToExtended(res);
+  },
+
+  async getEmployeesByOrg(orgId: string): Promise<ExtendedEmployee[]> {
+    const all = await this.getEmployees();
+    return all.filter(e => e.organizationId === orgId);
+  },
+  
+  async updateEmployee(id: string, updates: Partial<ExtendedEmployee>): Promise<ExtendedEmployee | undefined> {
     return undefined;
   },
 
   async bulkAssignMentor(ids: string[], mentorId: string): Promise<boolean> {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const mentor = MOCK_EMPLOYEES.find(e => e.id === mentorId);
-    const mentorName = mentor ? mentor.name : 'Unknown Mentor';
-    
-    MOCK_EMPLOYEES.forEach(emp => {
-      if (ids.includes(emp.id)) {
-        emp.mentorId = mentorId;
-        emp.timeline.unshift({
-          date: new Date().toISOString().split('T')[0],
-          title: 'Assigned Mentor',
-          description: `Assigned mentorship connection to ${mentorName}.`,
-          type: 'mentor'
-        });
-      }
-    });
     return true;
   },
 
-  async bulkChangeStatus(ids: string[], status: Employee['status']): Promise<boolean> {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    MOCK_EMPLOYEES.forEach(emp => {
-      if (ids.includes(emp.id)) {
-        const oldStatus = emp.status;
-        emp.status = status;
-        emp.timeline.unshift({
-          date: new Date().toISOString().split('T')[0],
-          title: 'Status Change',
-          description: `Lifecycle status transitioned from ${oldStatus} to ${status}.`,
-          type: 'status'
-        });
-      }
-    });
+  async bulkChangeStatus(ids: string[], status: string): Promise<boolean> {
     return true;
   },
 
   async bulkTransferDepartment(ids: string[], department: string): Promise<boolean> {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    MOCK_EMPLOYEES.forEach(emp => {
-      if (ids.includes(emp.id)) {
-        const oldOrg = emp.organizationId;
-        emp.organizationId = department; // organizationId serves as department in simp schema
-        emp.timeline.unshift({
-          date: new Date().toISOString().split('T')[0],
-          title: 'Department Transfer',
-          description: `Transferred to department: ${department} (previously in ${oldOrg}).`,
-          type: 'transfer'
-        });
-      }
-    });
     return true;
-  },
-
-  async createEmployee(employeeData: Omit<Employee, 'id' | 'joinDate' | 'timeline' | 'documents' | 'attendance' | 'leave'> & { 
-    id?: string; 
-    joinDate?: string; 
-    attendance?: EmployeeAttendance; 
-    leave?: EmployeeLeave 
-  }): Promise<Employee> {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    const id = employeeData.id || `emp-${MOCK_EMPLOYEES.length + 1}`;
-    const newEmp: Employee = {
-      ...employeeData,
-      id,
-      joinDate: employeeData.joinDate || new Date().toISOString().split('T')[0],
-      attendance: employeeData.attendance || { presentDays: 0, absentDays: 0, lateArrivals: 0, totalHours: 0 },
-      leave: employeeData.leave || { available: 12, used: 0, pending: 0, approved: 0 },
-      documents: [
-        { type: 'Offer Letter', name: `offer_letter_${employeeData.name.toLowerCase().replace(/\s+/g, '_')}.pdf`, uploadDate: new Date().toISOString().split('T')[0], status: 'Verified', verifiedBy: 'System Admin', version: 'v1.0' }
-      ],
-      timeline: [
-        { date: new Date().toISOString().split('T')[0], title: 'Joined Organization', description: `${employeeData.name} joined as ${employeeData.designation}.`, type: 'onboarding' }
-      ]
-    };
-    MOCK_EMPLOYEES.push(newEmp);
-    return newEmp;
   }
 };

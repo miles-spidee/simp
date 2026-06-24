@@ -338,30 +338,15 @@ export default function EmployeeManagementPage() {
         }
       } else if (type === 'onboard') {
         const newEmp = await employeeService.createEmployee({
-          name: editForm.name,
-          email: editForm.email,
-          phone: editForm.phone,
-          dob: editForm.dob,
-          gender: editForm.gender,
-          address: editForm.address,
-          emergencyContact: {
-            name: editForm.emergencyName,
-            relation: editForm.emergencyRelation,
-            phone: editForm.emergencyPhone,
-          },
-          designation: editForm.designation,
-          location: editForm.location,
-          experienceLevel: editForm.experienceLevel,
-          employmentType: editForm.employmentType,
-          salaryGrade: editForm.salaryGrade || 'Grade 1',
-          band: editForm.band || 'Band I1',
-          shift: editForm.shift || 'General',
-          status: 'Probation',
-          userId: `user-${Date.now()}`,
-          organizationId: 'org-1',
-          roleName: editForm.employmentType === 'Internship' ? 'Student' : 'Employee',
-          avatar: editForm.name.split(' ').map(n => n[0]).join('').toUpperCase()
-        });
+          user_id: `user-${Date.now()}`,
+          employee_code: `EMP-${Date.now()}`,
+          first_name: editForm.name.split(' ')[0] || '',
+          last_name: editForm.name.split(' ')[1] || '',
+          phone_number: editForm.phone,
+          official_email: editForm.email,
+          joining_date: new Date().toISOString(),
+          designation: editForm.designation
+        } as any);
         setEmployees([...employees, newEmp]);
         showToast(`Successfully onboarded ${newEmp.name} as ${newEmp.designation}`);
         router.push(`/admin/users?autofill=true&name=${encodeURIComponent(newEmp.name)}&email=${encodeURIComponent(newEmp.email)}&phone=${encodeURIComponent(newEmp.phone)}&redirect=/admin/employee`);

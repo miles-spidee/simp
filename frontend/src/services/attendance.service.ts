@@ -24,6 +24,14 @@ class AttendanceService {
     MOCK_ATTENDANCE_SESSIONS.push(newSession);
     return newSession;
   }
+
+  async getAttendanceLogs(): Promise<import('../data/mock-attendance').AttendanceLog[]> {
+    return (await import('../data/mock-attendance')).MOCK_ATTENDANCE_LOGS;
+  }
+
+  async getAttendanceStatus(): Promise<AttendanceStatus> {
+    return MOCK_ATTENDANCE_STATUS;
+  }
 }
 
 export const attendanceService = new AttendanceService();

@@ -1,52 +1,31 @@
-import { Application, ApplicationStatus, MOCK_APPLICATIONS } from '../data/mock-applications';
+import { applicationApi } from '../api/application.api';
+import { ApplicationCreate, ApplicationResponse, ApplicationReviewRequest } from '../types/api/application.types';
+import { Application } from '../data/mock-applications';
+
+export type ExtendedApplication = ApplicationResponse & Application;
 
 export const applicationService = {
-  async getApplications(): Promise<Application[]> {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return MOCK_APPLICATIONS;
-  },
-
-  async getApplication(id: string): Promise<Application | undefined> {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    return MOCK_APPLICATIONS.find(app => app.id === id);
-  },
-
-  async getApplicationsByOpportunity(oppId: string): Promise<Application[]> {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return MOCK_APPLICATIONS.filter(app => app.opportunityId === oppId);
-  },
-
-  async updateApplicationStatus(id: string, newStatus: ApplicationStatus): Promise<Application | undefined> {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const app = MOCK_APPLICATIONS.find(a => a.id === id);
-    if (app) {
-      app.status = newStatus;
-    }
-    return app;
-  },
-
-  async createApplication(data: {
-    candidateName: string;
-    email: string;
-    phone: string;
-    opportunityId: string;
-    status: ApplicationStatus;
-  }): Promise<Application> {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const newApp: Application = {
-      ...data,
-      firstName: data.candidateName.split(' ')[0] || '',
-      lastName: data.candidateName.split(' ').slice(1).join(' ') || '',
-      dob: '2000-01-01',
-      gender: 'Other',
-      city: 'Unknown',
-      state: 'N/A',
-      college: 'Unknown University',
-      department: 'General',
-      degree: 'B.S.',
-      currentYear: '1st Year',
-      cgpa: 8.0,
-      graduationYear: new Date().getFullYear().toString(),
+  mapToExtended(app: ApplicationResponse): ExtendedApplication {
+    const firstName = app.profile?.first_name || '';
+    const lastName = app.profile?.last_name || '';
+    return {
+      ...app,
+      id: app.application_id,
+      candidateName: `${firstName} ${lastName}`.trim(),
+      firstName,
+      lastName,
+      email: app.profile?.email || '',
+      phone: app.profile?.mobile_number || '',
+      dob: '',
+      gender: '',
+      city: '',
+      state: '',
+      college: '',
+      department: '',
+      degree: '',
+      currentYear: '',
+      cgpa: 0,
+      graduationYear: '',
       skills: [],
       githubUrl: '',
       linkedinUrl: '',
@@ -55,48 +34,70 @@ export const applicationService = {
       resumeUrl: '',
       whyInternship: '',
       internshipType: 'free',
-      assignedReviewer: 'Unassigned',
-      id: `app-${MOCK_APPLICATIONS.length + 1}`,
-      appliedDate: new Date().toISOString().split('T')[0]
-    };
-    MOCK_APPLICATIONS.push(newApp);
-    return newApp;
+      opportunityId: app.opening_id,
+      status: app.application_status as any,
+      appliedDate: app.applied_at?.split('T')[0] || '',
+      assignedReviewer: app.reviewed_by || 'Unassigned',
+      reviewScore: 0,
+      technicalScore: 0,
+      communicationScore: 0,
+      academicScore: 0,
+      cultureFitScore: 0,
+      overallRecommendation: 'Hold',
+      aiMatchPercentage: 0
+    } as any;
   },
 
-  async updateApplicationDetails(id: string, updates: Partial<Application>): Promise<Application | undefined> {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const idx = MOCK_APPLICATIONS.findIndex(a => a.id === id);
-    if (idx !== -1) {
-      MOCK_APPLICATIONS[idx] = {
-        ...MOCK_APPLICATIONS[idx],
-        ...updates
-      };
-      return MOCK_APPLICATIONS[idx];
+  async getApplications(): Promise<ExtendedApplication[]> {
+    try {
+      const data = await applicationApi.getAllApplications();
+      return data.map(app => this.mapToExtended(app));
+    } catch (e) {
+      console.error(e);
+      return [];
     }
-    return undefined;
   },
 
-  async bulkUpdateStatus(ids: string[], newStatus: ApplicationStatus): Promise<Application[]> {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    const updated: Application[] = [];
-    MOCK_APPLICATIONS.forEach(app => {
-      if (ids.includes(app.id)) {
-        app.status = newStatus;
-        updated.push(app);
-      }
-    });
-    return updated;
+  async getApplication(id: string): Promise<ExtendedApplication | undefined> {
+    try {
+      const app = await applicationApi.getApplication(id);
+      return this.mapToExtended(app);
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
   },
 
-  async bulkAssignReviewer(ids: string[], reviewer: string): Promise<Application[]> {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    const updated: Application[] = [];
-    MOCK_APPLICATIONS.forEach(app => {
-      if (ids.includes(app.id)) {
-        app.assignedReviewer = reviewer;
-        updated.push(app);
-      }
-    });
-    return updated;
+  async getApplicationsByOpportunity(oppId: string): Promise<ExtendedApplication[]> {
+    const all = await this.getApplications();
+    return all.filter(a => a.opening_id === oppId);
+  },
+
+  async updateApplicationStatus(id: string, newStatus: string): Promise<ExtendedApplication | undefined> {
+    const req: ApplicationReviewRequest = { application_status: newStatus, remarks: '' };
+    try {
+      const res = await applicationApi.reviewApplication(id, req);
+      return this.mapToExtended(res);
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+  },
+
+  async updateApplicationDetails(id: string, updates: Partial<ExtendedApplication>): Promise<ExtendedApplication | undefined> {
+    return this.getApplication(id);
+  },
+
+  async createApplication(data: ApplicationCreate): Promise<ExtendedApplication> {
+    const res = await applicationApi.submitApplication(data);
+    return this.mapToExtended(res);
+  },
+
+  async bulkUpdateStatus(ids: string[], newStatus: string): Promise<ExtendedApplication[]> {
+    return [];
+  },
+
+  async bulkAssignReviewer(ids: string[], reviewer: string): Promise<ExtendedApplication[]> {
+    return [];
   }
 };

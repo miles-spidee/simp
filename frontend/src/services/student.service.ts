@@ -1,180 +1,143 @@
-import { Student, MOCK_STUDENTS, StudentDocument, StudentTimelineEvent } from '../data/mock-students';
+import { studentApi } from '../api/student.api';
+import { StudentCreate, StudentResponse, StudentUpdate } from '../types/api/student.types';
+import { Student } from '../data/mock-students';
+
+export type ExtendedStudent = StudentResponse & Student;
 
 export const studentService = {
-  async getStudents(): Promise<Student[]> {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return [...MOCK_STUDENTS];
-  },
-
-  async getStudent(id: string): Promise<Student | undefined> {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    return MOCK_STUDENTS.find(stu => stu.id === id);
-  },
-
-  async updateStudent(id: string, updates: Partial<Student>): Promise<Student | undefined> {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    const idx = MOCK_STUDENTS.findIndex(s => s.id === id);
-    if (idx !== -1) {
-      MOCK_STUDENTS[idx] = {
-        ...MOCK_STUDENTS[idx],
-        ...updates,
-        // Deep merge timeline if provided to prevent overwriting
-        timeline: updates.timeline ? [...updates.timeline] : MOCK_STUDENTS[idx].timeline
-      };
-      return MOCK_STUDENTS[idx];
-    }
-    return undefined;
-  },
-
-  async createStudent(
-    studentData: Omit<Student, 'id' | 'timeline' | 'documents' | 'credentials' | 'internId'> & { id?: string }
-  ): Promise<Student> {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const id = studentData.id || `stu-${MOCK_STUDENTS.length + 1}`;
-    const internId = `INT-2026-0${MOCK_STUDENTS.length + 1}`;
-    
-    const newStudent: Student = {
-      ...studentData,
-      id,
-      internId,
-      documents: [
-        { type: 'Resume', name: 'Resume_Uploaded.pdf', uploadDate: new Date().toISOString().split('T')[0], status: 'Pending', url: '#' },
-        { type: 'College ID', name: 'Student_ID_Scan.png', uploadDate: new Date().toISOString().split('T')[0], status: 'Pending', url: '#' }
-      ],
-      credentials: {
-        username: studentData.personalInfo.email.split('@')[0] || 'student',
-        portalAccess: true,
-        lmsAccess: true,
-        assessmentAccess: true
+  mapToExtended(stu: StudentResponse): ExtendedStudent {
+    return {
+      ...stu,
+      id: stu.student_id,
+      userId: 'USR-000',
+      internId: stu.intern_id || `INT-${stu.student_id.substring(0, 4)}`,
+      enrollmentDate: stu.created_at || new Date().toISOString(),
+      status: stu.student_status as any,
+      
+      personalInfo: {
+        name: `Student ${stu.student_id.substring(0, 4)}`,
+        email: 'student@example.com',
+        phone: '',
+        dob: '',
+        gender: '',
+        address: '',
+        avatar: ''
       },
-      timeline: [
-        {
-          date: new Date().toISOString().split('T')[0],
-          title: 'Student Profile Created',
-          description: `Direct registration profile created for ${studentData.personalInfo.name} with ID ${internId}.`,
-          type: 'registration'
-        }
-      ]
-    };
 
-    MOCK_STUDENTS.push(newStudent);
-    return newStudent;
+      academicInfo: {
+        college: '',
+        department: 'CSE',
+        degree: '',
+        year: 4,
+        cgpa: 0,
+        graduationYear: 2024
+      },
+
+      internshipInfo: {
+        program: '',
+        internshipType: 'Free Internship',
+        batchName: '',
+        mentorId: '',
+        mentorName: '',
+        joiningDate: stu.joined_at || '',
+        expectedCompletion: stu.completed_at || ''
+      },
+
+      documents: [],
+      credentials: {
+        username: 'student@example.com',
+        password: '',
+        portalAccess: true,
+        lmsAccess: false,
+        assessmentAccess: false
+      },
+      batch: {
+        id: '',
+        name: 'Unassigned',
+        startDate: '',
+        status: 'Pending'
+      },
+      mentor: {
+        id: '',
+        name: 'Unassigned',
+        department: '',
+        expertise: '',
+        sessionsConducted: 0,
+        rating: 0,
+        feedbackGiven: []
+      },
+      performance: {
+        attendanceScore: 0,
+        assessmentScore: 0,
+        projectScore: 0,
+        mentorRating: 0,
+        overallPerformance: 0,
+        attendanceTrend: [],
+        assessmentTrend: [],
+        skills: []
+      },
+      placement: {
+        status: 'Eligible'
+      },
+      timeline: []
+    } as any;
   },
 
-  async bulkUpdateStatus(ids: string[], status: Student['status']): Promise<boolean> {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    MOCK_STUDENTS.forEach(stu => {
-      if (ids.includes(stu.id)) {
-        const oldStatus = stu.status;
-        stu.status = status;
-        stu.timeline.unshift({
-          date: new Date().toISOString().split('T')[0],
-          title: 'Status Transition',
-          description: `Bulk updated status from ${oldStatus} to ${status}.`,
-          type: 'info'
-        });
+  async getStudents(): Promise<ExtendedStudent[]> {
+    try {
+      const data = await studentApi.getStudents();
+      return data.map(stu => this.mapToExtended(stu));
+    } catch (e) {
+      console.error(e);
+      return [];
+    }
+  },
+
+  async getStudent(id: string): Promise<ExtendedStudent | undefined> {
+    try {
+      const stu = await studentApi.getStudent(id);
+      return this.mapToExtended(stu);
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+  },
+
+  async updateStudent(id: string, updates: Partial<ExtendedStudent>): Promise<ExtendedStudent | undefined> {
+    try {
+      if (updates.status) {
+        const res = await studentApi.updateStudent(id, { student_status: updates.status as any });
+        return this.mapToExtended(res);
       }
-    });
+      return undefined;
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+  },
+
+  async createStudent(data: StudentCreate): Promise<ExtendedStudent> {
+    const res = await studentApi.createStudent(data);
+    return this.mapToExtended(res);
+  },
+
+  async bulkUpdateStatus(ids: string[], status: string): Promise<boolean> {
     return true;
   },
 
   async bulkAssignBatch(ids: string[], batchName: string): Promise<boolean> {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    MOCK_STUDENTS.forEach(stu => {
-      if (ids.includes(stu.id)) {
-        stu.batch = {
-          ...stu.batch,
-          name: batchName,
-          status: 'Active'
-        };
-        stu.internshipInfo = {
-          ...stu.internshipInfo,
-          batchName: batchName
-        };
-        stu.timeline.unshift({
-          date: new Date().toISOString().split('T')[0],
-          title: 'Batch Assignment',
-          description: `Assigned to batch "${batchName}" via bulk management.`,
-          type: 'batch'
-        });
-      }
-    });
     return true;
   },
 
   async bulkAssignMentor(ids: string[], mentorId: string, mentorName: string): Promise<boolean> {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    MOCK_STUDENTS.forEach(stu => {
-      if (ids.includes(stu.id)) {
-        stu.mentor = {
-          name: mentorName,
-          department: 'Technical Operations',
-          expertise: 'Engineering Mentorship',
-          sessionsConducted: 0,
-          rating: 5.0,
-          feedbackGiven: []
-        };
-        stu.internshipInfo = {
-          ...stu.internshipInfo,
-          mentorId,
-          mentorName
-        };
-        stu.timeline.unshift({
-          date: new Date().toISOString().split('T')[0],
-          title: 'Mentor Remapped',
-          description: `Assigned to mentor ${mentorName} via bulk management.`,
-          type: 'mentor'
-        });
-      }
-    });
     return true;
   },
 
   async bulkGenerateCredentials(ids: string[]): Promise<boolean> {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    MOCK_STUDENTS.forEach(stu => {
-      if (ids.includes(stu.id)) {
-        stu.credentials = {
-          username: stu.personalInfo.email.split('@')[0] || stu.internId.toLowerCase(),
-          portalAccess: true,
-          lmsAccess: true,
-          assessmentAccess: true
-        };
-        stu.timeline.unshift({
-          date: new Date().toISOString().split('T')[0],
-          title: 'Credentials Refreshed',
-          description: 'Regenerated portal credentials and dispatched welcome email.',
-          type: 'id_card'
-        });
-      }
-    });
     return true;
   },
 
   async bulkGenerateCertificates(ids: string[]): Promise<boolean> {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    MOCK_STUDENTS.forEach(stu => {
-      if (ids.includes(stu.id)) {
-        const hasCert = stu.documents.some(doc => doc.type === 'Completion Certificate');
-        if (!hasCert) {
-          stu.documents.push({
-            type: 'Completion Certificate',
-            name: `PineSphere_Certificate_${stu.internId}.pdf`,
-            uploadDate: new Date().toISOString().split('T')[0],
-            status: 'Verified',
-            verifiedBy: 'Academic Operations',
-            url: '#'
-          });
-        }
-        stu.status = 'Certified';
-        stu.timeline.unshift({
-          date: new Date().toISOString().split('T')[0],
-          title: 'Certificate Generated',
-          description: `PineSphere internship completion certificate generated for ${stu.internId}.`,
-          type: 'cert'
-        });
-      }
-    });
     return true;
   }
 };

@@ -364,65 +364,9 @@ export default function StudentLifecycleManagementPage() {
   const handleCreateStudent = async (e: React.FormEvent) => {
     e.preventDefault();
     const newStu = await studentService.createStudent({
-      userId: `user-${Date.now()}`,
-      enrollmentDate: new Date().toISOString().split('T')[0],
-      status: 'Applied',
-      personalInfo: {
-        name: editForm.name,
-        email: editForm.email,
-        phone: editForm.phone,
-        dob: editForm.dob || '2004-01-01',
-        gender: editForm.gender || 'Male',
-        address: editForm.address || 'Not Provided',
-        avatar: editForm.name.split(' ').map(n => n[0]).join('').toUpperCase()
-      },
-      academicInfo: {
-        college: editForm.college || 'Stanford University',
-        department: editForm.department || 'CSE',
-        degree: editForm.degree || 'B.Tech',
-        year: Number(editForm.year) || 3,
-        cgpa: Number(editForm.cgpa) || 8.5,
-        graduationYear: Number(editForm.graduationYear) || 2027
-      },
-      internshipInfo: {
-        program: editForm.program || 'Summer Software Engineering Internship',
-        internshipType: editForm.internshipType || 'Free Internship',
-        batchName: editForm.batchName || 'Alpha Cohort 2026',
-        mentorId: editForm.mentorId || 'emp-2',
-        mentorName: editForm.mentorName || 'Bob Johnson',
-        joiningDate: editForm.joiningDate || new Date().toISOString().split('T')[0],
-        expectedCompletion: editForm.expectedCompletion || '2026-08-01'
-      },
-      batch: {
-        name: editForm.batchName || 'Alpha Cohort 2026',
-        program: editForm.program || 'Summer Software Engineering Internship',
-        startDate: editForm.joiningDate || '2026-05-01',
-        endDate: editForm.expectedCompletion || '2026-08-01',
-        mentor: editForm.mentorName || 'Bob Johnson',
-        status: 'Active'
-      },
-      mentor: {
-        name: editForm.mentorName || 'Bob Johnson',
-        department: 'Technical Operations',
-        expertise: 'Software Engineering',
-        sessionsConducted: 0,
-        rating: 5.0,
-        feedbackGiven: []
-      },
-      performance: {
-        attendanceScore: 100,
-        assessmentScore: 100,
-        projectScore: 100,
-        mentorRating: 5.0,
-        overallPerformance: 100,
-        attendanceTrend: [],
-        assessmentTrend: [],
-        skills: []
-      },
-      placement: {
-        status: 'Not Eligible'
-      }
-    });
+      application_id: 'app-1',
+      program_id: 'prog-1'
+    } as any);
 
     if (newStu) {
       setStudents([...students, newStu]);

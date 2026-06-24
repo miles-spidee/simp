@@ -335,27 +335,14 @@ export default function BatchManagementPage() {
   const handleCreateBatch = async (e: React.FormEvent) => {
     e.preventDefault();
     const newB = await batchService.createBatch({
-      name: editForm.name,
-      programId: editForm.programId || 'prog-1',
-      programName: editForm.programName || 'Summer Software Engineering Internship',
-      internshipType: editForm.internshipType || 'Free Internship',
-      startDate: editForm.startDate || '2026-05-01',
-      endDate: editForm.endDate || '2026-08-01',
-      capacity: Number(editForm.capacity) || 30,
-      status: editForm.status || 'Draft',
-      mentor: {
-        id: '', name: '', department: '', expertise: '', rating: 0, sessionsConducted: 0, studentSatisfaction: 0, successRate: 0, completionContribution: 0
-      },
-      metadata: {
-        type: 'Core Cohort',
-        category: editForm.category || 'General Engineering',
-        domain: editForm.domain || 'Software Development',
-        techStack: editForm.techStackString.split(',').map(s => s.trim()).filter(Boolean),
-        tags: editForm.tagsString.split(',').map(s => s.trim()).filter(Boolean),
-        priority: editForm.priority || 'Medium',
-        academicYear: editForm.academicYear || '2026-2027'
-      }
-    });
+      batch_name: editForm.name,
+      batch_code: `BATCH-${Date.now()}`,
+      program_id: editForm.programId || 'prog-1',
+      start_date: editForm.startDate || '2026-05-01',
+      end_date: editForm.endDate || '2026-08-01',
+      max_capacity: Number(editForm.capacity) || 30,
+      batch_status: editForm.status || 'Draft'
+    } as any);
 
     if (newB) {
       setBatches([...batches, newB]);

@@ -1,40 +1,73 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User } from '@/src/data/mock-users';
-import { userService } from '@/src/services/user.service';
 
-interface AuthContextType {
-  user: User | null;
-  loading: boolean;
+// TODO: Waiting for backend endpoint to fetch current user profile
+export interface AuthUser {
+  user_id: string;
+  name: string;
+  email: string;
+  roleName: string; // Temporarily keeping camelCase for roleName until we fix all pages
 }
 
-const AuthContext = createContext<AuthContextType>({ user: null, loading: true });
+interface AuthContextType {
+  user: AuthUser | null;
+  loading: boolean;
+  login: (token: string) => void;
+  logout: () => void;
+}
+
+const AuthContext = createContext<AuthContextType>({ 
+  user: null, 
+  loading: true,
+  login: () => {},
+  logout: () => {}
+});
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadMockUser() {
-      // For now, hardcode user '1' (Alice Freeman - Student) or '5' (Super Admin equivalent if created).
-      // Let's use user '1' who has 'Student' role but give them a simulated login flow.
-      try {
-        // Find a super admin for this phase testing, or default to user 1.
-        const users = await userService.getUsers();
-        const admin = users.find(u => u.roleName === 'Super Admin') || users[0];
-        setUser(admin);
-      } catch (err) {
-        console.error("Failed to load user auth", err);
-      } finally {
-        setLoading(false);
-      }
+    // Check if token exists in localStorage
+    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+    
+    if (token) {
+      // Mocking user profile until we have a real /me endpoint
+      setUser({
+        user_id: '1',
+        name: 'Admin User',
+        email: 'admin@example.com',
+        roleName: 'Super Admin'
+      });
+    } else {
+      setUser(null);
     }
-    loadMockUser();
+    setLoading(false);
   }, []);
 
+  const login = (token: string) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('access_token', token);
+    }
+    setUser({
+      user_id: '1',
+      name: 'Admin User',
+      email: 'admin@example.com',
+      roleName: 'Super Admin'
+    });
+  };
+
+  const logout = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+    }
+    setUser(null);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

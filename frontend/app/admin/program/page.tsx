@@ -428,42 +428,14 @@ export default function ProgramManagementPage() {
         }
       } else if (type === 'onboard') {
         const newProg = await programService.createProgram({
-          title: programForm.title,
-          code: programForm.code,
-          type: programForm.type,
-          durationWeeks: Number(programForm.durationWeeks),
-          organizationId: programForm.organizationId,
-          status: 'Draft',
-          startDate: new Date().toISOString().split('T')[0],
-          endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          studentsEnrolled: 0,
-          mentorsAssigned: 0,
-          completionRate: 0,
-          description: programForm.description,
-          capacity: Number(programForm.capacity),
-          eligibility: programForm.eligibility,
-          mentors: [],
-          analytics: {
-            completionRate: 0,
-            attendanceRate: 0,
-            avgScore: 0,
-            placementRate: 0,
-            satisfactionScore: 5.0,
-            enrollmentTrend: [],
-            completionTrend: [],
-            attendanceTrend: [],
-            assessmentPerformance: []
-          },
-          metadata: {
-            category: programForm.category,
-            level: programForm.level,
-            domain: programForm.domain,
-            tags: programForm.tagsString.split(',').map(s => s.trim()).filter(Boolean),
-            techStack: programForm.techStackString.split(',').map(s => s.trim()).filter(Boolean),
-            skills: programForm.skillsString.split(',').map(s => s.trim()).filter(Boolean),
-            certType: programForm.certType
-          }
-        });
+          program_name: programForm.title,
+          program_code: programForm.code,
+          internship_type_id: '',
+          program_description: '',
+          duration_weeks: Number(programForm.durationWeeks),
+          certificate_available: true,
+          status: 'DRAFT',
+        } as any);
         const refreshed = {
           ...newProg,
           organizationData: organizations.find(o => o.id === newProg.organizationId)

@@ -4,10 +4,12 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Toast from '../../components/ui/toast'; 
-import { API_ENDPOINTS } from '@/src/config'; 
+import { authApi } from '@/src/api/auth.api';
+import { useAuth } from '@/src/context/AuthContext';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [toastConfig, setToastConfig] = useState<{ show: boolean, title: string, message: string, type: 'success' | 'error' | 'warning' | 'info' }>({
     show: false,
     title: '',
@@ -21,15 +23,9 @@ export default function LoginPage() {
     e.preventDefault();
     
     try {
-      const response = await fetch(API_ENDPOINTS.LOGIN, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username: username.trim(), password }),
-      });
+      const response = await authApi.login({ username: username.trim(), password });
 
-      if (response.ok) {
+      if (response && response.access_token) {
         setToastConfig({
           show: true,
           title: 'Login Successful',
@@ -37,7 +33,8 @@ export default function LoginPage() {
           type: 'success'
         });
         
-        // Save authenticated user info
+        login(response.access_token);
+        
         if (typeof window !== 'undefined') {
           localStorage.setItem('pinesphere_username', username.trim());
         }

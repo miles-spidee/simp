@@ -55,7 +55,7 @@ export function Sidebar({ isMobileOpen, setMobileOpen }: SidebarProps) {
     async function loadSidebarModules() {
       if (!user) return;
       try {
-        const data = await userService.getUserModules(user.id);
+        const data = await userService.getUserModules(user.user_id);
         // Filter out dashboard, super_admin, and modules not present in the iconMap
         const visibleModules = data.filter(m => 
           m.id !== 'dashboard' && 
@@ -357,12 +357,13 @@ export function Sidebar({ isMobileOpen, setMobileOpen }: SidebarProps) {
         {/* Sidebar Footer */}
         <div className="p-4 border-t border-slate-800">
           <div className="flex items-center gap-x-4 px-2 py-2">
-            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-xs text-white shadow-md">
-              SA
+            <div className="h-9 w-9 rounded-full bg-slate-200 border-2 border-white shadow-sm flex items-center justify-center overflow-hidden">
+              <img src={`https://api.dicebear.com/7.x/initials/svg?seed=${user?.name || 'User'}&backgroundColor=0f172a,1e293b,334155`} alt={user?.name || "User"} className="h-full w-full object-cover" />
             </div>
-            <div className="flex flex-col">
-              <span className="text-xs font-bold text-white leading-none">Super Admin</span>
-              <span className="text-[10px] text-slate-500 mt-1 leading-none">admin@pinesphere.com</span>
+            <div className="ml-3 overflow-hidden">
+              <p className="text-sm font-bold text-slate-800 truncate leading-tight">{user?.name || "Administrator"}</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 truncate mt-0.5">{user?.roleName || "Admin Role"}</p>
+              <p className="text-[9px] font-mono text-slate-400 mt-1 truncate hidden xl:block">ID: {user?.user_id || "ADM-001"}</p>
             </div>
           </div>
         </div>
