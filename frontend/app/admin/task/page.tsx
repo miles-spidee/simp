@@ -1,52 +1,30 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Filter, Download, User, CalendarDays, Clock, AlertTriangle, Lock, Upload, UploadCloud, CheckCircle2, ChevronRight } from 'lucide-react';
+import { 
+  CheckSquare, FileText, CheckCircle2, Clock, AlertTriangle, 
+  ChevronRight, TrendingUp, BarChart2, Calendar, ShieldAlert
+} from 'lucide-react';
 import { taskService } from '@/src/services/task.service';
 import { Task } from '@/src/data/mock-tasks';
 
-export default function TasksPage() {
-  const [assignments, setAssignments] = useState<Task[]>([]);
+export default function TaskDashboardPage() {
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
-  
-  const [uploadedFiles, setUploadedFiles] = useState<Record<string, string>>({});
-  const [assignmentFilter, setAssignmentFilter] = useState<'all' | 'pending' | 'review' | 'completed'>('all');
-  const [activeUploadAssignmentId, setActiveUploadAssignmentId] = useState<string | null>(null);
 
   useEffect(() => {
-    async function loadData() {
+    async function loadTasks() {
       try {
         const data = await taskService.getTasks();
-        setAssignments(data);
+        setTasks(data);
       } catch (err) {
         console.error('Failed to load tasks', err);
       } finally {
         setLoading(false);
       }
     }
-    loadData();
+    loadTasks();
   }, []);
-
-  const showToastNotification = (msg: string) => {
-    alert(msg);
-  };
-
-  const handleRemoveFile = (id: string) => {
-    const newFiles = { ...uploadedFiles };
-    delete newFiles[id];
-    setUploadedFiles(newFiles);
-  };
-
-  const handleSimulateBrowse = (id: string) => {
-    setUploadedFiles({ ...uploadedFiles, [id]: 'submission_v1_final.zip' });
-  };
-
-  const handleSimulateSubmit = (id: string) => {
-    // Optimistic update
-    setAssignments(assignments.map(a => a.id === id ? { ...a, status: 'review' } : a));
-    setActiveUploadAssignmentId(null);
-    showToastNotification('File uploaded successfully. Task is now under review.');
-  };
 
   if (loading) {
     return (
@@ -56,262 +34,111 @@ export default function TasksPage() {
     );
   }
 
+  // Calculate statistics
+  const totalTasks = tasks.length;
+  const pendingReviews = tasks.filter(t => t.status === 'review').length;
+  const completedTasks = tasks.filter(t => t.status === 'completed').length;
+  const overdueTasks = tasks.filter(t => t.isOverdue).length;
+  const pendingTasks = tasks.filter(t => t.status === 'pending' && !t.isOverdue).length;
+
   return (
-    <div className="space-y-6 animate-slide-in">
-      {/* Header Section */}
+    <div className="space-y-6 animate-slide-in select-none">
+      
+      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-            <span>Execution</span>
+            <span>Execution Panel</span>
             <ChevronRight className="h-3 w-3" />
-            <span className="text-blue-600 font-extrabold">Assignments</span>
+            <span className="text-blue-600 font-extrabold text-[10px]">Task Dashboard</span>
           </div>
-          <h2 className="text-2xl font-black text-slate-900 mt-2 tracking-tight">Project Assignments & Tasks</h2>
-          <p className="text-xs text-slate-500 mt-1">
-            Track your academic progress and deliverable milestones across all modules.
+          <h2 className="text-2xl font-black text-slate-900 mt-2 tracking-tight">Task & Deliverables Overview</h2>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Real-time tracking of active tasks, peer review queues, compliance metrics, and overdue escalations.
           </p>
         </div>
-        
-        {/* Action buttons */}
-        <div className="flex items-center gap-3">
-          <button 
-            onClick={() => showToastNotification("Filter options: All, Pending, Under Review, Completed.")}
-            className="flex items-center gap-2 px-4 py-2 border border-slate-200 hover:border-blue-600 hover:text-blue-600 bg-white rounded-lg text-xs font-bold text-slate-700 shadow-sm transition-all duration-200 cursor-pointer"
-          >
-            <Filter className="h-3.5 w-3.5" />
-            <span>Filter</span>
-          </button>
-          <button 
-            onClick={() => showToastNotification("Exporting assignments to CSV...")}
-            className="flex items-center gap-2 px-4 py-2 border border-slate-200 hover:border-blue-600 hover:text-blue-600 bg-white rounded-lg text-xs font-bold text-slate-700 shadow-sm transition-all duration-200 cursor-pointer"
-          >
-            <Download className="h-3.5 w-3.5" />
-            <span>Export</span>
-          </button>
-        </div>
       </div>
 
-      {/* Tab Filters Navigation Bar */}
-      <div className="border-b border-slate-200 flex items-center gap-6 text-xs font-bold tracking-wide">
+      {/* KPI Stats Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { key: 'all', label: `All Tasks (${assignments.length})` },
-          { 
-            key: 'pending', 
-            label: `Pending Submission`, 
-            badge: assignments.filter(a => a.status === 'pending').length 
-          },
-          { 
-            key: 'review', 
-            label: `Under Review`, 
-            badge: assignments.filter(a => a.status === 'review').length 
-          },
-          { 
-            key: 'completed', 
-            label: `Completed`, 
-            badge: assignments.filter(a => a.status === 'completed').length 
-          }
-        ].map((tab) => {
-          const isActive = assignmentFilter === tab.key;
-          return (
-            <button
-              key={tab.key}
-              onClick={() => setAssignmentFilter(tab.key as any)}
-              className={`py-3 relative flex items-center gap-2 transition-all cursor-pointer ${
-                isActive ? 'text-blue-600 font-extrabold' : 'text-slate-500 hover:text-slate-800'
-              }`}
-            >
-              <span>{tab.label}</span>
-              {tab.badge !== undefined && (
-                <span className={`h-4.5 min-w-4.5 px-1.5 flex items-center justify-center text-[9px] font-black rounded-full ${
-                  isActive ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'
-                }`}>
-                  {tab.badge}
-                </span>
-              )}
-              {isActive && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
-              )}
-            </button>
-          );
-        })}
+          { label: 'Published Tasks', val: totalTasks, icon: CheckSquare, color: 'text-blue-600 bg-blue-50 border-blue-100' },
+          { label: 'Pending Reviews', val: pendingReviews, icon: Clock, color: 'text-amber-600 bg-amber-50 border-amber-100' },
+          { label: 'Completed Tasks', val: completedTasks, icon: CheckCircle2, color: 'text-emerald-600 bg-emerald-50 border-emerald-100' },
+          { label: 'Overdue Tasks', val: overdueTasks, icon: AlertTriangle, color: 'text-rose-600 bg-rose-50 border-rose-100' }
+        ].map((kpi, idx) => (
+          <div key={idx} className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex items-center justify-between group hover:border-blue-500 transition-all duration-200">
+            <div>
+              <div className="text-2.5xl font-black text-slate-800 tracking-tight">{kpi.val}</div>
+              <div className="text-[10px] font-bold text-slate-455 uppercase tracking-wider mt-0.5">{kpi.label}</div>
+            </div>
+            <div className={`h-11 w-11 rounded-lg ${kpi.color} border flex items-center justify-center shrink-0`}>
+              <kpi.icon className="h-5 w-5" />
+            </div>
+          </div>
+        ))}
       </div>
 
-      <div className="space-y-6 flex flex-col">
-        {assignments
-          .filter(asg => {
-            if (assignmentFilter === 'all') return true;
-            return asg.status === assignmentFilter;
-          })
-          .map(asg => {
-            const isOverdue = asg.isOverdue;
-            const isLocked = asg.isLocked;
-            const hasUploadedFile = uploadedFiles[asg.id];
-
-            return (
-              <div
-                key={asg.id}
-                className="bg-white border border-slate-200 rounded-2xl p-6 hover:shadow-md transition-all duration-300 relative"
-              >
-                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-                  <div className="flex-1 space-y-3">
-                    {/* Header Pill & ID */}
-                    <div className="flex items-center gap-2 text-xs">
-                      {isOverdue ? (
-                        <span className="bg-[#F97316] text-white font-extrabold text-[9px] px-2 py-0.5 rounded-sm uppercase tracking-wide flex items-center gap-1">
-                          <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-                          OVERDUE
-                        </span>
-                      ) : (
-                        <span className={`font-extrabold text-[9px] px-2 py-0.5 rounded-sm uppercase tracking-wide ${
-                          asg.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 
-                          asg.status === 'review' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-500'
-                        }`}>
-                          {asg.status}
-                        </span>
-                      )}
-                      <span className="text-slate-400 font-medium">• ID: {asg.id}</span>
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="text-base font-bold text-slate-800 tracking-tight leading-snug">
-                      {asg.title}
-                    </h3>
-                    <p className="text-sm text-slate-500 leading-relaxed">{asg.description}</p>
-
-                    {/* Metadata */}
-                    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-500 font-medium pt-1">
-                      {asg.assignedBy && (
-                        <div className="flex items-center gap-1.5">
-                          <User className="h-3.5 w-3.5 text-slate-400" />
-                          <span>Assigned by: <strong className="text-slate-600 font-semibold">{asg.assignedBy}</strong></span>
-                        </div>
-                      )}
-                      <div className="flex items-center gap-1.5">
-                        {isOverdue ? (
-                          <>
-                            <CalendarDays className="h-3.5 w-3.5 text-red-500" />
-                            <span className="text-red-500 font-bold">
-                              Due Date: {asg.dueDate}
-                            </span>
-                          </>
-                        ) : asg.status === 'pending' ? (
-                          <>
-                            <Clock className="h-3.5 w-3.5 text-amber-500" />
-                            <span className="text-amber-500 font-bold">
-                              Due Date: {asg.dueDate}
-                            </span>
-                          </>
-                        ) : (
-                          <>
-                            <CalendarDays className="h-3.5 w-3.5 text-slate-400" />
-                            <span>
-                              Due Date: {asg.dueDate}
-                            </span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Overdue Warning Alert Box */}
-                    {isOverdue && asg.alert && (
-                      <div className="bg-red-50/70 border border-red-100 rounded-lg p-3.5 mt-4 flex items-start gap-2.5">
-                        <AlertTriangle className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
-                        <span className="text-xs text-red-700 font-medium leading-relaxed">
-                          Alert: {asg.alert}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Action block on the right */}
-                  <div className="flex flex-col items-end justify-start gap-2 shrink-0 md:self-stretch md:justify-between">
-                    {isLocked ? (
-                      <div className="flex items-center justify-center h-full pr-2">
-                        <Lock className="h-5 w-5 text-slate-400" />
-                      </div>
-                    ) : asg.status === 'pending' ? (
-                      <div className="flex flex-col items-end gap-2 w-full md:w-auto mt-2 md:mt-0">
-                        <button
-                          onClick={() => {
-                            if (activeUploadAssignmentId === asg.id) {
-                              setActiveUploadAssignmentId(null);
-                            } else {
-                              setActiveUploadAssignmentId(asg.id);
-                            }
-                          }}
-                          className={`w-full md:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-xs font-bold shadow-sm transition-all duration-200 cursor-pointer ${
-                            activeUploadAssignmentId === asg.id
-                              ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-md'
-                              : 'bg-white border border-slate-200 hover:bg-slate-50 text-slate-600'
-                          }`}
-                        >
-                          <Upload className="h-3.5 w-3.5" />
-                          <span>Upload Deliverables</span>
-                        </button>
-                      </div>
-                    ) : asg.status === 'review' ? (
-                      <span className="bg-blue-50 border border-blue-100 text-blue-600 font-extrabold text-[10px] px-3 py-1.5 uppercase tracking-wide rounded-sm mt-2 md:mt-0">
-                        Under Review
-                      </span>
-                    ) : (
-                      <span className="bg-emerald-50 border border-emerald-100 text-emerald-600 font-extrabold text-[10px] px-3 py-1.5 uppercase tracking-wide rounded-sm mt-2 md:mt-0">
-                        Completed ✓
-                      </span>
-                    )}
-                  </div>
+      {/* Analytics details */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* Left: Task Completion Breakdown */}
+        <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
+          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5 border-b border-slate-100 pb-2">
+            <TrendingUp className="h-4.5 w-4.5 text-blue-600" />
+            Task Status Breakdown
+          </h3>
+          <div className="space-y-4 pt-1">
+            {[
+              { statusName: 'Completed Tasks', count: completedTasks, percentage: totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0, color: 'bg-emerald-600', text: 'text-emerald-650' },
+              { statusName: 'Under Review', count: pendingReviews, percentage: totalTasks > 0 ? Math.round((pendingReviews / totalTasks) * 100) : 0, color: 'bg-blue-600', text: 'text-blue-650' },
+              { statusName: 'Pending Submission', count: pendingTasks, percentage: totalTasks > 0 ? Math.round((pendingTasks / totalTasks) * 100) : 0, color: 'bg-slate-400', text: 'text-slate-650' },
+              { statusName: 'Overdue (Escalated)', count: overdueTasks, percentage: totalTasks > 0 ? Math.round((overdueTasks / totalTasks) * 100) : 0, color: 'bg-rose-500', text: 'text-rose-650' }
+            ].map((item, idx) => (
+              <div key={idx} className="space-y-1.5">
+                <div className="flex justify-between text-xs font-semibold text-slate-700">
+                  <span className="flex items-center gap-2">
+                    <span className={`h-2.5 w-2.5 rounded-full ${item.color}`} />
+                    {item.statusName}
+                  </span>
+                  <span>{item.count} tasks ({item.percentage}%)</span>
                 </div>
-
-                {/* Expandable Dotted Dropzone (Only shown when activeUploadAssignmentId matches asg.id) */}
-                {activeUploadAssignmentId === asg.id && !isLocked && asg.status === 'pending' && (
-                  <div className="border-t border-slate-100 pt-5 mt-5 animate-slide-in">
-                    <div className="border-2 border-dashed border-slate-200 rounded-xl p-6 bg-slate-50/50 flex flex-col items-center justify-center text-center">
-                      <div className="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 mb-3">
-                        <UploadCloud className="h-5 w-5" />
-                      </div>
-                      <h4 className="text-xs font-bold text-slate-700">Drag and drop your files here</h4>
-                      <p className="text-[10px] text-slate-400 font-semibold max-w-md mt-1 leading-relaxed">
-                        Upload your submission deliverables. Code files max 10MB (.zip, .py) | Reports max 50MB (PDF only).
-                      </p>
-                      
-                      {hasUploadedFile ? (
-                        <div className="mt-4 p-3 bg-white border border-slate-200 rounded-lg flex items-center gap-3 max-w-sm">
-                          <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0" />
-                          <div className="text-left overflow-hidden">
-                            <div className="text-xs font-bold text-slate-700 truncate">{hasUploadedFile}</div>
-                            <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Ready to upload</div>
-                          </div>
-                          <button
-                            onClick={() => handleRemoveFile(asg.id)}
-                            className="text-red-500 hover:text-red-700 font-bold text-xs p-1 ml-auto cursor-pointer"
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      ) : null}
-
-                      <div className="flex items-center gap-3 mt-4">
-                        <button
-                          onClick={() => handleSimulateBrowse(asg.id)}
-                          className="bg-white rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold text-xs px-4 py-1.5 shadow-sm transition-colors cursor-pointer"
-                        >
-                          Browse Files
-                        </button>
-                        {hasUploadedFile && (
-                          <button
-                            onClick={() => handleSimulateSubmit(asg.id)}
-                            className="bg-blue-600 rounded-lg hover:bg-blue-700 text-white font-bold text-xs px-4 py-1.5 shadow-sm transition-colors cursor-pointer"
-                          >
-                            Simulate Upload
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
+                <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                  <div className={`h-full ${item.color} rounded-full transition-all duration-500`} style={{ width: `${item.percentage}%` }} />
+                </div>
               </div>
-            );
-          })}
+            ))}
+          </div>
+        </div>
+
+        {/* Right: Urgent Alerts & Escalations */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
+          <h3 className="text-xs font-bold text-slate-455 uppercase tracking-widest flex items-center gap-1.5 border-b border-slate-100 pb-2">
+            <ShieldAlert className="h-4.5 w-4.5 text-rose-600" />
+            Escalation Monitor
+          </h3>
+          
+          <div className="space-y-3.5 pt-1">
+            {tasks.filter(t => t.isOverdue).map((task) => (
+              <div key={task.id} className="p-3 bg-rose-50/50 border border-rose-100 rounded-xl space-y-1">
+                <div className="flex justify-between items-center text-[9px] font-bold text-rose-600">
+                  <span>{task.id}</span>
+                  <span className="bg-rose-100 px-1.5 py-0.5 rounded uppercase">{task.alert || 'Overdue'}</span>
+                </div>
+                <h4 className="text-xs font-bold text-slate-800 leading-tight mt-1">{task.title}</h4>
+                <p className="text-[10px] text-slate-500 leading-snug">Due: {task.dueDate}</p>
+              </div>
+            ))}
+            {tasks.filter(t => t.isOverdue).length === 0 && (
+              <div className="p-8 text-center text-slate-400 italic bg-slate-50 border border-slate-100 rounded-xl text-xs">
+                No active escalations found. All cohorts compliant.
+              </div>
+            )}
+          </div>
+        </div>
+
       </div>
+
     </div>
   );
 }
