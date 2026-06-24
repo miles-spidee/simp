@@ -1,13 +1,21 @@
-import { Assessment, AssessmentResult, MOCK_ASSESSMENTS, MOCK_ASSESSMENT_RESULTS } from '../data/mock-assessments';
+import { Assessment, AssessmentSubmission, MOCK_ASSESSMENTS, MOCK_ASSESSMENT_SUBMISSIONS } from '../data/mock-assessments';
 
-export const assessmentService = {
+class AssessmentService {
   async getAssessments(): Promise<Assessment[]> {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return MOCK_ASSESSMENTS;
-  },
-
-  async getAssessmentResults(): Promise<AssessmentResult[]> {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    return MOCK_ASSESSMENT_RESULTS;
+    return [...MOCK_ASSESSMENTS];
   }
-};
+
+  async getAssessment(id: string): Promise<Assessment | undefined> {
+    return MOCK_ASSESSMENTS.find(a => a.id === id);
+  }
+
+  async getSubmissions(assessmentId: string): Promise<AssessmentSubmission[]> {
+    return MOCK_ASSESSMENT_SUBMISSIONS.filter(s => s.assessmentId === assessmentId);
+  }
+
+  async getAssessmentsByBatch(batchId: string): Promise<Assessment[]> {
+    return MOCK_ASSESSMENTS.filter(a => a.batchId === batchId);
+  }
+}
+
+export const assessmentService = new AssessmentService();

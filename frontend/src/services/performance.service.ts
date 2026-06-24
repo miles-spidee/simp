@@ -1,18 +1,17 @@
-import { Performance, MOCK_PERFORMANCES } from '../data/mock-performances';
+import { StudentPerformance, BatchPerformance, MOCK_STUDENT_PERFORMANCE, MOCK_BATCH_PERFORMANCE } from '../data/mock-performance';
 
-export const performanceService = {
-  async getPerformances(): Promise<Performance[]> {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return MOCK_PERFORMANCES;
-  },
-
-  async getPerformance(id: string): Promise<Performance | undefined> {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    return MOCK_PERFORMANCES.find(perf => perf.id === id);
-  },
-
-  async getPerformancesByBatch(batchId: string): Promise<Performance[]> {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return MOCK_PERFORMANCES.filter(perf => perf.batchId === batchId);
+class PerformanceService {
+  async getStudentPerformances(): Promise<StudentPerformance[]> {
+    return [...MOCK_STUDENT_PERFORMANCE];
   }
-};
+
+  async getBatchPerformances(): Promise<BatchPerformance[]> {
+    return [...MOCK_BATCH_PERFORMANCE];
+  }
+
+  async getStudentPerformance(studentId: string): Promise<StudentPerformance | undefined> {
+    return MOCK_STUDENT_PERFORMANCE.find(p => p.studentId === studentId);
+  }
+}
+
+export const performanceService = new PerformanceService();

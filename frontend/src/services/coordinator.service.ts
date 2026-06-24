@@ -1,13 +1,17 @@
-import { CoordinatorStats, BatchPerformance, MOCK_COORDINATOR_STATS, MOCK_BATCH_PERFORMANCE } from '../data/mock-coordinator';
+import { Coordinator, CollegeReport, MOCK_COORDINATORS, MOCK_COLLEGE_REPORTS } from '../data/mock-coordinators';
 
-export const coordinatorService = {
-  async getStats(): Promise<CoordinatorStats> {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    return MOCK_COORDINATOR_STATS;
-  },
-
-  async getBatchPerformances(): Promise<BatchPerformance[]> {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return MOCK_BATCH_PERFORMANCE;
+class CoordinatorService {
+  async getCoordinators(): Promise<Coordinator[]> {
+    return [...MOCK_COORDINATORS];
   }
-};
+
+  async getCoordinator(id: string): Promise<Coordinator | undefined> {
+    return MOCK_COORDINATORS.find(c => c.id === id);
+  }
+
+  async getReports(coordinatorId: string): Promise<CollegeReport[]> {
+    return MOCK_COLLEGE_REPORTS.filter(r => r.coordinatorId === coordinatorId);
+  }
+}
+
+export const coordinatorService = new CoordinatorService();
