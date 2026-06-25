@@ -17,6 +17,7 @@ export const MOCK_MODULES: Module[] = [
   { id: 'student', code: 'STUDENT', name: 'Student', route: '/student', active: true, desc: 'Manage student information' },
   { id: 'batch', code: 'BATCH', name: 'Batch', route: '/batch', active: true, desc: 'Manage cohorts and batches' },
   { id: 'allocation', code: 'ALLOC', name: 'Allocation', route: '/allocation', active: true, desc: 'Allocate resources and mentors' },
+  { id: 'mentor', code: 'MENTOR', name: 'Mentor Module', route: '/mentor', active: true, desc: 'Mentor ecosystem with profiles, assignments, batch mapping, and dashboard' },
   { id: 'lms', code: 'LMS', name: 'LMS', route: '/lms', active: true, desc: 'Learning Management System for courses' },
   { id: 'task', code: 'TASK', name: 'Task', route: '/task', active: true, desc: 'Assign and track tasks' },
   { id: 'assessment', code: 'ASSESS', name: 'Assessment', route: '/assessment', active: true, desc: 'Create and grade quizzes and exams' },

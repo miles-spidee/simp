@@ -4,11 +4,12 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
-  LayoutDashboard, Users, Shield, Menu, X, LayoutGrid, Box, 
+  LayoutDashboard, Users, Shield, X, LayoutGrid,
   Package, FileText, CheckSquare, Award, MonitorPlay, Users as UsersIcon, 
   UsersRound, Calendar, PieChart, Briefcase, Network, Settings, 
-  Building2, GraduationCap, FolderOpen, Key, Activity, ShieldAlert
+  Building2, GraduationCap, FolderOpen
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { userService } from '@/src/services/user.service';
 import { Module } from '@/src/data/mock-modules';
 import { useAuth } from '@/src/context/AuthContext';
@@ -19,7 +20,7 @@ interface SidebarProps {
 }
 
 // Map module IDs to Lucide icons
-const iconMap: Record<string, any> = {
+const iconMap: Record<string, LucideIcon> = {
   identity: Shield,
   employee: UsersIcon,
   organization: Building2,
@@ -331,7 +332,39 @@ export function Sidebar({ isMobileOpen, setMobileOpen }: SidebarProps) {
                 );
               }
 
-              // 6. Default standard routing rendering
+              // 6. Mentor Module Subpoints
+              if (module.id === 'mentor') {
+                const mentorLinks = [
+                  { label: 'Mentor Dashboard', href: '/admin/mentor' },
+                  { label: 'Mentor Profile', href: '/admin/mentor/profile' },
+                  { label: 'Mentor Assignment', href: '/admin/mentor/assignment' },
+                  { label: 'Mentor Batch Mapping', href: '/admin/mentor/batch-mapping' },
+                ];
+
+                return (
+                  <div key={module.id} className="space-y-1">
+                    <div className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2.5">
+                      <IconComponent className="h-4.5 w-4.5 text-slate-455" />
+                      <span>Mentor Module</span>
+                    </div>
+                    <div className="pl-6 space-y-1 pt-1 border-l border-slate-850 ml-5">
+                      {mentorLinks.map(({ label, href }) => (
+                        <Link
+                          key={href}
+                          href={href}
+                          className={`flex items-center rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                            isLinkActive(href) ? 'bg-blue-600/10 text-blue-400 font-bold' : 'text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          {label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+
+              // 7. Default standard routing rendering
               const route = `/admin${module.route}`;
               const isActive = pathname === route;
               

@@ -1,0 +1,73 @@
+export interface MentorAssignment {
+  id: string;
+  mentorProfileId: string;
+  mentorName: string;
+  employeeId: string;
+  studentId: string;
+  studentName: string;
+  internId: string;
+  batchId: string;
+  batchName: string;
+  assignedDate: string;
+  status: 'Active' | 'Completed' | 'Transferred';
+  assignedBy: string;
+}
+
+export const MOCK_MENTOR_ASSIGNMENTS: MentorAssignment[] = [
+  {
+    id: 'ma-1',
+    mentorProfileId: 'men-1',
+    mentorName: 'Bob Johnson',
+    employeeId: 'emp-2',
+    studentId: 'stu-1',
+    studentName: 'Alice Freeman',
+    internId: 'INT-2026-001',
+    batchId: 'batch-1',
+    batchName: 'Summer 2026 Engineering Cohort',
+    assignedDate: '2026-05-02',
+    status: 'Active',
+    assignedBy: 'Charlie Davis (HR)',
+  },
+  {
+    id: 'ma-2',
+    mentorProfileId: 'men-1',
+    mentorName: 'Bob Johnson',
+    employeeId: 'emp-2',
+    studentId: 'stu-4',
+    studentName: 'Priya Patel',
+    internId: 'INT-2026-004',
+    batchId: 'batch-1',
+    batchName: 'Summer 2026 Engineering Cohort',
+    assignedDate: '2026-05-02',
+    status: 'Active',
+    assignedBy: 'Charlie Davis (HR)',
+  },
+  {
+    id: 'ma-3',
+    mentorProfileId: 'men-2',
+    mentorName: 'Diana Prince',
+    employeeId: 'emp-3',
+    studentId: 'stu-2',
+    studentName: 'Evan Wright',
+    internId: 'INT-2026-002',
+    batchId: 'batch-2',
+    batchName: 'Winter 2026 AI Specialists',
+    assignedDate: '2026-02-16',
+    status: 'Completed',
+    assignedBy: 'Charlie Davis (HR)',
+  },
+  {
+    id: 'ma-4',
+    mentorProfileId: 'men-1',
+    mentorName: 'Bob Johnson',
+    employeeId: 'emp-2',
+    studentId: 'stu-3',
+    studentName: 'Marcus Chen',
+    internId: 'INT-2026-003',
+    batchId: 'batch-1',
+    batchName: 'Summer 2026 Engineering Cohort',
+    assignedDate: '2026-05-10',
+    status: 'Active',
+    assignedBy: 'Charlie Davis (HR)',
+  },
+];

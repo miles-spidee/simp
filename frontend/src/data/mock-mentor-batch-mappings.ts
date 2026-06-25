@@ -1,0 +1,78 @@
+export interface MentorBatchMapping {
+  id: string;
+  mentorProfileId: string;
+  mentorName: string;
+  employeeId: string;
+  batchId: string;
+  batchName: string;
+  batchCode: string;
+  programName: string;
+  studentCount: number;
+  batchCapacity: number;
+  mappedDate: string;
+  status: 'Active' | 'Completed' | 'Upcoming';
+  mappedBy: string;
+}
+
+export const MOCK_MENTOR_BATCH_MAPPINGS: MentorBatchMapping[] = [
+  {
+    id: 'mbm-1',
+    mentorProfileId: 'men-1',
+    mentorName: 'Bob Johnson',
+    employeeId: 'emp-2',
+    batchId: 'batch-1',
+    batchName: 'Summer 2026 Engineering Cohort',
+    batchCode: 'SEC-2026-A',
+    programName: 'Summer Software Engineering Internship',
+    studentCount: 2,
+    batchCapacity: 40,
+    mappedDate: '2026-04-20',
+    status: 'Active',
+    mappedBy: 'Charlie Davis (HR)',
+  },
+  {
+    id: 'mbm-2',
+    mentorProfileId: 'men-1',
+    mentorName: 'Bob Johnson',
+    employeeId: 'emp-2',
+    batchId: 'batch-2',
+    batchName: 'Winter 2026 AI Specialists',
+    batchCode: 'AIS-2026-W',
+    programName: 'Data Science Boot Camp',
+    studentCount: 1,
+    batchCapacity: 20,
+    mappedDate: '2026-01-15',
+    status: 'Completed',
+    mappedBy: 'Charlie Davis (HR)',
+  },
+  {
+    id: 'mbm-3',
+    mentorProfileId: 'men-2',
+    mentorName: 'Diana Prince',
+    employeeId: 'emp-3',
+    batchId: 'batch-2',
+    batchName: 'Winter 2026 AI Specialists',
+    batchCode: 'AIS-2026-W',
+    programName: 'Data Science Boot Camp',
+    studentCount: 1,
+    batchCapacity: 20,
+    mappedDate: '2026-02-01',
+    status: 'Completed',
+    mappedBy: 'Charlie Davis (HR)',
+  },
+  {
+    id: 'mbm-4',
+    mentorProfileId: 'men-2',
+    mentorName: 'Diana Prince',
+    employeeId: 'emp-3',
+    batchId: 'batch-3',
+    batchName: 'Quantum Research Cohort',
+    batchCode: 'QRC-2026-S',
+    programName: 'Research Program (Quantum Theory)',
+    studentCount: 0,
+    batchCapacity: 15,
+    mappedDate: '2026-06-01',
+    status: 'Upcoming',
+    mappedBy: 'Charlie Davis (HR)',
+  },
+];
