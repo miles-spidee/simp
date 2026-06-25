@@ -14,6 +14,11 @@ export const userService = {
     return MOCK_USERS.find(u => u.id === id);
   },
 
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    return MOCK_USERS.find(u => u.email === email);
+  },
+
   async getUserModules(id: string): Promise<Module[]> {
     const user = await this.getUser(id);
     if (!user) return [];
@@ -30,7 +35,23 @@ export const userService = {
     }
 
     const allModules = await moduleService.getModules();
+
+    // Super Admin gets all modules
+    if (role && role.permissions.includes('all')) {
+      return allModules.filter(m => m.active);
+    }
+
     return allModules.filter(m => allowedModuleIds.has(m.id) && m.active);
+  },
+
+  async getUserPermissions(id: string): Promise<string[]> {
+    const user = await this.getUser(id);
+    if (!user) return [];
+
+    const role = await roleService.getRole(user.roleId);
+    if (!role) return [];
+
+    return role.permissions;
   },
 
   async createUser(user: Omit<User, 'id' | 'date' | 'avatar'> & { avatar?: string }): Promise<User> {

@@ -34,7 +34,7 @@ export default function PermissionsPage() {
   }, []);
 
   const filteredPermissions = permissions.filter(p => 
-    p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    p.label.toLowerCase().includes(searchTerm.toLowerCase()) || 
     p.module.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -100,9 +100,9 @@ export default function PermissionsPage() {
                   <td className="px-4 py-3 sticky left-0 bg-white group-hover:bg-slate-50/50 z-10 border-r border-slate-200 shadow-[1px_0_0_0_#e2e8f0]">
                     <div className="flex items-center gap-2">
                       <Key className="h-4 w-4 text-slate-400" />
-                      <span className="font-medium text-slate-900">{perm.name}</span>
+                      <span className="font-medium text-slate-900">{perm.label}</span>
                     </div>
-                    <div className="text-[10px] text-slate-500 mt-0.5">{perm.description}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{perm.id}</div>
                   </td>
                   <td className="px-4 py-3 font-mono text-[10px] text-slate-500 border-r border-slate-200">
                     <span className="bg-slate-100 px-2 py-0.5 rounded-md">{perm.module}</span>

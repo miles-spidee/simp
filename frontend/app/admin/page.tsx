@@ -1,9 +1,8 @@
 "use client";
 
 import React from 'react';
-import SuperAdminDashboard from '@/components/dashboards/SuperAdminDashboard';
-
+import UnifiedDashboard from '@/components/dashboard/UnifiedDashboard';
 
 export default function AdminPage() {
-  return <SuperAdminDashboard />;
+  return <UnifiedDashboard />;
 }

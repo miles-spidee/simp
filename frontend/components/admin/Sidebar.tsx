@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
@@ -10,9 +10,8 @@ import {
   Building2, GraduationCap, FolderOpen
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { userService } from '@/src/services/user.service';
-import { Module } from '@/src/data/mock-modules';
 import { useAuth } from '@/src/context/AuthContext';
+import { usePermissions } from '@/src/hooks/usePermissions';
 
 interface SidebarProps {
   isMobileOpen: boolean;
@@ -43,33 +42,56 @@ const iconMap: Record<string, LucideIcon> = {
   super_admin: Settings,
 };
 
+// Sub-menu definitions for modules that have sub-pages
+const MODULE_SUBMENUS: Record<string, { label: string; href: string }[]> = {
+  identity: [
+    { label: 'Users', href: '/admin/users' },
+    { label: 'Roles', href: '/admin/roles' },
+    { label: 'Permissions', href: '/admin/permissions' },
+    { label: 'Sessions', href: '/admin/sessions' },
+    { label: 'Security Center', href: '/admin/security' },
+  ],
+  lms: [
+    { label: 'Dashboard', href: '/admin/lms' },
+    { label: 'LMS Management', href: '/admin/lms/management' },
+    { label: 'My Learning', href: '/admin/lms/my-learning' },
+  ],
+  task: [
+    { label: 'Dashboard', href: '/admin/task' },
+    { label: 'Task Management', href: '/admin/task/management' },
+    { label: 'My Tasks', href: '/admin/task/my-tasks' },
+  ],
+  assessment: [
+    { label: 'Dashboard', href: '/admin/assessment' },
+    { label: 'Assessment Management', href: '/admin/assessment/management' },
+    { label: 'My Assessments', href: '/admin/assessment/my-assessments' },
+  ],
+  attendance: [
+    { label: 'Dashboard', href: '/admin/attendance' },
+    { label: 'Attendance Management', href: '/admin/attendance/management' },
+    { label: 'My Attendance', href: '/admin/attendance/my-attendance' },
+  ],
+  mentor: [
+    { label: 'Mentor Dashboard', href: '/admin/mentor' },
+    { label: 'Mentor Profile', href: '/admin/mentor/profile' },
+    { label: 'Mentor Assignment', href: '/admin/mentor/assignment' },
+    { label: 'Mentor Batch Mapping', href: '/admin/mentor/batch-mapping' },
+  ],
+};
+
 export function Sidebar({ isMobileOpen, setMobileOpen }: SidebarProps) {
   const pathname = usePathname();
   const { user } = useAuth();
-  const [modules, setModules] = useState<Module[]>([]);
+  const { modules } = usePermissions();
 
-  const isLinkActive = (href: string) => {
-    return pathname === href;
-  };
+  const isLinkActive = (href: string) => pathname === href;
 
-  useEffect(() => {
-    async function loadSidebarModules() {
-      if (!user) return;
-      try {
-        const data = await userService.getUserModules(user.user_id);
-        // Filter out dashboard, super_admin, and modules not present in the iconMap
-        const visibleModules = data.filter(m => 
-          m.id !== 'dashboard' && 
-          m.id !== 'super_admin' && 
-          iconMap[m.id] !== undefined
-        );
-        setModules(visibleModules);
-      } catch (err) {
-        console.error("Failed to load modules for sidebar", err);
-      }
-    }
-    loadSidebarModules();
-  }, [user]);
+  // Filter out dashboard and super_admin from sidebar modules list
+  const visibleModules = modules.filter(m => 
+    m.id !== 'dashboard' && 
+    m.id !== 'super_admin' && 
+    iconMap[m.id] !== undefined
+  );
 
   return (
     <>
@@ -123,11 +145,12 @@ export function Sidebar({ isMobileOpen, setMobileOpen }: SidebarProps) {
           </div>
 
           <div className="space-y-3">
-            {modules.map((module) => {
+            {visibleModules.map((module) => {
               const IconComponent = iconMap[module.id] || LayoutGrid;
+              const subMenuItems = MODULE_SUBMENUS[module.id];
 
-              // 1. Identity Module Subpoints
-              if (module.id === 'identity') {
+              // Modules with sub-menus
+              if (subMenuItems) {
                 return (
                   <div key={module.id} className="space-y-1">
                     <div className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2.5">
@@ -135,220 +158,7 @@ export function Sidebar({ isMobileOpen, setMobileOpen }: SidebarProps) {
                       <span>{module.name}</span>
                     </div>
                     <div className="pl-6 space-y-1 pt-1 border-l border-slate-850 ml-5">
-                      <Link
-                        href="/admin/users"
-                        className={`flex items-center rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                          isLinkActive('/admin/users') ? 'bg-blue-600/10 text-blue-400 font-bold' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        Users
-                      </Link>
-                      <Link
-                        href="/admin/roles"
-                        className={`flex items-center rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                          isLinkActive('/admin/roles') ? 'bg-blue-600/10 text-blue-400 font-bold' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        Roles
-                      </Link>
-                      <Link
-                        href="/admin/permissions"
-                        className={`flex items-center rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                          isLinkActive('/admin/permissions') ? 'bg-blue-600/10 text-blue-400 font-bold' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        Permissions
-                      </Link>
-                      <Link
-                        href="/admin/sessions"
-                        className={`flex items-center rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                          isLinkActive('/admin/sessions') ? 'bg-blue-600/10 text-blue-400 font-bold' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        Sessions
-                      </Link>
-                      <Link
-                        href="/admin/security"
-                        className={`flex items-center rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                          isLinkActive('/admin/security') ? 'bg-blue-600/10 text-blue-400 font-bold' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        Security Center
-                      </Link>
-                    </div>
-                  </div>
-                );
-              }
-
-              // 2. LMS Module Subpoints
-              if (module.id === 'lms') {
-                return (
-                  <div key={module.id} className="space-y-1">
-                    <div className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2.5">
-                      <IconComponent className="h-4.5 w-4.5 text-slate-455" />
-                      <span>{module.name}</span>
-                    </div>
-                    <div className="pl-6 space-y-1 pt-1 border-l border-slate-850 ml-5">
-                      <Link
-                        href="/admin/lms"
-                        className={`flex items-center rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                          isLinkActive('/admin/lms') ? 'bg-blue-600/10 text-blue-400 font-bold' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        Dashboard
-                      </Link>
-                      <Link
-                        href="/admin/lms/management"
-                        className={`flex items-center rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                          isLinkActive('/admin/lms/management') ? 'bg-blue-600/10 text-blue-400 font-bold' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        LMS Management
-                      </Link>
-                      <Link
-                        href="/admin/lms/my-learning"
-                        className={`flex items-center rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                          isLinkActive('/admin/lms/my-learning') ? 'bg-blue-600/10 text-blue-400 font-bold' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        My Learning
-                      </Link>
-                    </div>
-                  </div>
-                );
-              }
-
-              // 3. Tasks Module Subpoints
-              if (module.id === 'task') {
-                return (
-                  <div key={module.id} className="space-y-1">
-                    <div className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2.5">
-                      <IconComponent className="h-4.5 w-4.5 text-slate-455" />
-                      <span>Tasks</span>
-                    </div>
-                    <div className="pl-6 space-y-1 pt-1 border-l border-slate-850 ml-5">
-                      <Link
-                        href="/admin/task"
-                        className={`flex items-center rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                          isLinkActive('/admin/task') ? 'bg-blue-600/10 text-blue-400 font-bold' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        Dashboard
-                      </Link>
-                      <Link
-                        href="/admin/task/management"
-                        className={`flex items-center rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                          isLinkActive('/admin/task/management') ? 'bg-blue-600/10 text-blue-400 font-bold' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        Task Management
-                      </Link>
-                      <Link
-                        href="/admin/task/my-tasks"
-                        className={`flex items-center rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                          isLinkActive('/admin/task/my-tasks') ? 'bg-blue-600/10 text-blue-400 font-bold' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        My Tasks
-                      </Link>
-                    </div>
-                  </div>
-                );
-              }
-
-              // 4. Assessments Module Subpoints
-              if (module.id === 'assessment') {
-                return (
-                  <div key={module.id} className="space-y-1">
-                    <div className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2.5">
-                      <IconComponent className="h-4.5 w-4.5 text-slate-455" />
-                      <span>Assessments</span>
-                    </div>
-                    <div className="pl-6 space-y-1 pt-1 border-l border-slate-850 ml-5">
-                      <Link
-                        href="/admin/assessment"
-                        className={`flex items-center rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                          isLinkActive('/admin/assessment') ? 'bg-blue-600/10 text-blue-400 font-bold' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        Dashboard
-                      </Link>
-                      <Link
-                        href="/admin/assessment/management"
-                        className={`flex items-center rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                          isLinkActive('/admin/assessment/management') ? 'bg-blue-600/10 text-blue-400 font-bold' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        Assessment Management
-                      </Link>
-                      <Link
-                        href="/admin/assessment/my-assessments"
-                        className={`flex items-center rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                          isLinkActive('/admin/assessment/my-assessments') ? 'bg-blue-600/10 text-blue-400 font-bold' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        My Assessments
-                      </Link>
-                    </div>
-                  </div>
-                );
-              }
-
-              // 5. Attendance Module Subpoints
-              if (module.id === 'attendance') {
-                return (
-                  <div key={module.id} className="space-y-1">
-                    <div className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2.5">
-                      <IconComponent className="h-4.5 w-4.5 text-slate-455" />
-                      <span>Attendance</span>
-                    </div>
-                    <div className="pl-6 space-y-1 pt-1 border-l border-slate-850 ml-5">
-                      <Link
-                        href="/admin/attendance"
-                        className={`flex items-center rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                          isLinkActive('/admin/attendance') ? 'bg-blue-600/10 text-blue-400 font-bold' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        Dashboard
-                      </Link>
-                      <Link
-                        href="/admin/attendance/management"
-                        className={`flex items-center rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                          isLinkActive('/admin/attendance/management') ? 'bg-blue-600/10 text-blue-400 font-bold' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        Attendance Management
-                      </Link>
-                      <Link
-                        href="/admin/attendance/my-attendance"
-                        className={`flex items-center rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                          isLinkActive('/admin/attendance/my-attendance') ? 'bg-blue-600/10 text-blue-400 font-bold' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        My Attendance
-                      </Link>
-                    </div>
-                  </div>
-                );
-              }
-
-              // 6. Mentor Module Subpoints
-              if (module.id === 'mentor') {
-                const mentorLinks = [
-                  { label: 'Mentor Dashboard', href: '/admin/mentor' },
-                  { label: 'Mentor Profile', href: '/admin/mentor/profile' },
-                  { label: 'Mentor Assignment', href: '/admin/mentor/assignment' },
-                  { label: 'Mentor Batch Mapping', href: '/admin/mentor/batch-mapping' },
-                ];
-
-                return (
-                  <div key={module.id} className="space-y-1">
-                    <div className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2.5">
-                      <IconComponent className="h-4.5 w-4.5 text-slate-455" />
-                      <span>Mentor Module</span>
-                    </div>
-                    <div className="pl-6 space-y-1 pt-1 border-l border-slate-850 ml-5">
-                      {mentorLinks.map(({ label, href }) => (
+                      {subMenuItems.map(({ label, href }) => (
                         <Link
                           key={href}
                           href={href}
@@ -364,7 +174,7 @@ export function Sidebar({ isMobileOpen, setMobileOpen }: SidebarProps) {
                 );
               }
 
-              // 7. Default standard routing rendering
+              // Default single-link modules
               const route = `/admin${module.route}`;
               const isActive = pathname === route;
               
@@ -394,9 +204,9 @@ export function Sidebar({ isMobileOpen, setMobileOpen }: SidebarProps) {
               <img src={`https://api.dicebear.com/7.x/initials/svg?seed=${user?.name || 'User'}&backgroundColor=0f172a,1e293b,334155`} alt={user?.name || "User"} className="h-full w-full object-cover" />
             </div>
             <div className="ml-3 overflow-hidden">
-              <p className="text-sm font-bold text-slate-800 truncate leading-tight">{user?.name || "Administrator"}</p>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 truncate mt-0.5">{user?.roleName || "Admin Role"}</p>
-              <p className="text-[9px] font-mono text-slate-400 mt-1 truncate hidden xl:block">ID: {user?.user_id || "ADM-001"}</p>
+              <p className="text-sm font-bold text-slate-200 truncate leading-tight">{user?.name || "User"}</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 truncate mt-0.5">{user?.roleName || "Role"}</p>
+              <p className="text-[9px] font-mono text-slate-400 mt-1 truncate hidden xl:block">ID: {user?.user_id || "N/A"}</p>
             </div>
           </div>
         </div>

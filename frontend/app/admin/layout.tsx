@@ -3,10 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { Sidebar } from '@/components/admin/Sidebar';
 import { TopNav } from '@/components/admin/TopNav';
+import { RouteGuard } from '@/components/guards/RouteGuard';
 import { useAuth } from '@/src/context/AuthContext';
 import { useRouter } from 'next/navigation';
 
-export default function SuperAdminLayout({
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -16,14 +17,8 @@ export default function SuperAdminLayout({
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading) {
-      if (!user) {
-        // Redirect to login if not authenticated
-        router.push('/');
-      } else if (user.roleName !== 'Super Admin' && user.roleName !== 'Admin') {
-        // Enforce role-based access
-        router.push('/unauthorized');
-      }
+    if (!loading && !user) {
+      router.push('/');
     }
   }, [user, loading, router]);
 
@@ -35,7 +30,7 @@ export default function SuperAdminLayout({
     );
   }
 
-  if (!user || (user.roleName !== 'Super Admin' && user.roleName !== 'Admin')) {
+  if (!user) {
     return null;
   }
 
@@ -48,7 +43,9 @@ export default function SuperAdminLayout({
         
         <main className="flex-1 overflow-y-auto bg-slate-50 p-4 sm:p-6 lg:p-8">
           <div className="mx-auto max-w-7xl">
-            {children}
+            <RouteGuard>
+              {children}
+            </RouteGuard>
           </div>
         </main>
       </div>
