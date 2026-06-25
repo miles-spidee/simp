@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pinesphere_erp/features/auth/providers/auth_provider.dart';
 import 'package:pinesphere_erp/student_portal/providers/attendance_provider.dart';
 import 'package:pinesphere_erp/student_portal/providers/financials_provider.dart';
 import 'package:pinesphere_erp/student_portal/providers/kpi_provider.dart';
@@ -29,12 +30,16 @@ class StudentDashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final currentUser = ref.watch(currentUserProvider);
     final profile = ref.watch(profileProvider);
     ref.watch(attendanceProvider);
     final lms = ref.watch(lmsProvider);
     final financials = ref.watch(financialsProvider);
     final kpi = ref.watch(kpiProvider);
     ref.watch(tasksProvider);
+
+    // Use real user name from JWT, fallback to profile mock
+    final studentName = currentUser?.displayName ?? profile.personal.fullName;
 
     // Mock Announcements
     final announcements = [
@@ -53,7 +58,7 @@ class StudentDashboardScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Student ERP Workspace"),
+        title: Text('Hello, ${studentName.split(' ').first}!', style: const TextStyle(fontWeight: FontWeight.bold)),
         actions: [
           IconButton(
             onPressed: () {
