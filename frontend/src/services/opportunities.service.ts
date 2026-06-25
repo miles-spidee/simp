@@ -1,6 +1,6 @@
 import { opportunityApi } from '../api/opportunity.api';
 import { OpeningCreate, OpeningResponse } from '../types/api/opportunity.types';
-import { Opportunity } from '../data/mock-opportunities';
+import { Opportunity, MOCK_OPPORTUNITIES } from '../data/mock-opportunities';
 
 export type ExtendedOpening = OpeningResponse & Opportunity;
 
@@ -29,8 +29,13 @@ class OpportunitiesService {
 
   async getOpportunities(): Promise<ExtendedOpening[]> {
     try {
-      const data = await opportunityApi.getOpenings();
-      return data.map(opp => this.mapToExtended(opp));
+      // Commented out backend call to use mock data for the landing page
+      // const data = await opportunityApi.getOpenings();
+      // return data.map(opp => this.mapToExtended(opp));
+      
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return MOCK_OPPORTUNITIES as any;
     } catch (e) {
       console.error(e);
       return [];
