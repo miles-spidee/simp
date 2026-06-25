@@ -1,15 +1,50 @@
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Card, CardContent } from '@/components/admin/ui/Card';
-import { Users, Shield, UserCheck, LayoutGrid, Clock } from 'lucide-react';
+import { 
+  Users, Shield, UserCheck, LayoutGrid, Clock,
+  LayoutDashboard, Package, FileText, CheckSquare, Award, MonitorPlay, Users as UsersIcon, 
+  UsersRound, Calendar, PieChart, Briefcase, Network, Settings, 
+  Building2, GraduationCap, FolderOpen, ArrowRight
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { Badge } from '@/components/admin/ui/Badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/admin/ui/Table';
 import { userService } from '@/src/services/user.service';
 import { roleService } from '@/src/services/role.service';
 import { moduleService } from '@/src/services/module.service';
 import { User } from '@/src/data/mock-users';
+import { Module } from '@/src/data/mock-modules';
+import { useAuth } from '@/src/context/AuthContext';
+
+// Map module IDs to Lucide icons
+const iconMap: Record<string, LucideIcon> = {
+  identity: Shield,
+  employee: UsersIcon,
+  organization: Building2,
+  program: GraduationCap,
+  opportunity: Briefcase,
+  application: FileText,
+  student: UsersRound,
+  batch: Package,
+  allocation: Network,
+  mentor: Award,
+  lms: MonitorPlay,
+  task: CheckSquare,
+  assessment: FileText,
+  submission: Package,
+  attendance: Calendar,
+  performance: PieChart,
+  college_coordinator: Users,
+  dashboard: LayoutDashboard,
+  common_file: FolderOpen,
+  super_admin: Settings,
+};
 
 export default function SuperAdminDashboard() {
+  const { user } = useAuth();
   const [recentUsers, setRecentUsers] = useState<User[]>([]);
+  const [modules, setModules] = useState<Module[]>([]);
   const [stats, setStats] = useState({
     totalUsers: 0,
     activeUsers: 0,
@@ -34,12 +69,22 @@ export default function SuperAdminDashboard() {
         });
 
         setRecentUsers(usersData.slice(0, 4));
+
+        // Load modules based on user role
+        if (user) {
+          if (user.roleName === 'Super Admin' || user.roleName === 'System Admin') {
+            setModules(modulesData);
+          } else {
+            const userModules = await userService.getUserModules(user.user_id);
+            setModules(userModules);
+          }
+        }
       } catch (err) {
         console.error('Failed to load dashboard data', err);
       }
     }
     loadData();
-  }, []);
+  }, [user]);
 
   const kpis = [
     { title: 'Total Users', value: stats.totalUsers, icon: Users, change: '+12%', changeType: 'positive' },
@@ -65,6 +110,7 @@ export default function SuperAdminDashboard() {
           </div>
         </div>
 
+        {/* KPI Section */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {kpis.map((kpi, index) => (
             <Card key={index}>
@@ -89,12 +135,54 @@ export default function SuperAdminDashboard() {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* Module Registry Grid */}
+        <div className="space-y-4 pt-2">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold text-slate-900">ERP Module Registry</h2>
+            <Badge variant="secondary">{modules.length} Available</Badge>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {modules.map((module) => {
+              const IconComponent = iconMap[module.id] || LayoutGrid;
+              // Avoid generating /admin/admin links
+              const href = module.route === '/admin' ? '/admin' : `/admin${module.route}`;
+              
+              return (
+                <Link key={module.id} href={href} className="block group">
+                  <Card className="h-full transition-all hover:shadow-md hover:border-blue-500/30 bg-white">
+                    <CardContent className="p-5 flex flex-col h-full">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="h-10 w-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                          <IconComponent className="h-5 w-5" />
+                        </div>
+                        <Badge variant={module.active ? 'success' : 'secondary'} className="text-[10px]">
+                          {module.active ? 'Active' : 'Inactive'}
+                        </Badge>
+                      </div>
+                      <h3 className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors mb-1">
+                        {module.name}
+                      </h3>
+                      <p className="text-xs text-slate-500 line-clamp-2 flex-grow">
+                        {module.desc || `Manage and configure ${module.name.toLowerCase()} functionality.`}
+                      </p>
+                      <div className="mt-4 flex items-center text-xs font-medium text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                        Access Module <ArrowRight className="h-3 w-3 ml-1" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 pt-2">
+          {/* Recent Activity */}
           <div className="lg:col-span-1">
             <Card className="h-full">
               <div className="p-6 border-b border-slate-100 flex items-center gap-2">
                 <Clock className="h-5 w-5 text-slate-400" />
-                <h3 className="font-semibold text-slate-900">Platform Activity</h3>
+                <h3 className="font-semibold text-slate-900">Recent Activity</h3>
               </div>
               <CardContent className="p-6">
                 <div className="space-y-6">
@@ -118,10 +206,11 @@ export default function SuperAdminDashboard() {
             </Card>
           </div>
 
+          {/* System Status */}
           <div className="lg:col-span-2">
             <Card className="h-full">
               <div className="p-6 border-b border-slate-100">
-                <h3 className="font-semibold text-slate-900">Recent Platform Users</h3>
+                <h3 className="font-semibold text-slate-900">System Status</h3>
               </div>
               <CardContent className="p-0">
                 <Table>
