@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { Sidebar } from '@/components/admin/Sidebar';
-import { TopNav } from '@/components/admin/TopNav';
+import React, { useEffect } from 'react';
+import { AppLayout } from '@/components/layout/AppLayout';
 import { RouteGuard } from '@/components/guards/RouteGuard';
 import { useAuth } from '@/src/context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -12,7 +11,6 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, loading } = useAuth();
   const router = useRouter();
 
@@ -35,20 +33,10 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="flex h-screen bg-slate-50 font-sans">
-      <Sidebar isMobileOpen={sidebarOpen} setMobileOpen={setSidebarOpen} />
-      
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <TopNav setMobileOpen={setSidebarOpen} />
-        
-        <main className="flex-1 overflow-y-auto bg-slate-50 p-4 sm:p-6 lg:p-8">
-          <div className="mx-auto max-w-7xl">
-            <RouteGuard>
-              {children}
-            </RouteGuard>
-          </div>
-        </main>
-      </div>
-    </div>
+    <AppLayout>
+      <RouteGuard>
+        {children}
+      </RouteGuard>
+    </AppLayout>
   );
 }

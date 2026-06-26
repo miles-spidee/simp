@@ -1,8 +1,8 @@
 "use client";
 
 import React from 'react';
-import UnifiedDashboard from '@/components/dashboard/UnifiedDashboard';
+import DashboardShell from '@/components/dashboard/DashboardShell';
 
 export default function AdminPage() {
-  return <UnifiedDashboard />;
+  return <DashboardShell />;
 }
