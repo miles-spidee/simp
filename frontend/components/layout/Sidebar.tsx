@@ -3,15 +3,11 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { 
-  LayoutDashboard, Users, Shield, X, LayoutGrid, Package, FileText, CheckSquare, Award,
-  MonitorPlay, Users as UsersIcon, UsersRound, Calendar, PieChart, Briefcase, Network, Settings, 
-  Building2, GraduationCap, FolderOpen, User, UserPlus, Map, BookOpen, ClipboardList,
-  Lock, FileSignature, Key, Activity, ShieldAlert, ChevronLeft, ChevronRight, LogOut
-} from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/src/context/AuthContext';
 import { usePermissions } from '@/src/hooks/usePermissions';
+import { FEATURE_REGISTRY } from '@/src/core/features/feature-registry';
 
 interface SidebarProps {
   isMobileOpen: boolean;
@@ -19,67 +15,6 @@ interface SidebarProps {
   isCollapsed: boolean;
   setCollapsed: (collapsed: boolean) => void;
 }
-
-interface SidebarItem {
-  label: string;
-  href: string;
-  moduleId: string;
-  permission?: string;
-  icon: LucideIcon;
-}
-
-const SIDEBAR_ITEMS: SidebarItem[] = [
-  { label: 'Dashboard', href: '/admin', moduleId: 'dashboard', icon: LayoutDashboard },
-  
-  // Identity subpages
-  { label: 'Identity - Users', href: '/admin/users', moduleId: 'identity', permission: 'identity.view', icon: Users },
-  { label: 'Identity - Roles', href: '/admin/roles', moduleId: 'identity', permission: 'identity.view', icon: Key },
-  { label: 'Identity - Permissions', href: '/admin/permissions', moduleId: 'identity', permission: 'identity.view', icon: Lock },
-  { label: 'Identity - Sessions', href: '/admin/sessions', moduleId: 'identity', permission: 'identity.view', icon: Activity },
-  { label: 'Identity - Security Center', href: '/admin/security', moduleId: 'identity', permission: 'identity.view', icon: ShieldAlert },
-  
-  // HR/Management modules
-  { label: 'Employee', href: '/admin/employee', moduleId: 'employee', permission: 'employee.view', icon: UsersIcon },
-  { label: 'Organization', href: '/admin/organization', moduleId: 'organization', permission: 'organization.view', icon: Building2 },
-  { label: 'Program', href: '/admin/program', moduleId: 'program', permission: 'program.view', icon: GraduationCap },
-  { label: 'Opportunity', href: '/admin/opportunity', moduleId: 'opportunity', permission: 'opportunity.view', icon: Briefcase },
-  { label: 'Application', href: '/admin/application', moduleId: 'application', permission: 'application.view', icon: FileText },
-  { label: 'Student', href: '/admin/student', moduleId: 'student', permission: 'student.view', icon: UsersRound },
-  { label: 'Batch', href: '/admin/batch', moduleId: 'batch', permission: 'batch.view', icon: Package },
-  { label: 'Allocation', href: '/admin/allocation', moduleId: 'allocation', permission: 'allocation.view', icon: Network },
-  
-  // Mentor subpages
-  { label: 'Mentor Dashboard', href: '/admin/mentor', moduleId: 'mentor', permission: 'mentor.view', icon: Award },
-  { label: 'Mentor Profile', href: '/admin/mentor/profile', moduleId: 'mentor', permission: 'mentor.view', icon: User },
-  { label: 'Mentor Assignment', href: '/admin/mentor/assignment', moduleId: 'mentor', permission: 'mentor.view', icon: UserPlus },
-  { label: 'Mentor Batch Mapping', href: '/admin/mentor/batch-mapping', moduleId: 'mentor', permission: 'mentor.view', icon: Map },
-  
-  // LMS subpages
-  { label: 'LMS Dashboard', href: '/admin/lms', moduleId: 'lms', permission: 'lms.view', icon: MonitorPlay },
-  { label: 'LMS Management', href: '/admin/lms/management', moduleId: 'lms', permission: 'lms.view', icon: Settings },
-  { label: 'LMS My Learning', href: '/admin/lms/my-learning', moduleId: 'lms', permission: 'lms.view', icon: BookOpen },
-  
-  // Attendance subpages
-  { label: 'Attendance Dashboard', href: '/admin/attendance', moduleId: 'attendance', permission: 'attendance.view', icon: Calendar },
-  { label: 'Attendance Management', href: '/admin/attendance/management', moduleId: 'attendance', permission: 'attendance.view', icon: Calendar },
-  { label: 'Attendance My Attendance', href: '/admin/attendance/my-attendance', moduleId: 'attendance', permission: 'attendance.view', icon: Calendar },
-  
-  // Task subpages
-  { label: 'Task Dashboard', href: '/admin/task', moduleId: 'task', permission: 'task.view', icon: CheckSquare },
-  { label: 'Task Management', href: '/admin/task/management', moduleId: 'task', permission: 'task.view', icon: CheckSquare },
-  { label: 'Task My Tasks', href: '/admin/task/my-tasks', moduleId: 'task', permission: 'task.view', icon: ClipboardList },
-  
-  // Assessment subpages
-  { label: 'Assessment Dashboard', href: '/admin/assessment', moduleId: 'assessment', permission: 'assessment.view', icon: FileText },
-  { label: 'Assessment Management', href: '/admin/assessment/management', moduleId: 'assessment', permission: 'assessment.view', icon: FileText },
-  { label: 'Assessment My Assessments', href: '/admin/assessment/my-assessments', moduleId: 'assessment', permission: 'assessment.view', icon: FileSignature },
-  
-  { label: 'Submission', href: '/admin/submissions', moduleId: 'submission', permission: 'submission.view', icon: Package },
-  { label: 'Performance', href: '/admin/performance', moduleId: 'performance', permission: 'performance.view', icon: PieChart },
-  { label: 'College Coordinator', href: '/admin/coordinator', moduleId: 'college_coordinator', permission: 'college_coordinator.view', icon: Users },
-  { label: 'Common Files', href: '/admin/files', moduleId: 'common_file', permission: 'common_file.view', icon: FolderOpen },
-  { label: 'Super Admin', href: '/admin/super-admin', moduleId: 'super_admin', permission: 'super_admin.view', icon: Settings },
-];
 
 export function Sidebar({ isMobileOpen, setMobileOpen, isCollapsed, setCollapsed }: SidebarProps) {
   const pathname = usePathname();
@@ -94,15 +29,15 @@ export function Sidebar({ isMobileOpen, setMobileOpen, isCollapsed, setCollapsed
     return pathname.startsWith(href);
   };
 
-  // Filter menu items dynamically based on module and permissions
-  const filteredItems = SIDEBAR_ITEMS.filter(item => {
+  // Filter menu items dynamically based on module and permissions from FEATURE_REGISTRY
+  const filteredItems = FEATURE_REGISTRY.filter(item => {
     // If user has the module assigned
     const hasMod = hasModule(item.moduleId);
     if (!hasMod) return false;
 
     // Check specific permission if specified
-    if (item.permission && !isSuperAdmin) {
-      return hasPermission(item.permission);
+    if (item.permissionKey && !isSuperAdmin) {
+      return hasPermission(item.permissionKey);
     }
 
     return true;
@@ -147,26 +82,27 @@ export function Sidebar({ isMobileOpen, setMobileOpen, isCollapsed, setCollapsed
         <nav className="flex-1 overflow-y-auto px-3 py-6 space-y-1 font-sans select-none custom-scrollbar">
           {filteredItems.map((item) => {
             const IconComponent = item.icon;
-            const active = isLinkActive(item.href);
-
+            const active = isLinkActive(item.route);
             return (
               <Link
-                key={item.href}
-                href={item.href}
-                title={isCollapsed ? item.label : undefined}
+                key={item.featureId}
+                href={item.route}
                 onClick={() => setMobileOpen(false)}
-                className={`group flex items-center rounded-lg py-2.5 transition-all duration-150 ${
-                  active 
-                    ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20 font-bold' 
-                    : 'hover:bg-slate-800 hover:text-white border border-transparent text-slate-400'
-                } ${isCollapsed ? 'justify-center px-0' : 'px-3 gap-x-3'}`}
+                className={`
+                  group flex items-center justify-between rounded-xl px-3 py-2.5 transition-all duration-200
+                  ${active 
+                    ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20' 
+                    : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'}
+                `}
               >
-                <IconComponent className={`h-5 w-5 shrink-0 transition-colors ${active ? 'text-blue-400' : 'text-slate-500 group-hover:text-slate-300'}`} />
-                {!isCollapsed && (
-                  <span className="text-xs uppercase tracking-wider whitespace-nowrap truncate font-semibold animate-fade-in">
-                    {item.label}
-                  </span>
-                )}
+                <div className="flex items-center gap-3 overflow-hidden">
+                  <IconComponent className={`h-5 w-5 shrink-0 ${active ? 'text-white' : 'text-slate-400 group-hover:text-blue-400'}`} />
+                  {!isCollapsed && (
+                    <span className="text-sm font-medium whitespace-nowrap truncate animate-fade-in">
+                      {item.navigationLabel}
+                    </span>
+                  )}
+                </div>
               </Link>
             );
           })}

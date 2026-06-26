@@ -5,6 +5,7 @@ import { AlertTriangle,  HardDrive, File, Clock, Search, Filter, Plus, Upload, D
 import { fileService } from '@/src/services/file.service';
 import { CommonFile } from '@/src/data/mock-common-files';
 import { Drawer } from '@/components/admin/ui/Drawer';
+import { PermissionGuard } from '@/components/admin/ui/PermissionGuard';
 
 export default function CommonFilePage() {
   const [activeView, setActiveView] = useState<'dashboard' | 'directory'>('dashboard');
@@ -146,9 +147,11 @@ export default function CommonFilePage() {
                   <Filter className="h-4 w-4" />
                 </button>
               </div>
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 flex items-center gap-2 shadow-sm">
-                <Upload className="h-4 w-4" /> Upload File
-              </button>
+              <PermissionGuard required="common_file.upload">
+                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 flex items-center gap-2 shadow-sm">
+                  <Upload className="h-4 w-4" /> Upload File
+                </button>
+              </PermissionGuard>
             </div>
             <div className="flex-1 overflow-auto">
               <table className="w-full text-left text-sm whitespace-nowrap">
@@ -245,9 +248,11 @@ export default function CommonFilePage() {
                 </div>
                 
                 <div className="border-t border-slate-200 pt-4 mt-6">
-                  <button onClick={() => handleDelete(selectedFile.file_id)} className="w-full bg-white border border-red-200 text-red-600 font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 hover:bg-red-50 transition-colors">
-                    <Trash className="h-4 w-4" /> Delete File
-                  </button>
+                  <PermissionGuard required="common_file.delete">
+                    <button onClick={() => handleDelete(selectedFile.file_id)} className="w-full bg-white border border-red-200 text-red-600 font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 hover:bg-red-50 transition-colors">
+                      <Trash className="h-4 w-4" /> Delete File
+                    </button>
+                  </PermissionGuard>
                 </div>
               </div>
             </div>

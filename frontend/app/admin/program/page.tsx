@@ -15,6 +15,7 @@ import { organizationService } from '@/src/services/organization.service';
 import { Organization } from '@/src/data/mock-organizations';
 import { useAuth } from '@/src/context/AuthContext';
 import { Drawer } from '@/components/admin/ui/Drawer';
+import { PermissionGuard } from '@/components/admin/ui/PermissionGuard';
 
 interface ProgramWithOrg extends Program {
   organizationData?: Organization;
@@ -682,21 +683,25 @@ export default function ProgramManagementPage() {
             </button>
           </div>
 
-          <button 
-            onClick={handleExportData}
-            className="flex items-center gap-1.5 px-3 py-2 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 bg-white rounded-lg text-xs font-bold text-slate-700 shadow-sm transition-all duration-200 cursor-pointer"
-          >
-            <FileDown className="h-3.5 w-3.5" />
-            <span>Export Roster</span>
-          </button>
+          <PermissionGuard required="program.export">
+            <button 
+              onClick={handleExportData}
+              className="flex items-center gap-1.5 px-3 py-2 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 bg-white rounded-lg text-xs font-bold text-slate-700 shadow-sm transition-all duration-200 cursor-pointer"
+            >
+              <FileDown className="h-3.5 w-3.5" />
+              <span>Export Roster</span>
+            </button>
+          </PermissionGuard>
           
-          <button 
-            onClick={openOnboardModal}
-            className="flex items-center gap-1.5 px-3 py-2 bg-slate-900 hover:bg-black text-white rounded-lg text-xs font-bold shadow-sm transition-all duration-200 cursor-pointer"
-          >
-            <Plus className="h-3.5 w-3.5" />
-            <span>Create Program</span>
-          </button>
+          <PermissionGuard required="program.create">
+            <button 
+              onClick={openOnboardModal}
+              className="flex items-center gap-1.5 px-3 py-2 bg-slate-900 hover:bg-black text-white rounded-lg text-xs font-bold shadow-sm transition-all duration-200 cursor-pointer"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              <span>Create Program</span>
+            </button>
+          </PermissionGuard>
         </div>
       </div>
 
@@ -1138,13 +1143,15 @@ export default function ProgramManagementPage() {
                               >
                                 <Eye className="h-3.5 w-3.5" />
                               </button>
-                              <button 
-                                onClick={() => openEditModal(prog)}
-                                className="p-1 hover:bg-slate-100 rounded text-slate-500 hover:text-slate-900 cursor-pointer"
-                                title="Edit Program Details"
-                              >
-                                <Edit className="h-3.5 w-3.5" />
-                              </button>
+                              <PermissionGuard required="program.edit">
+                                <button 
+                                  onClick={() => openEditModal(prog)}
+                                  className="p-1 hover:bg-slate-100 rounded text-slate-500 hover:text-slate-900 cursor-pointer"
+                                  title="Edit Program Details"
+                                >
+                                  <Edit className="h-3.5 w-3.5" />
+                                </button>
+                              </PermissionGuard>
                             </div>
                           </td>
                         </tr>
@@ -1257,13 +1264,15 @@ export default function ProgramManagementPage() {
 
               {/* Sticky action buttons list */}
               <div className="flex items-center flex-wrap gap-2">
-                <button 
-                  onClick={() => openEditModal(activeProfile)}
-                  className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1"
-                >
-                  <Edit className="h-3 w-3" />
-                  <span>Edit Info</span>
-                </button>
+                <PermissionGuard required="program.edit">
+                  <button 
+                    onClick={() => openEditModal(activeProfile)}
+                    className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1"
+                  >
+                    <Edit className="h-3 w-3" />
+                    <span>Edit Info</span>
+                  </button>
+                </PermissionGuard>
                 <button 
                   onClick={() => {
                     setStatusInput('Active');

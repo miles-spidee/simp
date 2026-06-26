@@ -12,6 +12,7 @@ import { studentService } from '@/src/services/student.service';
 import { Student, StudentDocument, StudentTimelineEvent, StudentBatch } from '@/src/data/mock-students';
 import { useAuth } from '@/src/context/AuthContext';
 import { Drawer } from '@/components/admin/ui/Drawer';
+import { PermissionGuard } from '@/components/admin/ui/PermissionGuard';
 
 export default function StudentLifecycleManagementPage() {
   const { user } = useAuth();
@@ -808,30 +809,34 @@ export default function StudentLifecycleManagementPage() {
             </button>
           </div>
 
-          <button 
-            onClick={handleExportRoster}
-            className="flex items-center gap-1.5 px-3.5 py-2 border border-slate-200 hover:border-blue-600 hover:text-blue-600 bg-white rounded-lg text-xs font-bold text-slate-700 shadow-sm transition-all cursor-pointer"
-          >
-            <FileDown className="h-3.5 w-3.5" />
-            <span>Export CSV</span>
-          </button>
+          <PermissionGuard required="student.export">
+            <button 
+              onClick={handleExportRoster}
+              className="flex items-center gap-1.5 px-3.5 py-2 border border-slate-200 hover:border-blue-600 hover:text-blue-600 bg-white rounded-lg text-xs font-bold text-slate-700 shadow-sm transition-all cursor-pointer"
+            >
+              <FileDown className="h-3.5 w-3.5" />
+              <span>Export CSV</span>
+            </button>
+          </PermissionGuard>
           
-          <button 
-            onClick={() => {
-              setEditForm({
-                name: '', email: '', phone: '', dob: '', gender: 'Male', address: '', college: '',
-                department: 'CSE', degree: 'B.Tech', year: 3, cgpa: 8.5, graduationYear: 2027,
-                program: 'Summer Software Engineering Internship', internshipType: 'Free Internship',
-                batchName: 'Alpha Cohort 2026', mentorId: 'emp-2', mentorName: 'Bob Johnson',
-                joiningDate: '', expectedCompletion: ''
-              });
-              setActiveActionModal({ type: 'onboard' });
-            }}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-sm transition-all cursor-pointer"
-          >
-            <Plus className="h-3.5 w-3.5" />
-            <span>Enroll Student</span>
-          </button>
+          <PermissionGuard required="student.create">
+            <button 
+              onClick={() => {
+                setEditForm({
+                  name: '', email: '', phone: '', dob: '', gender: 'Male', address: '', college: '',
+                  department: 'CSE', degree: 'B.Tech', year: 3, cgpa: 8.5, graduationYear: 2027,
+                  program: 'Summer Software Engineering Internship', internshipType: 'Free Internship',
+                  batchName: 'Alpha Cohort 2026', mentorId: 'emp-2', mentorName: 'Bob Johnson',
+                  joiningDate: '', expectedCompletion: ''
+                });
+                setActiveActionModal({ type: 'onboard' });
+              }}
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-sm transition-all cursor-pointer"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              <span>Enroll Student</span>
+            </button>
+          </PermissionGuard>
         </div>
       </div>
 
@@ -1350,13 +1355,15 @@ export default function StudentLifecycleManagementPage() {
                             >
                               <Eye className="h-4 w-4" />
                             </button>
-                            <button 
-                              onClick={() => openEditModal(s)}
-                              className="p-1 hover:text-amber-600 hover:bg-slate-100 rounded text-slate-400 transition-colors"
-                              title="Edit Personal/Academic Info"
-                            >
-                              <PlusCircle className="h-4 w-4" />
-                            </button>
+                            <PermissionGuard required="student.edit">
+                              <button 
+                                onClick={() => openEditModal(s)}
+                                className="p-1 hover:text-amber-600 hover:bg-slate-100 rounded text-slate-400 transition-colors"
+                                title="Edit Personal/Academic Info"
+                              >
+                                <PlusCircle className="h-4 w-4" />
+                              </button>
+                            </PermissionGuard>
                             <button 
                               onClick={() => handleGenerateCertificate(s.id)}
                               className="p-1 hover:text-emerald-600 hover:bg-slate-100 rounded text-slate-400 transition-colors"
@@ -1499,18 +1506,20 @@ export default function StudentLifecycleManagementPage() {
 
               {/* Header Actions */}
               <div className="flex flex-wrap items-center gap-1.5">
-                <button
-                  onClick={() => openEditModal(activeProfile)}
-                  className="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded transition"
-                >
-                  Edit Profile
-                </button>
-                <button
-                  onClick={() => setActiveActionModal({ type: 'batch' })}
-                  className="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded transition"
-                >
-                  Transfer Batch
-                </button>
+                <PermissionGuard required="student.edit">
+                  <button
+                    onClick={() => openEditModal(activeProfile)}
+                    className="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded transition"
+                  >
+                    Edit Profile
+                  </button>
+                  <button
+                    onClick={() => setActiveActionModal({ type: 'batch' })}
+                    className="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded transition"
+                  >
+                    Transfer Batch
+                  </button>
+                </PermissionGuard>
                 <button
                   onClick={() => setActiveActionModal({ type: 'mentor' })}
                   className="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded transition"

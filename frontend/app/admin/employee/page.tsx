@@ -15,6 +15,7 @@ import { Employee, EmployeeDocument, TimelineEvent, EmployeeProject } from '@/sr
 import { useAuth } from '@/src/context/AuthContext';
 import { Drawer } from '@/components/admin/ui/Drawer';
 import { useRouter } from 'next/navigation';
+import { PermissionGuard } from '@/components/admin/ui/PermissionGuard';
 
 export default function EmployeeManagementPage() {
   const { user } = useAuth();
@@ -627,21 +628,25 @@ export default function EmployeeManagementPage() {
             </button>
           </div>
 
-          <button 
-            onClick={handleExportRoster}
-            className="flex items-center gap-1.5 px-3 py-2 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 bg-white rounded-lg text-xs font-bold text-slate-700 shadow-sm transition-all duration-200 cursor-pointer"
-          >
-            <FileDown className="h-3.5 w-3.5" />
-            <span>Export Roster</span>
-          </button>
+          <PermissionGuard required="employee.export">
+            <button 
+              onClick={handleExportRoster}
+              className="flex items-center gap-1.5 px-3 py-2 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 bg-white rounded-lg text-xs font-bold text-slate-700 shadow-sm transition-all duration-200 cursor-pointer"
+            >
+              <FileDown className="h-3.5 w-3.5" />
+              <span>Export Roster</span>
+            </button>
+          </PermissionGuard>
           
-          <button 
-            onClick={openOnboardModal}
-            className="flex items-center gap-1.5 px-3 py-2 bg-slate-900 hover:bg-black text-white rounded-lg text-xs font-bold shadow-sm transition-all duration-200 cursor-pointer"
-          >
-            <Plus className="h-3.5 w-3.5" />
-            <span>Onboard Employee</span>
-          </button>
+          <PermissionGuard required="employee.create">
+            <button 
+              onClick={openOnboardModal}
+              className="flex items-center gap-1.5 px-3 py-2 bg-slate-900 hover:bg-black text-white rounded-lg text-xs font-bold shadow-sm transition-all duration-200 cursor-pointer"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              <span>Onboard Employee</span>
+            </button>
+          </PermissionGuard>
         </div>
       </div>
 
@@ -1117,13 +1122,15 @@ export default function EmployeeManagementPage() {
                               >
                                 <Eye className="h-3.5 w-3.5" />
                               </button>
-                              <button 
-                                onClick={() => openEditModal(emp)}
-                                className="p-1 hover:bg-slate-100 rounded text-slate-500 hover:text-slate-900 cursor-pointer"
-                                title="Edit Employee"
-                              >
-                                <Edit className="h-3.5 w-3.5" />
-                              </button>
+                              <PermissionGuard required="employee.edit">
+                                <button 
+                                  onClick={() => openEditModal(emp)}
+                                  className="p-1 hover:bg-slate-100 rounded text-slate-500 hover:text-slate-900 cursor-pointer"
+                                  title="Edit Employee"
+                                >
+                                  <Edit className="h-3.5 w-3.5" />
+                                </button>
+                              </PermissionGuard>
                             </div>
                           </td>
                         </tr>
@@ -1247,13 +1254,15 @@ export default function EmployeeManagementPage() {
 
               {/* Action Operations Button bar */}
               <div className="flex items-center flex-wrap gap-2">
-                <button 
-                  onClick={() => openEditModal(activeProfile)}
-                  className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1"
-                >
-                  <Edit className="h-3 w-3" />
-                  <span>Edit</span>
-                </button>
+                <PermissionGuard required="employee.edit">
+                  <button 
+                    onClick={() => openEditModal(activeProfile)}
+                    className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1"
+                  >
+                    <Edit className="h-3 w-3" />
+                    <span>Edit</span>
+                  </button>
+                </PermissionGuard>
                 <button 
                   onClick={() => {
                     setMentorInput(activeProfile.mentorId || '');
@@ -1545,16 +1554,18 @@ export default function EmployeeManagementPage() {
                                   </button>
                                 )}
                                 {doc.status !== 'Rejected' && (
-                                  <button 
-                                    onClick={() => {
-                                      const docIdx = activeProfile.documents.findIndex(d => d.type === type);
-                                      handleVerifyDocument(activeProfile.id, docIdx, 'Rejected');
-                                    }}
-                                    className="p-1 hover:bg-slate-100 rounded text-rose-600 hover:text-rose-700 cursor-pointer"
-                                    title="Reject Verification"
-                                  >
-                                    <Trash className="h-3.5 w-3.5" />
-                                  </button>
+                                  <PermissionGuard required="employee.edit">
+                                    <button 
+                                      onClick={() => {
+                                        const docIdx = activeProfile.documents.findIndex(d => d.type === type);
+                                        handleVerifyDocument(activeProfile.id, docIdx, 'Rejected');
+                                      }}
+                                      className="p-1 hover:bg-slate-100 rounded text-rose-600 hover:text-rose-700 cursor-pointer"
+                                      title="Reject Verification"
+                                    >
+                                      <Trash className="h-3.5 w-3.5" />
+                                    </button>
+                                  </PermissionGuard>
                                 )}
                                 <a 
                                   href="#" 

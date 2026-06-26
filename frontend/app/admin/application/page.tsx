@@ -14,6 +14,7 @@ import { Opportunity } from '@/src/data/mock-opportunities';
 import { AddCandidateDrawer } from '@/components/admin/application/AddCandidateDrawer';
 import { Drawer } from '@/components/admin/ui/Drawer';
 import { useRouter } from 'next/navigation';
+import { PermissionGuard } from '@/components/admin/ui/PermissionGuard';
 
 type TabType = 'dashboard' | 'applications' | 'pipeline' | 'reports';
 
@@ -357,31 +358,35 @@ export default function ApplicationPage() {
           </div>
           
           <div className="flex items-center gap-2">
-            <button 
-              onClick={() => setIsAddDrawerOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors cursor-pointer"
-            >
-              <Plus className="h-3.5 w-3.5" />
-              <span>Add Candidate</span>
-            </button>
-            <button 
-              onClick={() => {
-                const csvContent = "data:text/csv;charset=utf-8,ID,Name,College,Type,Status,CGPA\n" + 
-                  applications.map(a => `"${a.id}","${a.candidateName}","${a.college}","${a.internshipType}","${a.status}",${a.cgpa}`).join("\n");
-                const encodedUri = encodeURI(csvContent);
-                const link = document.createElement("a");
-                link.setAttribute("href", encodedUri);
-                link.setAttribute("download", `applications_report_${new Date().toISOString().split('T')[0]}.csv`);
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                triggerToast('Export Complete', 'Exported applications database to CSV successfully.', 'success');
-              }}
-              className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 rounded-lg text-xs font-semibold shadow-sm transition-colors cursor-pointer"
-            >
-              <FileSpreadsheet className="h-3.5 w-3.5" />
-              <span>Export CSV</span>
-            </button>
+            <PermissionGuard required="application.review">
+              <button 
+                onClick={() => setIsAddDrawerOpen(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors cursor-pointer"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                <span>Add Candidate</span>
+              </button>
+            </PermissionGuard>
+            <PermissionGuard required="application.export">
+              <button 
+                onClick={() => {
+                  const csvContent = "data:text/csv;charset=utf-8,ID,Name,College,Type,Status,CGPA\n" + 
+                    applications.map(a => `"${a.id}","${a.candidateName}","${a.college}","${a.internshipType}","${a.status}",${a.cgpa}`).join("\n");
+                  const encodedUri = encodeURI(csvContent);
+                  const link = document.createElement("a");
+                  link.setAttribute("href", encodedUri);
+                  link.setAttribute("download", `applications_report_${new Date().toISOString().split('T')[0]}.csv`);
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                  triggerToast('Export Complete', 'Exported applications database to CSV successfully.', 'success');
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 rounded-lg text-xs font-semibold shadow-sm transition-colors cursor-pointer"
+              >
+                <FileSpreadsheet className="h-3.5 w-3.5" />
+                <span>Export CSV</span>
+              </button>
+            </PermissionGuard>
           </div>
         </div>
 
@@ -564,12 +569,14 @@ export default function ApplicationPage() {
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="text-[10px] text-slate-400 font-medium">{app.appliedDate}</span>
-                    <button 
-                      onClick={() => handleOpenReview(app)}
-                      className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors cursor-pointer"
-                    >
-                      Review
-                    </button>
+                    <PermissionGuard required="application.review">
+                      <button 
+                        onClick={() => handleOpenReview(app)}
+                        className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors cursor-pointer"
+                      >
+                        Review
+                      </button>
+                    </PermissionGuard>
                   </div>
                 </div>
               ))}
@@ -870,13 +877,15 @@ export default function ApplicationPage() {
                             {app.assignedReviewer || <span className="italic text-slate-400">Unassigned</span>}
                           </td>
                           <td className="px-4 py-4 text-right">
-                            <button 
-                              onClick={() => handleOpenReview(app)}
-                              className="text-blue-600 hover:text-blue-800 font-black text-xs cursor-pointer inline-flex items-center gap-0.5"
-                            >
-                              <span>Review Workspace</span>
-                              <ChevronRight className="h-3 w-3" />
-                            </button>
+                            <PermissionGuard required="application.review">
+                              <button 
+                                onClick={() => handleOpenReview(app)}
+                                className="text-blue-600 hover:text-blue-800 font-black text-xs cursor-pointer inline-flex items-center gap-0.5"
+                              >
+                                <span>Review Workspace</span>
+                                <ChevronRight className="h-3 w-3" />
+                              </button>
+                            </PermissionGuard>
                           </td>
                         </tr>
                       );
