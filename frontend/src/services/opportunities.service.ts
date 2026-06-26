@@ -44,8 +44,10 @@ class OpportunitiesService {
 
   async getOpportunity(id: string): Promise<ExtendedOpening | undefined> {
     try {
-      const opp = await opportunityApi.getOpening(id);
-      return this.mapToExtended(opp);
+      // const opp = await opportunityApi.getOpening(id);
+      // return this.mapToExtended(opp);
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return MOCK_OPPORTUNITIES.find(o => o.id === id) as any;
     } catch (e) {
       console.error(e);
       return undefined;
@@ -53,8 +55,10 @@ class OpportunitiesService {
   }
 
   async createOpportunity(opp: OpeningCreate): Promise<ExtendedOpening> {
-    const res = await opportunityApi.createOpening(opp);
-    return this.mapToExtended(res);
+    // const res = await opportunityApi.createOpening(opp);
+    // return this.mapToExtended(res);
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return MOCK_OPPORTUNITIES[0] as any;
   }
 }
 

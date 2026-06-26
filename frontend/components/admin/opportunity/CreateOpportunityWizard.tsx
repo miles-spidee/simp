@@ -111,10 +111,8 @@ export function CreateOpportunityWizard({
   };
 
   const handleNext = () => {
-    if (currentStep === 0) {
-      if (validateStep0()) {
-        setCurrentStep(1);
-      }
+    if (currentStep === 0 && validateStep0()) {
+      setCurrentStep(1);
     }
   };
 
