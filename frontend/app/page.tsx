@@ -80,25 +80,25 @@ const HeroButtons = () => {
         EXPLORE MORE
         <ArrowRight className="w-4 h-4" />
       </button>
-      <a 
+      {/* <a 
         href="#programs"
         onClick={handleExploreClick}
         className="rounded-xl px-8 py-4 text-xs font-bold tracking-widest uppercase bg-white border border-slate-200 text-slate-900 hover:bg-slate-50 flex items-center gap-3 transition-colors shadow-sm"
       >
         DIVE DEEPER
         <ArrowRight className="w-4 h-4" />
-      </a>
+      </a> */}
     </div>
   );
 };
 
-const TrustedBy = () => (
-  <div className="mt-12 sm:mt-16">
-    <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-6">
-      TRUSTED BY LEADING COMPANIES
-    </p>
-    <div className="flex flex-wrap items-center gap-6 sm:gap-10 opacity-60 grayscale">
-      <span className="text-xl font-bold font-sans tracking-tighter text-slate-700">Google</span>
+// const TrustedBy = () => (
+  // <div className="mt-12 sm:mt-16">
+    // <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-6">
+      // TRUSTED BY LEADING COMPANIES
+    // </p>
+    // <div className="flex flex-wrap items-center gap-6 sm:gap-10 opacity-60 grayscale">
+      {/* <span className="text-xl font-bold font-sans tracking-tighter text-slate-700">Google</span>
       <span className="text-lg font-semibold flex items-center gap-1.5 text-slate-700">
         <span className="grid grid-cols-2 gap-[2px]">
           <span className="w-2 h-2 bg-slate-700"></span><span className="w-2 h-2 bg-slate-700"></span>
@@ -108,10 +108,10 @@ const TrustedBy = () => (
       </span>
       <span className="text-xl font-bold font-serif tracking-tighter text-slate-700">amazon</span>
       <span className="text-xl font-bold font-sans text-slate-700">Deloitte.</span>
-      <span className="text-xl font-medium font-sans tracking-tight text-slate-700">Infosys</span>
-    </div>
-  </div>
-);
+      <span className="text-xl font-medium font-sans tracking-tight text-slate-700">Infosys</span> */}
+    {/* </div> */}
+  {/* </div> */}
+// );
 
 const Hero = () => (
   <Section className="relative overflow-hidden min-h-[calc(100vh-5rem)] flex items-center bg-white pt-8 md:pt-12 lg:pt-16 pb-20">
@@ -134,7 +134,7 @@ const Hero = () => (
         <HeroBadge />
         <HeroContent />
         <HeroButtons />
-        <TrustedBy />
+        {/* <TrustedBy /> */}
       </div>
     </Container>
   </Section>
