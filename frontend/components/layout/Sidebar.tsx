@@ -132,7 +132,7 @@ export function Sidebar({ isMobileOpen, setMobileOpen, isCollapsed, setCollapsed
                 router.push('/');
               }}
               className="p-1.5 rounded-lg text-slate-400 hover:bg-red-950/30 hover:text-red-400 transition-colors"
-              title="Sign Out"
+             
             >
               <LogOut className="h-5 w-5" />
             </button>

@@ -1,8 +1,11 @@
 import { 
-  LayoutDashboard, Users, Shield, LayoutGrid, Package, FileText, CheckSquare, Award,
-  MonitorPlay, Users as UsersIcon, UsersRound, Calendar, PieChart, Briefcase, Network, Settings, 
-  Building2, GraduationCap, FolderOpen, User, UserPlus, Map, BookOpen, ClipboardList,
-  Lock, FileSignature, Key, Activity, ShieldAlert
+  UsersRound, Package, Network, User, UserPlus, Map, 
+  MonitorPlay, BookOpen, Calendar, CheckSquare, ClipboardList, 
+  FileText, PieChart, UsersIcon, FolderOpen, Settings,
+  Briefcase, Activity, ShieldAlert, CreditCard, FileSignature, Wallet,
+  Bell, Megaphone, MessageSquare, Mail, Award, TrendingUp, GraduationCap,
+  LineChart, FileBarChart, Target, BarChart4, DownloadCloud, Lightbulb, LayoutDashboard, Key, Lock, Building2,
+  LifeBuoy, Store, Gift, IdCard, UserCircle, Zap
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -64,6 +67,49 @@ export const FEATURE_REGISTRY: FeatureDefinition[] = [
   { moduleId: 'college_coordinator', featureId: 'coordinator_main', permissionKey: 'college_coordinator.view', displayName: 'College Coordinator', navigationLabel: 'College Coordinator', route: '/feature/coordinator', icon: UsersIcon },
   { moduleId: 'common_file', featureId: 'files_main', permissionKey: 'common_file.view', displayName: 'Common Files', navigationLabel: 'Common Files', route: '/feature/files', icon: FolderOpen },
   
+  // Phase 2: Internship Operations
+  { moduleId: 'reporting_manager', featureId: 'reporting_manager_main', permissionKey: 'reporting_manager.view', displayName: 'Reporting Manager', navigationLabel: 'Reporting Manager', route: '/feature/reporting-manager', icon: Briefcase },
+  { moduleId: 'leave', featureId: 'leave_main', permissionKey: 'leave.view', displayName: 'Leave Management', navigationLabel: 'Leave Management', route: '/feature/leave', icon: Calendar },
+  { moduleId: 'activity', featureId: 'activity_main', permissionKey: 'activity.view', displayName: 'Activity Tracking', navigationLabel: 'Activity Tracking', route: '/feature/activity', icon: Activity },
+  { moduleId: 'escalation', featureId: 'escalation_main', permissionKey: 'escalation.view', displayName: 'Escalation Engine', navigationLabel: 'Escalation Engine', route: '/feature/escalation', icon: ShieldAlert },
+  
+  // Phase 3: Finance & Commercial Management
+  { moduleId: 'payment', featureId: 'payment_main', permissionKey: 'payment.view', displayName: 'Payment Management', navigationLabel: 'Payments', route: '/feature/payments', icon: CreditCard },
+  { moduleId: 'fee', featureId: 'fee_main', permissionKey: 'fee.view', displayName: 'Fee Structure', navigationLabel: 'Fee Structure', route: '/feature/fees', icon: FileText },
+  { moduleId: 'billing', featureId: 'billing_main', permissionKey: 'billing.view', displayName: 'Invoice & Receipt', navigationLabel: 'Billing', route: '/feature/billing', icon: FileSignature },
+  { moduleId: 'wallet', featureId: 'wallet_main', permissionKey: 'wallet.view', displayName: 'Internship Wallet', navigationLabel: 'Wallet', route: '/feature/wallet', icon: Wallet },
+  { moduleId: 'finance', featureId: 'finance_dashboard', permissionKey: 'finance.view', displayName: 'Finance Dashboard', navigationLabel: 'Finance Dashboard', route: '/feature/finance-dashboard', icon: PieChart },
+  { moduleId: 'finance_analytics', featureId: 'analytics_main', permissionKey: 'analytics.finance.view', displayName: 'Revenue Analytics', navigationLabel: 'Revenue Analytics', route: '/feature/finance-analytics', icon: Activity },
+  
+  // Phase 4: Communication Platform
+  { moduleId: 'notification', featureId: 'notification_main', permissionKey: 'notification.view', displayName: 'Notification Center', navigationLabel: 'Notifications', route: '/feature/notifications', icon: Bell },
+  { moduleId: 'announcement', featureId: 'announcement_main', permissionKey: 'announcement.view', displayName: 'Announcement Management', navigationLabel: 'Announcements', route: '/feature/announcements', icon: Megaphone },
+  { moduleId: 'communication', featureId: 'communication_main', permissionKey: 'communication.view', displayName: 'Communication Center', navigationLabel: 'Messages', route: '/feature/communication', icon: MessageSquare },
+  { moduleId: 'calendar', featureId: 'calendar_main', permissionKey: 'calendar.view', displayName: 'Calendar & Scheduler', navigationLabel: 'Calendar', route: '/feature/calendar', icon: Calendar },
+  { moduleId: 'email', featureId: 'email_main', permissionKey: 'email.view', displayName: 'Email & Template Management', navigationLabel: 'Email', route: '/feature/email', icon: Mail },
+
+  // Phase 5: Certification & Placement
+  { moduleId: 'certificate', featureId: 'certificate_main', permissionKey: 'certificate.view', displayName: 'Certificate Management', navigationLabel: 'Certificates', route: '/feature/certificates', icon: Award },
+  { moduleId: 'document', featureId: 'document_main', permissionKey: 'document.view', displayName: 'Document Generation', navigationLabel: 'Documents', route: '/feature/documents', icon: FileText },
+  { moduleId: 'placement', featureId: 'placement_main', permissionKey: 'placement.view', displayName: 'Placement & Hiring', navigationLabel: 'Placement', route: '/feature/placement', icon: TrendingUp },
+  { moduleId: 'alumni', featureId: 'alumni_main', permissionKey: 'alumni.view', displayName: 'Alumni Management', navigationLabel: 'Alumni', route: '/feature/alumni', icon: GraduationCap },
+
+  // Phase 6: Analytics & BI
+  { moduleId: 'analytics', featureId: 'analytics_dashboard', permissionKey: 'analytics.view', displayName: 'Analytics Dashboard', navigationLabel: 'Analytics', route: '/feature/analytics', icon: LineChart },
+  { moduleId: 'reports', featureId: 'reports_main', permissionKey: 'report.view', displayName: 'Report Center', navigationLabel: 'Reports', route: '/feature/reports', icon: FileBarChart },
+  { moduleId: 'kpi', featureId: 'kpi_main', permissionKey: 'kpi.view', displayName: 'KPI Management', navigationLabel: 'KPIs', route: '/feature/kpi', icon: Target },
+  { moduleId: 'executive', featureId: 'executive_dashboard', permissionKey: 'executive.view', displayName: 'Executive Dashboard', navigationLabel: 'Executive Dashboard', route: '/feature/executive', icon: BarChart4 },
+  { moduleId: 'export', featureId: 'export_main', permissionKey: 'export.view', displayName: 'Data Export Center', navigationLabel: 'Export Center', route: '/feature/export', icon: DownloadCloud },
+  { moduleId: 'insights', featureId: 'insights_main', permissionKey: 'insights.view', displayName: 'Predictive Insights', navigationLabel: 'Insights', route: '/feature/insights', icon: Lightbulb },
+
+  // Phase 7: Support, Productivity & Experience
+  { moduleId: 'helpdesk', featureId: 'helpdesk_main', permissionKey: 'helpdesk.view', displayName: 'Help Desk / Tickets', navigationLabel: 'Help Desk', route: '/feature/helpdesk', icon: LifeBuoy },
+  { moduleId: 'marketplace', featureId: 'marketplace_main', permissionKey: 'marketplace.view', displayName: 'Internship Marketplace', navigationLabel: 'Marketplace', route: '/feature/marketplace', icon: Store },
+  { moduleId: 'referral', featureId: 'referral_main', permissionKey: 'referral.view', displayName: 'Referral Management', navigationLabel: 'Referrals', route: '/feature/referrals', icon: Gift },
+  { moduleId: 'idcard', featureId: 'idcard_main', permissionKey: 'idcard.view', displayName: 'Digital ID Card', navigationLabel: 'Digital ID', route: '/feature/id-card', icon: IdCard },
+  { moduleId: 'selfservice', featureId: 'selfservice_main', permissionKey: 'selfservice.view', displayName: 'Self-Service Portal', navigationLabel: 'Self-Service', route: '/feature/self-service', icon: UserCircle },
+  { moduleId: 'productivity', featureId: 'productivity_main', permissionKey: 'productivity.view', displayName: 'Productivity Center', navigationLabel: 'Productivity', route: '/feature/productivity', icon: Zap },
+
   // Super Admin
   { moduleId: 'super_admin', featureId: 'superadmin_main', permissionKey: 'super_admin.view', displayName: 'Super Admin Settings', navigationLabel: 'Super Admin', route: '/feature/super-admin', icon: Settings },
 ];

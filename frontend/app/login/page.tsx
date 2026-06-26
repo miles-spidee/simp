@@ -7,7 +7,7 @@ import Toast from '../../components/ui/toast';
 import { authApi } from '@/src/api/auth.api';
 import { useAuth } from '@/src/context/AuthContext';
 
-export default function LoginPage() {
+const LoginPage = () => {
   const router = useRouter();
   const { login } = useAuth();
   const [toastConfig, setToastConfig] = useState<{ show: boolean, title: string, message: string, type: 'success' | 'error' | 'warning' | 'info' }>({
@@ -239,3 +239,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
+export default LoginPage;

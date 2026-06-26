@@ -121,6 +121,7 @@ const Hero = () => (
         src="/images/hero/hero-team.png" 
         alt="Pinesphere enterprise professionals" 
         fill 
+        sizes="(max-width: 1024px) 100vw, 60vw"
         className="object-cover object-right-top" 
         priority 
       />

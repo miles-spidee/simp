@@ -109,7 +109,7 @@ export function AddCandidateDrawer({
   };
 
   return (
-    <Drawer isOpen={isOpen} onClose={onClose} title="Add New Candidate">
+    <Drawer isOpen={isOpen} onClose={onClose} title="Add Candidate">
       <form onSubmit={handleSubmit} className="flex flex-col h-[calc(100vh-65px)]">
         <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-white">
           <p className="text-xs text-slate-500">

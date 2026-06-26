@@ -48,6 +48,28 @@ export const MOCK_MODULES: Module[] = [
   // Flattened Assessment
   { id: 'assessment', code: 'ASSESS', name: 'Assessment', route: '/feature/assessment', active: true },
 
+  // Phase 5: Certification & Placement
+  { id: 'certificate', code: 'CERT', name: 'Certificate Management', route: '/feature/certificates', active: true },
+  { id: 'document', code: 'DOC', name: 'Document Generation', route: '/feature/documents', active: true },
+  { id: 'placement', code: 'PLACE', name: 'Placement & Hiring', route: '/feature/placement', active: true },
+  { id: 'alumni', code: 'ALUMNI', name: 'Alumni Management', route: '/feature/alumni', active: true },
+
+  // Phase 6: Analytics & BI
+  { id: 'analytics', code: 'ANL', name: 'Analytics Dashboard', route: '/feature/analytics', active: true },
+  { id: 'reports', code: 'REP', name: 'Report Center', route: '/feature/reports', active: true },
+  { id: 'kpi', code: 'KPI', name: 'KPI Management', route: '/feature/kpi', active: true },
+  { id: 'executive', code: 'EXEC', name: 'Executive Dashboard', route: '/feature/executive', active: true },
+  { id: 'export', code: 'EXP', name: 'Data Export Center', route: '/feature/export', active: true },
+  { id: 'insights', code: 'INS', name: 'Predictive Insights', route: '/feature/insights', active: true },
+
+  // Phase 7: Support & Productivity
+  { id: 'helpdesk', code: 'HELP', name: 'Help Desk', route: '/feature/helpdesk', active: true },
+  { id: 'marketplace', code: 'MKT', name: 'Internship Marketplace', route: '/feature/marketplace', active: true },
+  { id: 'referral', code: 'REF', name: 'Referral Management', route: '/feature/referrals', active: true },
+  { id: 'idcard', code: 'IDC', name: 'Digital ID Card', route: '/feature/id-card', active: true },
+  { id: 'selfservice', code: 'SELF', name: 'Self-Service Portal', route: '/feature/self-service', active: true },
+  { id: 'productivity', code: 'PROD', name: 'Productivity Center', route: '/feature/productivity', active: true },
+
   // Flattened Others
   { id: 'submission', code: 'SUB', name: 'Submission', route: '/feature/submissions', active: true },
   { id: 'performance', code: 'PERF', name: 'Performance', route: '/feature/performance', active: true },

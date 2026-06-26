@@ -36,6 +36,25 @@ export const ROUTE_MODULE_MAP: Record<string, string> = {
   '/feature/coordinator': 'college_coordinator',
   '/feature/files': 'common_file',
   '/feature/super-admin': 'super_admin',
+  '/feature/reporting-manager': 'reporting_manager',
+  '/feature/leave': 'leave',
+  '/feature/activity': 'activity',
+  '/feature/escalation': 'escalation',
+  '/feature/payments': 'payment',
+  '/feature/fees': 'fee',
+  '/feature/billing': 'billing',
+  '/feature/wallet': 'wallet',
+  '/feature/finance-dashboard': 'finance',
+  '/feature/finance-analytics': 'finance_analytics',
+  '/feature/notifications': 'notification',
+  '/feature/announcements': 'announcement',
+  '/feature/communication': 'communication',
+  '/feature/calendar': 'calendar',
+  '/feature/email': 'email',
+  '/feature/certificates': 'certificate',
+  '/feature/documents': 'document',
+  '/feature/placement': 'placement',
+  '/feature/alumni': 'alumni',
 };
 
 export const MOCK_PERMISSIONS: Permission[] = [
@@ -159,4 +178,178 @@ export const MOCK_PERMISSIONS: Permission[] = [
   { id: 'super_admin.create', module: 'super_admin', action: 'create', label: 'Create super_admin' },
   { id: 'super_admin.edit', module: 'super_admin', action: 'edit', label: 'Edit super_admin' },
   { id: 'super_admin.delete', module: 'super_admin', action: 'delete', label: 'Delete super_admin' },
+  
+  // Reporting Manager
+  { id: 'reporting_manager.view', module: 'reporting_manager', action: 'view', label: 'View reporting manager' },
+  { id: 'reporting_manager.create', module: 'reporting_manager', action: 'create', label: 'Create reporting manager' },
+  { id: 'reporting_manager.edit', module: 'reporting_manager', action: 'edit', label: 'Edit reporting manager' },
+  { id: 'reporting_manager.review', module: 'reporting_manager', action: 'review', label: 'Review intern' },
+  { id: 'reporting_manager.approve', module: 'reporting_manager', action: 'approve', label: 'Approve intern requests' },
+  { id: 'reporting_manager.assign', module: 'reporting_manager', action: 'assign', label: 'Assign interns' },
+  
+  // Leave Management
+  { id: 'leave.view', module: 'leave', action: 'view', label: 'View leave' },
+  { id: 'leave.create', module: 'leave', action: 'create', label: 'Create leave' },
+  { id: 'leave.edit', module: 'leave', action: 'edit', label: 'Edit leave' },
+  { id: 'leave.delete', module: 'leave', action: 'delete', label: 'Delete leave' },
+  { id: 'leave.approve', module: 'leave', action: 'approve', label: 'Approve leave' },
+  { id: 'leave.reject', module: 'leave', action: 'reject', label: 'Reject leave' },
+  { id: 'leave.export', module: 'leave', action: 'export', label: 'Export leave' },
+  
+  // Activity Tracking
+  { id: 'activity.view', module: 'activity', action: 'view', label: 'View activity' },
+  
+  // Escalation Engine
+  { id: 'escalation.view', module: 'escalation', action: 'view', label: 'View escalation' },
+  { id: 'escalation.edit', module: 'escalation', action: 'edit', label: 'Edit escalation rules' },
+  
+  // Payment
+  { id: 'payment.view', module: 'payment', action: 'view', label: 'View payment' },
+  { id: 'payment.create', module: 'payment', action: 'create', label: 'Create payment' },
+  { id: 'payment.edit', module: 'payment', action: 'edit', label: 'Edit payment' },
+  { id: 'payment.delete', module: 'payment', action: 'delete', label: 'Delete payment' },
+  { id: 'payment.verify', module: 'payment', action: 'verify', label: 'Verify payment' },
+  { id: 'payment.refund', module: 'payment', action: 'refund', label: 'Refund payment' },
+  { id: 'payment.export', module: 'payment', action: 'export', label: 'Export payment' },
+
+  // Fee
+  { id: 'fee.view', module: 'fee', action: 'view', label: 'View fee' },
+  { id: 'fee.create', module: 'fee', action: 'create', label: 'Create fee' },
+  { id: 'fee.edit', module: 'fee', action: 'edit', label: 'Edit fee' },
+  { id: 'fee.delete', module: 'fee', action: 'delete', label: 'Delete fee' },
+
+  // Billing
+  { id: 'billing.view', module: 'billing', action: 'view', label: 'View billing' },
+  { id: 'billing.create', module: 'billing', action: 'create', label: 'Create billing' },
+  { id: 'billing.edit', module: 'billing', action: 'edit', label: 'Edit billing' },
+  { id: 'billing.delete', module: 'billing', action: 'delete', label: 'Delete billing' },
+  { id: 'billing.export', module: 'billing', action: 'export', label: 'Export billing' },
+
+  // Wallet
+  { id: 'wallet.view', module: 'wallet', action: 'view', label: 'View wallet' },
+  { id: 'wallet.create', module: 'wallet', action: 'create', label: 'Create wallet' },
+  { id: 'wallet.edit', module: 'wallet', action: 'edit', label: 'Edit wallet' },
+  { id: 'wallet.delete', module: 'wallet', action: 'delete', label: 'Delete wallet' },
+
+  // Finance Dashboard
+  { id: 'finance.view', module: 'finance', action: 'view', label: 'View finance dashboard' },
+  
+  // Finance Analytics
+  { id: 'analytics.finance.view', module: 'finance_analytics', action: 'view', label: 'View finance analytics' },
+
+  // Notification Center
+  { id: 'notification.view', module: 'notification', action: 'view', label: 'View notifications' },
+  { id: 'notification.create', module: 'notification', action: 'create', label: 'Create notification' },
+  { id: 'notification.edit', module: 'notification', action: 'edit', label: 'Edit notification' },
+  { id: 'notification.delete', module: 'notification', action: 'delete', label: 'Delete notification' },
+  { id: 'notification.send', module: 'notification', action: 'send', label: 'Send notification' },
+  { id: 'notification.schedule', module: 'notification', action: 'schedule', label: 'Schedule notification' },
+  { id: 'notification.template', module: 'notification', action: 'template', label: 'Manage notification templates' },
+  { id: 'notification.export', module: 'notification', action: 'export', label: 'Export notifications' },
+
+  // Announcement Management
+  { id: 'announcement.view', module: 'announcement', action: 'view', label: 'View announcements' },
+  { id: 'announcement.create', module: 'announcement', action: 'create', label: 'Create announcement' },
+  { id: 'announcement.edit', module: 'announcement', action: 'edit', label: 'Edit announcement' },
+  { id: 'announcement.delete', module: 'announcement', action: 'delete', label: 'Delete announcement' },
+
+  // Communication Center
+  { id: 'communication.view', module: 'communication', action: 'view', label: 'View messages' },
+  { id: 'communication.create', module: 'communication', action: 'create', label: 'Create message' },
+  { id: 'communication.edit', module: 'communication', action: 'edit', label: 'Edit message' },
+  { id: 'communication.delete', module: 'communication', action: 'delete', label: 'Delete message' },
+
+  // Calendar
+  { id: 'calendar.view', module: 'calendar', action: 'view', label: 'View calendar' },
+  { id: 'calendar.create', module: 'calendar', action: 'create', label: 'Create event' },
+  { id: 'calendar.edit', module: 'calendar', action: 'edit', label: 'Edit event' },
+  { id: 'calendar.delete', module: 'calendar', action: 'delete', label: 'Delete event' },
+  { id: 'calendar.approve', module: 'calendar', action: 'approve', label: 'Approve event' },
+  { id: 'calendar.export', module: 'calendar', action: 'export', label: 'Export calendar' },
+
+  // Email
+  { id: 'email.view', module: 'email', action: 'view', label: 'View emails' },
+  { id: 'email.create', module: 'email', action: 'create', label: 'Create email' },
+  { id: 'email.edit', module: 'email', action: 'edit', label: 'Edit email' },
+  { id: 'email.delete', module: 'email', action: 'delete', label: 'Delete email' },
+
+  // Certificate Management
+  { id: 'certificate.view', module: 'certificate', action: 'view', label: 'View certificates' },
+  { id: 'certificate.create', module: 'certificate', action: 'create', label: 'Create certificate' },
+  { id: 'certificate.edit', module: 'certificate', action: 'edit', label: 'Edit certificate' },
+  { id: 'certificate.generate', module: 'certificate', action: 'generate', label: 'Generate certificate' },
+  { id: 'certificate.approve', module: 'certificate', action: 'approve', label: 'Approve certificate' },
+  { id: 'certificate.issue', module: 'certificate', action: 'issue', label: 'Issue certificate' },
+  { id: 'certificate.revoke', module: 'certificate', action: 'revoke', label: 'Revoke certificate' },
+  { id: 'certificate.export', module: 'certificate', action: 'export', label: 'Export certificates' },
+
+  // Document Generation
+  { id: 'document.view', module: 'document', action: 'view', label: 'View documents' },
+  { id: 'document.create', module: 'document', action: 'create', label: 'Create document' },
+  { id: 'document.edit', module: 'document', action: 'edit', label: 'Edit document' },
+  { id: 'document.generate', module: 'document', action: 'generate', label: 'Generate document' },
+  { id: 'document.export', module: 'document', action: 'export', label: 'Export documents' },
+
+  // Placement & Hiring
+  { id: 'placement.view', module: 'placement', action: 'view', label: 'View placements' },
+  { id: 'placement.create', module: 'placement', action: 'create', label: 'Create placement' },
+  { id: 'placement.edit', module: 'placement', action: 'edit', label: 'Edit placement' },
+  { id: 'placement.approve', module: 'placement', action: 'approve', label: 'Approve placement' },
+  { id: 'placement.export', module: 'placement', action: 'export', label: 'Export placements' },
+
+  // Alumni Management
+  { id: 'alumni.view', module: 'alumni', action: 'view', label: 'View alumni' },
+  { id: 'alumni.create', module: 'alumni', action: 'create', label: 'Create alumni' },
+  { id: 'alumni.edit', module: 'alumni', action: 'edit', label: 'Edit alumni' },
+  { id: 'alumni.export', module: 'alumni', action: 'export', label: 'Export alumni' },
+
+  // Phase 6: Analytics & BI
+  { id: 'analytics.view', module: 'analytics', action: 'view', label: 'View analytics' },
+  { id: 'analytics.export', module: 'analytics', action: 'export', label: 'Export analytics' },
+  { id: 'analytics.configure', module: 'analytics', action: 'configure', label: 'Configure analytics' },
+  { id: 'analytics.dashboard', module: 'analytics', action: 'dashboard', label: 'View analytics dashboard' },
+  { id: 'analytics.executive', module: 'analytics', action: 'executive', label: 'View executive analytics' },
+
+  { id: 'report.view', module: 'reports', action: 'view', label: 'View reports' },
+  { id: 'report.export', module: 'reports', action: 'export', label: 'Export reports' },
+  { id: 'report.schedule', module: 'reports', action: 'schedule', label: 'Schedule reports' },
+  { id: 'report.share', module: 'reports', action: 'share', label: 'Share reports' },
+
+  { id: 'kpi.view', module: 'kpi', action: 'view', label: 'View KPIs' },
+  
+  { id: 'executive.view', module: 'executive', action: 'view', label: 'View executive dashboard' },
+  
+  { id: 'export.view', module: 'export', action: 'view', label: 'View exports' },
+  
+  { id: 'insights.view', module: 'insights', action: 'view', label: 'View insights' },
+
+  // Phase 7: Support & Productivity
+  { id: 'helpdesk.view', module: 'helpdesk', action: 'view', label: 'View tickets' },
+  { id: 'helpdesk.create', module: 'helpdesk', action: 'create', label: 'Create tickets' },
+  { id: 'helpdesk.edit', module: 'helpdesk', action: 'edit', label: 'Edit tickets' },
+  { id: 'helpdesk.assign', module: 'helpdesk', action: 'assign', label: 'Assign tickets' },
+  { id: 'helpdesk.resolve', module: 'helpdesk', action: 'resolve', label: 'Resolve tickets' },
+  { id: 'helpdesk.close', module: 'helpdesk', action: 'close', label: 'Close tickets' },
+  { id: 'helpdesk.export', module: 'helpdesk', action: 'export', label: 'Export tickets' },
+
+  { id: 'marketplace.view', module: 'marketplace', action: 'view', label: 'View marketplace' },
+  { id: 'marketplace.apply', module: 'marketplace', action: 'apply', label: 'Apply for internships' },
+  { id: 'marketplace.favorite', module: 'marketplace', action: 'favorite', label: 'Favorite internships' },
+  { id: 'marketplace.publish', module: 'marketplace', action: 'publish', label: 'Publish internships' },
+  { id: 'marketplace.manage', module: 'marketplace', action: 'manage', label: 'Manage marketplace' },
+
+  { id: 'referral.view', module: 'referral', action: 'view', label: 'View referrals' },
+  { id: 'referral.create', module: 'referral', action: 'create', label: 'Create referrals' },
+  { id: 'referral.approve', module: 'referral', action: 'approve', label: 'Approve referrals' },
+  { id: 'referral.export', module: 'referral', action: 'export', label: 'Export referrals' },
+
+  { id: 'idcard.view', module: 'idcard', action: 'view', label: 'View ID card' },
+  { id: 'idcard.generate', module: 'idcard', action: 'generate', label: 'Generate ID card' },
+  { id: 'idcard.download', module: 'idcard', action: 'download', label: 'Download ID card' },
+  { id: 'idcard.print', module: 'idcard', action: 'print', label: 'Print ID card' },
+
+  { id: 'selfservice.view', module: 'selfservice', action: 'view', label: 'View self-service portal' },
+
+  { id: 'productivity.view', module: 'productivity', action: 'view', label: 'View productivity tools' },
+  { id: 'productivity.manage', module: 'productivity', action: 'manage', label: 'Manage productivity tools' },
 ];

@@ -72,7 +72,7 @@ export function ReviewApplicationDrawer({ isOpen, onClose, application, onApplic
   };
 
   return (
-    <Drawer isOpen={isOpen} onClose={onClose} title="Review Application" size="lg">
+    <Drawer isOpen={isOpen} onClose={onClose} size="lg" title="Review Application">
       <div className="flex flex-col h-full min-h-0 bg-slate-50">
         
         {/* Tabs Header */}
