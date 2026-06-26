@@ -21,11 +21,11 @@ export const FEATURE_REGISTRY: FeatureDefinition[] = [
   { moduleId: 'dashboard', featureId: 'dashboard_main', permissionKey: 'dashboard.view', displayName: 'Dashboard', navigationLabel: 'Dashboard', route: '/feature', icon: LayoutDashboard },
 
   // Identity
-  { moduleId: 'identity', featureId: 'identity_users', permissionKey: 'identity.view', displayName: 'Users', navigationLabel: 'Identity - Users', route: '/feature/users', icon: UsersIcon },
-  { moduleId: 'identity', featureId: 'identity_roles', permissionKey: 'identity.view', displayName: 'Roles', navigationLabel: 'Identity - Roles', route: '/feature/roles', icon: Key },
-  { moduleId: 'identity', featureId: 'identity_permissions', permissionKey: 'identity.view', displayName: 'Permissions', navigationLabel: 'Identity - Permissions', route: '/feature/permissions', icon: Lock },
-  { moduleId: 'identity', featureId: 'identity_sessions', permissionKey: 'identity.view', displayName: 'Sessions', navigationLabel: 'Identity - Sessions', route: '/feature/sessions', icon: Activity },
-  { moduleId: 'identity', featureId: 'identity_security', permissionKey: 'identity.view', displayName: 'Security Center', navigationLabel: 'Identity - Security Center', route: '/feature/security', icon: ShieldAlert },
+  { moduleId: 'users', featureId: 'users_main', permissionKey: 'users.view', displayName: 'Users', navigationLabel: 'Identity - Users', route: '/feature/users', icon: UsersIcon },
+  { moduleId: 'roles', featureId: 'roles_main', permissionKey: 'roles.view', displayName: 'Roles', navigationLabel: 'Identity - Roles', route: '/feature/roles', icon: Key },
+  { moduleId: 'permissions', featureId: 'permissions_main', permissionKey: 'permissions.view', displayName: 'Permissions', navigationLabel: 'Identity - Permissions', route: '/feature/permissions', icon: Lock },
+  { moduleId: 'sessions', featureId: 'sessions_main', permissionKey: 'sessions.view', displayName: 'Sessions', navigationLabel: 'Identity - Sessions', route: '/feature/sessions', icon: Activity },
+  { moduleId: 'security', featureId: 'security_main', permissionKey: 'security.view', displayName: 'Security Center', navigationLabel: 'Identity - Security Center', route: '/feature/security', icon: ShieldAlert },
 
   // HR/Management
   { moduleId: 'employee', featureId: 'employee_main', permissionKey: 'employee.view', displayName: 'Employee Management', navigationLabel: 'Employee', route: '/feature/employee', icon: UsersIcon },
@@ -39,21 +39,21 @@ export const FEATURE_REGISTRY: FeatureDefinition[] = [
 
   // Mentor
   { moduleId: 'mentor', featureId: 'mentor_profile', permissionKey: 'mentor.view', displayName: 'Mentor Profile', navigationLabel: 'Mentor Profile', route: '/feature/mentor/profile', icon: User },
-  { moduleId: 'mentor', featureId: 'mentor_assignment', permissionKey: 'mentor.view', displayName: 'Mentor Assignment', navigationLabel: 'Mentor Assignment', route: '/feature/assignment', icon: UserPlus },
-  { moduleId: 'mentor', featureId: 'mentor_batch', permissionKey: 'mentor.view', displayName: 'Batch Mapping', navigationLabel: 'Mentor Batch Mapping', route: '/feature/batch-mapping', icon: Map },
+  { moduleId: 'assignment', featureId: 'assignment_main', permissionKey: 'assignment.view', displayName: 'Mentor Assignment', navigationLabel: 'Mentor Assignment', route: '/feature/assignment', icon: UserPlus },
+  { moduleId: 'batch_mapping', featureId: 'batch_mapping_main', permissionKey: 'batch_mapping.view', displayName: 'Batch Mapping', navigationLabel: 'Mentor Batch Mapping', route: '/feature/batch-mapping', icon: Map },
 
   // LMS
   { moduleId: 'lms', featureId: 'lms_dashboard', permissionKey: 'lms.view', displayName: 'LMS Dashboard', navigationLabel: 'LMS Dashboard', route: '/feature/lms', icon: MonitorPlay },
-  { moduleId: 'lms', featureId: 'lms_mylearning', permissionKey: 'lms.view', displayName: 'My Learning', navigationLabel: 'LMS My Learning', route: '/feature/my-learning', icon: BookOpen },
+  { moduleId: 'my_learning', featureId: 'my_learning_main', permissionKey: 'my_learning.view', displayName: 'My Learning', navigationLabel: 'LMS My Learning', route: '/feature/my-learning', icon: BookOpen },
 
   // Attendance
   { moduleId: 'attendance', featureId: 'attendance_dashboard', permissionKey: 'attendance.view', displayName: 'Attendance Dashboard', navigationLabel: 'Attendance Dashboard', route: '/feature/attendance', icon: Calendar },
-  { moduleId: 'attendance', featureId: 'attendance_my', permissionKey: 'attendance.view', displayName: 'My Attendance', navigationLabel: 'Attendance My Attendance', route: '/feature/my-attendance', icon: Calendar },
+  { moduleId: 'my_attendance', featureId: 'my_attendance_main', permissionKey: 'my_attendance.view', displayName: 'My Attendance', navigationLabel: 'Attendance My Attendance', route: '/feature/my-attendance', icon: Calendar },
 
   // Task
   { moduleId: 'task', featureId: 'task_dashboard', permissionKey: 'task.view', displayName: 'Task Dashboard', navigationLabel: 'Task Dashboard', route: '/feature/task', icon: CheckSquare },
-  { moduleId: 'task', featureId: 'task_management', permissionKey: 'task.view', displayName: 'Task Management', navigationLabel: 'Task Management', route: '/feature/management', icon: CheckSquare },
-  { moduleId: 'task', featureId: 'task_mytasks', permissionKey: 'task.view', displayName: 'My Tasks', navigationLabel: 'Task My Tasks', route: '/feature/my-tasks', icon: ClipboardList },
+  { moduleId: 'management', featureId: 'management_main', permissionKey: 'management.view', displayName: 'Task Management', navigationLabel: 'Task Management', route: '/feature/management', icon: CheckSquare },
+  { moduleId: 'my_tasks', featureId: 'my_tasks_main', permissionKey: 'my_tasks.view', displayName: 'My Tasks', navigationLabel: 'Task My Tasks', route: '/feature/my-tasks', icon: ClipboardList },
 
   // Assessment
   { moduleId: 'assessment', featureId: 'assessment_dashboard', permissionKey: 'assessment.view', displayName: 'Assessment Dashboard', navigationLabel: 'Assessment Dashboard', route: '/feature/assessment', icon: FileText },

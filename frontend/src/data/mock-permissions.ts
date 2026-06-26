@@ -5,13 +5,13 @@ export interface Permission {
   label: string;
 }
 
-// Route-to-module mapping for route guard checks
 export const ROUTE_MODULE_MAP: Record<string, string> = {
-  '/feature/users': 'identity',
-  '/feature/roles': 'identity',
-  '/feature/permissions': 'identity',
-  '/feature/sessions': 'identity',
-  '/feature/security': 'identity',
+  '/feature': 'dashboard',
+  '/feature/users': 'users',
+  '/feature/roles': 'roles',
+  '/feature/permissions': 'permissions',
+  '/feature/sessions': 'sessions',
+  '/feature/security': 'security',
   '/feature/employee': 'employee',
   '/feature/organization': 'organization',
   '/feature/program': 'program',
@@ -20,137 +20,143 @@ export const ROUTE_MODULE_MAP: Record<string, string> = {
   '/feature/student': 'student',
   '/feature/batch': 'batch',
   '/feature/allocation': 'allocation',
-  '/feature/mentor': 'mentor',
+  '/feature/mentor/profile': 'mentor',
+  '/feature/assignment': 'assignment',
+  '/feature/batch-mapping': 'batch_mapping',
   '/feature/lms': 'lms',
+  '/feature/my-learning': 'my_learning',
+  '/feature/attendance': 'attendance',
+  '/feature/my-attendance': 'my_attendance',
   '/feature/task': 'task',
+  '/feature/management': 'management',
+  '/feature/my-tasks': 'my_tasks',
   '/feature/assessment': 'assessment',
   '/feature/submissions': 'submission',
-  '/feature/attendance': 'attendance',
   '/feature/performance': 'performance',
   '/feature/coordinator': 'college_coordinator',
   '/feature/files': 'common_file',
   '/feature/super-admin': 'super_admin',
 };
 
-// Granular permissions using module.action format
 export const MOCK_PERMISSIONS: Permission[] = [
-  // Identity
-  { id: 'identity.view', module: 'identity', action: 'view', label: 'View Identity' },
-  { id: 'identity.manage_users', module: 'identity', action: 'manage_users', label: 'Manage Users' },
-  { id: 'identity.manage_roles', module: 'identity', action: 'manage_roles', label: 'Manage Roles' },
-
-  // Employee
-  { id: 'employee.view', module: 'employee', action: 'view', label: 'View Employees' },
-  { id: 'employee.create', module: 'employee', action: 'create', label: 'Create Employee' },
-  { id: 'employee.edit', module: 'employee', action: 'edit', label: 'Edit Employee' },
-  { id: 'employee.delete', module: 'employee', action: 'delete', label: 'Delete Employee' },
-
-  // Organization
-  { id: 'organization.view', module: 'organization', action: 'view', label: 'View Organizations' },
-  { id: 'organization.create', module: 'organization', action: 'create', label: 'Create Organization' },
-  { id: 'organization.edit', module: 'organization', action: 'edit', label: 'Edit Organization' },
-
-  // Program
-  { id: 'program.view', module: 'program', action: 'view', label: 'View Programs' },
-  { id: 'program.create', module: 'program', action: 'create', label: 'Create Program' },
-  { id: 'program.edit', module: 'program', action: 'edit', label: 'Edit Program' },
-
-  // Opportunity
-  { id: 'opportunity.view', module: 'opportunity', action: 'view', label: 'View Opportunities' },
-  { id: 'opportunity.create', module: 'opportunity', action: 'create', label: 'Create Opportunity' },
-  { id: 'opportunity.edit', module: 'opportunity', action: 'edit', label: 'Edit Opportunity' },
-  { id: 'opportunity.delete', module: 'opportunity', action: 'delete', label: 'Delete Opportunity' },
-
-  // Application
-  { id: 'application.view', module: 'application', action: 'view', label: 'View Applications' },
-  { id: 'application.review', module: 'application', action: 'review', label: 'Review Applications' },
-
-  // Student
-  { id: 'student.view', module: 'student', action: 'view', label: 'View Students' },
-  { id: 'student.create', module: 'student', action: 'create', label: 'Create Student' },
-  { id: 'student.edit', module: 'student', action: 'edit', label: 'Edit Student' },
-
-  // Batch
-  { id: 'batch.view', module: 'batch', action: 'view', label: 'View Batches' },
-  { id: 'batch.create', module: 'batch', action: 'create', label: 'Create Batch' },
-  { id: 'batch.edit', module: 'batch', action: 'edit', label: 'Edit Batch' },
-
-  // Allocation
-  { id: 'allocation.view', module: 'allocation', action: 'view', label: 'View Allocations' },
-  { id: 'allocation.manage', module: 'allocation', action: 'manage', label: 'Manage Allocations' },
-
-  // Mentor
-  { id: 'mentor.view', module: 'mentor', action: 'view', label: 'View Mentors' },
-  { id: 'mentor.assign', module: 'mentor', action: 'assign', label: 'Assign Mentors' },
-
-  // LMS
-  { id: 'lms.view', module: 'lms', action: 'view', label: 'View LMS' },
-  { id: 'lms.create', module: 'lms', action: 'create', label: 'Create LMS Content' },
-  { id: 'lms.edit', module: 'lms', action: 'edit', label: 'Edit LMS Content' },
-
-  // Task
-  { id: 'task.view', module: 'task', action: 'view', label: 'View Tasks' },
-  { id: 'task.submit', module: 'task', action: 'submit', label: 'Submit Tasks' },
-  { id: 'task.assign', module: 'task', action: 'assign', label: 'Assign Tasks' },
-  { id: 'task.review', module: 'task', action: 'review', label: 'Review Tasks' },
-
-  // Assessment
-  { id: 'assessment.view', module: 'assessment', action: 'view', label: 'View Assessments' },
-  { id: 'assessment.submit', module: 'assessment', action: 'submit', label: 'Submit Assessments' },
-  { id: 'assessment.evaluate', module: 'assessment', action: 'evaluate', label: 'Evaluate Assessments' },
-  { id: 'assessment.publish', module: 'assessment', action: 'publish', label: 'Publish Assessments' },
-
-  // Submission
-  { id: 'submission.view', module: 'submission', action: 'view', label: 'View Submissions' },
-  { id: 'submission.grade', module: 'submission', action: 'grade', label: 'Grade Submissions' },
-
-  // Attendance
-  { id: 'attendance.view', module: 'attendance', action: 'view', label: 'View Attendance' },
-  { id: 'attendance.mark', module: 'attendance', action: 'mark', label: 'Mark Attendance' },
-  { id: 'attendance.edit', module: 'attendance', action: 'edit', label: 'Edit Attendance' },
-  { id: 'attendance.delete', module: 'attendance', action: 'delete', label: 'Delete Attendance' },
-
-  // Performance
-  { id: 'performance.view', module: 'performance', action: 'view', label: 'View Performance' },
-  { id: 'performance.export', module: 'performance', action: 'export', label: 'Export Performance Data' },
-
-  // College Coordinator
-  { id: 'college_coordinator.view', module: 'college_coordinator', action: 'view', label: 'View Coordinator' },
-
-  // Common File
-  { id: 'common_file.view', module: 'common_file', action: 'view', label: 'View Files' },
-  { id: 'common_file.upload', module: 'common_file', action: 'upload', label: 'Upload Files' },
-
-  // Dashboard
-  { id: 'dashboard.view', module: 'dashboard', action: 'view', label: 'View Dashboard' },
-
-  // Super Admin
-  { id: 'super_admin.view', module: 'super_admin', action: 'view', label: 'View Admin Panel' },
+  { id: 'dashboard.view', module: 'dashboard', action: 'view', label: 'View dashboard' },
+  { id: 'dashboard.create', module: 'dashboard', action: 'create', label: 'Create dashboard' },
+  { id: 'dashboard.edit', module: 'dashboard', action: 'edit', label: 'Edit dashboard' },
+  { id: 'dashboard.delete', module: 'dashboard', action: 'delete', label: 'Delete dashboard' },
+  { id: 'users.view', module: 'users', action: 'view', label: 'View users' },
+  { id: 'users.create', module: 'users', action: 'create', label: 'Create users' },
+  { id: 'users.edit', module: 'users', action: 'edit', label: 'Edit users' },
+  { id: 'users.delete', module: 'users', action: 'delete', label: 'Delete users' },
+  { id: 'roles.view', module: 'roles', action: 'view', label: 'View roles' },
+  { id: 'roles.create', module: 'roles', action: 'create', label: 'Create roles' },
+  { id: 'roles.edit', module: 'roles', action: 'edit', label: 'Edit roles' },
+  { id: 'roles.delete', module: 'roles', action: 'delete', label: 'Delete roles' },
+  { id: 'permissions.view', module: 'permissions', action: 'view', label: 'View permissions' },
+  { id: 'permissions.create', module: 'permissions', action: 'create', label: 'Create permissions' },
+  { id: 'permissions.edit', module: 'permissions', action: 'edit', label: 'Edit permissions' },
+  { id: 'permissions.delete', module: 'permissions', action: 'delete', label: 'Delete permissions' },
+  { id: 'sessions.view', module: 'sessions', action: 'view', label: 'View sessions' },
+  { id: 'sessions.create', module: 'sessions', action: 'create', label: 'Create sessions' },
+  { id: 'sessions.edit', module: 'sessions', action: 'edit', label: 'Edit sessions' },
+  { id: 'sessions.delete', module: 'sessions', action: 'delete', label: 'Delete sessions' },
+  { id: 'security.view', module: 'security', action: 'view', label: 'View security' },
+  { id: 'security.create', module: 'security', action: 'create', label: 'Create security' },
+  { id: 'security.edit', module: 'security', action: 'edit', label: 'Edit security' },
+  { id: 'security.delete', module: 'security', action: 'delete', label: 'Delete security' },
+  { id: 'employee.view', module: 'employee', action: 'view', label: 'View employee' },
+  { id: 'employee.create', module: 'employee', action: 'create', label: 'Create employee' },
+  { id: 'employee.edit', module: 'employee', action: 'edit', label: 'Edit employee' },
+  { id: 'employee.delete', module: 'employee', action: 'delete', label: 'Delete employee' },
+  { id: 'organization.view', module: 'organization', action: 'view', label: 'View organization' },
+  { id: 'organization.create', module: 'organization', action: 'create', label: 'Create organization' },
+  { id: 'organization.edit', module: 'organization', action: 'edit', label: 'Edit organization' },
+  { id: 'organization.delete', module: 'organization', action: 'delete', label: 'Delete organization' },
+  { id: 'program.view', module: 'program', action: 'view', label: 'View program' },
+  { id: 'program.create', module: 'program', action: 'create', label: 'Create program' },
+  { id: 'program.edit', module: 'program', action: 'edit', label: 'Edit program' },
+  { id: 'program.delete', module: 'program', action: 'delete', label: 'Delete program' },
+  { id: 'opportunity.view', module: 'opportunity', action: 'view', label: 'View opportunity' },
+  { id: 'opportunity.create', module: 'opportunity', action: 'create', label: 'Create opportunity' },
+  { id: 'opportunity.edit', module: 'opportunity', action: 'edit', label: 'Edit opportunity' },
+  { id: 'opportunity.delete', module: 'opportunity', action: 'delete', label: 'Delete opportunity' },
+  { id: 'application.view', module: 'application', action: 'view', label: 'View application' },
+  { id: 'application.create', module: 'application', action: 'create', label: 'Create application' },
+  { id: 'application.edit', module: 'application', action: 'edit', label: 'Edit application' },
+  { id: 'application.delete', module: 'application', action: 'delete', label: 'Delete application' },
+  { id: 'student.view', module: 'student', action: 'view', label: 'View student' },
+  { id: 'student.create', module: 'student', action: 'create', label: 'Create student' },
+  { id: 'student.edit', module: 'student', action: 'edit', label: 'Edit student' },
+  { id: 'student.delete', module: 'student', action: 'delete', label: 'Delete student' },
+  { id: 'batch.view', module: 'batch', action: 'view', label: 'View batch' },
+  { id: 'batch.create', module: 'batch', action: 'create', label: 'Create batch' },
+  { id: 'batch.edit', module: 'batch', action: 'edit', label: 'Edit batch' },
+  { id: 'batch.delete', module: 'batch', action: 'delete', label: 'Delete batch' },
+  { id: 'allocation.view', module: 'allocation', action: 'view', label: 'View allocation' },
+  { id: 'allocation.create', module: 'allocation', action: 'create', label: 'Create allocation' },
+  { id: 'allocation.edit', module: 'allocation', action: 'edit', label: 'Edit allocation' },
+  { id: 'allocation.delete', module: 'allocation', action: 'delete', label: 'Delete allocation' },
+  { id: 'mentor.view', module: 'mentor', action: 'view', label: 'View mentor' },
+  { id: 'mentor.create', module: 'mentor', action: 'create', label: 'Create mentor' },
+  { id: 'mentor.edit', module: 'mentor', action: 'edit', label: 'Edit mentor' },
+  { id: 'mentor.delete', module: 'mentor', action: 'delete', label: 'Delete mentor' },
+  { id: 'assignment.view', module: 'assignment', action: 'view', label: 'View assignment' },
+  { id: 'assignment.create', module: 'assignment', action: 'create', label: 'Create assignment' },
+  { id: 'assignment.edit', module: 'assignment', action: 'edit', label: 'Edit assignment' },
+  { id: 'assignment.delete', module: 'assignment', action: 'delete', label: 'Delete assignment' },
+  { id: 'batch_mapping.view', module: 'batch_mapping', action: 'view', label: 'View batch_mapping' },
+  { id: 'batch_mapping.create', module: 'batch_mapping', action: 'create', label: 'Create batch_mapping' },
+  { id: 'batch_mapping.edit', module: 'batch_mapping', action: 'edit', label: 'Edit batch_mapping' },
+  { id: 'batch_mapping.delete', module: 'batch_mapping', action: 'delete', label: 'Delete batch_mapping' },
+  { id: 'lms.view', module: 'lms', action: 'view', label: 'View lms' },
+  { id: 'lms.create', module: 'lms', action: 'create', label: 'Create lms' },
+  { id: 'lms.edit', module: 'lms', action: 'edit', label: 'Edit lms' },
+  { id: 'lms.delete', module: 'lms', action: 'delete', label: 'Delete lms' },
+  { id: 'my_learning.view', module: 'my_learning', action: 'view', label: 'View my_learning' },
+  { id: 'my_learning.create', module: 'my_learning', action: 'create', label: 'Create my_learning' },
+  { id: 'my_learning.edit', module: 'my_learning', action: 'edit', label: 'Edit my_learning' },
+  { id: 'my_learning.delete', module: 'my_learning', action: 'delete', label: 'Delete my_learning' },
+  { id: 'attendance.view', module: 'attendance', action: 'view', label: 'View attendance' },
+  { id: 'attendance.create', module: 'attendance', action: 'create', label: 'Create attendance' },
+  { id: 'attendance.edit', module: 'attendance', action: 'edit', label: 'Edit attendance' },
+  { id: 'attendance.delete', module: 'attendance', action: 'delete', label: 'Delete attendance' },
+  { id: 'my_attendance.view', module: 'my_attendance', action: 'view', label: 'View my_attendance' },
+  { id: 'my_attendance.create', module: 'my_attendance', action: 'create', label: 'Create my_attendance' },
+  { id: 'my_attendance.edit', module: 'my_attendance', action: 'edit', label: 'Edit my_attendance' },
+  { id: 'my_attendance.delete', module: 'my_attendance', action: 'delete', label: 'Delete my_attendance' },
+  { id: 'task.view', module: 'task', action: 'view', label: 'View task' },
+  { id: 'task.create', module: 'task', action: 'create', label: 'Create task' },
+  { id: 'task.edit', module: 'task', action: 'edit', label: 'Edit task' },
+  { id: 'task.delete', module: 'task', action: 'delete', label: 'Delete task' },
+  { id: 'management.view', module: 'management', action: 'view', label: 'View management' },
+  { id: 'management.create', module: 'management', action: 'create', label: 'Create management' },
+  { id: 'management.edit', module: 'management', action: 'edit', label: 'Edit management' },
+  { id: 'management.delete', module: 'management', action: 'delete', label: 'Delete management' },
+  { id: 'my_tasks.view', module: 'my_tasks', action: 'view', label: 'View my_tasks' },
+  { id: 'my_tasks.create', module: 'my_tasks', action: 'create', label: 'Create my_tasks' },
+  { id: 'my_tasks.edit', module: 'my_tasks', action: 'edit', label: 'Edit my_tasks' },
+  { id: 'my_tasks.delete', module: 'my_tasks', action: 'delete', label: 'Delete my_tasks' },
+  { id: 'assessment.view', module: 'assessment', action: 'view', label: 'View assessment' },
+  { id: 'assessment.create', module: 'assessment', action: 'create', label: 'Create assessment' },
+  { id: 'assessment.edit', module: 'assessment', action: 'edit', label: 'Edit assessment' },
+  { id: 'assessment.delete', module: 'assessment', action: 'delete', label: 'Delete assessment' },
+  { id: 'submission.view', module: 'submission', action: 'view', label: 'View submission' },
+  { id: 'submission.create', module: 'submission', action: 'create', label: 'Create submission' },
+  { id: 'submission.edit', module: 'submission', action: 'edit', label: 'Edit submission' },
+  { id: 'submission.delete', module: 'submission', action: 'delete', label: 'Delete submission' },
+  { id: 'performance.view', module: 'performance', action: 'view', label: 'View performance' },
+  { id: 'performance.create', module: 'performance', action: 'create', label: 'Create performance' },
+  { id: 'performance.edit', module: 'performance', action: 'edit', label: 'Edit performance' },
+  { id: 'performance.delete', module: 'performance', action: 'delete', label: 'Delete performance' },
+  { id: 'college_coordinator.view', module: 'college_coordinator', action: 'view', label: 'View college_coordinator' },
+  { id: 'college_coordinator.create', module: 'college_coordinator', action: 'create', label: 'Create college_coordinator' },
+  { id: 'college_coordinator.edit', module: 'college_coordinator', action: 'edit', label: 'Edit college_coordinator' },
+  { id: 'college_coordinator.delete', module: 'college_coordinator', action: 'delete', label: 'Delete college_coordinator' },
+  { id: 'common_file.view', module: 'common_file', action: 'view', label: 'View common_file' },
+  { id: 'common_file.create', module: 'common_file', action: 'create', label: 'Create common_file' },
+  { id: 'common_file.edit', module: 'common_file', action: 'edit', label: 'Edit common_file' },
+  { id: 'common_file.delete', module: 'common_file', action: 'delete', label: 'Delete common_file' },
+  { id: 'super_admin.view', module: 'super_admin', action: 'view', label: 'View super_admin' },
+  { id: 'super_admin.create', module: 'super_admin', action: 'create', label: 'Create super_admin' },
+  { id: 'super_admin.edit', module: 'super_admin', action: 'edit', label: 'Edit super_admin' },
+  { id: 'super_admin.delete', module: 'super_admin', action: 'delete', label: 'Delete super_admin' },
 ];
-
-// Legacy compat: grouped permissions by module (used by permissions page)
-export const MOCK_PERMISSIONS_BY_MODULE: Record<string, string[]> = {
-  identity: ['View', 'Manage Users', 'Manage Roles'],
-  employee: ['View', 'Create', 'Edit', 'Delete'],
-  organization: ['View', 'Create', 'Edit'],
-  program: ['View', 'Create', 'Edit'],
-  opportunity: ['View', 'Create', 'Edit', 'Delete'],
-  application: ['View', 'Review'],
-  student: ['View', 'Create', 'Edit'],
-  batch: ['View', 'Create', 'Edit'],
-  allocation: ['View', 'Manage'],
-  mentor: ['View', 'Assign'],
-  lms: ['View', 'Create', 'Edit'],
-  task: ['View', 'Submit', 'Assign', 'Review'],
-  assessment: ['View', 'Submit', 'Evaluate', 'Publish'],
-  submission: ['View', 'Grade'],
-  attendance: ['View', 'Mark Attendance', 'Edit Attendance', 'Delete'],
-  performance: ['View Reports', 'Export Data'],
-  college_coordinator: ['View'],
-  common_file: ['View', 'Upload'],
-  dashboard: ['View System KPIs', 'View Activity'],
-  super_admin: ['View'],
-};
-
-// Legacy compat: flat permission list (used by permissions management page)
-export const MOCK_PERMISSION_LIST = MOCK_PERMISSIONS;
