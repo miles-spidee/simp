@@ -3,8 +3,8 @@
 import React from 'react';
 import { useAuth } from '@/src/context/AuthContext';
 import { usePermissions } from '@/src/hooks/usePermissions';
-import { usePathname } from 'next/navigation';
-import { AccessRestrictedPage } from './AccessRestrictedPage';
+import { usePathname, useRouter } from 'next/navigation';
+import { AccessRestrictedModal } from './AccessRestrictedModal';
 
 interface RouteGuardProps {
   children: React.ReactNode;
@@ -14,6 +14,7 @@ export function RouteGuard({ children }: RouteGuardProps) {
   const { user, loading } = useAuth();
   const { canAccessRoute } = usePermissions();
   const pathname = usePathname();
+  const router = useRouter();
 
   // Still loading auth state
   if (loading) {
@@ -36,7 +37,15 @@ export function RouteGuard({ children }: RouteGuardProps) {
 
   // Check route-level access
   if (!canAccessRoute(pathname)) {
-    return <AccessRestrictedPage />;
+    return (
+      <div className="relative min-h-[60vh] flex items-center justify-center font-sans">
+        <div className="absolute inset-0 bg-slate-50/40 backdrop-blur-sm pointer-events-none" />
+        <AccessRestrictedModal 
+          isOpen={true} 
+          onClose={() => router.push('/admin')} 
+        />
+      </div>
+    );
   }
 
   return <>{children}</>;
