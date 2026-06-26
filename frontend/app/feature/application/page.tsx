@@ -168,7 +168,7 @@ export default function ApplicationPage() {
           setReviewApp(updated);
         }
         triggerToast('Candidate Approved', 'Directing to system user account creation workspace.', 'success');
-        router.push(`/admin/users?autofill=true&name=${encodeURIComponent(app.candidateName)}&email=${encodeURIComponent(app.email)}&phone=${encodeURIComponent(app.phone)}`);
+        router.push(`/feature/users?autofill=true&name=${encodeURIComponent(app.candidateName)}&email=${encodeURIComponent(app.email)}&phone=${encodeURIComponent(app.phone)}`);
       }
     } catch (err) {
       console.error(err);

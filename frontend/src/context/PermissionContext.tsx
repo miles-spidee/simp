@@ -63,7 +63,7 @@ export function PermissionProvider({ children }: { children: React.ReactNode }) 
     const canAccessRoute = (route: string): boolean => {
       if (isSuperAdmin) return true;
       // The admin dashboard is always accessible
-      if (route === '/admin') return true;
+      if (route === '/feature') return true;
 
       // Find the matching module for this route
       // Check exact match first, then check if route starts with any known prefix

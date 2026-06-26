@@ -31,7 +31,7 @@ export function RouteGuard({ children }: RouteGuardProps) {
   }
 
   // Dashboard is always accessible
-  if (pathname === '/admin') {
+  if (pathname === '/feature') {
     return <>{children}</>;
   }
 
@@ -42,7 +42,7 @@ export function RouteGuard({ children }: RouteGuardProps) {
         <div className="absolute inset-0 bg-slate-50/40 backdrop-blur-sm pointer-events-none" />
         <AccessRestrictedModal 
           isOpen={true} 
-          onClose={() => router.push('/admin')} 
+          onClose={() => router.push('/feature')} 
         />
       </div>
     );

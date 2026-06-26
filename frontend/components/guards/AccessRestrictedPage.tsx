@@ -29,7 +29,7 @@ export function AccessRestrictedPage() {
         {/* Actions */}
         <div className="flex items-center justify-center gap-3 pt-2">
           <Link
-            href="/admin"
+            href="/feature"
             className="px-5 py-2.5 bg-slate-900 text-white text-sm font-semibold rounded-lg hover:bg-slate-800 transition-colors shadow-sm"
           >
             Back to Dashboard

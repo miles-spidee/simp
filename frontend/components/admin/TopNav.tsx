@@ -39,7 +39,7 @@ export function TopNav({ setMobileOpen }: TopNavProps) {
     .filter(m => m.id !== 'dashboard' && m.id !== 'super_admin')
     .map(m => ({
       name: m.name,
-      path: m.route === '/admin' ? '/admin' : `/admin${m.route}`,
+      path: m.route === '/feature' ? '/feature' : `/admin${m.route}`,
       description: m.desc || `Manage ${m.name.toLowerCase()}`,
     }));
 
@@ -159,7 +159,7 @@ export function TopNav({ setMobileOpen }: TopNavProps) {
                         onClick={() => {
                           switchUser(u.id);
                           setShowUserSwitcher(false);
-                          router.push('/admin');
+                          router.push('/feature');
                         }}
                         className={`w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-slate-50 border-b border-slate-50 transition-colors last:border-0 ${
                           user?.user_id === u.id ? 'bg-blue-50' : ''

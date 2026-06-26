@@ -23,8 +23,8 @@ export function Sidebar({ isMobileOpen, setMobileOpen, isCollapsed, setCollapsed
   const { hasModule, hasPermission, isSuperAdmin } = usePermissions();
 
   const isLinkActive = (href: string) => {
-    if (href === '/admin') {
-      return pathname === '/admin';
+    if (href === '/feature') {
+      return pathname === '/feature';
     }
     return pathname.startsWith(href);
   };
@@ -63,7 +63,7 @@ export function Sidebar({ isMobileOpen, setMobileOpen, isCollapsed, setCollapsed
       >
         {/* Branding header */}
         <div className="flex h-16 shrink-0 items-center px-6 border-b border-slate-800 justify-between">
-          <Link href="/admin" className="flex items-center gap-3 overflow-hidden">
+          <Link href="/feature" className="flex items-center gap-3 overflow-hidden">
             <div className="h-8 w-8 shrink-0 rounded bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center font-black text-white text-lg shadow-lg shadow-blue-500/30">
               P
             </div>

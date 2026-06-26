@@ -26,5 +26,5 @@ export const MOCK_MODULES: Module[] = [
   { id: 'performance', code: 'PERF', name: 'Performance', route: '/performance', active: true, desc: 'View analytics and performance metrics' },
   { id: 'dashboard', code: 'DASHBOARD', name: 'Dashboard', route: '/dashboard', active: true, desc: 'General system dashboards' },
   { id: 'common_file', code: 'FILE', name: 'Common File', route: '/files', active: true, desc: 'File repository and sharing' },
-  { id: 'super_admin', code: 'ADMIN', name: 'Super Admin', route: '/admin', active: true, desc: 'Platform Control Center' },
+  { id: 'super_admin', code: 'ADMIN', name: 'Super Admin', route: '/feature', active: true, desc: 'Platform Control Center' },
 ];

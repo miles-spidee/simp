@@ -66,7 +66,7 @@ function UsersPageContent() {
     if (autofillData) {
       // Clear autofill state and redirect back to application lifecycle overview or custom redirect url
       setAutofillData(null);
-      const redirectUrl = searchParams.get('redirect') || '/admin/application';
+      const redirectUrl = searchParams.get('redirect') || '/feature/application';
       router.push(redirectUrl);
     }
   };

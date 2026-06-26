@@ -350,7 +350,7 @@ export default function EmployeeManagementPage() {
         } as any);
         setEmployees([...employees, newEmp]);
         showToast(`Successfully onboarded ${newEmp.name} as ${newEmp.designation}`);
-        router.push(`/admin/users?autofill=true&name=${encodeURIComponent(newEmp.name)}&email=${encodeURIComponent(newEmp.email)}&phone=${encodeURIComponent(newEmp.phone)}&redirect=/admin/employee`);
+        router.push(`/feature/users?autofill=true&name=${encodeURIComponent(newEmp.name)}&email=${encodeURIComponent(newEmp.email)}&phone=${encodeURIComponent(newEmp.phone)}&redirect=/admin/employee`);
       } else if (type === 'review') {
         const emp = employees.find(e => e.id === targetId);
         if (emp) {
