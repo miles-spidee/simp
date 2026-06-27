@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pinesphere_erp/core/theme/app_colors.dart';
+import 'package:pinesphere_erp/core/widgets/premium_components.dart';
 import 'package:pinesphere_erp/core/widgets/toast_notification.dart';
 import 'package:pinesphere_erp/features/auth/providers/auth_provider.dart';
 import 'package:pinesphere_erp/features/auth/widgets/ambient_background.dart';
@@ -37,6 +39,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       final password = _passwordController.text;
       await ref.read(authProvider.notifier).login(username, password);
     }
+  }
+
+  Future<void> _handleDevelopmentLogin(DevelopmentDemoUser demoUser) async {
+    await ref.read(authProvider.notifier).loginAsDevelopmentUser(demoUser);
   }
 
   @override
@@ -115,24 +121,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       const SizedBox(height: 32),
 
                       // Card container
-                      Container(
+                      PremiumCard(
                         padding: const EdgeInsets.all(24),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: AppColors.slate100),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.02),
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.05),
-                              blurRadius: 16,
-                              offset: const Offset(0, 8),
-                            ),
-                          ],
-                        ),
                         child: Form(
                           key: _formKey,
                           child: Column(
@@ -219,7 +209,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                         });
                                       },
                                       shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.zero,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(4),
+                                        ),
                                       ),
                                       side: const BorderSide(
                                         color: AppColors.slate300,
@@ -255,17 +247,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 width: double.infinity,
                                 height: 48,
                                 child: ElevatedButton(
-                                  onPressed: authState.isLoading ? null : _handleLogin,
+                                  onPressed: authState.isLoading
+                                      ? null
+                                      : _handleLogin,
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: AppColors.primaryBlue,
                                     foregroundColor: Colors.white,
-                                    disabledBackgroundColor:
-                                        AppColors.primaryBlue.withValues(alpha: 0.6),
+                                    disabledBackgroundColor: AppColors
+                                        .primaryBlue
+                                        .withValues(alpha: 0.6),
                                     elevation: 0,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.zero,
+                                    shadowColor: AppColors.primaryBlue
+                                        .withValues(alpha: 0.32),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
                                     ),
-                                    padding: const EdgeInsets.symmetric(vertical: 0),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 0,
+                                    ),
                                   ),
                                   child: authState.isLoading
                                       ? const SizedBox(
@@ -277,7 +276,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                           ),
                                         )
                                       : const Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
                                           children: [
                                             Text(
                                               'Sign In',
@@ -296,6 +296,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                         ),
                                 ),
                               ),
+                              if (kDebugMode) ...[
+                                const SizedBox(height: 18),
+                                _DevelopmentLoginSection(
+                                  isLoading: authState.isLoading,
+                                  onSelect: _handleDevelopmentLogin,
+                                ),
+                              ],
                             ],
                           ),
                         ),
@@ -363,6 +370,132 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       child: Text(
         '|',
         style: TextStyle(fontSize: 12, color: AppColors.slate300),
+      ),
+    );
+  }
+}
+
+class _DevelopmentLoginSection extends StatelessWidget {
+  final bool isLoading;
+  final ValueChanged<DevelopmentDemoUser> onSelect;
+
+  const _DevelopmentLoginSection({
+    required this.isLoading,
+    required this.onSelect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 240),
+      curve: Curves.easeOutCubic,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.warningLight,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.warning.withValues(alpha: 0.22)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              const StatusChip(
+                label: 'Development Mode',
+                color: AppColors.warningDark,
+                icon: Icons.bug_report_outlined,
+              ),
+              const Spacer(),
+              Text(
+                'DEBUG ONLY',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: AppColors.warningDark,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'Use pre-filled mock users for local testing. This panel is compiled out of release builds.',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: AppColors.slate700,
+              height: 1.35,
+            ),
+          ),
+          const SizedBox(height: 12),
+          for (final demoUser in developmentDemoUsers) ...[
+            PressableScale(
+              onTap: isLoading ? null : () => onSelect(demoUser),
+              borderRadius: BorderRadius.circular(16),
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.86),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: AppColors.warning.withValues(alpha: 0.18),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Hero(
+                      tag: 'dev-login-${demoUser.user.userId}',
+                      child: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: const BoxDecoration(
+                          gradient: AppColors.brandGradient,
+                          shape: BoxShape.circle,
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          demoUser.user.displayName.isNotEmpty
+                              ? demoUser.user.displayName.substring(0, 1)
+                              : 'D',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            demoUser.label,
+                            style: const TextStyle(
+                              color: AppColors.slate900,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          Text(
+                            '${demoUser.user.role} → ${demoUser.destination}',
+                            style: const TextStyle(
+                              color: AppColors.slate500,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(
+                      Icons.arrow_forward_rounded,
+                      color: AppColors.primaryBlue,
+                      size: 18,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinesphere_erp/core/theme/app_colors.dart';
 import 'package:pinesphere_erp/hr_portal/services/hr_api_service.dart';
+import 'package:pinesphere_erp/core/widgets/error_state_widget.dart';
 import 'package:pinesphere_erp/shared/models/student_model.dart';
 import 'package:pinesphere_erp/student_portal/portal_theme.dart';
+import 'package:pinesphere_erp/core/widgets/premium_components.dart';
 
 class HRStudentsScreen extends ConsumerStatefulWidget {
   const HRStudentsScreen({super.key});
@@ -50,22 +52,9 @@ class _HRStudentsScreenState extends ConsumerState<HRStudentsScreen> {
             child: Column(
               children: [
                 // Search bar
-                TextField(
+                SearchBarPremium(
+                  hintText: 'Search by intern ID...',
                   onChanged: (v) => setState(() => _searchQuery = v),
-                  decoration: InputDecoration(
-                    hintText: 'Search by intern ID...',
-                    hintStyle: TextStyle(
-                        color: PortalTheme.textSecondary(context), fontSize: 13),
-                    prefixIcon: Icon(Icons.search_rounded,
-                        color: PortalTheme.textSecondary(context), size: 20),
-                    filled: true,
-                    fillColor: PortalTheme.backgroundSlate(context),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
                 ),
                 const SizedBox(height: 10),
                 // Status filter chips
@@ -120,7 +109,7 @@ class _HRStudentsScreenState extends ConsumerState<HRStudentsScreen> {
                   color: AppColors.primaryBlue,
                 ),
               ),
-              error: (err, _) => _buildError(err.toString()),
+              error: (err, _) => _buildError(err),
               data: (students) {
                 final filtered = _applyFilters(students);
                 if (filtered.isEmpty) {
@@ -161,46 +150,11 @@ class _HRStudentsScreenState extends ConsumerState<HRStudentsScreen> {
     }).toList();
   }
 
-  Widget _buildError(String message) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline,
-                size: 48, color: AppColors.error),
-            const SizedBox(height: 16),
-            const Text(
-              'Failed to load students',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                color: AppColors.slate700,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  color: AppColors.slate400, fontSize: 13),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: () => ref.refresh(hrStudentsProvider),
-              icon: const Icon(Icons.refresh_rounded, size: 18),
-              label: const Text('Retry'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryBlue,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8)),
-              ),
-            ),
-          ],
-        ),
-      ),
+  Widget _buildError(dynamic err) {
+    return ErrorStateWidget(
+      title: 'Failed to load students',
+      error: err,
+      onRetry: () => ref.refresh(hrStudentsProvider),
     );
   }
 

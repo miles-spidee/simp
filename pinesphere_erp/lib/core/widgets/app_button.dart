@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pinesphere_erp/core/theme/app_colors.dart';
+import 'package:pinesphere_erp/core/widgets/premium_components.dart';
 
 enum AppButtonType { primary, secondary, outlined, text }
 
@@ -29,18 +30,22 @@ class AppButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final isEnabled = !isDisabled && !isLoading && onPressed != null;
 
-    return SizedBox(
-      height: height,
-      width: width ?? double.infinity,
-      child: switch (type) {
-        AppButtonType.primary => ElevatedButton(
+    return PressableScale(
+      borderRadius: BorderRadius.circular(16),
+      child: SizedBox(
+        height: height,
+        width: width ?? double.infinity,
+        child: switch (type) {
+          AppButtonType.primary => ElevatedButton(
             onPressed: isEnabled ? onPressed : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
               disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.5),
+              elevation: 0,
+              shadowColor: AppColors.primary.withValues(alpha: 0.25),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(16),
               ),
             ),
             child: isLoading
@@ -55,22 +60,22 @@ class AppButton extends StatelessWidget {
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (icon != null) ...[
-                        icon!,
-                        const SizedBox(width: 8),
-                      ],
+                      if (icon != null) ...[icon!, const SizedBox(width: 8)],
                       Text(text),
                     ],
                   ),
           ),
-        AppButtonType.secondary => ElevatedButton(
+          AppButtonType.secondary => ElevatedButton(
             onPressed: isEnabled ? onPressed : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.secondary,
               foregroundColor: Colors.white,
-              disabledBackgroundColor: AppColors.secondary.withValues(alpha: 0.5),
+              disabledBackgroundColor: AppColors.secondary.withValues(
+                alpha: 0.5,
+              ),
+              elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(16),
               ),
             ),
             child: isLoading
@@ -85,72 +90,60 @@ class AppButton extends StatelessWidget {
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (icon != null) ...[
-                        icon!,
-                        const SizedBox(width: 8),
-                      ],
+                      if (icon != null) ...[icon!, const SizedBox(width: 8)],
                       Text(text),
                     ],
                   ),
           ),
-        AppButtonType.outlined => OutlinedButton(
+          AppButtonType.outlined => OutlinedButton(
             onPressed: isEnabled ? onPressed : null,
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.primary,
               disabledForegroundColor: AppColors.primary.withValues(alpha: 0.5),
               side: BorderSide(color: AppColors.primary),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(16),
               ),
             ),
             child: isLoading
                 ? const SizedBox(
                     height: 20,
                     width: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                    ),
+                    child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (icon != null) ...[
-                        icon!,
-                        const SizedBox(width: 8),
-                      ],
+                      if (icon != null) ...[icon!, const SizedBox(width: 8)],
                       Text(text),
                     ],
                   ),
           ),
-        AppButtonType.text => TextButton(
+          AppButtonType.text => TextButton(
             onPressed: isEnabled ? onPressed : null,
             style: TextButton.styleFrom(
               foregroundColor: AppColors.primary,
               disabledForegroundColor: AppColors.primary.withValues(alpha: 0.5),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(16),
               ),
             ),
             child: isLoading
                 ? const SizedBox(
                     height: 20,
                     width: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                    ),
+                    child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (icon != null) ...[
-                        icon!,
-                        const SizedBox(width: 8),
-                      ],
+                      if (icon != null) ...[icon!, const SizedBox(width: 8)],
                       Text(text),
                     ],
                   ),
           ),
-      },
+        },
+      ),
     );
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pinesphere_erp/core/theme/app_colors.dart';
+import 'package:pinesphere_erp/core/widgets/premium_components.dart';
 
 class AppCard extends StatelessWidget {
   final Widget child;
@@ -24,22 +26,37 @@ class AppCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final card = Card(
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final card = Container(
       margin: margin,
-      color: color,
-      elevation: 0,
-      child: Container(
-        width: width,
-        height: height,
-        padding: padding,
-        child: child,
+      width: width,
+      height: height,
+      padding: padding,
+      decoration: BoxDecoration(
+        color: color ?? (isDark ? AppColors.surfaceDarkElevated : Colors.white),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(
+          color: (isDark ? AppColors.borderDark : AppColors.border).withValues(
+            alpha: 0.76,
+          ),
+        ),
+        boxShadow:
+            boxShadow ??
+            [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: isDark ? 0.24 : 0.055),
+                blurRadius: 30,
+                offset: const Offset(0, 16),
+              ),
+            ],
       ),
+      child: child,
     );
 
     return onTap != null
-        ? InkWell(
+        ? PressableScale(
             onTap: onTap,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(22),
             child: card,
           )
         : card;

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:pinesphere_erp/core/network/api_config.dart';
@@ -16,11 +17,7 @@ class AuthState {
   final UserModel? user;
   final String? errorMessage;
 
-  const AuthState({
-    required this.status,
-    this.user,
-    this.errorMessage,
-  });
+  const AuthState({required this.status, this.user, this.errorMessage});
 
   factory AuthState.initial() => const AuthState(status: AuthStatus.initial);
   factory AuthState.loading() => const AuthState(status: AuthStatus.loading);
@@ -106,10 +103,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       final response = await _dio.post(
         ApiConfig.login,
-        data: {
-          'username': username,
-          'password': password,
-        },
+        data: {'username': username, 'password': password},
       );
 
       final authResponse = AuthResponseModel.fromJson(
@@ -140,12 +134,17 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } on DioException catch (e) {
       final statusCode = e.response?.statusCode;
       if (statusCode == 401 || statusCode == 403) {
-        state = AuthState.error('Invalid username or password. Please try again.');
+        state = AuthState.error(
+          'Invalid username or password. Please try again.',
+        );
       } else if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.connectionError) {
-        state = AuthState.error('Unable to reach the server. Check your connection.');
+        state = AuthState.error(
+          'Unable to reach the server. Check your connection.',
+        );
       } else {
-        final msg = e.response?.data?['detail'] ??
+        final msg =
+            e.response?.data?['detail'] ??
             e.response?.data?['message'] ??
             'Login failed. Please try again.';
         state = AuthState.error(msg.toString());
@@ -155,12 +154,67 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  Future<void> loginAsDevelopmentUser(DevelopmentDemoUser demoUser) async {
+    if (!kDebugMode || state.isLoading) return;
+    state = AuthState.loading();
+    await Future<void>.delayed(const Duration(milliseconds: 260));
+    state = AuthState.authenticated(demoUser.user);
+  }
+
   /// Sign out — mirrors authService.logout() from frontend
   Future<void> logout() async {
     await SecureStorage.instance.clearAll();
     state = AuthState.unauthenticated();
   }
 }
+
+class DevelopmentDemoUser {
+  final String label;
+  final UserModel user;
+  final String destination;
+
+  const DevelopmentDemoUser({
+    required this.label,
+    required this.user,
+    required this.destination,
+  });
+}
+
+const developmentDemoUsers = [
+  DevelopmentDemoUser(
+    label: 'Student Demo',
+    destination: '/student',
+    user: UserModel(
+      userId: 'debug-student',
+      username: 'student_demo',
+      email: 'student.demo@pinesphere.local',
+      role: 'ROLE_STUDENT',
+      displayName: 'Student Demo',
+    ),
+  ),
+  DevelopmentDemoUser(
+    label: 'HR Demo',
+    destination: '/hr',
+    user: UserModel(
+      userId: 'debug-hr',
+      username: 'hr_demo',
+      email: 'hr.demo@pinesphere.local',
+      role: 'ROLE_HR',
+      displayName: 'HR Demo',
+    ),
+  ),
+  DevelopmentDemoUser(
+    label: 'Super Admin Demo',
+    destination: '/admin',
+    user: UserModel(
+      userId: 'debug-admin',
+      username: 'super_admin_demo',
+      email: 'admin.demo@pinesphere.local',
+      role: 'ROLE_SUPER_ADMIN',
+      displayName: 'Super Admin Demo',
+    ),
+  ),
+];
 
 // ── Providers ─────────────────────────────────────────────────────────────────
 

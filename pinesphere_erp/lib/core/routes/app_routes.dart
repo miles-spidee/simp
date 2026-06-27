@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pinesphere_erp/features/auth/providers/auth_provider.dart';
@@ -31,6 +32,14 @@ import 'package:pinesphere_erp/admin_portal/screens/admin_employees_screen.dart'
 import 'package:pinesphere_erp/admin_portal/screens/admin_users_screen.dart';
 import 'package:pinesphere_erp/admin_portal/screens/admin_programs_screen.dart';
 import 'package:pinesphere_erp/admin_portal/screens/admin_roles_screen.dart';
+import 'package:pinesphere_erp/admin_portal/screens/admin_mentor_dashboard_screen.dart';
+import 'package:pinesphere_erp/admin_portal/screens/admin_mentor_profile_screen.dart';
+import 'package:pinesphere_erp/admin_portal/screens/admin_mentor_assignment_screen.dart';
+import 'package:pinesphere_erp/admin_portal/screens/admin_mentor_batch_mapping_screen.dart';
+import 'package:pinesphere_erp/admin_portal/screens/admin_organization_screen.dart';
+import 'package:pinesphere_erp/admin_portal/screens/admin_permissions_screen.dart';
+import 'package:pinesphere_erp/admin_portal/screens/admin_audit_logs_screen.dart';
+import 'package:pinesphere_erp/admin_portal/screens/admin_settings_screen.dart';
 
 class AppRoutes {
   // ── Named path constants ──────────────────────────────────────────────────
@@ -41,6 +50,14 @@ class AppRoutes {
   static const String studentDashboard = '/student';
   static const String hrDashboard = '/hr';
   static const String adminDashboard = '/admin';
+  static const String adminMentorDashboard = '/admin/mentor';
+  static const String adminMentorProfile = '/admin/mentor/profile';
+  static const String adminMentorAssignment = '/admin/mentor/assignment';
+  static const String adminMentorBatchMapping = '/admin/mentor/batch-mapping';
+  static const String adminOrganization = '/admin/organization';
+  static const String adminPermissions = '/admin/permissions';
+  static const String adminAuditLogs = '/admin/audit-logs';
+  static const String adminSettings = '/admin/settings';
 
   // Legacy constants — kept for backward compat with feature/dashboard screens
   static const String notifications = '/dashboard/notifications';
@@ -53,6 +70,32 @@ class AppRoutes {
   static const String profile = '/dashboard/profile';
 
   // ── Router factory ────────────────────────────────────────────────────────
+
+  static Page<void> _fadeSlidePage(Widget child, GoRouterState state) {
+    return CustomTransitionPage<void>(
+      key: state.pageKey,
+      child: child,
+      transitionDuration: const Duration(milliseconds: 280),
+      reverseTransitionDuration: const Duration(milliseconds: 220),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        final curved = CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutCubic,
+          reverseCurve: Curves.easeInCubic,
+        );
+        return FadeTransition(
+          opacity: curved,
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0.04, 0.03),
+              end: Offset.zero,
+            ).animate(curved),
+            child: child,
+          ),
+        );
+      },
+    );
+  }
 
   static GoRouter createRouter(ProviderContainer container) {
     return GoRouter(
@@ -88,11 +131,13 @@ class AppRoutes {
         // ── Public routes ──────────────────────────────────────────────
         GoRoute(
           path: splash,
-          builder: (context, state) => const SplashScreen(),
+          pageBuilder: (context, state) =>
+              _fadeSlidePage(const SplashScreen(), state),
         ),
         GoRoute(
           path: login,
-          builder: (context, state) => const LoginScreen(),
+          pageBuilder: (context, state) =>
+              _fadeSlidePage(const LoginScreen(), state),
         ),
 
         // ── Student Portal ─────────────────────────────────────────────
@@ -105,8 +150,7 @@ class AppRoutes {
               routes: [
                 GoRoute(
                   path: studentDashboard,
-                  builder: (context, state) =>
-                      const StudentDashboardScreen(),
+                  builder: (context, state) => const StudentDashboardScreen(),
                 ),
               ],
             ),
@@ -141,8 +185,7 @@ class AppRoutes {
               routes: [
                 GoRoute(
                   path: '/student/more',
-                  builder: (context, state) =>
-                      const StudentMoreScreen(),
+                  builder: (context, state) => const StudentMoreScreen(),
                 ),
               ],
             ),
@@ -159,8 +202,7 @@ class AppRoutes {
               routes: [
                 GoRoute(
                   path: hrDashboard,
-                  builder: (context, state) =>
-                      const HRDashboardScreen(),
+                  builder: (context, state) => const HRDashboardScreen(),
                 ),
               ],
             ),
@@ -168,8 +210,7 @@ class AppRoutes {
               routes: [
                 GoRoute(
                   path: '/hr/students',
-                  builder: (context, state) =>
-                      const HRStudentsScreen(),
+                  builder: (context, state) => const HRStudentsScreen(),
                 ),
               ],
             ),
@@ -177,8 +218,7 @@ class AppRoutes {
               routes: [
                 GoRoute(
                   path: '/hr/programs',
-                  builder: (context, state) =>
-                      const HRProgramsScreen(),
+                  builder: (context, state) => const HRProgramsScreen(),
                 ),
               ],
             ),
@@ -194,8 +234,7 @@ class AppRoutes {
               routes: [
                 GoRoute(
                   path: '/hr/profile',
-                  builder: (context, state) =>
-                      const HRProfileScreen(),
+                  builder: (context, state) => const HRProfileScreen(),
                 ),
               ],
             ),
@@ -212,8 +251,7 @@ class AppRoutes {
               routes: [
                 GoRoute(
                   path: adminDashboard,
-                  builder: (context, state) =>
-                      const AdminDashboardScreen(),
+                  builder: (context, state) => const AdminDashboardScreen(),
                 ),
               ],
             ),
@@ -221,8 +259,7 @@ class AppRoutes {
               routes: [
                 GoRoute(
                   path: '/admin/students',
-                  builder: (context, state) =>
-                      const AdminStudentsScreen(),
+                  builder: (context, state) => const AdminStudentsScreen(),
                 ),
               ],
             ),
@@ -230,8 +267,7 @@ class AppRoutes {
               routes: [
                 GoRoute(
                   path: '/admin/employees',
-                  builder: (context, state) =>
-                      const AdminEmployeesScreen(),
+                  builder: (context, state) => const AdminEmployeesScreen(),
                 ),
               ],
             ),
@@ -239,8 +275,7 @@ class AppRoutes {
               routes: [
                 GoRoute(
                   path: '/admin/users',
-                  builder: (context, state) =>
-                      const AdminUsersScreen(),
+                  builder: (context, state) => const AdminUsersScreen(),
                 ),
               ],
             ),
@@ -248,8 +283,7 @@ class AppRoutes {
               routes: [
                 GoRoute(
                   path: '/admin/programs',
-                  builder: (context, state) =>
-                      const AdminProgramsScreen(),
+                  builder: (context, state) => const AdminProgramsScreen(),
                 ),
               ],
             ),
@@ -257,8 +291,74 @@ class AppRoutes {
               routes: [
                 GoRoute(
                   path: '/admin/roles',
+                  builder: (context, state) => const AdminRolesScreen(),
+                ),
+              ],
+            ),
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: adminMentorDashboard,
                   builder: (context, state) =>
-                      const AdminRolesScreen(),
+                      const AdminMentorDashboardScreen(),
+                ),
+              ],
+            ),
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: adminMentorProfile,
+                  builder: (context, state) => const AdminMentorProfileScreen(),
+                ),
+              ],
+            ),
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: adminMentorAssignment,
+                  builder: (context, state) =>
+                      const AdminMentorAssignmentScreen(),
+                ),
+              ],
+            ),
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: adminMentorBatchMapping,
+                  builder: (context, state) =>
+                      const AdminMentorBatchMappingScreen(),
+                ),
+              ],
+            ),
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: adminOrganization,
+                  builder: (context, state) => const AdminOrganizationScreen(),
+                ),
+              ],
+            ),
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: adminPermissions,
+                  builder: (context, state) => const AdminPermissionsScreen(),
+                ),
+              ],
+            ),
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: adminAuditLogs,
+                  builder: (context, state) => const AdminAuditLogsScreen(),
+                ),
+              ],
+            ),
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: adminSettings,
+                  builder: (context, state) => const AdminSettingsScreen(),
                 ),
               ],
             ),

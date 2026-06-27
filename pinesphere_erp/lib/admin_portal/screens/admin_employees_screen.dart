@@ -1,13 +1,15 @@
+import 'package:pinesphere_erp/shared/services/admin_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:pinesphere_erp/core/theme/app_colors.dart';
 
 /// Admin Employees screen — placeholder until /employees endpoint is confirmed.
 /// Mirrors frontend /admin/employee page structure.
-class AdminEmployeesScreen extends StatelessWidget {
+class AdminEmployeesScreen extends ConsumerWidget {
   const AdminEmployeesScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
@@ -16,7 +18,7 @@ class AdminEmployeesScreen extends StatelessWidget {
         leading: Builder(
           builder: (ctx) => IconButton(
             icon: const Icon(Icons.menu_rounded, color: AppColors.slate800),
-            onPressed: () => Scaffold.of(ctx).openDrawer(),
+            onPressed: () => ref.read(adminScaffoldKeyProvider).currentState?.openDrawer(),
           ),
         ),
         title: const Text(

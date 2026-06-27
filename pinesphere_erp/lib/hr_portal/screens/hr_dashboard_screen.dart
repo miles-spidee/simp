@@ -5,6 +5,7 @@ import 'package:pinesphere_erp/core/theme/app_colors.dart';
 import 'package:pinesphere_erp/features/auth/providers/auth_provider.dart';
 import 'package:pinesphere_erp/hr_portal/services/hr_api_service.dart';
 import 'package:pinesphere_erp/student_portal/portal_theme.dart';
+import 'package:pinesphere_erp/core/utils/premium_animations.dart';
 
 class HRDashboardScreen extends ConsumerWidget {
   const HRDashboardScreen({super.key});
@@ -149,18 +150,21 @@ class HRDashboardScreen extends ConsumerWidget {
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 // Stats grid
-                statsAsync.when(
-                  loading: () => _buildLoadingStats(),
-                  error: (e, _) => _buildStatsGrid(context,
-                      students: 0,
-                      programs: 0,
-                      active: 0,
-                      completed: 0),
-                  data: (stats) => _buildStatsGrid(context,
-                      students: stats.totalStudents,
-                      programs: stats.totalPrograms,
-                      active: stats.activeStudents,
-                      completed: stats.completedStudents),
+                SlideUpFadeTransition(
+                  delay: Duration.zero,
+                  child: statsAsync.when(
+                    loading: () => _buildLoadingStats(),
+                    error: (e, _) => _buildStatsGrid(context,
+                        students: 0,
+                        programs: 0,
+                        active: 0,
+                        completed: 0),
+                    data: (stats) => _buildStatsGrid(context,
+                        students: stats.totalStudents,
+                        programs: stats.totalPrograms,
+                        active: stats.activeStudents,
+                        completed: stats.completedStudents),
+                  ),
                 ),
 
                 const SizedBox(height: 24),
@@ -192,21 +196,24 @@ class HRDashboardScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 12),
 
-                studentsAsync.when(
-                  loading: () => _buildStudentListLoader(),
-                  error: (e, _) => _buildStudentListError(e.toString()),
-                  data: (students) {
-                    if (students.isEmpty) {
-                      return _buildStudentListEmpty();
-                    }
-                    final recent = students.take(5).toList();
-                    return Column(
-                      children: recent
-                          .map((s) => _buildStudentTile(context, s.displayName,
-                              s.studentStatus, s.createdAt))
-                          .toList(),
-                    );
-                  },
+                SlideUpFadeTransition(
+                  delay: const Duration(milliseconds: 150),
+                  child: studentsAsync.when(
+                    loading: () => _buildStudentListLoader(),
+                    error: (e, _) => _buildStudentListError(ref, e),
+                    data: (students) {
+                      if (students.isEmpty) {
+                        return _buildStudentListEmpty();
+                      }
+                      final recent = students.take(5).toList();
+                      return Column(
+                        children: recent
+                            .map((s) => _buildStudentTile(context, s.displayName,
+                                s.studentStatus, s.createdAt))
+                            .toList(),
+                      );
+                    },
+                  ),
                 ),
 
                 const SizedBox(height: 100),
@@ -297,9 +304,17 @@ class HRDashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildStudentListError(String msg) {
+  Widget _buildStudentListError(WidgetRef ref, dynamic err) {
+    final str = err.toString();
+    String friendlyMsg = 'Failed to load students';
+    if (str.contains('500') || str.contains('bad response') || str.contains('server error')) {
+      friendlyMsg = 'Server error fetching students';
+    } else if (str.contains('SocketException') || str.contains('Network') || str.contains('connection')) {
+      friendlyMsg = 'Network connection issue';
+    }
+
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: AppColors.errorLight,
         borderRadius: BorderRadius.circular(12),
@@ -311,10 +326,14 @@ class HRDashboardScreen extends ConsumerWidget {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              'Failed to load students',
+              friendlyMsg,
               style: const TextStyle(
                   color: AppColors.error, fontSize: 13),
             ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.refresh_rounded, color: AppColors.error, size: 18),
+            onPressed: () => ref.refresh(hrStudentsProvider),
           ),
         ],
       ),
@@ -491,8 +510,8 @@ class _StatCard extends StatelessWidget {
             child: Icon(icon, color: color, size: 22),
           ),
           const SizedBox(height: 8),
-          Text(
-            value,
+          CounterText(
+            value: int.tryParse(value) ?? 0,
             style: TextStyle(
               color: PortalTheme.textColor(context),
               fontSize: 22,

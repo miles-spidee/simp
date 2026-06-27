@@ -1,14 +1,16 @@
+import 'package:pinesphere_erp/shared/services/admin_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:pinesphere_erp/core/theme/app_colors.dart';
 
 /// Admin Users screen — mirrors frontend /admin/users page.
 /// Shows user management interface. Backend /users endpoint integration
 /// follows the same pattern as students.
-class AdminUsersScreen extends StatelessWidget {
+class AdminUsersScreen extends ConsumerWidget {
   const AdminUsersScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
@@ -17,7 +19,7 @@ class AdminUsersScreen extends StatelessWidget {
         leading: Builder(
           builder: (ctx) => IconButton(
             icon: const Icon(Icons.menu_rounded, color: AppColors.slate800),
-            onPressed: () => Scaffold.of(ctx).openDrawer(),
+            onPressed: () => ref.read(adminScaffoldKeyProvider).currentState?.openDrawer(),
           ),
         ),
         title: const Text(

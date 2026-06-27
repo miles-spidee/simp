@@ -58,10 +58,64 @@ class AppTextField extends StatelessWidget {
       autovalidateMode: autovalidateMode,
       decoration: InputDecoration(
         labelText: labelText,
+        labelStyle: TextStyle(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? const Color(0xFF94A3B8)
+              : const Color(0xFF64748B),
+          fontSize: 13,
+        ),
         hintText: hintText,
+        hintStyle: TextStyle(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? const Color(0xFF64748B)
+              : const Color(0xFF94A3B8),
+          fontSize: 13,
+        ),
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         counterText: '',
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        filled: true,
+        fillColor: Theme.of(context).brightness == Brightness.dark
+            ? const Color(0xFF1E293B)
+            : const Color(0xFFF8FAFC),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? const Color(0xFF334155)
+                : const Color(0xFFE2E8F0),
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? const Color(0xFF334155)
+                : const Color(0xFFE2E8F0),
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(
+            color: Color(0xFF3B82F6), // primaryBlue
+            width: 2,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(
+            color: Color(0xFFEF4444), // error
+            width: 1.5,
+          ),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(
+            color: Color(0xFFEF4444),
+            width: 2.0,
+          ),
+        ),
       ),
     );
   }

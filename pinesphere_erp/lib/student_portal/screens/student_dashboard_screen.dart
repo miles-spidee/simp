@@ -12,6 +12,7 @@ import 'package:pinesphere_erp/student_portal/widgets/agenda_tile.dart';
 import 'package:pinesphere_erp/student_portal/widgets/announcement_card.dart';
 import 'package:pinesphere_erp/student_portal/widgets/metric_card.dart';
 import 'package:pinesphere_erp/student_portal/widgets/progress_circle.dart';
+import 'package:pinesphere_erp/core/utils/premium_animations.dart';
 
 // Screens
 import 'package:pinesphere_erp/student_portal/screens/assessment_screen.dart';
@@ -98,115 +99,123 @@ class StudentDashboardScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Welcome Banner
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      PortalTheme.primaryBlue(context),
-                      PortalTheme.accentBlue(context),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+              SlideUpFadeTransition(
+                delay: Duration.zero,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        PortalTheme.primaryBlue(context),
+                        PortalTheme.accentBlue(context),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
                   ),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-                ),
-                padding: EdgeInsets.all(20),
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Welcome Back, ${profile.personal.firstName}!",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w900,
+                  padding: EdgeInsets.all(20),
+                  width: double.infinity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Welcome Back, ${profile.personal.firstName}!",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w900,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 6),
-                    Text(
-                      "Track your performance scorecards, attend lecture paths, submit project code assignments, and keep tabs on payments from one workspace.",
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.7),
-                        fontSize: 12,
-                        height: 1.4,
+                      SizedBox(height: 6),
+                      Text(
+                        "Track your performance scorecards, attend lecture paths, submit project code assignments, and keep tabs on payments from one workspace.",
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.7),
+                          fontSize: 12,
+                          height: 1.4,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               SizedBox(height: 24),
 
               // KPI Metric Cards Grid
-              GridView(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  childAspectRatio: 1.15,
+              SlideUpFadeTransition(
+                delay: const Duration(milliseconds: 100),
+                child: GridView(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    childAspectRatio: 1.15,
+                  ),
+                  children: [
+                    MetricCard(
+                      title: "Attendance Target",
+                      value: "88%",
+                      desc: "Threshold is 85%",
+                      status: "Normal",
+                      leftBorderColor: PortalTheme.successGreen(context),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => AttendanceScreen()),
+                        );
+                      },
+                    ),
+                    MetricCard(
+                      title: "LMS Progress",
+                      value: "${lms.courses.isEmpty ? 0 : lms.courses[0].progress}%",
+                      desc: "React/Next course",
+                      status: "Ahead",
+                      leftBorderColor: PortalTheme.accentBlue(context),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => LMSScreen()),
+                        );
+                      },
+                    ),
+                    MetricCard(
+                      title: "Pending Dues",
+                      value: financials.fees.total == 0 ? "Free" : "₹${financials.fees.balance.toStringAsFixed(0)}",
+                      desc: financials.fees.total == 0 ? "Free Scholarship" : "Due by June 30",
+                      status: financials.fees.total == 0 ? "Cleared" : "Pending",
+                      leftBorderColor: financials.fees.total == 0 ? PortalTheme.successGreen(context) : PortalTheme.warningAmber(context),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => FinancialsScreen()),
+                        );
+                      },
+                    ),
+                    MetricCard(
+                      title: "Current KPI",
+                      value: "${kpi.stats.averageScore.toStringAsFixed(1)}/100",
+                      desc: "Updated weekly",
+                      status: "Excellent",
+                      leftBorderColor: Colors.indigoAccent,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => KPIScreen()),
+                        );
+                      },
+                    ),
+                  ],
                 ),
-                children: [
-                  MetricCard(
-                    title: "Attendance Target",
-                    value: "88%",
-                    desc: "Threshold is 85%",
-                    status: "Normal",
-                    leftBorderColor: PortalTheme.successGreen(context),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AttendanceScreen()),
-                      );
-                    },
-                  ),
-                  MetricCard(
-                    title: "LMS Progress",
-                    value: "${lms.courses.isEmpty ? 0 : lms.courses[0].progress}%",
-                    desc: "React/Next course",
-                    status: "Ahead",
-                    leftBorderColor: PortalTheme.accentBlue(context),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => LMSScreen()),
-                      );
-                    },
-                  ),
-                  MetricCard(
-                    title: "Pending Dues",
-                    value: financials.fees.total == 0 ? "Free" : "₹${financials.fees.balance.toStringAsFixed(0)}",
-                    desc: financials.fees.total == 0 ? "Free Scholarship" : "Due by June 30",
-                    status: financials.fees.total == 0 ? "Cleared" : "Pending",
-                    leftBorderColor: financials.fees.total == 0 ? PortalTheme.successGreen(context) : PortalTheme.warningAmber(context),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => FinancialsScreen()),
-                      );
-                    },
-                  ),
-                  MetricCard(
-                    title: "Current KPI",
-                    value: "${kpi.stats.averageScore.toStringAsFixed(1)}/100",
-                    desc: "Updated weekly",
-                    status: "Excellent",
-                    leftBorderColor: Colors.indigoAccent,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => KPIScreen()),
-                      );
-                    },
-                  ),
-                ],
               ),
               SizedBox(height: 28),
 
               // Timeline & Progress Circle (Internship Timeline)
-              Container(
+              SlideUpFadeTransition(
+                delay: const Duration(milliseconds: 200),
+                child: Container(
                 decoration: BoxDecoration(
                   color: PortalTheme.cardSurface(context),
                   borderRadius: BorderRadius.circular(20),
@@ -265,7 +274,7 @@ class StudentDashboardScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
-              ),
+              ),),
               SizedBox(height: 28),
 
               // Today's Agenda list
@@ -315,26 +324,29 @@ class StudentDashboardScreen extends ConsumerWidget {
                 ),
               ),
               SizedBox(height: 12),
-              GridView(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 1,
+              SlideUpFadeTransition(
+                delay: const Duration(milliseconds: 300),
+                child: GridView(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    childAspectRatio: 1,
+                  ),
+                  children: [
+                    _buildShortcutCard(context, Icons.video_library, "LMS", LMSScreen()),
+                    _buildShortcutCard(context, Icons.assignment, "Tasks", TasksScreen()),
+                    _buildShortcutCard(context, Icons.assignment_turned_in, "Assessments", AssessmentScreen()),
+                    _buildShortcutCard(context, Icons.account_tree, "Capstone", CapstoneScreen()),
+                    _buildShortcutCard(context, Icons.calendar_month, "Attendance", AttendanceScreen()),
+                    _buildShortcutCard(context, Icons.workspace_premium, "Certificates", DocumentsScreen()),
+                    _buildShortcutCard(context, Icons.credit_card, "Financials", FinancialsScreen()),
+                    _buildShortcutCard(context, Icons.bar_chart, "KPI Score", KPIScreen()),
+                    _buildShortcutCard(context, Icons.chat, "Chat Guide", ChatScreen()),
+                  ],
                 ),
-                children: [
-                  _buildShortcutCard(context, Icons.video_library, "LMS", LMSScreen()),
-                  _buildShortcutCard(context, Icons.assignment, "Tasks", TasksScreen()),
-                  _buildShortcutCard(context, Icons.assignment_turned_in, "Assessments", AssessmentScreen()),
-                  _buildShortcutCard(context, Icons.account_tree, "Capstone", CapstoneScreen()),
-                  _buildShortcutCard(context, Icons.calendar_month, "Attendance", AttendanceScreen()),
-                  _buildShortcutCard(context, Icons.workspace_premium, "Certificates", DocumentsScreen()),
-                  _buildShortcutCard(context, Icons.credit_card, "Financials", FinancialsScreen()),
-                  _buildShortcutCard(context, Icons.bar_chart, "KPI Score", KPIScreen()),
-                  _buildShortcutCard(context, Icons.chat, "Chat Guide", ChatScreen()),
-                ],
               ),
               SizedBox(height: 28),
 
@@ -348,21 +360,24 @@ class StudentDashboardScreen extends ConsumerWidget {
                 ),
               ),
               SizedBox(height: 12),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: announcements.length,
-                itemBuilder: (context, index) {
-                  final ann = announcements[index];
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: 12),
-                    child: AnnouncementCard(
-                      date: ann["date"]!,
-                      title: ann["title"]!,
-                      content: ann["content"]!,
-                    ),
-                  );
-                },
+              SlideUpFadeTransition(
+                delay: const Duration(milliseconds: 400),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: announcements.length,
+                  itemBuilder: (context, index) {
+                    final ann = announcements[index];
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: 12),
+                      child: AnnouncementCard(
+                        date: ann["date"]!,
+                        title: ann["title"]!,
+                        content: ann["content"]!,
+                      ),
+                    );
+                  },
+                ),
               ),
             ],
           ),
@@ -372,14 +387,13 @@ class StudentDashboardScreen extends ConsumerWidget {
   }
 
   Widget _buildShortcutCard(BuildContext context, IconData icon, String label, Widget targetScreen) {
-    return InkWell(
+    return BouncingPressable(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => targetScreen),
         );
       },
-      borderRadius: BorderRadius.circular(16),
       child: Container(
         decoration: BoxDecoration(
           color: PortalTheme.cardSurface(context),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pinesphere_erp/core/theme/app_colors.dart';
 
 class AppScaffold extends StatelessWidget {
   final PreferredSizeWidget? appBar;
@@ -20,9 +21,21 @@ class AppScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: appBar,
-      body: SafeArea(child: body),
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: isDark
+              ? const LinearGradient(
+                  colors: [AppColors.slate950, AppColors.slate900],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                )
+              : AppColors.premiumBackgroundGradient,
+        ),
+        child: SafeArea(child: body),
+      ),
       bottomNavigationBar: bottomNavigationBar,
       floatingActionButton: floatingActionButton,
       floatingActionButtonLocation: floatingActionButtonLocation,

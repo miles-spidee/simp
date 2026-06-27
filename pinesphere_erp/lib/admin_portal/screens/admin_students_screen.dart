@@ -1,3 +1,4 @@
+import 'package:pinesphere_erp/shared/services/admin_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinesphere_erp/core/theme/app_colors.dart';
@@ -35,7 +36,7 @@ class _AdminStudentsScreenState
           builder: (ctx) => IconButton(
             icon: const Icon(Icons.menu_rounded,
                 color: AppColors.slate800),
-            onPressed: () => Scaffold.of(ctx).openDrawer(),
+            onPressed: () => ref.read(adminScaffoldKeyProvider).currentState?.openDrawer(),
           ),
         ),
         title: const Text(

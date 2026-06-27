@@ -44,6 +44,7 @@ class _FinancialsScreenState extends ConsumerState<FinancialsScreen> {
       if (_upiCountdown <= 1) {
         timer.cancel();
         final success = await ref.read(financialsProvider.notifier).payUpi(amount);
+        if (!mounted) return;
         setState(() {
           _isUpiScanOpen = false;
         });
@@ -422,6 +423,7 @@ class _FinancialsScreenState extends ConsumerState<FinancialsScreen> {
                                 );
                                 return;
                               }
+                              final scaffoldMessenger = ScaffoldMessenger.of(context);
                               notifier
                                   .payCard(
                                 amount: amount,
@@ -431,11 +433,9 @@ class _FinancialsScreenState extends ConsumerState<FinancialsScreen> {
                                 cardName: _cardNameController.text,
                               )
                                   .then((success) {
-                                if (success) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text("Credit Card payment processed successfully!")),
-                                  );
-                                }
+                                scaffoldMessenger.showSnackBar(
+                                  SnackBar(content: Text("Credit Card payment processed successfully!")),
+                                );
                               });
                             }
                           },

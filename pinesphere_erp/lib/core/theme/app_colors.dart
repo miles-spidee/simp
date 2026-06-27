@@ -10,7 +10,7 @@ class AppColors {
   static const Color primaryBlue = Color(0xFF004AC6);
   static const Color darkBlue = Color(0xFF003EA6);
   static const Color lightBlue = Color(0xFFE6F0FF);
-  
+
   // Slate Neutral Colors
   static const Color slate50 = Color(0xFFF8FAFC);
   static const Color slate100 = Color(0xFFF1F5F9);
@@ -18,9 +18,11 @@ class AppColors {
   static const Color slate300 = Color(0xFFCBD5E1);
   static const Color slate400 = Color(0xFF94A3B8);
   static const Color slate500 = Color(0xFF64748B);
+  static const Color slate600 = Color(0xFF475569);
   static const Color slate700 = Color(0xFF334155);
   static const Color slate800 = Color(0xFF1E293B);
   static const Color slate900 = Color(0xFF0F172A);
+  static const Color slate950 = Color(0xFF020617);
   static const Color white = Color(0xFFFFFFFF);
 
   // Success Colors
@@ -45,11 +47,14 @@ class AppColors {
   static const Color backgroundLight = Color(0xFFF8FAFC); // slate 50
   static const Color backgroundDark = Color(0xFF0F172A); // slate 900
   static const Color background = Color(0xFFF8FAFC); // slate 50
-  
+  static const Color backgroundPremium = Color(0xFFF6F8FB);
+
   // Surface Colors
   static const Color surface = Color(0xFFFFFFFF);
   static const Color surfaceLight = Color(0xFFFFFFFF);
   static const Color surfaceDark = Color(0xFF1E293B);
+  static const Color surfaceElevated = Color(0xFFFFFFFF);
+  static const Color surfaceDarkElevated = Color(0xFF162033);
 
   // Surface Variants
   static const Color surfaceLight1 = Color(0xFFEFF4FF);
@@ -73,4 +78,16 @@ class AppColors {
   // Icon
   static const Color icon = Color(0xFF64748B); // slate 500
   static const Color iconLight = Color(0xFF94A3B8);
+
+  static const LinearGradient brandGradient = LinearGradient(
+    colors: [primaryBlue, Color(0xFF6366F1), Color(0xFF14B8A6)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient premiumBackgroundGradient = LinearGradient(
+    colors: [Color(0xFFF8FBFF), Color(0xFFF6F8FB), Color(0xFFF8FAFC)],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
 }
