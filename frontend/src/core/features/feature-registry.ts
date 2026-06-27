@@ -27,6 +27,7 @@ export const FEATURE_REGISTRY: FeatureDefinition[] = [
   { moduleId: 'users', featureId: 'users_main', permissionKey: 'users.view', displayName: 'Users', navigationLabel: 'Identity - Users', route: '/feature/users', icon: UsersIcon },
   { moduleId: 'roles', featureId: 'roles_main', permissionKey: 'roles.view', displayName: 'Roles', navigationLabel: 'Identity - Roles', route: '/feature/roles', icon: Key },
   { moduleId: 'permissions', featureId: 'permissions_main', permissionKey: 'permissions.view', displayName: 'Permissions', navigationLabel: 'Identity - Permissions', route: '/feature/permissions', icon: Lock },
+  { moduleId: 'modules', featureId: 'modules_main', permissionKey: 'modules.view', displayName: 'Module Registry', navigationLabel: 'Identity - Module Registry', route: '/feature/modules', icon: Settings },
   { moduleId: 'sessions', featureId: 'sessions_main', permissionKey: 'sessions.view', displayName: 'Sessions', navigationLabel: 'Identity - Sessions', route: '/feature/sessions', icon: Activity },
   { moduleId: 'security', featureId: 'security_main', permissionKey: 'security.view', displayName: 'Security Center', navigationLabel: 'Identity - Security Center', route: '/feature/security', icon: ShieldAlert },
 

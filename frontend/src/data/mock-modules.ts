@@ -14,6 +14,7 @@ export const MOCK_MODULES: Module[] = [
   { id: 'users', code: 'USERS', name: 'Users', route: '/feature/users', active: true },
   { id: 'roles', code: 'ROLES', name: 'Roles', route: '/feature/roles', active: true },
   { id: 'permissions', code: 'PERMS', name: 'Permissions', route: '/feature/permissions', active: true },
+  { id: 'modules', code: 'MODULES', name: 'Module Registry', route: '/feature/modules', active: true },
   { id: 'sessions', code: 'SESS', name: 'Sessions', route: '/feature/sessions', active: true },
   { id: 'security', code: 'SEC', name: 'Security Center', route: '/feature/security', active: true },
 

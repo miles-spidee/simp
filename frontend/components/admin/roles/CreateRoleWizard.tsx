@@ -20,7 +20,7 @@ interface CreateRoleWizardProps {
   viewMode?: boolean;
 }
 
-const STEPS = ['Role Details', 'Module Assignment', 'Permission Assignment', 'Review & Create'];
+const STEPS = ['Role Details', 'Module Registry', 'Review & Create'];
 
 export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, viewMode }: CreateRoleWizardProps) {
   const [currentStep, setCurrentStep] = useState(0);
@@ -215,8 +215,8 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
     try {
       setIsSubmitting(true);
       const flatPermissions: string[] = [];
-      Object.entries(selectedPermissions).forEach(([moduleId, perms]) => {
-        perms.forEach(p => flatPermissions.push(`${moduleId}:${p.toLowerCase()}`));
+      assignedModules.forEach(moduleId => {
+        flatPermissions.push(`${moduleId}:view`);
       });
 
       const roleData = {
@@ -416,63 +416,6 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
         );
       case 2:
         return (
-          <div className="p-6 space-y-4">
-            <div>
-              <h3 className="text-sm font-semibold text-slate-900">Configure Permissions</h3>
-              <p className="text-xs text-slate-500">Set fine-grained access controls for each assigned module.</p>
-            </div>
-
-            <div className="space-y-3">
-              {assignedModules.map(moduleId => {
-                const module = modules.find(m => m.id === moduleId);
-                if (!module) return null;
-                const perms = permissionsMap[moduleId] || ['View', 'Create', 'Edit', 'Delete'];
-                const isExpanded = expandedModules.includes(moduleId);
-
-                return (
-                  <div key={moduleId} className="border border-slate-200 rounded-lg overflow-hidden bg-white">
-                    <div 
-                      className="flex items-center justify-between p-4 cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors"
-                      onClick={() => toggleExpand(moduleId)}
-                    >
-                      <span className="font-semibold text-sm text-slate-900">{module.name}</span>
-                      {isExpanded ? <ChevronUp className="h-5 w-5 text-slate-500" /> : <ChevronDown className="h-5 w-5 text-slate-500" />}
-                    </div>
-                    
-                    {isExpanded && (
-                      <div className="p-4 border-t border-slate-200 bg-white">
-                        <div className="grid grid-cols-2 gap-3">
-                          {perms.map(perm => {
-                            const isChecked = selectedPermissions[moduleId]?.includes(perm) || false;
-                            return (
-                              <label key={perm} className="flex items-center gap-3 p-2 rounded-md hover:bg-slate-50 cursor-pointer select-none">
-                                <input 
-                                  type="checkbox" 
-                                  checked={isChecked}
-                                  onChange={() => togglePermission(moduleId, perm)}
-                                  disabled={viewMode}
-                                  className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600 disabled:opacity-50" 
-                                />
-                                <span className="text-sm font-medium text-slate-700">{perm}</span>
-                              </label>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-              {assignedModules.length === 0 && (
-                <div className="text-center py-8 text-sm text-slate-500 bg-slate-50 rounded-lg border border-slate-200 border-dashed">
-                  No modules assigned. Go back to assign modules.
-                </div>
-              )}
-            </div>
-          </div>
-        );
-      case 3:
-        return (
           <div className="p-6 space-y-6">
             <Card>
               <div className="p-4 border-b border-slate-100 bg-slate-50/50">
@@ -508,29 +451,23 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
 
             <Card>
               <div className="p-4 border-b border-slate-100 bg-slate-50/50">
-                <h3 className="font-semibold text-slate-900">Permissions Overview</h3>
+                <h3 className="font-semibold text-slate-900">Assigned Modules</h3>
               </div>
-              <div className="p-4 space-y-4">
+              <div className="p-4 space-y-2">
                 {assignedModules.map(moduleId => {
                   const module = modules.find(m => m.id === moduleId);
                   if (!module) return null;
-                  const perms = selectedPermissions[moduleId] || [];
                   return (
-                    <div key={moduleId} className="space-y-2 pb-3 border-b border-slate-100 last:border-0 last:pb-0">
-                      <p className="text-sm font-semibold text-slate-900">{module.name}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {perms.map(p => (
-                          <span key={p} className="inline-flex items-center rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600 border border-slate-200">
-                            {p}
-                          </span>
-                        ))}
-                        {perms.length === 0 && (
-                          <span className="text-xs text-slate-400 italic">No permissions set</span>
-                        )}
-                      </div>
+                    <div key={moduleId} className="flex items-center gap-2 py-1 border-b border-slate-100 last:border-0">
+                      <span className="h-2 w-2 rounded-full bg-blue-600" />
+                      <span className="text-sm font-medium text-slate-800">{module.name}</span>
+                      <span className="text-[10px] font-mono text-slate-400">({module.code})</span>
                     </div>
                   );
                 })}
+                {assignedModules.length === 0 && (
+                  <p className="text-xs text-slate-400 italic">No modules assigned</p>
+                )}
               </div>
             </Card>
           </div>

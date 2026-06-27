@@ -33,6 +33,30 @@ export default function PermissionsPage() {
     loadData();
   }, []);
 
+  const handlePermissionToggle = async (roleId: string, permId: string) => {
+    const roleObj = roles.find(r => r.id === roleId);
+    if (!roleObj) return;
+
+    let updatedPermissions = [...(roleObj.permissions || [])];
+    if (updatedPermissions.includes(permId)) {
+      updatedPermissions = updatedPermissions.filter(id => id !== permId);
+    } else {
+      updatedPermissions.push(permId);
+    }
+
+    try {
+      // Optimistic update in UI first for seamless response
+      setRoles(prevRoles => prevRoles.map(r => r.id === roleId ? { ...r, permissions: updatedPermissions } : r));
+      
+      await roleService.updateRole(roleId, { permissions: updatedPermissions });
+    } catch (err) {
+      console.error('Failed to update permission', err);
+      alert('Failed to update permission');
+      // Rollback on error
+      loadData();
+    }
+  };
+
   const filteredPermissions = permissions.filter(p => 
     p.label.toLowerCase().includes(searchTerm.toLowerCase()) || 
     p.module.toLowerCase().includes(searchTerm.toLowerCase())
@@ -114,7 +138,7 @@ export default function PermissionsPage() {
                         <input 
                           type="checkbox" 
                           checked={hasPerm}
-                          readOnly
+                          onChange={() => handlePermissionToggle(role.id, perm.id)}
                           className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                         />
                       </td>
