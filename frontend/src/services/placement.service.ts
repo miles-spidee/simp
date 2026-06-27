@@ -1,4 +1,5 @@
 import { PlacementApi } from '../api/placement.api';
+import { Company } from '../types/placement.types';
 
 export const PlacementService = {
   getPlacements: async () => {
@@ -28,5 +29,9 @@ export const PlacementService = {
   getUpcomingInterviews: async () => {
     const pl = await PlacementApi.getPlacements();
     return pl.filter(p => p.interviewDate).sort((a, b) => new Date(a.interviewDate!).getTime() - new Date(b.interviewDate!).getTime()).slice(0, 5);
+  },
+
+  createCompany: async (company: Partial<Company>) => {
+    return await PlacementApi.createCompany(company);
   }
 };

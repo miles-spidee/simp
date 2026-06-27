@@ -8,5 +8,9 @@ export const AlumniService = {
   getTotalAlumniCount: async () => {
     const al = await AlumniApi.getAlumni();
     return al.length;
+  },
+
+  createAlumni: async (alumni: any) => {
+    return await AlumniApi.createAlumni(alumni);
   }
 };
