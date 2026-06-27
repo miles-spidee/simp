@@ -5,7 +5,7 @@ import {
   Briefcase, Activity, ShieldAlert, CreditCard, FileSignature, Wallet,
   Bell, Megaphone, MessageSquare, Mail, Award, TrendingUp, GraduationCap,
   LineChart, FileBarChart, Target, BarChart4, DownloadCloud, Lightbulb, LayoutDashboard, Key, Lock, Building2,
-  LifeBuoy, Gift, IdCard, UserCircle, Zap, Sparkles
+  LifeBuoy, Gift, IdCard, UserCircle, Zap, Sparkles, Building, ShieldCheck
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -26,9 +26,7 @@ export const FEATURE_REGISTRY: FeatureDefinition[] = [
   // Identity
   { moduleId: 'users', featureId: 'users_main', permissionKey: 'users.view', displayName: 'Users', navigationLabel: 'Identity - Users', route: '/feature/users', icon: UsersIcon },
   { moduleId: 'roles', featureId: 'roles_main', permissionKey: 'roles.view', displayName: 'Roles', navigationLabel: 'Identity - Roles', route: '/feature/roles', icon: Key },
-  { moduleId: 'permissions', featureId: 'permissions_main', permissionKey: 'permissions.view', displayName: 'Permissions', navigationLabel: 'Identity - Permissions', route: '/feature/permissions', icon: Lock },
   { moduleId: 'modules', featureId: 'modules_main', permissionKey: 'modules.view', displayName: 'Module Registry', navigationLabel: 'Identity - Module Registry', route: '/feature/modules', icon: Settings },
-  { moduleId: 'sessions', featureId: 'sessions_main', permissionKey: 'sessions.view', displayName: 'Sessions', navigationLabel: 'Identity - Sessions', route: '/feature/sessions', icon: Activity },
   { moduleId: 'security', featureId: 'security_main', permissionKey: 'security.view', displayName: 'Security Center', navigationLabel: 'Identity - Security Center', route: '/feature/security', icon: ShieldAlert },
 
   // HR/Management
@@ -91,6 +89,7 @@ export const FEATURE_REGISTRY: FeatureDefinition[] = [
 
   // Phase 5: Certification & Placement
   { moduleId: 'certificate', featureId: 'certificate_main', permissionKey: 'certificate.view', displayName: 'Certificate Management', navigationLabel: 'Certificates', route: '/feature/certificates', icon: Award },
+  { moduleId: 'college_certificates', featureId: 'college_cert_dashboard', permissionKey: 'certificate.view', displayName: 'College Certificate Dashboard', navigationLabel: 'College Certificates', route: '/feature/college-certificates', icon: ShieldCheck },
   { moduleId: 'document', featureId: 'document_main', permissionKey: 'document.view', displayName: 'Document Generation', navigationLabel: 'Documents', route: '/feature/documents', icon: FileText },
   { moduleId: 'placement', featureId: 'placement_main', permissionKey: 'placement.view', displayName: 'Placement & Hiring', navigationLabel: 'Placement', route: '/feature/placement', icon: TrendingUp },
   { moduleId: 'alumni', featureId: 'alumni_main', permissionKey: 'alumni.view', displayName: 'Alumni Management', navigationLabel: 'Alumni', route: '/feature/alumni', icon: GraduationCap },

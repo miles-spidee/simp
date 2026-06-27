@@ -8,21 +8,24 @@ import { Notification } from '@/src/types/notification.types';
 import { 
   UserCircle, Loader2, FileText, UserCog, Settings, Bell, 
   ChevronRight, Download, Save, Mail, Phone, MapPin, 
-  Calendar, Check, Shield, FileDown, CheckSquare, Eye
+  Calendar, Check, Shield, FileDown, CheckSquare, Eye, Award, Lock
 } from 'lucide-react';
 import { usePermissions } from '@/src/hooks/usePermissions';
 import { useAuth } from '@/src/context/AuthContext';
 import ViewNotificationModal from '@/components/feature/notification/ViewNotificationModal';
+import { CertificateService } from '@/src/services/certificate.service';
+import { Certificate } from '@/src/types/certificate.types';
 
 export default function SelfServicePage() {
   const { hasPermission } = usePermissions();
   const { user } = useAuth();
   
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'profile' | 'documents' | 'notifications'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'documents' | 'certificates' | 'notifications'>('profile');
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [recentRequests, setRecentRequests] = useState<DocumentRequest[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [myCertificates, setMyCertificates] = useState<Certificate[]>([]);
   const [selectedNotif, setSelectedNotif] = useState<Notification | null>(null);
   const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
   
@@ -84,6 +87,10 @@ export default function SelfServicePage() {
       setProfile(mergedProfile);
       setEditForm(mergedProfile);
       setRecentRequests(data.recentRequests);
+
+      const allCerts = await CertificateService.getCertificates();
+      const myCerts = allCerts.filter(c => c.studentName === mergedProfile?.name && c.status === 'Issued');
+      setMyCertificates(myCerts);
 
       await loadNotifications();
     } catch (e) {
@@ -210,6 +217,17 @@ export default function SelfServicePage() {
                 }`}
               >
                 <span className="flex items-center gap-2.5"><FileText className="w-4.5 h-4.5" /> Documents</span>
+              </button>
+
+              <button 
+                onClick={() => setActiveTab('certificates')}
+                className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold flex items-center justify-between transition-all ${
+                  activeTab === 'certificates' 
+                    ? 'text-teal-700 bg-teal-50/70 shadow-sm' 
+                    : 'text-slate-550 hover:bg-slate-50 hover:text-slate-850'
+                }`}
+              >
+                <span className="flex items-center gap-2.5"><Award className="w-4.5 h-4.5" /> Certificates</span>
               </button>
               
               <button 
@@ -491,7 +509,53 @@ export default function SelfServicePage() {
             </div>
           )}
 
-          {/* TAB 3: NOTIFICATIONS VIEW */}
+          {/* TAB 3: CERTIFICATES LIST */}
+          {activeTab === 'certificates' && (
+            <div className="space-y-6">
+              <div className="bg-white rounded-2xl border border-slate-150 shadow-sm p-6">
+                <div className="mb-4">
+                  <h3 className="font-bold text-slate-800 text-lg">My Certificates</h3>
+                  <p className="text-xs text-slate-455">View and download your official program certificates.</p>
+                </div>
+
+                {myCertificates.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {myCertificates.map(cert => (
+                      <div key={cert.id} className="border border-slate-200 rounded-xl p-5 hover:shadow-md transition-all">
+                        <div className="flex justify-between items-start mb-4">
+                          <div className="flex items-center gap-2">
+                            <Award className="w-6 h-6 text-teal-600" />
+                            <h4 className="font-bold text-slate-800">{cert.type}</h4>
+                          </div>
+                          <span className="text-xxs font-mono bg-slate-100 text-slate-500 px-2 py-1 rounded">{cert.certificateNumber}</span>
+                        </div>
+                        <div className="text-sm text-slate-600 mb-4">
+                          <p><strong>Program:</strong> {cert.program}</p>
+                          <p><strong>Issued On:</strong> {cert.issueDate ? new Date(cert.issueDate).toLocaleDateString() : 'N/A'}</p>
+                        </div>
+                        <button 
+                          onClick={() => handleDownload(`${cert.type.replace(/\s+/g, '_')}.pdf`, cert.type)}
+                          className="w-full py-2 bg-teal-50 text-teal-700 font-bold text-sm rounded-lg hover:bg-teal-100 transition-colors flex items-center justify-center gap-2"
+                        >
+                          <Download className="w-4 h-4" /> Download Certificate
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50">
+                    <div className="w-16 h-16 bg-white shadow-sm border border-slate-100 rounded-full flex items-center justify-center mb-4">
+                      <Lock className="w-6 h-6 text-slate-300" />
+                    </div>
+                    <h4 className="font-bold text-slate-700 text-lg">No Certificates Issued Yet</h4>
+                    <p className="text-sm text-slate-500 mt-2 max-w-sm text-center">Your certificates will appear here once they have been approved and issued by the administration.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 4: NOTIFICATIONS VIEW */}
           {activeTab === 'notifications' && (
             <div className="bg-white rounded-2xl border border-slate-150 shadow-sm p-6 space-y-6">
               <div className="border-b border-slate-100 pb-4">

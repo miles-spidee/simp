@@ -4,7 +4,7 @@ import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { 
   Building2, Users, Search, Filter, Plus, ChevronRight, FileDown, 
   Activity, FileText, Check, ExternalLink, Clock, BookOpen, AlertCircle, 
-  Layers, Award, Shield, Calendar, DollarSign, MapPin, TrendingUp, 
+  Layers, Award, Shield, ShieldCheck, Calendar, DollarSign, MapPin, TrendingUp, 
   CheckCircle2, XCircle, AlertTriangle, ArrowUpRight, Send, Trash, Eye, 
   Download, Upload, Briefcase, Star, Edit, Lock, PlusCircle, UserCheck, 
   MoreVertical, RefreshCw
@@ -29,7 +29,7 @@ export default function OrganizationManagementPage() {
   
   // Drawer states
   const [activeProfile, setActiveProfile] = useState<Organization | null>(null);
-  const [profileTab, setProfileTab] = useState<'overview' | 'departments' | 'coordinators' | 'students' | 'programs' | 'placements' | 'metadata' | 'timeline'>('overview');
+  const [profileTab, setProfileTab] = useState<'overview' | 'departments' | 'coordinators' | 'students' | 'programs' | 'placements' | 'metadata' | 'timeline' | 'certificates'>('overview');
   const [isProfileDrawerOpen, setIsProfileDrawerOpen] = useState(false);
   
   // Popovers & Modals
@@ -1261,7 +1261,8 @@ export default function OrganizationManagementPage() {
                 { id: 'programs', label: 'Internship Programs' },
                 { id: 'placements', label: 'Placement Analytics' },
                 { id: 'metadata', label: 'Metadata & MoU Center' },
-                { id: 'timeline', label: 'Timeline log' }
+                { id: 'timeline', label: 'Timeline log' },
+                { id: 'certificates', label: 'Certificate Verification' }
               ].map((tab) => {
                 const isActive = profileTab === tab.id;
                 return (
@@ -1836,7 +1837,11 @@ export default function OrganizationManagementPage() {
               {/* TAB 8: PARTNERSHIP TIMELINE */}
               {profileTab === 'timeline' && (
                 <div className="space-y-6 animate-fade-in">
-                  
+                  <div className="bg-white border border-slate-150 rounded-2xl p-5 shadow-sm">
+                    <h3 className="font-bold text-slate-800 text-lg mb-1 flex items-center gap-2">
+                      <Calendar className="w-5 h-5 text-emerald-600" />
+                      Interaction Timeline
+                    </h3>      
                   <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest">
                     Partnership Timeline Audit Log
                   </h4>
@@ -1865,7 +1870,34 @@ export default function OrganizationManagementPage() {
                       </div>
                     ))}
                   </div>
+                </div>
+              </div>
+              )}
 
+              {/* TAB 9: CERTIFICATES & VERIFICATION */}
+              {profileTab === 'certificates' && (
+                <div className="space-y-6 animate-fade-in">
+                  <div className="bg-white border border-slate-150 rounded-2xl p-5 shadow-sm flex flex-col items-center text-center justify-center py-12">
+                    <ShieldCheck className="w-16 h-16 text-indigo-200 mb-4" />
+                    <h3 className="font-bold text-slate-800 text-lg mb-1">Verify Student Certificates</h3>
+                    <p className="text-xs text-slate-500 max-w-md">Enter the Verification Code (Hash Number) found on the student's certificate to instantly verify its authenticity on the network.</p>
+                    <div className="flex gap-3 mt-6">
+                      <a 
+                        href="/feature/college-certificates" 
+                        className="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-black transition-colors inline-flex items-center gap-2 cursor-pointer shadow-md"
+                      >
+                        <Award className="w-4 h-4" /> College Certificate Dashboard
+                      </a>
+                      <a 
+                        href="/verify" 
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-white text-slate-700 border border-slate-200 px-6 py-3 rounded-xl font-bold text-sm hover:bg-slate-50 transition-colors inline-flex items-center gap-2 cursor-pointer shadow-sm"
+                      >
+                        <Search className="w-4 h-4" /> Public Verification Portal
+                      </a>
+                    </div>
+                  </div>
                 </div>
               )}
 

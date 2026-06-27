@@ -62,6 +62,7 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
   const [avatarName, setAvatarName] = useState<string | null>(null);
   const [sendEmail, setSendEmail] = useState(false);
   const [forcePasswordChange, setForcePasswordChange] = useState(false);
+  const [accountValidationPeriod, setAccountValidationPeriod] = useState('');
   const [moduleSearch, setModuleSearch] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -195,6 +196,7 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
           setAssignedModules([]);
           setAvatar(null);
           setAvatarName(null);
+          setAccountValidationPeriod('');
           setCurrentStep(0);
         }
       });
@@ -599,6 +601,18 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
                   />
                   <span className="text-sm text-slate-700">Force Password Change on Login</span>
                 </label>
+                <div className="pt-2">
+                  <label className="text-sm font-medium text-slate-700 block mb-1">Account Validation Period (Days)</label>
+                  <input 
+                    type="number" 
+                    value={accountValidationPeriod}
+                    onChange={e => setAccountValidationPeriod(e.target.value)}
+                    disabled={viewMode}
+                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-slate-50" 
+                    placeholder="e.g. 365 (Leave empty for unlimited)" 
+                    min="1"
+                  />
+                </div>
               </div>
             </div>
           </div>

@@ -109,7 +109,7 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
         setIconFileName(null);
         
         if (viewMode) {
-          setCurrentStep(3);
+          setCurrentStep(2);
         } else {
           setCurrentStep(0);
         }
@@ -458,10 +458,19 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
                   const module = modules.find(m => m.id === moduleId);
                   if (!module) return null;
                   return (
-                    <div key={moduleId} className="flex items-center gap-2 py-1 border-b border-slate-100 last:border-0">
-                      <span className="h-2 w-2 rounded-full bg-blue-600" />
-                      <span className="text-sm font-medium text-slate-800">{module.name}</span>
-                      <span className="text-[10px] font-mono text-slate-400">({module.code})</span>
+                    <div key={moduleId} className="flex flex-col gap-1 py-2 border-b border-slate-100 last:border-0">
+                      <div className="flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-blue-600" />
+                        <span className="text-sm font-medium text-slate-800">{module.name}</span>
+                        <span className="text-[10px] font-mono text-slate-400">({module.code})</span>
+                      </div>
+                      <div className="pl-4 flex flex-wrap gap-1 mt-1">
+                        {(selectedPermissions[moduleId] || []).map(perm => (
+                          <span key={perm} className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-600">
+                            {perm}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   );
                 })}

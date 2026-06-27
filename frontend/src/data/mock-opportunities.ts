@@ -11,6 +11,7 @@ export interface Opportunity {
   startDate: string;
   color: string;
   internshipType?: "free" | "paid" | "stipend" | "industrial" | "corporate" | "research";
+  amountType?: string;
   amount?: string;
   
   // Enterprise properties
@@ -33,6 +34,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     startDate: "Starts Jan 2024",
     color: "bg-gradient-to-r from-blue-600/20 to-cyan-600/20 border-blue-500/30 text-blue-600",
     internshipType: "stipend",
+    amountType: "stipend",
     amount: "$500/Month",
     programId: 'prog-1',
     status: 'Open',
@@ -68,6 +70,7 @@ export const MOCK_OPPORTUNITIES: Opportunity[] = [
     startDate: "Starts March 2024",
     color: "bg-gradient-to-r from-emerald-600/20 to-teal-600/20 border-emerald-500/30 text-emerald-600",
     internshipType: "paid",
+    amountType: "paid",
     amount: "$25/Hour",
     programId: 'prog-1',
     status: 'Draft',
