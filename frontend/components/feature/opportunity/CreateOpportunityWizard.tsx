@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Drawer } from '@/components/admin/ui/Drawer';
-import { Stepper } from '@/components/admin/ui/Stepper';
-import { Button } from '@/components/admin/ui/Button';
-import { Card } from '@/components/admin/ui/Card';
+import { Drawer } from '@/components/feature/ui/Drawer';
+import { Stepper } from '@/components/feature/ui/Stepper';
+import { Button } from '@/components/feature/ui/Button';
+import { Card } from '@/components/feature/ui/Card';
 import { ChevronRight, ChevronLeft, Briefcase, Calendar, MapPin, Users, Info, DollarSign } from 'lucide-react';
 import { opportunitiesService } from '@/src/services/opportunities.service';
 import { Opportunity } from '@/src/data/mock-opportunities';

@@ -13,9 +13,9 @@ import {
 import { employeeService } from '@/src/services/employee.service';
 import { Employee, EmployeeDocument, TimelineEvent, EmployeeProject } from '@/src/data/mock-employees';
 import { useAuth } from '@/src/context/AuthContext';
-import { Drawer } from '@/components/admin/ui/Drawer';
+import { Drawer } from '@/components/feature/ui/Drawer';
 import { useRouter } from 'next/navigation';
-import { PermissionGuard } from '@/components/admin/ui/PermissionGuard';
+import { PermissionGuard } from '@/components/feature/ui/PermissionGuard';
 
 export default function EmployeeManagementPage() {
   const { user } = useAuth();
@@ -127,11 +127,11 @@ export default function EmployeeManagementPage() {
         emp.phone.includes(searchTerm) ||
         emp.designation.toLowerCase().includes(searchTerm.toLowerCase());
         
-      const matchesDept = filterDept === 'all' ? true : emp.organizationId === filterDept;
-      const matchesStatus = filterStatus === 'all' ? true : emp.status === filterStatus;
-      const matchesLoc = filterLocation === 'all' ? true : emp.location === filterLocation;
-      const matchesExp = filterExperience === 'all' ? true : emp.experienceLevel === filterExperience;
-      const matchesType = filterType === 'all' ? true : emp.employmentType === filterType;
+      const matchesDept = filterDept === 'all' || emp.organizationId === filterDept;
+      const matchesStatus = filterStatus === 'all' || emp.status === filterStatus;
+      const matchesLoc = filterLocation === 'all' || emp.location === filterLocation;
+      const matchesExp = filterExperience === 'all' || emp.experienceLevel === filterExperience;
+      const matchesType = filterType === 'all' || emp.employmentType === filterType;
       
       return matchesSearch && matchesDept && matchesStatus && matchesLoc && matchesExp && matchesType;
     });

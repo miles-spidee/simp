@@ -28,4 +28,8 @@ export class NotificationService {
       read: notifications.filter(n => n.readStatus).length,
     };
   }
+
+  static async createNotification(data: Partial<Notification>): Promise<Notification> {
+    return notificationApi.createNotification(data);
+  }
 }

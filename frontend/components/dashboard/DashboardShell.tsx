@@ -1,8 +1,8 @@
 "use client";
 
 import React from 'react';
-import { Card, CardContent } from '@/components/admin/ui/Card';
-import { Badge } from '@/components/admin/ui/Badge';
+import { Card, CardContent } from '@/components/feature/ui/Card';
+import { Badge } from '@/components/feature/ui/Badge';
 import { useAuth } from '@/src/context/AuthContext';
 import { usePermissions } from '@/src/hooks/usePermissions';
 import { WIDGET_REGISTRY, WidgetDefinition } from '@/src/core/dashboard/widget-registry';

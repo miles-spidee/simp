@@ -18,5 +18,24 @@ export const notificationApi = {
     if (!notif) throw new Error('Notification not found');
     notif.readStatus = true;
     return notif;
+  },
+  createNotification: async (data: Partial<Notification>): Promise<Notification> => {
+    await delay(300);
+    const newNotif: Notification = {
+      id: `notif-${MOCK_NOTIFICATIONS.length + 1}`,
+      title: data.title || '',
+      message: data.message || '',
+      recipient: data.recipient || 'all',
+      role: data.role || 'All',
+      module: data.module || 'Announcement',
+      channel: data.channel || 'In-App Notification',
+      priority: data.priority || 'Medium',
+      status: data.status || 'Delivered',
+      readStatus: false,
+      retryCount: 0,
+      createdTime: new Date().toISOString()
+    };
+    MOCK_NOTIFICATIONS.push(newNotif);
+    return newNotif;
   }
 };

@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import NotificationTable from './NotificationTable';
 import { NotificationService } from '@/src/services/notification.service';
-import { Bell, CheckCircle, AlertCircle, RefreshCw, Filter, Plus } from 'lucide-react';
+import { Bell, CheckCircle, AlertCircle, RefreshCw, Filter } from 'lucide-react';
 
 export default function NotificationDashboard() {
   const [stats, setStats] = useState({ delivered: 0, failed: 0, read: 0 });
@@ -28,9 +28,6 @@ export default function NotificationDashboard() {
         <div className="flex gap-3">
           <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-all font-medium text-sm">
             <Filter className="h-4 w-4" /> Filters
-          </button>
-          <button className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-all font-medium text-sm shadow-sm">
-            <Plus className="h-4 w-4" /> Compose
           </button>
         </div>
       </div>

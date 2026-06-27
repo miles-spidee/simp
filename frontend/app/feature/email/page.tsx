@@ -1,4 +1,4 @@
-import EmailDashboard from '@/components/admin/email/EmailDashboard';
+import EmailDashboard from '@/components/feature/email/EmailDashboard';
 
 export default function EmailPage() {
   return (

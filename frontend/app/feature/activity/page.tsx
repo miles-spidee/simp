@@ -1,4 +1,4 @@
-import ActivityDashboard from '../../../components/admin/activity/ActivityDashboard';
+import ActivityDashboard from '../../../components/feature/activity/ActivityDashboard';
 
 export default function ActivityPage() {
   return (

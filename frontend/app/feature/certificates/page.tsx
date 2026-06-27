@@ -1,4 +1,4 @@
-import CertificateDashboard from '@/components/admin/certificate/CertificateDashboard';
+import CertificateDashboard from '@/components/feature/certificate/CertificateDashboard';
 
 export default function CertificatesPage() {
   return (

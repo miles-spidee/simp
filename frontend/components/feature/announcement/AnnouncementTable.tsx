@@ -3,10 +3,13 @@ import { useState, useEffect } from 'react';
 import { Announcement } from '@/src/types/announcement.types';
 import { AnnouncementService } from '@/src/services/announcement.service';
 import { Megaphone, Pin, Clock, MoreVertical, RefreshCw } from 'lucide-react';
+import ViewNotificationModal from '../notification/ViewNotificationModal';
 
 export default function AnnouncementTable() {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState<Announcement | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchAnnouncements();
@@ -73,7 +76,14 @@ export default function AnnouncementTable() {
           </thead>
           <tbody className="divide-y divide-gray-100">
             {announcements.slice(0, 50).map((a) => (
-              <tr key={a.id} className="hover:bg-gray-50/50 transition-colors">
+              <tr 
+                key={a.id} 
+                className="hover:bg-slate-50/70 transition-colors cursor-pointer"
+                onClick={() => {
+                  setSelectedAnnouncement(a);
+                  setIsModalOpen(true);
+                }}
+              >
                 <td className="px-6 py-4">
                   <div className="flex gap-3 items-start">
                     <div className="mt-1">
@@ -117,6 +127,15 @@ export default function AnnouncementTable() {
           </tbody>
         </table>
       </div>
+
+      <ViewNotificationModal 
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedAnnouncement(null);
+        }}
+        data={selectedAnnouncement}
+      />
     </div>
   );
 }

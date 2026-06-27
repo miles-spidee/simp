@@ -4,9 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { Search, Filter, User, Eye, Plus, Clock, Briefcase } from 'lucide-react';
 import { mentorService } from '@/src/services/mentor.service';
 import { MentorProfile } from '@/src/data/mock-mentors';
-import { Drawer } from '@/components/admin/ui/Drawer';
-import { employeeService } from '@/src/services/employee.service';
+import { Drawer } from '@/components/feature/ui/Drawer';
 
+import { employeeService } from '@/src/services/employee.service';
 export default function MentorProfilePage() {
   const [profiles, setProfiles] = useState<MentorProfile[]>([]);
   const [selected, setSelected] = useState<MentorProfile | null>(null);

@@ -670,6 +670,11 @@ function ApplicationFormContent() {
         throw new Error(message);
       }
 
+      if (formState.personalInformation.photo?.base64) {
+        localStorage.setItem('pinesphere_submitted_photo', formState.personalInformation.photo.base64);
+      }
+      localStorage.setItem('pinesphere_submitted_name', `${formState.personalInformation.firstName} ${formState.personalInformation.lastName}`);
+      localStorage.setItem('pinesphere_submitted_program', internshipType === 'research' ? 'Research Intern' : internshipType === 'paid' ? 'Paid Intern' : 'Free Intern');
       localStorage.removeItem(`pinesphere_internship_draft_${internshipType}`);
       router.push(`/success?type=${internshipType}`);
     } catch (error) {

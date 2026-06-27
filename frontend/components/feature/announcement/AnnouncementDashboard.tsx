@@ -1,11 +1,14 @@
 'use client';
 import { useState, useEffect } from 'react';
 import AnnouncementTable from './AnnouncementTable';
+import CreateAnnouncementModal from './CreateAnnouncementModal';
 import { AnnouncementService } from '@/src/services/announcement.service';
 import { Megaphone, Edit3, Eye, FileText, Plus } from 'lucide-react';
 
 export default function AnnouncementDashboard() {
   const [stats, setStats] = useState({ total: 0, active: 0, pending: 0 });
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
     async function loadStats() {
@@ -19,7 +22,7 @@ export default function AnnouncementDashboard() {
       });
     }
     loadStats();
-  }, []);
+  }, [refreshTrigger]);
 
   return (
     <div className="space-y-6">
@@ -29,7 +32,10 @@ export default function AnnouncementDashboard() {
           <p className="text-sm text-gray-500 mt-1">Publish campus-wide alerts, holidays, and academic updates.</p>
         </div>
         <div className="flex gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-all font-medium text-sm shadow-sm">
+          <button 
+            onClick={() => setIsCreateOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-all font-medium text-sm shadow-sm"
+          >
             <Plus className="h-4 w-4" /> Create Announcement
           </button>
         </div>
@@ -67,7 +73,13 @@ export default function AnnouncementDashboard() {
         </div>
       </div>
 
-      <AnnouncementTable />
+      <AnnouncementTable key={refreshTrigger} />
+
+      <CreateAnnouncementModal 
+        isOpen={isCreateOpen}
+        onClose={() => setIsCreateOpen(false)}
+        onSuccess={() => setRefreshTrigger(prev => prev + 1)}
+      />
     </div>
   );
 }

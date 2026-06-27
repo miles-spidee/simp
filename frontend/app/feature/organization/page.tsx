@@ -12,7 +12,7 @@ import {
 import { organizationService } from '@/src/services/organization.service';
 import { Organization, OrganizationDepartment, OrganizationCoordinator, OrganizationStudent, OrganizationProgram, OrganizationDocument, OrganizationTimelineEvent } from '@/src/data/mock-organizations';
 import { useAuth } from '@/src/context/AuthContext';
-import { Drawer } from '@/components/admin/ui/Drawer';
+import { Drawer } from '@/components/feature/ui/Drawer';
 
 export default function OrganizationManagementPage() {
   const { user } = useAuth();

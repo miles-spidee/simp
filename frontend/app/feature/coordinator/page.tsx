@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { coordinatorService } from '@/src/services/coordinator.service';
 import { Coordinator, CollegeReport } from '@/src/data/mock-coordinators';
-import { Drawer } from '@/components/admin/ui/Drawer';
+import { Drawer } from '@/components/feature/ui/Drawer';
 
 export default function CoordinatorManagementPage() {
   const [activeView, setActiveView] = useState<'dashboard' | 'directory'>('dashboard');

@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { AlertTriangle,  HardDrive, File, Clock, Search, Filter, Plus, Upload, Download, Eye, Trash, ArrowRight  } from 'lucide-react';
 import { fileService } from '@/src/services/file.service';
 import { CommonFile } from '@/src/data/mock-common-files';
-import { Drawer } from '@/components/admin/ui/Drawer';
-import { PermissionGuard } from '@/components/admin/ui/PermissionGuard';
+import { Drawer } from '@/components/feature/ui/Drawer';
+import { PermissionGuard } from '@/components/feature/ui/PermissionGuard';
 
 export default function CommonFilePage() {
   const [activeView, setActiveView] = useState<'dashboard' | 'directory'>('dashboard');

@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState, useMemo } from 'react';
-import { Card, CardContent } from '@/components/admin/ui/Card';
-import { Button } from '@/components/admin/ui/Button';
-import { Badge } from '@/components/admin/ui/Badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/admin/ui/Table';
+import { Card, CardContent } from '@/components/feature/ui/Card';
+import { Button } from '@/components/feature/ui/Button';
+import { Badge } from '@/components/feature/ui/Badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/feature/ui/Table';
 import { Search, Plus, Settings, Eye, Edit, ToggleLeft, ToggleRight, Info } from 'lucide-react';
 import { moduleService } from '@/src/services/module.service';
 import { Module } from '@/src/data/mock-modules';

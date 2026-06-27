@@ -1,4 +1,4 @@
-import LeaveDashboard from '../../../components/admin/leave/LeaveDashboard';
+import LeaveDashboard from '../../../components/feature/leave/LeaveDashboard';
 
 export default function LeavePage() {
   return (

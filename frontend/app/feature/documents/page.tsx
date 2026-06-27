@@ -1,4 +1,4 @@
-import DocumentDashboard from '@/components/admin/document/DocumentDashboard';
+import DocumentDashboard from '@/components/feature/document/DocumentDashboard';
 
 export default function DocumentsPage() {
   return (

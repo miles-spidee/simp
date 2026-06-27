@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Sidebar } from './Sidebar';
-import { TopNav } from '../admin/TopNav';
+import { TopNav } from '../feature/TopNav';
 import { Footer } from './Footer';
 
 interface AppLayoutProps {

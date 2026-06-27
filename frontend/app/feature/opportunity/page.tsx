@@ -9,8 +9,8 @@ import {
 } from 'lucide-react';
 import { opportunitiesService } from '@/src/services/opportunities.service';
 import { Opportunity } from '@/src/data/mock-opportunities';
-import { CreateOpportunityWizard } from '@/components/admin/opportunity/CreateOpportunityWizard';
-import { Drawer } from '@/components/admin/ui/Drawer';
+import { CreateOpportunityWizard } from '@/components/feature/opportunity/CreateOpportunityWizard';
+import { Drawer } from '@/components/feature/ui/Drawer';
 import { applicationService } from '@/src/services/application.service';
 import { Application } from '@/src/data/mock-applications';
 import { openingMentorsService } from '@/src/services/opening-mentors.service';

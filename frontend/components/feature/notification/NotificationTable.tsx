@@ -3,10 +3,13 @@ import { useState, useEffect } from 'react';
 import { Notification } from '@/src/types/notification.types';
 import { NotificationService } from '@/src/services/notification.service';
 import { Bell, Mail, MessageSquare, Smartphone, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
+import ViewNotificationModal from './ViewNotificationModal';
 
 export default function NotificationTable() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedNotif, setSelectedNotif] = useState<Notification | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchNotifications();
@@ -72,7 +75,22 @@ export default function NotificationTable() {
           </thead>
           <tbody className="divide-y divide-gray-100">
             {notifications.slice(0, 50).map((n) => (
-              <tr key={n.id} className="hover:bg-gray-50/50 transition-colors">
+              <tr 
+                key={n.id} 
+                className="hover:bg-slate-50/70 transition-colors cursor-pointer"
+                onClick={async () => {
+                  setSelectedNotif(n);
+                  setIsModalOpen(true);
+                  if (!n.readStatus) {
+                    try {
+                      await NotificationService.markAsRead(n.id);
+                      setNotifications(prev => prev.map(item => item.id === n.id ? { ...item, readStatus: true } : item));
+                    } catch (e) {
+                      console.error("Failed to mark as read", e);
+                    }
+                  }
+                }}
+              >
                 <td className="px-6 py-4">
                   <div className="flex flex-col">
                     <span className="font-medium text-gray-900">{n.title}</span>
@@ -112,6 +130,15 @@ export default function NotificationTable() {
           </tbody>
         </table>
       </div>
+
+      <ViewNotificationModal 
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedNotif(null);
+        }}
+        data={selectedNotif}
+      />
     </div>
   );
 }

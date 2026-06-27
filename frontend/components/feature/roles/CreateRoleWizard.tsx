@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Drawer } from '@/components/admin/ui/Drawer';
-import { Stepper } from '@/components/admin/ui/Stepper';
-import { Button } from '@/components/admin/ui/Button';
+import { Drawer } from '@/components/feature/ui/Drawer';
+import { Stepper } from '@/components/feature/ui/Stepper';
+import { Button } from '@/components/feature/ui/Button';
 import { Search, ChevronRight, ChevronLeft, Upload, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react';
-import { Card } from '@/components/admin/ui/Card';
+import { Card } from '@/components/feature/ui/Card';
 import { Module } from '@/src/data/mock-modules';
 import { moduleService } from '@/src/services/module.service';
 import { permissionService } from '@/src/services/permission.service';

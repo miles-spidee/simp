@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { taskService } from '@/src/services/task.service';
 import { Task, TaskAssignee } from '@/src/data/mock-tasks';
-import { Drawer } from '@/components/admin/ui/Drawer';
+import { Drawer } from '@/components/feature/ui/Drawer';
 
 export default function TaskManagementPage() {
   const [activeView, setActiveView] = useState<'dashboard' | 'directory'>('dashboard');

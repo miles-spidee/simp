@@ -7,7 +7,7 @@ import { AlertTriangle,
  } from 'lucide-react';
 import { assessmentService } from '@/src/services/assessment.service';
 import { Assessment, AssessmentSubmission } from '@/src/data/mock-assessments';
-import { Drawer } from '@/components/admin/ui/Drawer';
+import { Drawer } from '@/components/feature/ui/Drawer';
 
 export default function AssessmentManagementPage() {
   const [activeView, setActiveView] = useState<'dashboard' | 'directory'>('dashboard');

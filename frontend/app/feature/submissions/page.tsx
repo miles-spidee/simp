@@ -8,7 +8,7 @@ import { AlertTriangle,
  } from 'lucide-react';
 import { submissionService } from '@/src/services/submission.service';
 import { Submission } from '@/src/data/mock-submissions';
-import { Drawer } from '@/components/admin/ui/Drawer';
+import { Drawer } from '@/components/feature/ui/Drawer';
 
 export default function SubmissionsManagementPage() {
   const [activeView, setActiveView] = useState<'dashboard' | 'directory'>('dashboard');

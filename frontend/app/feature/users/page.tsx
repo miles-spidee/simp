@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState, useEffect, Suspense, useMemo } from 'react';
-import { Card, CardContent } from '@/components/admin/ui/Card';
-import { Button } from '@/components/admin/ui/Button';
-import { Badge } from '@/components/admin/ui/Badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/admin/ui/Table';
+import { Card, CardContent } from '@/components/feature/ui/Card';
+import { Button } from '@/components/feature/ui/Button';
+import { Badge } from '@/components/feature/ui/Badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/feature/ui/Table';
 import { Search, Filter, Plus, Eye, Edit, Trash, UserX, Users } from 'lucide-react';
-import { CreateUserWizard } from '../../../components/admin/users/CreateUserWizard';
+import { CreateUserWizard } from '../../../components/feature/users/CreateUserWizard';
 import { User } from '@/src/data/mock-users';
 import { userService } from '@/src/services/user.service';
 import { employeeService, ExtendedEmployee } from '@/src/services/employee.service';

@@ -1,4 +1,4 @@
-import AnnouncementDashboard from '@/components/admin/announcement/AnnouncementDashboard';
+import AnnouncementDashboard from '@/components/feature/announcement/AnnouncementDashboard';
 
 export default function AnnouncementsPage() {
   return (

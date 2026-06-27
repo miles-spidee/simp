@@ -16,7 +16,7 @@ import { Student } from '@/src/data/mock-students';
 import { batchService } from '@/src/services/batch.service';
 import { Batch } from '@/src/data/mock-batches';
 import { useAuth } from '@/src/context/AuthContext';
-import { Drawer } from '@/components/admin/ui/Drawer';
+import { Drawer } from '@/components/feature/ui/Drawer';
 
 type AllocationTab = 'dashboard' | 'students' | 'batches' | 'mentors' | 'programs' | 'colleges' | 'capacity' | 'conflicts' | 'rules' | 'timeline';
 

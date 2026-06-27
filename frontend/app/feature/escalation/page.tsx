@@ -1,4 +1,4 @@
-import EscalationDashboard from '../../../components/admin/escalation/EscalationDashboard';
+import EscalationDashboard from '../../../components/feature/escalation/EscalationDashboard';
 
 export default function EscalationPage() {
   return (

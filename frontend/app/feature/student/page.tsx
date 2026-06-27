@@ -11,8 +11,8 @@ import {
 import { studentService } from '@/src/services/student.service';
 import { Student, StudentDocument, StudentTimelineEvent, StudentBatch } from '@/src/data/mock-students';
 import { useAuth } from '@/src/context/AuthContext';
-import { Drawer } from '@/components/admin/ui/Drawer';
-import { PermissionGuard } from '@/components/admin/ui/PermissionGuard';
+import { Drawer } from '@/components/feature/ui/Drawer';
+import { PermissionGuard } from '@/components/feature/ui/PermissionGuard';
 
 export default function StudentLifecycleManagementPage() {
   const { user } = useAuth();

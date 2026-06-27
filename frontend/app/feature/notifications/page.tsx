@@ -1,4 +1,4 @@
-import NotificationDashboard from '@/components/admin/notification/NotificationDashboard';
+import NotificationDashboard from '@/components/feature/notification/NotificationDashboard';
 
 export default function NotificationsPage() {
   return (

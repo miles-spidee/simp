@@ -1,4 +1,4 @@
-import CalendarDashboard from '@/components/admin/calendar/CalendarDashboard';
+import CalendarDashboard from '@/components/feature/calendar/CalendarDashboard';
 
 export default function CalendarPage() {
   return (

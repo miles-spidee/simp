@@ -1,4 +1,4 @@
-import ReportingManagerDashboard from '../../../components/admin/reporting-manager/ReportingManagerDashboard';
+import ReportingManagerDashboard from '../../../components/feature/reporting-manager/ReportingManagerDashboard';
 
 export default function ReportingManagerPage() {
   return (

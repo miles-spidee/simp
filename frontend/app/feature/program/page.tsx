@@ -14,8 +14,8 @@ import { Program, CurriculumModule, ProgramEnrollment, ProgramMentor, ProgramTim
 import { organizationService } from '@/src/services/organization.service';
 import { Organization } from '@/src/data/mock-organizations';
 import { useAuth } from '@/src/context/AuthContext';
-import { Drawer } from '@/components/admin/ui/Drawer';
-import { PermissionGuard } from '@/components/admin/ui/PermissionGuard';
+import { Drawer } from '@/components/feature/ui/Drawer';
+import { PermissionGuard } from '@/components/feature/ui/PermissionGuard';
 
 interface ProgramWithOrg extends Program {
   organizationData?: Organization;

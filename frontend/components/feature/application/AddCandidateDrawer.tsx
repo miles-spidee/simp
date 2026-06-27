@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Drawer } from '@/components/admin/ui/Drawer';
-import { Button } from '@/components/admin/ui/Button';
+import { Drawer } from '@/components/feature/ui/Drawer';
+import { Button } from '@/components/feature/ui/Button';
 import { Briefcase, User, Mail, Phone } from 'lucide-react';
 import { applicationService } from '@/src/services/application.service';
 import { Opportunity } from '@/src/data/mock-opportunities';

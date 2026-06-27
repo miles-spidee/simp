@@ -11,10 +11,10 @@ import { applicationService } from '@/src/services/application.service';
 import { Application, ApplicationStatus } from '@/src/data/mock-applications';
 import { opportunitiesService } from '@/src/services/opportunities.service';
 import { Opportunity } from '@/src/data/mock-opportunities';
-import { AddCandidateDrawer } from '@/components/admin/application/AddCandidateDrawer';
-import { Drawer } from '@/components/admin/ui/Drawer';
+import { AddCandidateDrawer } from '@/components/feature/application/AddCandidateDrawer';
+import { Drawer } from '@/components/feature/ui/Drawer';
 import { useRouter } from 'next/navigation';
-import { PermissionGuard } from '@/components/admin/ui/PermissionGuard';
+import { PermissionGuard } from '@/components/feature/ui/PermissionGuard';
 
 type TabType = 'dashboard' | 'applications' | 'pipeline' | 'reports';
 

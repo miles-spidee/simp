@@ -12,7 +12,7 @@ import {
 import { batchService } from '@/src/services/batch.service';
 import { Batch, BatchStudent, BatchTimelineEvent, BatchProject } from '@/src/data/mock-batches';
 import { useAuth } from '@/src/context/AuthContext';
-import { Drawer } from '@/components/admin/ui/Drawer';
+import { Drawer } from '@/components/feature/ui/Drawer';
 
 export default function BatchManagementPage() {
   const { user } = useAuth();

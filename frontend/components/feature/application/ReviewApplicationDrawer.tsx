@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Drawer } from '@/components/admin/ui/Drawer';
+import { Drawer } from '@/components/feature/ui/Drawer';
 import { Application, ApplicationStatus } from '@/src/data/mock-applications';
 import { Opportunity } from '@/src/data/mock-opportunities';
 import { applicationService } from '@/src/services/application.service';

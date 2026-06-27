@@ -1,4 +1,4 @@
-import InboxView from '@/components/admin/communication/InboxView';
+import InboxView from '@/components/feature/communication/InboxView';
 
 export default function CommunicationPage() {
   return (

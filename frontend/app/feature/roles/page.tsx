@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/admin/ui/Card';
-import { Button } from '@/components/admin/ui/Button';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/feature/ui/Card';
+import { Button } from '@/components/feature/ui/Button';
 import { Search, Plus, Shield, Users, Edit, Trash, Eye } from 'lucide-react';
-import { CreateRoleWizard } from '../../../components/admin/roles/CreateRoleWizard';
+import { CreateRoleWizard } from '../../../components/feature/roles/CreateRoleWizard';
 import { Role } from '@/src/data/mock-roles';
 import { roleService } from '@/src/services/role.service';
 

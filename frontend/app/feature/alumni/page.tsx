@@ -1,4 +1,4 @@
-import AlumniDashboard from '@/components/admin/alumni/AlumniDashboard';
+import AlumniDashboard from '@/components/feature/alumni/AlumniDashboard';
 
 export default function AlumniPage() {
   return (

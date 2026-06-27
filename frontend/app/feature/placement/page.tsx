@@ -1,4 +1,4 @@
-import PlacementDashboard from '@/components/admin/placement/PlacementDashboard';
+import PlacementDashboard from '@/components/feature/placement/PlacementDashboard';
 
 export default function PlacementPage() {
   return (

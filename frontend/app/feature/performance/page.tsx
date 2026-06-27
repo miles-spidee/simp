@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { performanceService } from '@/src/services/performance.service';
 import { StudentPerformance, BatchPerformance } from '@/src/data/mock-performance';
-import { Drawer } from '@/components/admin/ui/Drawer';
+import { Drawer } from '@/components/feature/ui/Drawer';
 
 export default function PerformanceManagementPage() {
   const [activeView, setActiveView] = useState<'dashboard' | 'directory'>('dashboard');
