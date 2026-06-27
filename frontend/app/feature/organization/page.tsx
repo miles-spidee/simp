@@ -573,7 +573,11 @@ export default function OrganizationManagementPage() {
   };
 
   return (
-    <div className="space-y-6 animate-slide-in select-none">
+    <div className={`space-y-6 select-none ${
+      (activeActionModal?.type === 'edit' || activeActionModal?.type === 'onboard') 
+        ? 'h-[calc(100vh-80px)] overflow-hidden relative' 
+        : 'animate-slide-in'
+    }`}>
       
       {/* Toast Notification Banner */}
       {toast && (
@@ -1877,8 +1881,16 @@ export default function OrganizationManagementPage() {
 
       {/* ------------------ OPERATIONAL MODALS ------------------ */}
       {activeActionModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
-          <div className="bg-white border border-slate-200 rounded-xl shadow-2xl max-w-lg w-full overflow-hidden animate-bounce-in">
+        <div className={`z-[100] flex transition-all ${
+          (activeActionModal.type === 'edit' || activeActionModal.type === 'onboard') 
+            ? 'absolute inset-0 bg-white p-0 items-start justify-stretch' 
+            : 'fixed inset-0 bg-slate-900/50 backdrop-blur-sm p-4 items-center justify-center'
+        }`}>
+          <div className={`bg-white overflow-hidden transition-all duration-300 ${
+            (activeActionModal.type === 'edit' || activeActionModal.type === 'onboard') 
+              ? 'max-w-none w-full h-full rounded-none border-none flex flex-col' 
+              : 'border border-slate-200 rounded-xl shadow-2xl max-w-lg w-full animate-bounce-in'
+          }`}>
             
             {/* Modal Header */}
             <div className="bg-slate-50 border-b border-slate-100 px-6 py-4 flex justify-between items-center">
@@ -1906,7 +1918,14 @@ export default function OrganizationManagementPage() {
             </div>
 
             {/* Forms body */}
-            <form onSubmit={executeAction} className="p-6 space-y-4 text-xs font-semibold text-slate-700">
+            <form 
+              onSubmit={executeAction} 
+              className={`text-xs font-semibold text-slate-700 flex flex-col min-h-0 ${
+                (activeActionModal.type === 'edit' || activeActionModal.type === 'onboard') 
+                  ? 'p-8 space-y-6 flex-1 h-full justify-between' 
+                  : 'p-6 space-y-4'
+              }`}
+            >
               
               {/* Form 1: Partnership status */}
               {(activeActionModal.type === 'partnership' || activeActionModal.type === 'bulkPartnership') && (
@@ -2133,202 +2152,198 @@ export default function OrganizationManagementPage() {
 
               {/* Form 6 & 7: Onboard / Edit Institution details */}
               {(activeActionModal.type === 'edit' || activeActionModal.type === 'onboard') && (
-                <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-1">
+                <div className="space-y-6 max-w-5xl mx-auto w-full flex-1 flex flex-col justify-start overflow-hidden pt-4">
                   
-                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
-                    Section 1: College Registry Info
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">College Name</label>
-                      <input 
-                        type="text" 
-                        required
-                        value={collegeForm.name}
-                        onChange={(e) => setCollegeForm({ ...collegeForm, name: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                      />
+                  {/* Section 1 */}
+                  <div className="space-y-2">
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                      Section 1: College Registry Info
                     </div>
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">Unique Code</label>
-                      <input 
-                        type="text" 
-                        required
-                        placeholder="e.g. MIT"
-                        value={collegeForm.code}
-                        onChange={(e) => setCollegeForm({ ...collegeForm, code: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">Institution Type</label>
-                      <select 
-                        value={collegeForm.type}
-                        onChange={(e) => setCollegeForm({ ...collegeForm, type: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded bg-white focus:outline-none"
-                      >
-                        <option value="Engineering">Engineering College</option>
-                        <option value="Science">Science College</option>
-                        <option value="Management">Management College</option>
-                      </select>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">University Affiliation</label>
-                      <input 
-                        type="text" 
-                        required
-                        value={collegeForm.university}
-                        onChange={(e) => setCollegeForm({ ...collegeForm, university: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">Campus Location</label>
-                      <input 
-                        type="text" 
-                        required
-                        value={collegeForm.location}
-                        onChange={(e) => setCollegeForm({ ...collegeForm, location: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">Establishment Year</label>
-                      <input 
-                        type="number" 
-                        required
-                        value={collegeForm.establishmentYear}
-                        onChange={(e) => setCollegeForm({ ...collegeForm, establishmentYear: Number(e.target.value) })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                      />
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">College Name</label>
+                        <input 
+                          type="text" 
+                          required
+                          value={collegeForm.name}
+                          onChange={(e) => setCollegeForm({ ...collegeForm, name: e.target.value })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Unique Code</label>
+                        <input 
+                          type="text" 
+                          required
+                          placeholder="e.g. MIT"
+                          value={collegeForm.code}
+                          onChange={(e) => setCollegeForm({ ...collegeForm, code: e.target.value })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Institution Type</label>
+                        <select 
+                          value={collegeForm.type}
+                          onChange={(e) => setCollegeForm({ ...collegeForm, type: e.target.value })}
+                          className="w-full p-2 border border-slate-200 rounded bg-white text-xs focus:outline-none"
+                        >
+                          <option value="Engineering">Engineering College</option>
+                          <option value="Science">Science College</option>
+                          <option value="Management">Management College</option>
+                        </select>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">University Affiliation</label>
+                        <input 
+                          type="text" 
+                          required
+                          value={collegeForm.university}
+                          onChange={(e) => setCollegeForm({ ...collegeForm, university: e.target.value })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Campus Location</label>
+                        <input 
+                          type="text" 
+                          required
+                          value={collegeForm.location}
+                          onChange={(e) => setCollegeForm({ ...collegeForm, location: e.target.value })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Establishment Year</label>
+                        <input 
+                          type="number" 
+                          required
+                          value={collegeForm.establishmentYear}
+                          onChange={(e) => setCollegeForm({ ...collegeForm, establishmentYear: Number(e.target.value) })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pt-2 pb-1">
-                    Section 2: Accreditations & Rankings
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">NAAC Grade</label>
-                      <input 
-                        type="text" 
-                        value={collegeForm.naacGrade}
-                        onChange={(e) => setCollegeForm({ ...collegeForm, naacGrade: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                      />
+                  {/* Section 2 */}
+                  <div className="space-y-2">
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                      Section 2: Accreditations & Rankings
                     </div>
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">National Ranking</label>
-                      <input 
-                        type="number" 
-                        value={collegeForm.nationalRanking}
-                        onChange={(e) => setCollegeForm({ ...collegeForm, nationalRanking: Number(e.target.value) })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">NBA Status</label>
-                      <select 
-                        value={collegeForm.nbaStatus}
-                        onChange={(e) => setCollegeForm({ ...collegeForm, nbaStatus: e.target.value as any })}
-                        className="w-full p-2 border border-slate-200 rounded bg-white focus:outline-none"
-                      >
-                        <option value="Accredited">Accredited</option>
-                        <option value="Not Accredited">Not Accredited</option>
-                        <option value="Applied">Applied for Accreditation</option>
-                      </select>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">Autonomous Status</label>
-                      <select 
-                        value={collegeForm.autonomousStatus}
-                        onChange={(e) => setCollegeForm({ ...collegeForm, autonomousStatus: e.target.value as any })}
-                        className="w-full p-2 border border-slate-200 rounded bg-white focus:outline-none"
-                      >
-                        <option value="Autonomous">Autonomous</option>
-                        <option value="Affiliated">Affiliated</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pt-2 pb-1">
-                    Section 3: Communication & Address
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">Website Portal</label>
-                      <input 
-                        type="url" 
-                        required
-                        value={collegeForm.website}
-                        onChange={(e) => setCollegeForm({ ...collegeForm, website: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">Registrar Email</label>
-                      <input 
-                        type="email" 
-                        required
-                        value={collegeForm.email}
-                        onChange={(e) => setCollegeForm({ ...collegeForm, email: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                      />
+                    <div className="grid grid-cols-4 gap-3">
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">NAAC Grade</label>
+                        <input 
+                          type="text" 
+                          value={collegeForm.naacGrade}
+                          onChange={(e) => setCollegeForm({ ...collegeForm, naacGrade: e.target.value })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">National Ranking</label>
+                        <input 
+                          type="number" 
+                          value={collegeForm.nationalRanking}
+                          onChange={(e) => setCollegeForm({ ...collegeForm, nationalRanking: Number(e.target.value) })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">NBA Status</label>
+                        <select 
+                          value={collegeForm.nbaStatus}
+                          onChange={(e) => setCollegeForm({ ...collegeForm, nbaStatus: e.target.value as any })}
+                          className="w-full p-2 border border-slate-200 rounded bg-white text-xs focus:outline-none"
+                        >
+                          <option value="Accredited">Accredited</option>
+                          <option value="Not Accredited">Not Accredited</option>
+                          <option value="Applied">Applied for Accreditation</option>
+                        </select>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Autonomous Status</label>
+                        <select 
+                          value={collegeForm.autonomousStatus}
+                          onChange={(e) => setCollegeForm({ ...collegeForm, autonomousStatus: e.target.value as any })}
+                          className="w-full p-2 border border-slate-200 rounded bg-white text-xs focus:outline-none"
+                        >
+                          <option value="Autonomous">Autonomous</option>
+                          <option value="Affiliated">Affiliated</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">Contact Phone</label>
-                      <input 
-                        type="text" 
-                        required
-                        value={collegeForm.phone}
-                        onChange={(e) => setCollegeForm({ ...collegeForm, phone: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                      />
+                  {/* Section 3 */}
+                  <div className="space-y-2">
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                      Section 3: Communication & Address
                     </div>
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">Affiliation Accreditation</label>
-                      <input 
-                        type="text" 
-                        required
-                        value={collegeForm.affiliation}
-                        onChange={(e) => setCollegeForm({ ...collegeForm, affiliation: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                      />
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Website Portal</label>
+                        <input 
+                          type="url" 
+                          required
+                          value={collegeForm.website}
+                          onChange={(e) => setCollegeForm({ ...collegeForm, website: e.target.value })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Registrar Email</label>
+                        <input 
+                          type="email" 
+                          required
+                          value={collegeForm.email}
+                          onChange={(e) => setCollegeForm({ ...collegeForm, email: e.target.value })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Contact Phone</label>
+                        <input 
+                          type="text" 
+                          required
+                          value={collegeForm.phone}
+                          onChange={(e) => setCollegeForm({ ...collegeForm, phone: e.target.value })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Affiliation Accreditation</label>
+                        <input 
+                          type="text" 
+                          required
+                          value={collegeForm.affiliation}
+                          onChange={(e) => setCollegeForm({ ...collegeForm, affiliation: e.target.value })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
+                      <div className="col-span-2 space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Campus Address</label>
+                        <input 
+                          type="text" 
+                          required
+                          value={collegeForm.address}
+                          onChange={(e) => setCollegeForm({ ...collegeForm, address: e.target.value })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="block text-slate-500">Campus Address</label>
-                    <input 
-                      type="text" 
-                      required
-                      value={collegeForm.address}
-                      onChange={(e) => setCollegeForm({ ...collegeForm, address: e.target.value })}
-                      className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                    />
+                  {/* Footer button */}
+                  <div className="pt-2">
+                    <button 
+                      type="submit"
+                      className="w-full bg-slate-900 hover:bg-black text-white py-2.5 rounded-lg font-bold shadow transition-all cursor-pointer text-xs"
+                    >
+                      {activeActionModal.type === 'edit' ? 'Save College Details' : 'Confirm College Registration'}
+                    </button>
                   </div>
-
-                  <button 
-                    type="submit"
-                    className="w-full bg-slate-900 hover:bg-black text-white py-2.5 rounded-lg font-bold shadow transition-all mt-4 cursor-pointer"
-                  >
-                    {activeActionModal.type === 'edit' ? 'Save College Details' : 'Confirm College Registration'}
-                  </button>
                 </div>
               )}
 

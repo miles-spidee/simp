@@ -633,7 +633,11 @@ export default function ProgramManagementPage() {
   };
 
   return (
-    <div className="space-y-6 animate-slide-in select-none">
+    <div className={`space-y-6 select-none ${
+      (activeActionModal?.type === 'edit' || activeActionModal?.type === 'onboard') 
+        ? 'h-[calc(100vh-80px)] overflow-hidden relative' 
+        : 'animate-slide-in'
+    }`}>
       
       {/* Toast Notification Banner */}
       {toast && (
@@ -1938,8 +1942,16 @@ export default function ProgramManagementPage() {
 
       {/* ------------------ OPERATIONAL MODALS ------------------ */}
       {activeActionModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
-          <div className="bg-white border border-slate-200 rounded-xl shadow-2xl max-w-lg w-full overflow-hidden animate-bounce-in">
+        <div className={`z-[100] flex transition-all ${
+          (activeActionModal.type === 'edit' || activeActionModal.type === 'onboard') 
+            ? 'absolute inset-0 bg-white p-0 items-start justify-stretch' 
+            : 'fixed inset-0 bg-slate-900/50 backdrop-blur-sm p-4 items-center justify-center'
+        }`}>
+          <div className={`bg-white overflow-hidden transition-all duration-300 ${
+            (activeActionModal.type === 'edit' || activeActionModal.type === 'onboard') 
+              ? 'max-w-none w-full h-full rounded-none border-none flex flex-col' 
+              : 'border border-slate-200 rounded-xl shadow-2xl max-w-lg w-full animate-bounce-in'
+          }`}>
             
             {/* Modal Header */}
             <div className="bg-slate-50 border-b border-slate-100 px-6 py-4 flex justify-between items-center">
@@ -1967,7 +1979,14 @@ export default function ProgramManagementPage() {
             </div>
 
             {/* Forms body */}
-            <form onSubmit={executeAction} className="p-6 space-y-4 text-xs font-semibold text-slate-700">
+            <form 
+              onSubmit={executeAction} 
+              className={`text-xs font-semibold text-slate-700 flex flex-col min-h-0 ${
+                (activeActionModal.type === 'edit' || activeActionModal.type === 'onboard') 
+                  ? 'p-8 space-y-6 flex-1 h-full justify-between' 
+                  : 'p-6 space-y-4'
+              }`}
+            >
               
               {/* Form 1: Program status */}
               {(activeActionModal.type === 'status' || activeActionModal.type === 'bulkStatus') && (
@@ -2171,194 +2190,194 @@ export default function ProgramManagementPage() {
 
               {/* Form 6 & 7: Onboard / Edit Program Details */}
               {(activeActionModal.type === 'edit' || activeActionModal.type === 'onboard') && (
-                <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-1">
+                <div className="space-y-6 max-w-5xl mx-auto w-full flex-1 flex flex-col justify-start overflow-hidden pt-4">
                   
-                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
-                    Section 1: Program Identity
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">Program Title Name</label>
-                      <input 
-                        type="text" 
-                        required
-                        value={programForm.title}
-                        onChange={(e) => setProgramForm({ ...programForm, title: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                      />
+                  {/* Section 1 */}
+                  <div className="space-y-2">
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                      Section 1: Program Identity
                     </div>
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">Program Code</label>
-                      <input 
-                        type="text" 
-                        required
-                        placeholder="e.g. SEI-2026"
-                        value={programForm.code}
-                        onChange={(e) => setProgramForm({ ...programForm, code: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                      />
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Program Title Name</label>
+                        <input 
+                          type="text" 
+                          required
+                          value={programForm.title}
+                          onChange={(e) => setProgramForm({ ...programForm, title: e.target.value })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Program Code</label>
+                        <input 
+                          type="text" 
+                          required
+                          placeholder="e.g. SEI-2026"
+                          value={programForm.code}
+                          onChange={(e) => setProgramForm({ ...programForm, code: e.target.value })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Program Classification Type</label>
+                        <select 
+                          value={programForm.type}
+                          onChange={(e) => setProgramForm({ ...programForm, type: e.target.value as any })}
+                          className="w-full p-2 border border-slate-200 rounded bg-white text-xs focus:outline-none"
+                        >
+                          <option value="Free Internship">Free Internship</option>
+                          <option value="Paid Internship">Paid Internship</option>
+                          <option value="Stipend Internship">Stipend Internship</option>
+                          <option value="Corporate Sponsored">Corporate Sponsored</option>
+                          <option value="Research Program">Research Program</option>
+                          <option value="Placement Prep">Placement Prep Program</option>
+                        </select>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Academic Partner College</label>
+                        <select 
+                          value={programForm.organizationId}
+                          onChange={(e) => setProgramForm({ ...programForm, organizationId: e.target.value })}
+                          className="w-full p-2 border border-slate-200 rounded bg-white text-xs focus:outline-none"
+                        >
+                          {organizations.map(o => (
+                            <option key={o.id} value={o.id}>{o.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Duration (Weeks)</label>
+                        <input 
+                          type="number" 
+                          required
+                          value={programForm.durationWeeks}
+                          onChange={(e) => setProgramForm({ ...programForm, durationWeeks: Number(e.target.value) })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Capacity limit</label>
+                        <input 
+                          type="number" 
+                          required
+                          value={programForm.capacity}
+                          onChange={(e) => setProgramForm({ ...programForm, capacity: Number(e.target.value) })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
                     </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">Program Classification Type</label>
-                      <select 
-                        value={programForm.type}
-                        onChange={(e) => setProgramForm({ ...programForm, type: e.target.value as any })}
-                        className="w-full p-2 border border-slate-200 rounded bg-white focus:outline-none"
-                      >
-                        <option value="Free Internship">Free Internship</option>
-                        <option value="Paid Internship">Paid Internship</option>
-                        <option value="Stipend Internship">Stipend Internship</option>
-                        <option value="Corporate Sponsored">Corporate Sponsored</option>
-                        <option value="Research Program">Research Program</option>
-                        <option value="Placement Prep">Placement Prep Program</option>
-                      </select>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">Academic Partner College</label>
-                      <select 
-                        value={programForm.organizationId}
-                        onChange={(e) => setProgramForm({ ...programForm, organizationId: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded bg-white focus:outline-none"
-                      >
-                        {organizations.map(o => (
-                          <option key={o.id} value={o.id}>{o.name}</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">Duration (Weeks)</label>
-                      <input 
-                        type="number" 
-                        required
-                        value={programForm.durationWeeks}
-                        onChange={(e) => setProgramForm({ ...programForm, durationWeeks: Number(e.target.value) })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">Capacity limit</label>
-                      <input 
-                        type="number" 
-                        required
-                        value={programForm.capacity}
-                        onChange={(e) => setProgramForm({ ...programForm, capacity: Number(e.target.value) })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="block text-slate-500">Program Description</label>
-                    <textarea 
-                      required
-                      rows={2}
-                      value={programForm.description}
-                      onChange={(e) => setProgramForm({ ...programForm, description: e.target.value })}
-                      className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="block text-slate-500">Eligibility Criteria</label>
-                    <input 
-                      type="text" 
-                      required
-                      value={programForm.eligibility}
-                      onChange={(e) => setProgramForm({ ...programForm, eligibility: e.target.value })}
-                      className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                    />
-                  </div>
-
-                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pt-2 pb-1">
-                    Section 2: Domain & Technology Settings
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">Program Category</label>
-                      <input 
-                        type="text" 
-                        required
-                        placeholder="e.g. Software Engineering"
-                        value={programForm.category}
-                        onChange={(e) => setProgramForm({ ...programForm, category: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">Cognitive Level</label>
-                      <select 
-                        value={programForm.level}
-                        onChange={(e) => setProgramForm({ ...programForm, level: e.target.value as any })}
-                        className="w-full p-2 border border-slate-200 rounded bg-white focus:outline-none"
-                      >
-                        <option value="Beginner">Beginner Level</option>
-                        <option value="Intermediate">Intermediate Level</option>
-                        <option value="Advanced">Advanced Level</option>
-                      </select>
+                    
+                    <div className="grid grid-cols-2 gap-3 mt-2">
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Program Description</label>
+                        <input 
+                          type="text"
+                          required
+                          value={programForm.description}
+                          onChange={(e) => setProgramForm({ ...programForm, description: e.target.value })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Eligibility Criteria</label>
+                        <input 
+                          type="text" 
+                          required
+                          value={programForm.eligibility}
+                          onChange={(e) => setProgramForm({ ...programForm, eligibility: e.target.value })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">Industry Domain</label>
-                      <input 
-                        type="text" 
-                        required
-                        placeholder="e.g. Web Development"
-                        value={programForm.domain}
-                        onChange={(e) => setProgramForm({ ...programForm, domain: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                      />
+                  {/* Section 2 */}
+                  <div className="space-y-2">
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                      Section 2: Domain & Technology Settings
                     </div>
-                    <div className="space-y-1">
-                      <label className="block text-slate-500">Certification Type</label>
-                      <input 
-                        type="text" 
-                        required
-                        placeholder="e.g. Co-branded Institutional Certificate"
-                        value={programForm.certType}
-                        onChange={(e) => setProgramForm({ ...programForm, certType: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                      />
+                    <div className="grid grid-cols-4 gap-3">
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Program Category</label>
+                        <input 
+                          type="text" 
+                          required
+                          placeholder="e.g. Software Engineering"
+                          value={programForm.category}
+                          onChange={(e) => setProgramForm({ ...programForm, category: e.target.value })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Cognitive Level</label>
+                        <select 
+                          value={programForm.level}
+                          onChange={(e) => setProgramForm({ ...programForm, level: e.target.value as any })}
+                          className="w-full p-2 border border-slate-200 rounded bg-white text-xs focus:outline-none"
+                        >
+                          <option value="Beginner">Beginner Level</option>
+                          <option value="Intermediate">Intermediate Level</option>
+                          <option value="Advanced">Advanced Level</option>
+                        </select>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Industry Domain</label>
+                        <input 
+                          type="text" 
+                          required
+                          placeholder="e.g. Web Development"
+                          value={programForm.domain}
+                          onChange={(e) => setProgramForm({ ...programForm, domain: e.target.value })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Certification Type</label>
+                        <input 
+                          type="text" 
+                          required
+                          placeholder="e.g. Institutional Certificate"
+                          value={programForm.certType}
+                          onChange={(e) => setProgramForm({ ...programForm, certType: e.target.value })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-3 mt-2">
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Technology Stack (Comma separated)</label>
+                        <input 
+                          type="text" 
+                          placeholder="React, NextJS, NestJS"
+                          value={programForm.techStackString}
+                          onChange={(e) => setProgramForm({ ...programForm, techStackString: e.target.value })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-slate-500 text-[10px]">Core Skills Covered (Comma separated)</label>
+                        <input 
+                          type="text" 
+                          placeholder="Frontend Architecture, API Design"
+                          value={programForm.skillsString}
+                          onChange={(e) => setProgramForm({ ...programForm, skillsString: e.target.value })}
+                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="block text-slate-500">Technology Stack (Comma separated)</label>
-                    <input 
-                      type="text" 
-                      placeholder="React, NextJS, NestJS"
-                      value={programForm.techStackString}
-                      onChange={(e) => setProgramForm({ ...programForm, techStackString: e.target.value })}
-                      className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                    />
+                  {/* Footer button */}
+                  <div className="pt-2">
+                    <button 
+                      type="submit"
+                      className="w-full bg-slate-900 hover:bg-black text-white py-2.5 rounded-lg font-bold shadow transition-all cursor-pointer text-xs"
+                    >
+                      {activeActionModal.type === 'edit' ? 'Save Program Details' : 'Confirm Cohort Launch'}
+                    </button>
                   </div>
-
-                  <div className="space-y-1">
-                    <label className="block text-slate-500">Core Skills Covered (Comma separated)</label>
-                    <input 
-                      type="text" 
-                      placeholder="Frontend Architecture, API Design"
-                      value={programForm.skillsString}
-                      onChange={(e) => setProgramForm({ ...programForm, skillsString: e.target.value })}
-                      className="w-full p-2 border border-slate-200 rounded focus:outline-none"
-                    />
-                  </div>
-
-                  <button 
-                    type="submit"
-                    className="w-full bg-slate-900 hover:bg-black text-white py-2.5 rounded-lg font-bold shadow transition-all mt-4 cursor-pointer"
-                  >
-                    {activeActionModal.type === 'edit' ? 'Save Program Details' : 'Confirm Cohort Launch'}
-                  </button>
                 </div>
               )}
 

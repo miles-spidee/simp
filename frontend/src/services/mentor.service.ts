@@ -13,6 +13,20 @@ export const mentorService = {
     return MOCK_MENTOR_PROFILES.find(m => m.mentor_profile_id === id);
   },
 
+  async createMentorProfile(
+    profile: Omit<MentorProfile, 'mentor_profile_id' | 'created_at' | 'updated_at'>
+  ): Promise<MentorProfile> {
+    await new Promise(resolve => setTimeout(resolve, 300));
+    const newProfile: MentorProfile = {
+      ...profile,
+      mentor_profile_id: `mp-${MOCK_MENTOR_PROFILES.length + 1}`,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+    MOCK_MENTOR_PROFILES.push(newProfile);
+    return newProfile;
+  },
+
   async updateMentorProfile(
     id: string,
     updates: Partial<Pick<MentorProfile, 'mentor_bio' | 'mentor_expertise' | 'years_of_experience' | 'max_student_capacity' | 'is_available'>>

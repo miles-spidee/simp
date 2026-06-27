@@ -614,7 +614,11 @@ export default function BatchManagementPage() {
   }
 
   return (
-    <div className="space-y-6 pb-12 animate-fade-in relative min-h-screen text-slate-800">
+    <div className={`space-y-6 select-none text-slate-800 ${
+      (activeActionModal?.type === 'edit' || activeActionModal?.type === 'create') 
+        ? 'h-[calc(100vh-80px)] overflow-hidden relative' 
+        : 'pb-12 animate-fade-in relative min-h-screen'
+    }`}>
       
       {/* Toast alert popup */}
       {toast && (
@@ -1947,8 +1951,16 @@ export default function BatchManagementPage() {
 
       {/* POPUPS & DIALOGS */}
       {activeActionModal && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden animate-zoom-in">
+        <div className={`z-50 flex transition-all ${
+          (activeActionModal.type === 'edit' || activeActionModal.type === 'create') 
+            ? 'absolute inset-0 bg-white p-0 items-start justify-stretch' 
+            : 'fixed inset-0 bg-slate-900/60 backdrop-blur-xs p-4 items-center justify-center'
+        }`}>
+          <div className={`bg-white overflow-hidden transition-all duration-300 ${
+            (activeActionModal.type === 'edit' || activeActionModal.type === 'create') 
+              ? 'max-w-none w-full h-full rounded-none border-none flex flex-col' 
+              : 'rounded-xl shadow-2xl border border-slate-200 w-full max-w-md animate-zoom-in'
+          }`}>
             
             {/* Modal Header */}
             <div className="bg-slate-50 px-5 py-4 border-b border-slate-100 flex justify-between items-center text-sm font-black text-slate-900">
@@ -1983,174 +1995,202 @@ export default function BatchManagementPage() {
                 activeActionModal.type === 'statusShift' ? handleUpdateStatus :
                 handleExecuteBulkAction
               }
-              className="p-5 space-y-4"
+              className={`text-slate-850 flex flex-col min-h-0 ${
+                (activeActionModal.type === 'edit' || activeActionModal.type === 'create') 
+                  ? 'p-8 space-y-6 flex-1 h-full justify-between' 
+                  : 'p-5 space-y-4'
+              }`}
             >
               
               {/* Form 1: Create / Edit Cohort */}
               {(activeActionModal.type === 'create' || activeActionModal.type === 'edit') && (
-                <div className="space-y-3.5 max-h-[450px] overflow-y-auto pr-1">
+                <div className="space-y-6 max-w-5xl mx-auto w-full flex-1 flex flex-col justify-start overflow-hidden pt-4">
                   
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Batch Name *</label>
-                      <input 
-                        type="text" 
-                        required 
-                        value={editForm.name}
-                        onChange={e => setEditForm({ ...editForm, name: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      />
+                  {/* Section 1 */}
+                  <div className="space-y-2">
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                      Section 1: Batch Parameters
                     </div>
-                    {activeActionModal.type === 'edit' && (
+                    <div className="grid grid-cols-3 gap-3">
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Batch Code</label>
+                        <label className="text-[10px] font-bold text-slate-500">Batch Name *</label>
                         <input 
                           type="text" 
-                          disabled
-                          value={editForm.code}
-                          className="w-full bg-slate-100 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-500"
+                          required 
+                          value={editForm.name}
+                          onChange={e => setEditForm({ ...editForm, name: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
                         />
                       </div>
-                    )}
+                      
+                      {activeActionModal.type === 'edit' ? (
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-slate-500">Batch Code</label>
+                          <input 
+                            type="text" 
+                            disabled
+                            value={editForm.code}
+                            className="w-full bg-slate-100 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-500 focus:outline-none"
+                          />
+                        </div>
+                      ) : (
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-slate-500">Program ID Mapped</label>
+                          <select 
+                            value={editForm.programId}
+                            onChange={e => {
+                              const pId = e.target.value;
+                              const pName = pId === 'prog-1' ? 'Summer Software Engineering Internship' : pId === 'prog-2' ? 'Data Science Boot Camp' : 'Sales Boot Camp';
+                              setEditForm({ ...editForm, programId: pId, programName: pName });
+                            }}
+                            className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          >
+                            <option value="prog-1">Summer Software Engineering</option>
+                            <option value="prog-2">Data Science Boot Camp</option>
+                            <option value="prog-3">Sales Boot Camp</option>
+                          </select>
+                        </div>
+                      )}
+
+                      {activeActionModal.type === 'edit' && (
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-slate-500">Program ID Mapped</label>
+                          <select 
+                            value={editForm.programId}
+                            onChange={e => {
+                              const pId = e.target.value;
+                              const pName = pId === 'prog-1' ? 'Summer Software Engineering Internship' : pId === 'prog-2' ? 'Data Science Boot Camp' : 'Sales Boot Camp';
+                              setEditForm({ ...editForm, programId: pId, programName: pName });
+                            }}
+                            className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          >
+                            <option value="prog-1">Summer Software Engineering</option>
+                            <option value="prog-2">Data Science Boot Camp</option>
+                            <option value="prog-3">Sales Boot Camp</option>
+                          </select>
+                        </div>
+                      )}
+
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">Internship Classification</label>
+                        <select 
+                          value={editForm.internshipType}
+                          onChange={e => setEditForm({ ...editForm, internshipType: e.target.value as any })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        >
+                          <option value="Free Internship">Free Internship</option>
+                          <option value="Paid Internship">Paid Internship</option>
+                          <option value="Stipend Internship">Stipend Internship</option>
+                          <option value="Industrial Internship">Industrial Internship</option>
+                          <option value="Research Internship">Research Internship</option>
+                          <option value="Corporate Internship">Corporate Internship</option>
+                        </select>
+                      </div>
+                      
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">Start Date</label>
+                        <input 
+                          type="date" 
+                          value={editForm.startDate}
+                          onChange={e => setEditForm({ ...editForm, startDate: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        />
+                      </div>
+                      
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">End Date</label>
+                        <input 
+                          type="date" 
+                          value={editForm.endDate}
+                          onChange={e => setEditForm({ ...editForm, endDate: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">Seat Capacity limit</label>
+                        <input 
+                          type="number" 
+                          value={editForm.capacity}
+                          onChange={e => setEditForm({ ...editForm, capacity: Number(e.target.value) })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">Lifecycle Status</label>
+                        <select 
+                          value={editForm.status}
+                          onChange={e => setEditForm({ ...editForm, status: e.target.value as any })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        >
+                          <option value="Draft">Draft</option>
+                          <option value="Upcoming">Upcoming</option>
+                          <option value="Enrollment Open">Enrollment Open</option>
+                          <option value="Active">Active</option>
+                          <option value="On Hold">On Hold</option>
+                          <option value="Completed">Completed</option>
+                          <option value="Archived">Archived</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Program ID Mapped</label>
-                      <select 
-                        value={editForm.programId}
-                        onChange={e => {
-                          const pId = e.target.value;
-                          const pName = pId === 'prog-1' ? 'Summer Software Engineering Internship' : pId === 'prog-2' ? 'Data Science Boot Camp' : 'Sales Boot Camp';
-                          setEditForm({ ...editForm, programId: pId, programName: pName });
-                        }}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      >
-                        <option value="prog-1">Summer Software Engineering</option>
-                        <option value="prog-2">Data Science Boot Camp</option>
-                        <option value="prog-3">Sales Boot Camp</option>
-                      </select>
+                  {/* Section 2 */}
+                  <div className="space-y-2">
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                      Section 2: Domain Details
                     </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Internship Classification</label>
-                      <select 
-                        value={editForm.internshipType}
-                        onChange={e => setEditForm({ ...editForm, internshipType: e.target.value as any })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      >
-                        <option value="Free Internship">Free Internship</option>
-                        <option value="Paid Internship">Paid Internship</option>
-                        <option value="Stipend Internship">Stipend Internship</option>
-                        <option value="Industrial Internship">Industrial Internship</option>
-                        <option value="Research Internship">Research Internship</option>
-                        <option value="Corporate Internship">Corporate Internship</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Start Date</label>
-                      <input 
-                        type="date" 
-                        value={editForm.startDate}
-                        onChange={e => setEditForm({ ...editForm, startDate: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">End Date</label>
-                      <input 
-                        type="date" 
-                        value={editForm.endDate}
-                        onChange={e => setEditForm({ ...editForm, endDate: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Seat Capacity limit</label>
-                      <input 
-                        type="number" 
-                        value={editForm.capacity}
-                        onChange={e => setEditForm({ ...editForm, capacity: Number(e.target.value) })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Lifecycle Status</label>
-                      <select 
-                        value={editForm.status}
-                        onChange={e => setEditForm({ ...editForm, status: e.target.value as any })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      >
-                        <option value="Draft">Draft</option>
-                        <option value="Upcoming">Upcoming</option>
-                        <option value="Enrollment Open">Enrollment Open</option>
-                        <option value="Active">Active</option>
-                        <option value="On Hold">On Hold</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Archived">Archived</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="text-[10px] font-black uppercase text-slate-400 pt-2 border-t border-slate-100">Domain Details</div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Category</label>
-                      <input 
-                        type="text" 
-                        value={editForm.category}
-                        onChange={e => setEditForm({ ...editForm, category: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Domain Focus</label>
-                      <input 
-                        type="text" 
-                        value={editForm.domain}
-                        onChange={e => setEditForm({ ...editForm, domain: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500">Software Stack Dependencies (comma separated)</label>
-                    <input 
-                      type="text" 
-                      value={editForm.techStackString}
-                      onChange={e => setEditForm({ ...editForm, techStackString: e.target.value })}
-                      placeholder="e.g. React, Node.js, Docker"
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Priority Urgency</label>
-                      <select 
-                        value={editForm.priority}
-                        onChange={e => setEditForm({ ...editForm, priority: e.target.value as any })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      >
-                        <option value="High">High</option>
-                        <option value="Medium">Medium</option>
-                        <option value="Low">Low</option>
-                      </select>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Academic Year Mapped</label>
-                      <input 
-                        type="text" 
-                        value={editForm.academicYear}
-                        onChange={e => setEditForm({ ...editForm, academicYear: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      />
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">Category</label>
+                        <input 
+                          type="text" 
+                          value={editForm.category}
+                          onChange={e => setEditForm({ ...editForm, category: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">Domain Focus</label>
+                        <input 
+                          type="text" 
+                          value={editForm.domain}
+                          onChange={e => setEditForm({ ...editForm, domain: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">Priority Urgency</label>
+                        <select 
+                          value={editForm.priority}
+                          onChange={e => setEditForm({ ...editForm, priority: e.target.value as any })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        >
+                          <option value="High">High</option>
+                          <option value="Medium">Medium</option>
+                          <option value="Low">Low</option>
+                        </select>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">Academic Year Mapped</label>
+                        <input 
+                          type="text" 
+                          value={editForm.academicYear}
+                          onChange={e => setEditForm({ ...editForm, academicYear: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        />
+                      </div>
+                      <div className="col-span-2 space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">Software Stack Dependencies (comma separated)</label>
+                        <input 
+                          type="text" 
+                          value={editForm.techStackString}
+                          onChange={e => setEditForm({ ...editForm, techStackString: e.target.value })}
+                          placeholder="e.g. React, Node.js, Docker"
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        />
+                      </div>
                     </div>
                   </div>
 
@@ -2359,7 +2399,11 @@ export default function BatchManagementPage() {
               )}
 
               {/* Modal Buttons */}
-              <div className="flex gap-2 justify-end pt-4 border-t border-slate-100">
+              <div className={`flex gap-2 justify-end pt-4 border-t border-slate-100 ${
+                (activeActionModal.type === 'edit' || activeActionModal.type === 'create') 
+                  ? 'max-w-5xl mx-auto w-full' 
+                  : ''
+              }`}>
                 <button
                   type="button"
                   onClick={() => setActiveActionModal(null)}

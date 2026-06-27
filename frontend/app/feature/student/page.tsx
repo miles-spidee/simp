@@ -764,7 +764,11 @@ export default function StudentLifecycleManagementPage() {
   }
 
   return (
-    <div className="space-y-6 pb-12 animate-fade-in relative min-h-screen text-slate-800">
+    <div className={`space-y-6 select-none text-slate-800 ${
+      (activeActionModal?.type === 'edit' || activeActionModal?.type === 'onboard') 
+        ? 'h-[calc(100vh-80px)] overflow-hidden relative' 
+        : 'pb-12 animate-fade-in relative min-h-screen'
+    }`}>
       
       {/* Toast Notification */}
       {toast && (
@@ -2246,8 +2250,16 @@ export default function StudentLifecycleManagementPage() {
 
       {/* POPUPS & MODALS DIALOGS */}
       {activeActionModal && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden animate-zoom-in">
+        <div className={`z-50 flex transition-all ${
+          (activeActionModal.type === 'edit' || activeActionModal.type === 'onboard') 
+            ? 'absolute inset-0 bg-white p-0 items-start justify-stretch' 
+            : 'fixed inset-0 bg-slate-900/60 backdrop-blur-xs p-4 items-center justify-center'
+        }`}>
+          <div className={`bg-white overflow-hidden transition-all duration-300 ${
+            (activeActionModal.type === 'edit' || activeActionModal.type === 'onboard') 
+              ? 'max-w-none w-full h-full rounded-none border-none flex flex-col' 
+              : 'rounded-xl shadow-2xl border border-slate-200 w-full max-w-md animate-zoom-in'
+          }`}>
             
             {/* Modal Header */}
             <div className="bg-slate-50 px-5 py-4 border-b border-slate-100 flex justify-between items-center text-sm font-black text-slate-900">
@@ -2282,162 +2294,173 @@ export default function StudentLifecycleManagementPage() {
                 activeActionModal.type === 'placement' ? handleUpdatePlacement :
                 handleExecuteBulkAction
               }
-              className="p-5 space-y-4"
+              className={`text-slate-800 flex flex-col min-h-0 ${
+                (activeActionModal.type === 'edit' || activeActionModal.type === 'onboard') 
+                  ? 'p-8 space-y-6 flex-1 h-full justify-between' 
+                  : 'p-5 space-y-4'
+              }`}
             >
               
               {/* Form 1: Onboard / Edit Student Profile */}
               {(activeActionModal.type === 'onboard' || activeActionModal.type === 'edit') && (
-                <div className="space-y-3.5 max-h-[450px] overflow-y-auto pr-1">
+                <div className="space-y-6 max-w-5xl mx-auto w-full flex-1 flex flex-col justify-start overflow-hidden pt-4">
                   
-                  <div className="text-[10px] font-black uppercase text-slate-400">Personal Info</div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Legal Name *</label>
-                      <input 
-                        type="text" 
-                        required 
-                        value={editForm.name}
-                        onChange={e => setEditForm({ ...editForm, name: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Email Address *</label>
-                      <input 
-                        type="email" 
-                        required 
-                        value={editForm.email}
-                        onChange={e => setEditForm({ ...editForm, email: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Phone Number</label>
-                      <input 
-                        type="text" 
-                        value={editForm.phone}
-                        onChange={e => setEditForm({ ...editForm, phone: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Date of Birth</label>
-                      <input 
-                        type="date" 
-                        value={editForm.dob}
-                        onChange={e => setEditForm({ ...editForm, dob: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Gender</label>
-                      <select 
-                        value={editForm.gender}
-                        onChange={e => setEditForm({ ...editForm, gender: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      >
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Address</label>
-                      <input 
-                        type="text" 
-                        value={editForm.address}
-                        onChange={e => setEditForm({ ...editForm, address: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="text-[10px] font-black uppercase text-slate-400 pt-2 border-t border-slate-100">Academic Info</div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Institution *</label>
-                      <input 
-                        type="text" 
-                        required
-                        value={editForm.college}
-                        onChange={e => setEditForm({ ...editForm, college: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Department</label>
-                      <select 
-                        value={editForm.department}
-                        onChange={e => setEditForm({ ...editForm, department: e.target.value as any })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      >
-                        <option value="CSE">CSE</option>
-                        <option value="IT">IT</option>
-                        <option value="AI & DS">AI & DS</option>
-                        <option value="ECE">ECE</option>
-                        <option value="EEE">EEE</option>
-                        <option value="Mechanical">Mechanical</option>
-                        <option value="Civil">Civil</option>
-                        <option value="MBA">MBA</option>
-                      </select>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Degree Focus</label>
-                      <input 
-                        type="text" 
-                        value={editForm.degree}
-                        onChange={e => setEditForm({ ...editForm, degree: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">CGPA (out of 10.0)</label>
-                      <input 
-                        type="number" 
-                        step="0.01"
-                        value={editForm.cgpa}
-                        onChange={e => setEditForm({ ...editForm, cgpa: Number(e.target.value) })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Current Study Year</label>
-                      <input 
-                        type="number" 
-                        value={editForm.year}
-                        onChange={e => setEditForm({ ...editForm, year: Number(e.target.value) })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Graduation Year</label>
-                      <input 
-                        type="number" 
-                        value={editForm.graduationYear}
-                        onChange={e => setEditForm({ ...editForm, graduationYear: Number(e.target.value) })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="text-[10px] font-black uppercase text-slate-400 pt-2 border-t border-slate-100">Internship Mapping</div>
+                  {/* Section 1 */}
                   <div className="space-y-2">
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500">Program Mapped</label>
-                      <input 
-                        type="text" 
-                        value={editForm.program}
-                        onChange={e => setEditForm({ ...editForm, program: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
-                      />
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                      Section 1: Personal Info
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">Legal Name *</label>
+                        <input 
+                          type="text" 
+                          required 
+                          value={editForm.name}
+                          onChange={e => setEditForm({ ...editForm, name: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">Email Address *</label>
+                        <input 
+                          type="email" 
+                          required 
+                          value={editForm.email}
+                          onChange={e => setEditForm({ ...editForm, email: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">Phone Number</label>
+                        <input 
+                          type="text" 
+                          value={editForm.phone}
+                          onChange={e => setEditForm({ ...editForm, phone: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">Date of Birth</label>
+                        <input 
+                          type="date" 
+                          value={editForm.dob}
+                          onChange={e => setEditForm({ ...editForm, dob: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">Gender</label>
+                        <select 
+                          value={editForm.gender}
+                          onChange={e => setEditForm({ ...editForm, gender: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        >
+                          <option value="Male">Male</option>
+                          <option value="Female">Female</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">Address</label>
+                        <input 
+                          type="text" 
+                          value={editForm.address}
+                          onChange={e => setEditForm({ ...editForm, address: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Section 2 */}
+                  <div className="space-y-2">
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                      Section 2: Academic Info
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">Institution *</label>
+                        <input 
+                          type="text" 
+                          required
+                          value={editForm.college}
+                          onChange={e => setEditForm({ ...editForm, college: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">Department</label>
+                        <select 
+                          value={editForm.department}
+                          onChange={e => setEditForm({ ...editForm, department: e.target.value as any })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        >
+                          <option value="CSE">CSE</option>
+                          <option value="IT">IT</option>
+                          <option value="AI & DS">AI & DS</option>
+                          <option value="ECE">ECE</option>
+                          <option value="EEE">EEE</option>
+                          <option value="Mechanical">Mechanical</option>
+                          <option value="Civil">Civil</option>
+                          <option value="MBA">MBA</option>
+                        </select>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">Degree Focus</label>
+                        <input 
+                          type="text" 
+                          value={editForm.degree}
+                          onChange={e => setEditForm({ ...editForm, degree: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">CGPA (out of 10.0)</label>
+                        <input 
+                          type="number" 
+                          step="0.01"
+                          value={editForm.cgpa}
+                          onChange={e => setEditForm({ ...editForm, cgpa: Number(e.target.value) })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">Current Study Year</label>
+                        <input 
+                          type="number" 
+                          value={editForm.year}
+                          onChange={e => setEditForm({ ...editForm, year: Number(e.target.value) })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">Graduation Year</label>
+                        <input 
+                          type="number" 
+                          value={editForm.graduationYear}
+                          onChange={e => setEditForm({ ...editForm, graduationYear: Number(e.target.value) })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Section 3 */}
+                  <div className="space-y-2">
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                      Section 3: Internship Mapping
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500">Program Mapped</label>
+                        <input 
+                          type="text" 
+                          value={editForm.program}
+                          onChange={e => setEditForm({ ...editForm, program: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                        />
+                      </div>
                       <div className="space-y-1">
                         <label className="text-[10px] font-bold text-slate-500">Internship Type</label>
                         <select 

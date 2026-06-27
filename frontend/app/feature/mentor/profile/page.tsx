@@ -5,6 +5,7 @@ import { Search, Filter, User, Eye, Plus, Clock, Briefcase } from 'lucide-react'
 import { mentorService } from '@/src/services/mentor.service';
 import { MentorProfile } from '@/src/data/mock-mentors';
 import { Drawer } from '@/components/admin/ui/Drawer';
+import { employeeService } from '@/src/services/employee.service';
 
 export default function MentorProfilePage() {
   const [profiles, setProfiles] = useState<MentorProfile[]>([]);
@@ -12,13 +13,60 @@ export default function MentorProfilePage() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  
+  // Creation States
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [employees, setEmployees] = useState<any[]>([]);
+  const [createForm, setCreateForm] = useState({
+    employee_id: '',
+    employeeName: '',
+    mentor_bio: '',
+    mentor_expertise_string: '',
+    years_of_experience: 0,
+    max_student_capacity: 5,
+    is_available: true,
+  });
 
   useEffect(() => {
-    mentorService.getMentorProfiles().then(data => {
-      setProfiles(data);
+    Promise.all([
+      mentorService.getMentorProfiles(),
+      employeeService.getEmployees()
+    ]).then(([mProfiles, emps]) => {
+      setProfiles(mProfiles);
+      setEmployees(emps);
       setLoading(false);
     });
   }, []);
+
+  const handleCreateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!createForm.employee_id) return;
+    
+    await mentorService.createMentorProfile({
+      employee_id: createForm.employee_id,
+      employeeName: createForm.employeeName,
+      mentor_bio: createForm.mentor_bio,
+      mentor_expertise: createForm.mentor_expertise_string.split(',').map(s => s.trim()).filter(Boolean),
+      years_of_experience: Number(createForm.years_of_experience),
+      max_student_capacity: Number(createForm.max_student_capacity),
+      current_student_count: 0,
+      is_available: createForm.is_available,
+    });
+    
+    const updatedProfiles = await mentorService.getMentorProfiles();
+    setProfiles(updatedProfiles);
+    
+    setCreateForm({
+      employee_id: '',
+      employeeName: '',
+      mentor_bio: '',
+      mentor_expertise_string: '',
+      years_of_experience: 0,
+      max_student_capacity: 5,
+      is_available: true,
+    });
+    setIsCreateOpen(false);
+  };
 
   const filtered = profiles.filter(p =>
     p.employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -50,13 +98,18 @@ export default function MentorProfilePage() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-slate-50">
+    <div className={`flex flex-col h-full bg-slate-50 ${
+      isCreateOpen ? 'h-[calc(100vh-80px)] overflow-hidden relative' : ''
+    }`}>
       <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shrink-0">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Mentor Profile</h1>
           <p className="text-sm text-slate-500 mt-1">Manage mentor-specific profiles linked to employees with role MENTOR.</p>
         </div>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 flex items-center gap-2 shadow-sm">
+        <button 
+          onClick={() => setIsCreateOpen(true)}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 flex items-center gap-2 shadow-sm"
+        >
           <Plus className="h-4 w-4" /> Create Profile
         </button>
       </div>
@@ -230,6 +283,155 @@ export default function MentorProfilePage() {
           </div>
         )}
       </Drawer>
+
+      {isCreateOpen && (
+        <div className="absolute inset-0 bg-white z-[100] flex items-start justify-stretch flex-col animate-slide-in">
+          <div className="max-w-none w-full h-full rounded-none border-none flex flex-col">
+            
+            {/* Modal Header */}
+            <div className="bg-slate-50 border-b border-slate-100 px-6 py-4 flex justify-between items-center">
+              <h3 className="font-extrabold text-sm text-slate-900 uppercase tracking-wide">
+                Create Mentor Profile
+              </h3>
+              
+              <button 
+                onClick={() => setIsCreateOpen(false)}
+                className="text-xs font-bold text-slate-400 hover:text-slate-800"
+              >
+                Cancel
+              </button>
+            </div>
+
+            {/* Forms body */}
+            <form 
+              onSubmit={handleCreateProfile} 
+              className="text-xs font-semibold text-slate-700 flex flex-col min-h-0 p-8 space-y-6 flex-1 h-full justify-between"
+            >
+              <div className="space-y-6 max-w-5xl mx-auto w-full flex-1 flex flex-col justify-start overflow-hidden pt-4">
+                
+                {/* Section 1 */}
+                <div className="space-y-2">
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                    Section 1: Link Employee & Configuration
+                  </div>
+                  <div className="grid grid-cols-4 gap-3">
+                    <div className="col-span-2 space-y-1">
+                      <label className="block text-slate-500 text-[10px]">Select Employee *</label>
+                      <select 
+                        required
+                        value={createForm.employee_id}
+                        onChange={(e) => {
+                          const empId = e.target.value;
+                          const emp = employees.find(emp => emp.employee_id === empId);
+                          setCreateForm({
+                            ...createForm,
+                            employee_id: empId,
+                            employeeName: emp ? emp.name : '',
+                          });
+                        }}
+                        className="w-full p-2 border border-slate-200 rounded bg-white text-xs focus:outline-none text-slate-700 font-semibold"
+                      >
+                        <option value="">-- Choose Employee --</option>
+                        {employees.map(emp => (
+                          <option key={emp.employee_id} value={emp.employee_id}>
+                            {emp.name} ({emp.employee_id} - {emp.designation})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    
+                    <div className="space-y-1">
+                      <label className="block text-slate-500 text-[10px]">Years of Experience</label>
+                      <input 
+                        type="number" 
+                        required
+                        min={0}
+                        value={createForm.years_of_experience}
+                        onChange={(e) => setCreateForm({ ...createForm, years_of_experience: Number(e.target.value) })}
+                        className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none text-slate-700 font-semibold"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="block text-slate-500 text-[10px]">Max Student Capacity</label>
+                      <input 
+                        type="number" 
+                        required
+                        min={1}
+                        value={createForm.max_student_capacity}
+                        onChange={(e) => setCreateForm({ ...createForm, max_student_capacity: Number(e.target.value) })}
+                        className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none text-slate-700 font-semibold"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-4 gap-3 mt-2">
+                    <div className="space-y-1 col-span-2">
+                      <label className="block text-slate-500 text-[10px]">Availability Status</label>
+                      <select 
+                        value={createForm.is_available ? 'true' : 'false'}
+                        onChange={(e) => setCreateForm({ ...createForm, is_available: e.target.value === 'true' })}
+                        className="w-full p-2 border border-slate-200 rounded bg-white text-xs focus:outline-none text-slate-700 font-semibold"
+                      >
+                        <option value="true">Available</option>
+                        <option value="false">Unavailable</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section 2 */}
+                <div className="space-y-2">
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                    Section 2: Expertise & Bio
+                  </div>
+                  <div className="space-y-3">
+                    <div className="space-y-1">
+                      <label className="block text-slate-500 text-[10px]">Expertise Fields (comma separated)</label>
+                      <input 
+                        type="text" 
+                        placeholder="e.g. React, Node.js, Cloud Architecture"
+                        value={createForm.mentor_expertise_string}
+                        onChange={(e) => setCreateForm({ ...createForm, mentor_expertise_string: e.target.value })}
+                        className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none text-slate-700 font-semibold"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="block text-slate-500 text-[10px]">Mentor Biography / Bio</label>
+                      <textarea 
+                        rows={3}
+                        required
+                        placeholder="Write a brief biography..."
+                        value={createForm.mentor_bio}
+                        onChange={(e) => setCreateForm({ ...createForm, mentor_bio: e.target.value })}
+                        className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none font-semibold text-slate-700"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Footer button */}
+              <div className="pt-4 border-t border-slate-100 max-w-5xl mx-auto w-full flex justify-end gap-2">
+                <button 
+                  type="button"
+                  onClick={() => setIsCreateOpen(false)}
+                  className="px-4 py-2 border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 rounded-lg text-xs font-bold transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition shadow-sm cursor-pointer"
+                >
+                  Confirm Profile Creation
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
