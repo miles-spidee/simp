@@ -19,6 +19,10 @@ export class CommunicationService {
     return communicationApi.sendMessage(data);
   }
 
+  static async createConversation(data: Partial<Conversation>): Promise<Conversation> {
+    return communicationApi.createConversation(data);
+  }
+
   static async getCommunicationActivity(userId: string = 'u1'): Promise<{ totalConversations: number, activeGroups: number }> {
     const conversations = await communicationApi.getConversations(userId);
     return {
