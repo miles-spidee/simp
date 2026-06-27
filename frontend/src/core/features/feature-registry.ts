@@ -5,7 +5,7 @@ import {
   Briefcase, Activity, ShieldAlert, CreditCard, FileSignature, Wallet,
   Bell, Megaphone, MessageSquare, Mail, Award, TrendingUp, GraduationCap,
   LineChart, FileBarChart, Target, BarChart4, DownloadCloud, Lightbulb, LayoutDashboard, Key, Lock, Building2,
-  LifeBuoy, Store, Gift, IdCard, UserCircle, Zap
+  LifeBuoy, Gift, IdCard, UserCircle, Zap, Sparkles
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -105,7 +105,7 @@ export const FEATURE_REGISTRY: FeatureDefinition[] = [
 
   // Phase 7: Support, Productivity & Experience
   { moduleId: 'helpdesk', featureId: 'helpdesk_main', permissionKey: 'helpdesk.view', displayName: 'Help Desk / Tickets', navigationLabel: 'Help Desk', route: '/feature/helpdesk', icon: LifeBuoy },
-  { moduleId: 'marketplace', featureId: 'marketplace_main', permissionKey: 'marketplace.view', displayName: 'Internship Marketplace', navigationLabel: 'Marketplace', route: '/feature/marketplace', icon: Store },
+  { moduleId: 'marketplace', featureId: 'idbuilder_main', permissionKey: 'idcard.view', displayName: 'ID Card Builder', navigationLabel: 'ID Card Builder', route: '/feature/id-builder', icon: Sparkles },
   { moduleId: 'referral', featureId: 'referral_main', permissionKey: 'referral.view', displayName: 'Referral Management', navigationLabel: 'Referrals', route: '/feature/referrals', icon: Gift },
   { moduleId: 'idcard', featureId: 'idcard_main', permissionKey: 'idcard.view', displayName: 'Digital ID Card', navigationLabel: 'Digital ID', route: '/feature/id-card', icon: IdCard },
   { moduleId: 'selfservice', featureId: 'selfservice_main', permissionKey: 'selfservice.view', displayName: 'Self-Service Portal', navigationLabel: 'Self-Service', route: '/feature/self-service', icon: UserCircle },

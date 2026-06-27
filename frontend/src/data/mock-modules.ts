@@ -65,7 +65,7 @@ export const MOCK_MODULES: Module[] = [
 
   // Phase 7: Support & Productivity
   { id: 'helpdesk', code: 'HELP', name: 'Help Desk', route: '/feature/helpdesk', active: true },
-  { id: 'marketplace', code: 'MKT', name: 'Internship Marketplace', route: '/feature/marketplace', active: true },
+  { id: 'marketplace', code: 'MKT', name: 'ID Card Builder', route: '/feature/id-builder', active: true },
   { id: 'referral', code: 'REF', name: 'Referral Management', route: '/feature/referrals', active: true },
   { id: 'idcard', code: 'IDC', name: 'Digital ID Card', route: '/feature/id-card', active: true },
   { id: 'selfservice', code: 'SELF', name: 'Self-Service Portal', route: '/feature/self-service', active: true },
