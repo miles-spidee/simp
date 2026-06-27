@@ -165,9 +165,9 @@ const DEFAULT_FRONT_ELEMENTS: Element[] = [
     type: 'text',
     name: 'Employee Name Value',
     x: 20,
-    y: 205,
+    y: 200,
     width: 280,
-    height: 35,
+    height: 30,
     rotation: 0,
     zIndex: 5,
     isVisible: true,
@@ -222,7 +222,7 @@ const DEFAULT_FRONT_ELEMENTS: Element[] = [
     name: 'ID Label',
     x: 35,
     y: 295,
-    width: 100,
+    width: 115,
     height: 15,
     rotation: 0,
     zIndex: 8,
@@ -240,7 +240,7 @@ const DEFAULT_FRONT_ELEMENTS: Element[] = [
     name: 'ID Value',
     x: 35,
     y: 310,
-    width: 100,
+    width: 115,
     height: 20,
     rotation: 0,
     zIndex: 8,
@@ -259,7 +259,7 @@ const DEFAULT_FRONT_ELEMENTS: Element[] = [
     name: 'Dept Label',
     x: 170,
     y: 295,
-    width: 120,
+    width: 115,
     height: 15,
     rotation: 0,
     zIndex: 8,
@@ -277,7 +277,7 @@ const DEFAULT_FRONT_ELEMENTS: Element[] = [
     name: 'Dept Value',
     x: 170,
     y: 310,
-    width: 120,
+    width: 115,
     height: 20,
     rotation: 0,
     zIndex: 8,
@@ -296,7 +296,7 @@ const DEFAULT_FRONT_ELEMENTS: Element[] = [
     name: 'Blood Group Label',
     x: 35,
     y: 345,
-    width: 100,
+    width: 115,
     height: 15,
     rotation: 0,
     zIndex: 8,
@@ -314,7 +314,7 @@ const DEFAULT_FRONT_ELEMENTS: Element[] = [
     name: 'Blood Group Value',
     x: 35,
     y: 360,
-    width: 100,
+    width: 115,
     height: 20,
     rotation: 0,
     zIndex: 8,
@@ -333,7 +333,7 @@ const DEFAULT_FRONT_ELEMENTS: Element[] = [
     name: 'Valid Label',
     x: 170,
     y: 345,
-    width: 120,
+    width: 115,
     height: 15,
     rotation: 0,
     zIndex: 8,
@@ -351,7 +351,7 @@ const DEFAULT_FRONT_ELEMENTS: Element[] = [
     name: 'Valid Value',
     x: 170,
     y: 360,
-    width: 120,
+    width: 115,
     height: 20,
     rotation: 0,
     zIndex: 8,
@@ -678,9 +678,23 @@ export default function IDCardPage() {
 
   // Dynamic values binding parser
   const resolveDynamicValue = (text: string | undefined, binding: string | undefined, cardData: DigitalIDCard) => {
+    const formatDate = (val: any) => {
+      if (!val) return '';
+      try {
+        const d = new Date(val);
+        if (!isNaN(d.getTime())) {
+          return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+      } catch (e) {}
+      return String(val);
+    };
+
     if (binding) {
       const cleanKey = binding.replace('employee.', '') as keyof DigitalIDCard;
       if (cardData[cleanKey]) {
+        if (cleanKey === 'expiryDate' || cleanKey === 'issueDate') {
+          return formatDate(cardData[cleanKey]);
+        }
         return String(cardData[cleanKey]);
       }
     }
@@ -688,7 +702,10 @@ export default function IDCardPage() {
     let result = text || '';
     if (result.includes('{{')) {
       Object.keys(cardData).forEach((k) => {
-        const val = cardData[k as keyof DigitalIDCard];
+        let val = cardData[k as keyof DigitalIDCard];
+        if (k === 'expiryDate' || k === 'issueDate') {
+          val = formatDate(val);
+        }
         result = result.replace(new RegExp(`\\{\\{employee\\.${k}\\}\\}`, 'g'), String(val || ''));
       });
     }
@@ -764,7 +781,11 @@ export default function IDCardPage() {
                 wordWrap: 'break-word',
                 overflow: 'hidden'
               }}
-              className="w-full h-full select-none flex items-center justify-center p-1"
+              className={`w-full h-full select-none flex items-center p-1 ${
+                el.textAlign === 'left' ? 'justify-start text-left' : 
+                el.textAlign === 'right' ? 'justify-end text-right' : 
+                'justify-center text-center'
+              }`}
             >
               {resolveDynamicValue(el.text, el.binding, card)}
             </div>
@@ -780,6 +801,8 @@ export default function IDCardPage() {
                 backgroundImage: `url(${el.binding === 'employee.photoUrl' ? (card.photoUrl || el.url) : el.url})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
+                border: el.type === 'avatar' ? '4px solid #ffffff' : undefined,
+                boxShadow: el.type === 'avatar' ? '0 8px 24px rgba(0,0,0,0.12)' : undefined
               }}
               className="w-full h-full select-none bg-slate-100"
             />
@@ -920,7 +943,7 @@ export default function IDCardPage() {
                   style={{
                     background: resolveBackground(frontBg)
                   }}
-                  className="absolute inset-0 w-full h-full [backface-visibility:hidden] rounded-3xl overflow-hidden shadow-lg border border-slate-200/80 relative"
+                  className="absolute inset-0 w-full h-full [backface-visibility:hidden] rounded-3xl overflow-hidden shadow-lg border border-slate-200/80"
                 >
                   {renderSideElements(frontElements)}
                 </div>
@@ -930,7 +953,7 @@ export default function IDCardPage() {
                   style={{
                     background: resolveBackground(backBg)
                   }}
-                  className="absolute inset-0 w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-3xl overflow-hidden shadow-lg border border-slate-200/80 relative"
+                  className="absolute inset-0 w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-3xl overflow-hidden shadow-lg border border-slate-200/80"
                 >
                   {renderSideElements(backElements)}
                 </div>

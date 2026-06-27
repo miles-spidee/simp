@@ -1480,9 +1480,23 @@ export default function AdvancedDesignerPage() {
     if (!element.binding) return element.text || '';
     if (!employee) return element.text || '';
 
+    const formatDate = (val: any) => {
+      if (!val) return '';
+      try {
+        const d = new Date(val);
+        if (!isNaN(d.getTime())) {
+          return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+      } catch (e) {}
+      return String(val);
+    };
+
     // Match bindings like 'employee.studentName'
     const cleanKey = element.binding.replace('employee.', '') as keyof DigitalIDCard;
     if (employee[cleanKey]) {
+      if (cleanKey === 'expiryDate' || cleanKey === 'issueDate') {
+        return formatDate(employee[cleanKey]);
+      }
       return String(employee[cleanKey]);
     }
     return element.text || '';
@@ -2087,7 +2101,11 @@ export default function AdvancedDesignerPage() {
                           wordWrap: 'break-word',
                           overflow: 'hidden'
                         }}
-                        className="w-full h-full select-none flex items-center justify-center p-1"
+                        className={`w-full h-full select-none flex items-center p-1 ${
+                          el.textAlign === 'left' ? 'justify-start text-left' : 
+                          el.textAlign === 'right' ? 'justify-end text-right' : 
+                          'justify-center text-center'
+                        }`}
                       >
                         {resolveBindingText(el)}
                       </div>
