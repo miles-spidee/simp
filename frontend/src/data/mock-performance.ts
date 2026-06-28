@@ -1,20 +1,4 @@
-export interface StudentPerformance {
-  studentId: string;
-  batchId: string;
-  average_score: number;
-  attendance_rate: number;
-  task_completion_rate: number;
-  assessment_score: number;
-  isAtRisk: boolean;
-}
-
-export interface BatchPerformance {
-  batchId: string;
-  average_score: number;
-  attendance_rate: number;
-  task_completion_rate: number;
-  assessment_score: number;
-}
+import { StudentPerformance, BatchPerformance } from '../types/api/performance.types';
 
 export const MOCK_STUDENT_PERFORMANCE: StudentPerformance[] = [
   { studentId: 'stu-1', batchId: 'batch-1', average_score: 88, attendance_rate: 95, task_completion_rate: 90, assessment_score: 85, isAtRisk: false },

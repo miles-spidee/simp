@@ -1,11 +1,4 @@
-export interface Module {
-  id: string;
-  code: string;
-  name: string;
-  route: string;
-  active: boolean;
-  desc?: string;
-}
+import { Module } from '../types/api/module.types';
 
 export const MOCK_MODULES: Module[] = [
   { id: 'dashboard', code: 'DASHBOARD', name: 'Dashboard', route: '/feature', active: true, desc: 'General system dashboards' },

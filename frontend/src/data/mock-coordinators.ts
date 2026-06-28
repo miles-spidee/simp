@@ -1,24 +1,4 @@
-export interface Coordinator {
-  id: string;
-  employeeId: string;
-  collegeId: string;
-  name: string;
-  email: string;
-  phone: string;
-  assignedStudentsCount: number;
-  activeBatchesCount: number;
-  placementsCount: number;
-  status: 'Active' | 'Inactive';
-}
-
-export interface CollegeReport {
-  id: string;
-  coordinatorId: string;
-  collegeId: string;
-  month: string;
-  year: number;
-  fileId: string;
-}
+import { Coordinator, CollegeReport } from '../types/api/coordinator.types';
 
 export const MOCK_COORDINATORS: Coordinator[] = [
   { id: 'coord-1', employeeId: 'emp-5', collegeId: 'col-1', name: 'Alice Smith', email: 'alice.s@example.com', phone: '1234567890', assignedStudentsCount: 150, activeBatchesCount: 3, placementsCount: 45, status: 'Active' },
