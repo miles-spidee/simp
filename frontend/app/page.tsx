@@ -44,9 +44,9 @@ Section.displayName = "Section";
 
 // --- HERO COMPONENTS ---
 const HeroBadge = () => (
-  <div className="inline-flex items-center gap-2 text-[10px] sm:text-xs font-bold text-blue-600 tracking-widest uppercase mb-6">
-    <span className="w-4 h-4 rounded-full border-[3px] border-blue-100 flex items-center justify-center">
-      <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
+  <div className="inline-flex items-center gap-2 text-[10px] sm:text-xs font-[family-name:var(--font-outfit)] font-bold text-text-secondary tracking-widest uppercase mb-6">
+    <span className="w-4 h-4 rounded-full border-[3px] border-sky-100 flex items-center justify-center">
+      <span className="w-1.5 h-1.5 rounded-full bg-sky-600" />
     </span>
     {heroData.badge}
   </div>
@@ -54,10 +54,10 @@ const HeroBadge = () => (
 
 const HeroContent = () => (
   <div className="max-w-[800px]">
-    <h1 className="text-[2.75rem] sm:text-5xl md:text-[4rem] font-extrabold tracking-tight text-slate-950 leading-[1.1] mb-6">
+    <h1 className="text-4xl sm:text-5xl md:text-[4rem] font-[family-name:var(--font-outfit)] font-extrabold tracking-tight text-text-primary leading-[1.1] mb-6">
       {heroData.headline}
     </h1>
-    <p className="text-base md:text-lg text-slate-500 leading-relaxed max-w-xl">
+    <p className="text-base md:text-lg text-text-primary leading-relaxed max-w-xl">
       {heroData.subtitle}
     </p>
   </div>
@@ -76,7 +76,7 @@ const HeroButtons = () => {
     <div className="flex flex-wrap items-center gap-4 mt-10 mb-12">
       <button 
         onClick={handleExploreClick}
-        className="rounded-xl px-8 py-4 text-xs font-bold tracking-widest uppercase bg-[#111827] hover:bg-black text-white flex items-center gap-3 transition-colors shadow-lg shadow-slate-900/20"
+        className="rounded-xl px-8 py-4 text-xs font-[family-name:var(--font-outfit)] font-bold tracking-widest uppercase bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-3 transition-colors shadow-lg shadow-orange-500/20 cursor-pointer"
       >
         EXPLORE MORE
         <ArrowRight className="w-4 h-4" />
@@ -84,7 +84,7 @@ const HeroButtons = () => {
       {/* <a 
         href="#programs"
         onClick={handleExploreClick}
-        className="rounded-xl px-8 py-4 text-xs font-bold tracking-widest uppercase bg-white border border-slate-200 text-slate-900 hover:bg-slate-50 flex items-center gap-3 transition-colors shadow-sm"
+        className="rounded-xl px-8 py-4 text-xs font-bold tracking-widest uppercase bg-white border border-slate-200 text-text-primary hover:bg-slate-50 flex items-center gap-3 transition-colors shadow-sm"
       >
         DIVE DEEPER
         <ArrowRight className="w-4 h-4" />
@@ -95,21 +95,21 @@ const HeroButtons = () => {
 
 // const TrustedBy = () => (
   // <div className="mt-12 sm:mt-16">
-    // <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-6">
+    // <p className="text-[10px] font-bold tracking-widest text-text-secondary uppercase mb-6">
       // TRUSTED BY LEADING COMPANIES
     // </p>
     // <div className="flex flex-wrap items-center gap-6 sm:gap-10 opacity-60 grayscale">
-      {/* <span className="text-xl font-bold font-sans tracking-tighter text-slate-700">Google</span>
-      <span className="text-lg font-semibold flex items-center gap-1.5 text-slate-700">
+      {/* <span className="text-xl font-bold font-sans tracking-tighter text-text-primary">Google</span>
+      <span className="text-lg font-semibold flex items-center gap-1.5 text-text-primary">
         <span className="grid grid-cols-2 gap-[2px]">
           <span className="w-2 h-2 bg-slate-700"></span><span className="w-2 h-2 bg-slate-700"></span>
           <span className="w-2 h-2 bg-slate-700"></span><span className="w-2 h-2 bg-slate-700"></span>
         </span>
         Microsoft
       </span>
-      <span className="text-xl font-bold font-serif tracking-tighter text-slate-700">amazon</span>
-      <span className="text-xl font-bold font-sans text-slate-700">Deloitte.</span>
-      <span className="text-xl font-medium font-sans tracking-tight text-slate-700">Infosys</span> */}
+      <span className="text-xl font-bold font-serif tracking-tighter text-text-primary">amazon</span>
+      <span className="text-xl font-bold font-sans text-text-primary">Deloitte.</span>
+      <span className="text-xl font-medium font-sans tracking-tight text-text-primary">Infosys</span> */}
     {/* </div> */}
   {/* </div> */}
 // );
@@ -117,7 +117,7 @@ const HeroButtons = () => {
 const Hero = () => (
   <Section className="relative overflow-hidden min-h-[calc(100vh-5rem)] flex items-center bg-white pt-8 md:pt-12 lg:pt-16 pb-20">
     {/* Full Height Background Image on Right with Fade */}
-    <div className="absolute top-0 right-0 bottom-0 w-full lg:w-[60%] pointer-events-none z-0">
+    <div className="absolute top-0 right-0 bottom-0 w-full lg:w-[60%] pointer-events-none z-0 opacity-40 lg:opacity-100">
       <Image 
         src="/images/hero/hero-team.png" 
         alt="Pinesphere enterprise professionals" 
@@ -127,11 +127,11 @@ const Hero = () => (
         priority 
       />
       {/* Gradient fade to white on the left */}
-      <div className="absolute inset-0 bg-gradient-to-r from-white via-white/0 to-transparent w-full" />
+      <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 lg:via-white/0 to-transparent w-full" />
       <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white to-transparent w-full" />
     </div>
 
-    <Container className="relative z-10 w-full">
+    <Container className="relative z-10 w-full px-4 sm:px-6 md:px-12">
       <div className="w-full lg:w-[65%] xl:w-[60%] flex flex-col justify-center">
         <HeroBadge />
         <HeroContent />
@@ -245,31 +245,31 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans flex flex-col justify-between text-slate-800">
+    <div className="min-h-screen bg-sky-50 font-sans flex flex-col justify-between text-text-primary">
       <div>
         {/* Navigation Header */}
-        <header className="h-20 w-full bg-white flex items-center justify-between px-6 lg:px-16 border-b border-slate-100 sticky top-0 z-40 animate-slide-in">
+        <header className="h-20 w-full bg-white flex items-center justify-between px-4 sm:px-6 lg:px-16 border-b border-sky-100 sticky top-0 z-40 animate-slide-in">
           <div className="flex items-center gap-12">
             <Link href="/" className="flex items-center">
-              <img src="/logo.png" alt="Pinesphere Logo" className="h-12 w-auto object-contain transition-transform hover:scale-[1.02]" />
+              <img src="/logo.png" alt="Pinesphere Logo" className="h-10 sm:h-12 w-auto object-contain transition-transform hover:scale-[1.02]" />
             </Link>
  
             {/* Desktop Navbar Menu (Programs) */}
-            <nav className="hidden sm:flex items-center gap-8 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-900">
-              <a href="#programs" onClick={handleExploreClick} className="hover:text-blue-650 transition-colors">Programs</a>
+            <nav className="hidden md:flex items-center gap-8 text-[11px] font-[family-name:var(--font-outfit)] font-bold uppercase tracking-[0.2em] text-text-primary">
+              <a href="#programs" onClick={handleExploreClick} className="hover:text-orange-500 transition-colors cursor-pointer">Programs</a>
             </nav>
           </div>
  
           <div className="flex items-center gap-6">
             {/* Search Action */}
-            {/* <button className="text-slate-900 hover:text-blue-650 transition-colors cursor-pointer" aria-label="Search">
+            {/* <button className="text-text-primary hover:text-blue-650 transition-colors cursor-pointer" aria-label="Search">
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button> */}
  
             {/* Original Login Button */}
-            <Link href="/login" className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-900 hover:text-blue-650 transition-colors">
+            <Link href="/login" className="text-[11px] font-[family-name:var(--font-outfit)] font-bold uppercase tracking-[0.2em] text-text-primary hover:text-orange-500 transition-colors">
               Login
             </Link>
           </div>
@@ -278,16 +278,16 @@ export default function LandingPage() {
         <Hero />
 
         {/* Programs Section */}
-        <div ref={programsRef} id="programs" className="mx-auto max-w-7xl px-6 py-24 lg:px-16 scroll-mt-6">
-          <div className="text-center mb-16">
-            <span className="text-xs font-bold text-blue-600 uppercase tracking-widest block mb-3">Entrance Portal</span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">Available Opportunities</h2>
-            <p className="mt-2 text-sm text-slate-500">Select a program that matches your career trajectory</p>
+        <div ref={programsRef} id="programs" className="mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24 lg:px-16 scroll-mt-6">
+          <div className="text-center mb-12 sm:mb-16">
+            <span className="text-xs font-[family-name:var(--font-outfit)] font-bold text-text-secondary uppercase tracking-widest block mb-3">Entrance Portal</span>
+            <h2 className="text-3xl sm:text-4xl font-[family-name:var(--font-outfit)] font-extrabold text-text-primary">Available Opportunities</h2>
+            <p className="mt-2 text-sm sm:text-base text-text-secondary">Select a program that matches your career trajectory</p>
           </div>
 
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {loading ? (
-              <div className="col-span-full flex flex-col items-center justify-center py-12 text-slate-500">
+              <div className="col-span-full flex flex-col items-center justify-center py-12 text-text-secondary">
                 <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mb-4"></div>
                 <p>Loading opportunities...</p>
               </div>
@@ -312,69 +312,69 @@ export default function LandingPage() {
                     {opp.type}
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-2">{opp.title}</h3>
-                <p className="text-sm text-slate-500 flex-1 leading-relaxed mb-6">{opp.description}</p>
+                <h3 className="text-xl font-bold text-text-primary mb-2">{opp.title}</h3>
+                <p className="text-sm text-text-secondary flex-1 leading-relaxed mb-6">{opp.description}</p>
                 
-                <div className="space-y-3 border-t border-slate-100 pt-5 mb-6 text-slate-650 text-sm">
+                <div className="space-y-3 border-t border-slate-100 pt-5 mb-6 text-text-secondary text-sm">
                   <div className="flex items-center gap-3">
-                    <svg className="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="h-4 w-4 text-text-secondary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span className="text-slate-400 font-medium">Duration:</span>
-                    <span className="font-semibold text-slate-800 ml-auto">{opp.duration}</span>
+                    <span className="text-text-secondary font-medium">Duration:</span>
+                    <span className="font-semibold text-text-primary ml-auto">{opp.duration}</span>
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <svg className="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="h-4 w-4 text-text-secondary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                     </svg>
-                    <span className="text-slate-400 font-medium">Internship Type:</span>
-                    <span className="font-semibold text-slate-800 ml-auto capitalize">
+                    <span className="text-text-secondary font-medium">Internship Type:</span>
+                    <span className="font-semibold text-text-primary ml-auto capitalize">
                       {opp.internshipType || 'Free'}
                     </span>
                   </div>
                   
                   <div className="flex items-center gap-3">
-                    <svg className="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="h-4 w-4 text-text-secondary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                     </svg>
-                    <span className="text-slate-400 font-medium">Mode:</span>
-                    <span className="font-semibold text-slate-800 ml-auto">{opp.mode}</span>
+                    <span className="text-text-secondary font-medium">Mode:</span>
+                    <span className="font-semibold text-text-primary ml-auto">{opp.mode}</span>
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <svg className="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="h-4 w-4 text-text-secondary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
-                    <span className="text-slate-400 font-medium">Seats:</span>
-                    <span className="font-semibold text-slate-800 ml-auto">{opp.seats}</span>
+                    <span className="text-text-secondary font-medium">Seats:</span>
+                    <span className="font-semibold text-text-primary ml-auto">{opp.seats}</span>
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <svg className="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="h-4 w-4 text-text-secondary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
                     </svg>
-                    <span className="text-slate-400 font-medium">Eligibility:</span>
-                    <span className="font-semibold text-slate-800 ml-auto">{opp.eligibility}</span>
+                    <span className="text-text-secondary font-medium">Eligibility:</span>
+                    <span className="font-semibold text-text-primary ml-auto">{opp.eligibility}</span>
                   </div>
 
 
 
                   <div className="flex items-center gap-3">
-                    <svg className="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="h-4 w-4 text-text-secondary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    <span className="text-slate-400 font-medium">Start Date:</span>
-                    <span className="font-semibold text-slate-800 ml-auto">{opp.startDate}</span>
+                    <span className="text-text-secondary font-medium">Start Date:</span>
+                    <span className="font-semibold text-text-primary ml-auto">{opp.startDate}</span>
                   </div>
 
                   {opp.internshipType && (
                     <div className="flex items-center gap-3">
-                      <svg className="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="h-4 w-4 text-text-secondary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      <span className="text-slate-400 font-medium">Compensation:</span>
-                      <span className="font-semibold text-slate-800 ml-auto">
+                      <span className="text-text-secondary font-medium">Compensation:</span>
+                      <span className="font-semibold text-text-primary ml-auto">
                         {opp.internshipType === 'free' ? 'Free / Unpaid' : 
                          opp.internshipType === 'stipend' ? `Stipend (${opp.amount || 'Yes'})` :
                          opp.internshipType === 'paid' ? `Paid (${opp.amount || 'Yes'})` : 
@@ -390,7 +390,7 @@ export default function LandingPage() {
                     setSelectedOpp(opp);
                     setVerifyModalOpen(true);
                   }}
-                  className="block w-full rounded-xl bg-slate-55 border border-slate-200 py-3.5 text-center text-sm font-semibold text-slate-700 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all duration-200 active:scale-[0.98]"
+                  className="block w-full rounded-xl bg-orange-50 border border-orange-200 py-3.5 text-center text-sm font-[family-name:var(--font-outfit)] font-bold text-orange-600 hover:bg-orange-500 hover:text-white hover:border-orange-500 transition-all duration-200 active:scale-[0.98] cursor-pointer"
                 >
                   Apply Now
                 </button>
@@ -405,14 +405,14 @@ export default function LandingPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-6">
-              <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-blue-50 rounded-full">
-                <ShieldCheck className="w-8 h-8 text-blue-600" />
+              <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-sky-50 rounded-full">
+                <ShieldCheck className="w-8 h-8 text-text-secondary" />
               </div>
-              <h3 className="text-xl font-bold text-center text-slate-900 mb-2">
+              <h3 className="text-xl font-[family-name:var(--font-outfit)] font-bold text-center text-text-primary mb-2">
                 Verify with DigiLocker
               </h3>
-              <p className="text-sm text-center text-slate-500 mb-6">
-                To proceed with your application for <span className="font-semibold text-slate-700">{selectedOpp?.title}</span>, please verify your identity securely.
+              <p className="text-sm text-center text-text-secondary mb-6">
+                To proceed with your application for <span className="font-semibold text-text-primary">{selectedOpp?.title}</span>, please verify your identity securely.
               </p>
               
               <div className="flex flex-col gap-3">
@@ -428,7 +428,7 @@ export default function LandingPage() {
                     }, 2000);
                   }}
                   disabled={isVerifying}
-                  className="w-full flex items-center justify-center py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center py-3 px-4 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold transition-colors disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {isVerifying ? (
                     <>
@@ -450,7 +450,7 @@ export default function LandingPage() {
                     }
                   }}
                   disabled={isVerifying}
-                  className="w-full py-3 px-4 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-3 px-4 bg-white border border-sky-200 hover:bg-sky-50 text-text-primary rounded-xl font-[family-name:var(--font-outfit)] font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   Cancel
                 </button>
