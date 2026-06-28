@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { 
   Plus, Play, FileText, Trash2, Save, CheckCircle2, GripVertical, ChevronLeft, Image, FolderOpen, UploadCloud
 } from 'lucide-react';
-import { MOCK_COMMON_FILES } from '../../../src/data/mock-common-files';
+import { CommonFile } from '@/src/data/mock-common-files';
+import { fileService } from '@/src/services/file.service';
 
 interface Submodule {
   id: string;
@@ -119,6 +120,20 @@ export default function LMSManagementPage() {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3000);
   };
+
+  const [commonFiles, setCommonFiles] = useState<CommonFile[]>([]);
+
+  useEffect(() => {
+    async function loadFiles() {
+      try {
+        const files = await fileService.getFiles();
+        setCommonFiles(files as any);
+      } catch (err) {
+        console.error("Failed to load files", err);
+      }
+    }
+    loadFiles();
+  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -438,7 +453,7 @@ export default function LMSManagementPage() {
                                 value={selectedFileId}
                                 onChange={(e) => {
                                   setSelectedFileId(e.target.value);
-                                  const file = MOCK_COMMON_FILES.find(f => f.file_id === e.target.value);
+                                  const file = commonFiles.find(f => f.file_id === e.target.value);
                                   if (file) {
                                     setSubUrl(file.storage_url);
                                   }
@@ -446,7 +461,7 @@ export default function LMSManagementPage() {
                                 className="flex-1 bg-slate-50 border border-border rounded-lg px-3 py-1.5 text-xs text-text-primary outline-none font-bold"
                               >
                                 <option value="">-- Select from Common Files --</option>
-                                {MOCK_COMMON_FILES.map(file => (
+                                {commonFiles.map(file => (
                                   <option key={file.file_id} value={file.file_id}>
                                     {file.file_name} ({file.file_type})
                                   </option>
