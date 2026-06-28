@@ -121,15 +121,8 @@ export default function ForgotPasswordPage() {
     const inputVal = username.trim();
     if (inputVal.length >= 3) {
       try {
-        const response = await fetch(API_ENDPOINTS.FORGOT_PASSWORD_REQUEST, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: inputVal })
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to request OTP');
-        }
+        const { authService } = await import('@/src/services/auth.service');
+        await authService.requestPasswordReset({ username: inputVal });
         
         setTimerCount(120);
         setCanResend(false);
@@ -153,15 +146,8 @@ export default function ForgotPasswordPage() {
 
     if (/^\d{6}$/.test(otp.trim())) {
       try {
-        const response = await fetch(API_ENDPOINTS.FORGOT_PASSWORD_VERIFY, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: username.trim(), otp: otp.trim() })
-        });
-
-        if (!response.ok) {
-          throw new Error('Invalid OTP verification code');
-        }
+        const { authService } = await import('@/src/services/auth.service');
+        await authService.verifyResetOtp({ username: username.trim(), otp: otp.trim() });
 
         setStep('RESET_PASSWORD');
       } catch (err) {
@@ -189,15 +175,8 @@ export default function ForgotPasswordPage() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(API_ENDPOINTS.FORGOT_PASSWORD_RESET, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: username.trim(), otp: otp.trim(), newPassword })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to reset password');
-      }
+      const { authService } = await import('@/src/services/auth.service');
+      await authService.resetPassword({ username: username.trim(), otp: otp.trim(), newPassword });
 
       setStep('SUCCESS');
       showToast("Success", "Password reset successfully.", "success");
