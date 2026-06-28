@@ -171,8 +171,8 @@ export default function AttendanceManagementPage() {
 
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-black text-slate-900 tracking-tight">Attendance Roster</h2>
-        <p className="text-sm text-slate-500 mt-1">Mark daily student logs, lock attendance sheets, and process correction appeals.</p>
+        <h2 className="text-2xl font-black text-text-primary tracking-tight">Attendance Roster</h2>
+        <p className="text-sm text-text-secondary mt-1">Mark daily student logs, lock attendance sheets, and process correction appeals.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -184,7 +184,7 @@ export default function AttendanceManagementPage() {
               <select 
                 value={selectedBatchId} 
                 onChange={(e) => setSelectedBatchId(e.target.value)}
-                className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-xs font-bold text-slate-700 outline-none cursor-pointer"
+                className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-xs font-bold text-text-primary outline-none cursor-pointer"
               >
                 <option value="batch-ai-2026">AI Batch 2026</option>
               </select>
@@ -192,7 +192,7 @@ export default function AttendanceManagementPage() {
                 type="date" 
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-xs font-bold text-slate-700 outline-none cursor-pointer"
+                className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-xs font-bold text-text-primary outline-none cursor-pointer"
               />
             </div>
 
@@ -221,8 +221,8 @@ export default function AttendanceManagementPage() {
                     {student.avatar}
                   </div>
                   <div>
-                    <span className="block font-bold text-slate-800 text-xs">{student.name}</span>
-                    <span className="text-[10px] text-slate-400 font-semibold">{student.id}</span>
+                    <span className="block font-bold text-text-primary text-xs">{student.name}</span>
+                    <span className="text-[10px] text-text-secondary font-semibold">{student.id}</span>
                   </div>
                 </div>
 
@@ -239,7 +239,7 @@ export default function AttendanceManagementPage() {
                             ? st === 'Present' ? 'bg-emerald-600 border-emerald-500 text-white' :
                               st === 'Absent' ? 'bg-rose-600 border-rose-500 text-white' :
                               'bg-amber-500 border-amber-450 text-white'
-                            : 'bg-white border-slate-200 text-slate-500 hover:border-slate-350'
+                            : 'bg-white border-slate-200 text-text-secondary hover:border-slate-350'
                         } disabled:opacity-50 disabled:cursor-not-allowed`}
                       >
                         {st}
@@ -256,7 +256,7 @@ export default function AttendanceManagementPage() {
             <div className="flex justify-end gap-3 pt-3 border-t border-slate-50">
               <button 
                 onClick={handleSaveDraft}
-                className="px-5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer flex items-center gap-1.5"
+                className="px-5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-text-primary font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer flex items-center gap-1.5"
               >
                 <Save className="h-4 w-4" /> Save Draft
               </button>
@@ -279,8 +279,8 @@ export default function AttendanceManagementPage() {
               <div key={app.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
                 <div className="flex justify-between items-start">
                   <div>
-                    <span className="block font-bold text-slate-800 text-xs">{app.studentName}</span>
-                    <span className="text-[9px] text-slate-400 font-semibold">{app.date} • Appeal for {app.status}</span>
+                    <span className="block font-bold text-text-primary text-xs">{app.studentName}</span>
+                    <span className="text-[9px] text-text-secondary font-semibold">{app.date} • Appeal for {app.status}</span>
                   </div>
                   <span className={`text-[8px] font-black px-2 py-0.5 rounded border uppercase tracking-wider ${
                     app.reviewStatus === 'Approved' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' :
@@ -291,7 +291,7 @@ export default function AttendanceManagementPage() {
                   </span>
                 </div>
 
-                <p className="text-[11px] text-slate-500 leading-relaxed italic">"{app.reason}"</p>
+                <p className="text-[11px] text-text-secondary leading-relaxed italic">"{app.reason}"</p>
 
                 {app.reviewStatus === 'Pending' && (
                   <div className="flex gap-2 pt-1 border-t border-slate-200/50">
@@ -312,7 +312,7 @@ export default function AttendanceManagementPage() {
               </div>
             ))}
             {appeals.length === 0 && (
-              <p className="text-xs text-slate-400 italic text-center py-12">No correction requests submitted.</p>
+              <p className="text-xs text-text-secondary italic text-center py-12">No correction requests submitted.</p>
             )}
           </div>
         </div>
