@@ -136,7 +136,7 @@ export default function SelfServicePage() {
 
   if (!hasPermission('selfservice.view')) {
     return (
-      <div className="flex h-[50vh] items-center justify-center text-slate-500">
+      <div className="flex h-[50vh] items-center justify-center text-text-secondary">
         <p className="font-semibold">You do not have permission to view the self-service portal.</p>
       </div>
     );
@@ -170,11 +170,11 @@ export default function SelfServicePage() {
       {/* Header Banner */}
       <div className="mb-6 flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-text-primary flex items-center gap-2">
             <UserCircle className="w-6 h-6 text-teal-600" />
             Self-Service Portal
           </h1>
-          <p className="text-slate-550 text-sm mt-1">Manage your profile, documents, and notifications.</p>
+          <p className="text-text-secondary text-sm mt-1">Manage your profile, documents, and notifications.</p>
         </div>
       </div>
 
@@ -182,15 +182,15 @@ export default function SelfServicePage() {
         {/* Left Navigation Card */}
         <div className="lg:col-span-1 space-y-4">
           <div className="bg-white rounded-2xl border border-slate-150 shadow-sm overflow-hidden">
-            <div className="p-6 text-center border-b border-slate-100 bg-slate-50/50">
-              <div className="w-20 h-20 mx-auto bg-slate-200 border border-white shadow-md rounded-full flex items-center justify-center mb-4 text-slate-500 overflow-hidden">
+            <div className="p-6 text-center border-b border-border bg-slate-50/50">
+              <div className="w-20 h-20 mx-auto bg-slate-200 border border-white shadow-md rounded-full flex items-center justify-center mb-4 text-text-secondary overflow-hidden">
                 <img 
                   src={`https://api.dicebear.com/7.x/initials/svg?seed=${profile.name}&backgroundColor=0d9488,14b8a6,0f172a`} 
                   alt={profile.name} 
                   className="h-full w-full object-cover" 
                 />
               </div>
-              <h2 className="font-extrabold text-slate-800 tracking-tight leading-tight">{profile.name}</h2>
+              <h2 className="font-extrabold text-text-primary tracking-tight leading-tight">{profile.name}</h2>
               <span className="inline-block mt-2 px-2.5 py-0.5 rounded-full text-xs font-bold bg-teal-50 border border-teal-150 text-teal-700">
                 {profile.role}
               </span>
@@ -202,7 +202,7 @@ export default function SelfServicePage() {
                 className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold flex items-center justify-between transition-all ${
                   activeTab === 'profile' 
                     ? 'text-teal-700 bg-teal-50/70 shadow-sm' 
-                    : 'text-slate-550 hover:bg-slate-50 hover:text-slate-850'
+                    : 'text-text-secondary hover:bg-slate-50 hover:text-slate-850'
                 }`}
               >
                 <span className="flex items-center gap-2.5"><UserCog className="w-4.5 h-4.5" /> My Profile</span>
@@ -213,7 +213,7 @@ export default function SelfServicePage() {
                 className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold flex items-center justify-between transition-all ${
                   activeTab === 'documents' 
                     ? 'text-teal-700 bg-teal-50/70 shadow-sm' 
-                    : 'text-slate-550 hover:bg-slate-50 hover:text-slate-850'
+                    : 'text-text-secondary hover:bg-slate-50 hover:text-slate-850'
                 }`}
               >
                 <span className="flex items-center gap-2.5"><FileText className="w-4.5 h-4.5" /> Documents</span>
@@ -224,7 +224,7 @@ export default function SelfServicePage() {
                 className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold flex items-center justify-between transition-all ${
                   activeTab === 'certificates' 
                     ? 'text-teal-700 bg-teal-50/70 shadow-sm' 
-                    : 'text-slate-550 hover:bg-slate-50 hover:text-slate-850'
+                    : 'text-text-secondary hover:bg-slate-50 hover:text-slate-850'
                 }`}
               >
                 <span className="flex items-center gap-2.5"><Award className="w-4.5 h-4.5" /> Certificates</span>
@@ -235,7 +235,7 @@ export default function SelfServicePage() {
                 className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold flex items-center justify-between transition-all ${
                   activeTab === 'notifications' 
                     ? 'text-teal-700 bg-teal-50/70 shadow-sm' 
-                    : 'text-slate-550 hover:bg-slate-50 hover:text-slate-850'
+                    : 'text-text-secondary hover:bg-slate-50 hover:text-slate-850'
                 }`}
               >
                 <span className="flex items-center gap-2.5"><Bell className="w-4.5 h-4.5" /> Notifications</span>
@@ -261,15 +261,15 @@ export default function SelfServicePage() {
           {/* TAB 1: PROFILE VIEW / EDIT */}
           {activeTab === 'profile' && (
             <div className="bg-white rounded-2xl border border-slate-150 shadow-sm p-6 space-y-6">
-              <div className="flex justify-between items-center border-b border-slate-100 pb-4">
+              <div className="flex justify-between items-center border-b border-border pb-4">
                 <div>
-                  <h3 className="font-bold text-slate-800 text-lg">Personal Profile</h3>
-                  <p className="text-xs text-slate-400">View and update your personal contact coordinates.</p>
+                  <h3 className="font-bold text-text-primary text-lg">Personal Profile</h3>
+                  <p className="text-xs text-text-secondary">View and update your personal contact coordinates.</p>
                 </div>
                 {!isEditing && (
                   <button 
                     onClick={() => { setIsEditing(true); setEditForm(profile); }}
-                    className="bg-white border border-slate-350 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-xl font-bold text-sm transition-colors cursor-pointer shadow-sm"
+                    className="bg-white border border-slate-350 hover:bg-slate-50 text-text-primary px-4 py-2 rounded-xl font-bold text-sm transition-colors cursor-pointer shadow-sm"
                   >
                     Edit Profile
                   </button>
@@ -280,58 +280,58 @@ export default function SelfServicePage() {
                 <form onSubmit={handleProfileSave} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Full Name *</label>
+                      <label className="block text-xs font-bold text-text-secondary mb-1.5 uppercase tracking-wide">Full Name *</label>
                       <input 
                         type="text"
                         required
                         value={editForm.name || ''}
                         onChange={e => setEditForm(prev => ({ ...prev, name: e.target.value }))}
-                        className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm bg-white text-slate-800 focus:outline-none focus:border-blue-600"
+                        className="w-full rounded-xl border border-border px-4 py-2.5 text-sm bg-white text-text-primary focus:outline-none focus:border-primary"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Email Address *</label>
+                      <label className="block text-xs font-bold text-text-secondary mb-1.5 uppercase tracking-wide">Email Address *</label>
                       <input 
                         type="email"
                         required
                         value={editForm.email || ''}
                         onChange={e => setEditForm(prev => ({ ...prev, email: e.target.value }))}
-                        className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm bg-white text-slate-800 focus:outline-none focus:border-blue-600"
+                        className="w-full rounded-xl border border-border px-4 py-2.5 text-sm bg-white text-text-primary focus:outline-none focus:border-primary"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Phone Number *</label>
+                      <label className="block text-xs font-bold text-text-secondary mb-1.5 uppercase tracking-wide">Phone Number *</label>
                       <input 
                         type="text"
                         required
                         value={editForm.phone || ''}
                         onChange={e => setEditForm(prev => ({ ...prev, phone: e.target.value }))}
-                        className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm bg-white text-slate-800 focus:outline-none focus:border-blue-600"
+                        className="w-full rounded-xl border border-border px-4 py-2.5 text-sm bg-white text-text-primary focus:outline-none focus:border-primary"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Join Date (Read-Only)</label>
-                      <div className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-500">
+                      <label className="block text-xs font-bold text-text-secondary mb-1.5 uppercase tracking-wide">Join Date (Read-Only)</label>
+                      <div className="w-full rounded-xl border border-border bg-slate-50 px-4 py-2.5 text-sm text-text-secondary">
                         {new Date(profile.joinDate).toLocaleDateString()}
                       </div>
                     </div>
                     <div className="md:col-span-2">
-                      <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Address *</label>
+                      <label className="block text-xs font-bold text-text-secondary mb-1.5 uppercase tracking-wide">Address *</label>
                       <input 
                         type="text"
                         required
                         value={editForm.address || ''}
                         onChange={e => setEditForm(prev => ({ ...prev, address: e.target.value }))}
-                        className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm bg-white text-slate-800 focus:outline-none focus:border-blue-600"
+                        className="w-full rounded-xl border border-border px-4 py-2.5 text-sm bg-white text-text-primary focus:outline-none focus:border-primary"
                       />
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t border-slate-100 flex justify-end gap-2">
+                  <div className="pt-4 border-t border-border flex justify-end gap-2">
                     <button 
                       type="button"
                       onClick={() => setIsEditing(false)}
-                      className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-650 px-4 py-2 rounded-xl font-bold text-sm transition-colors"
+                      className="bg-white border border-border hover:bg-slate-50 text-text-secondary px-4 py-2 rounded-xl font-bold text-sm transition-colors"
                     >
                       Cancel
                     </button>
@@ -346,61 +346,61 @@ export default function SelfServicePage() {
                   </div>
                 </form>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50/50 border border-slate-100 rounded-2xl p-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50/50 border border-border rounded-2xl p-5">
                   <div className="flex gap-3 items-center">
-                    <UserCircle className="w-8 h-8 text-slate-400 shrink-0" />
+                    <UserCircle className="w-8 h-8 text-text-secondary shrink-0" />
                     <div>
-                      <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide">Full Name</span>
-                      <span className="font-semibold text-slate-800 text-sm">{profile.name}</span>
+                      <span className="block text-[10px] font-bold text-text-secondary uppercase tracking-wide">Full Name</span>
+                      <span className="font-semibold text-text-primary text-sm">{profile.name}</span>
                     </div>
                   </div>
                   <div className="flex gap-3 items-center">
-                    <Mail className="w-8 h-8 text-slate-400 shrink-0" />
+                    <Mail className="w-8 h-8 text-text-secondary shrink-0" />
                     <div>
-                      <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide">Email Address</span>
-                      <span className="font-semibold text-slate-800 text-sm">{profile.email}</span>
+                      <span className="block text-[10px] font-bold text-text-secondary uppercase tracking-wide">Email Address</span>
+                      <span className="font-semibold text-text-primary text-sm">{profile.email}</span>
                     </div>
                   </div>
                   <div className="flex gap-3 items-center">
-                    <Phone className="w-8 h-8 text-slate-400 shrink-0" />
+                    <Phone className="w-8 h-8 text-text-secondary shrink-0" />
                     <div>
-                      <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide">Phone Number</span>
-                      <span className="font-semibold text-slate-800 text-sm">{profile.phone}</span>
+                      <span className="block text-[10px] font-bold text-text-secondary uppercase tracking-wide">Phone Number</span>
+                      <span className="font-semibold text-text-primary text-sm">{profile.phone}</span>
                     </div>
                   </div>
                   <div className="flex gap-3 items-center">
-                    <Calendar className="w-8 h-8 text-slate-400 shrink-0" />
+                    <Calendar className="w-8 h-8 text-text-secondary shrink-0" />
                     <div>
-                      <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide">Join Date</span>
-                      <span className="font-semibold text-slate-800 text-sm">{new Date(profile.joinDate).toLocaleDateString()}</span>
+                      <span className="block text-[10px] font-bold text-text-secondary uppercase tracking-wide">Join Date</span>
+                      <span className="font-semibold text-text-primary text-sm">{new Date(profile.joinDate).toLocaleDateString()}</span>
                     </div>
                   </div>
                   <div className="flex gap-3 items-center md:col-span-2">
-                    <MapPin className="w-8 h-8 text-slate-400 shrink-0" />
+                    <MapPin className="w-8 h-8 text-text-secondary shrink-0" />
                     <div>
-                      <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide">Address</span>
-                      <span className="font-semibold text-slate-800 text-sm">{profile.address}</span>
+                      <span className="block text-[10px] font-bold text-text-secondary uppercase tracking-wide">Address</span>
+                      <span className="font-semibold text-text-primary text-sm">{profile.address}</span>
                     </div>
                   </div>
                 </div>
               )}
 
               {/* Document Requests Section */}
-              <div className="border-t border-slate-100 pt-6">
-                <h4 className="font-bold text-slate-800 text-base mb-4">Verification & Document Requests</h4>
+              <div className="border-t border-border pt-6">
+                <h4 className="font-bold text-text-primary text-base mb-4">Verification & Document Requests</h4>
                 <div className="bg-white rounded-xl border border-slate-150 overflow-hidden">
                   <div className="divide-y divide-slate-150">
                     {recentRequests.map(req => (
                       <div key={req.id} className="p-4 flex items-center justify-between hover:bg-slate-50/50 transition-colors">
                         <div>
                           <div className="font-bold text-slate-750 text-sm">{req.type}</div>
-                          <div className="text-xxs text-slate-400 mt-1">Requested on {new Date(req.requestDate).toLocaleDateString()}</div>
+                          <div className="text-xxs text-text-secondary mt-1">Requested on {new Date(req.requestDate).toLocaleDateString()}</div>
                         </div>
                         <div className="flex items-center gap-4">
                           <span className={`px-2 py-0.5 rounded text-xxs font-bold uppercase tracking-wider ${
                             req.status === 'Ready' ? 'bg-emerald-105 text-emerald-800 border border-emerald-150 bg-emerald-50' :
                             req.status === 'Pending' ? 'bg-amber-105 text-amber-805 border border-amber-150 bg-amber-50' :
-                            'bg-slate-100 text-slate-700'
+                            'bg-slate-100 text-text-primary'
                           }`}>
                             {req.status}
                           </span>
@@ -430,13 +430,13 @@ export default function SelfServicePage() {
               {/* Submitted documents card */}
               <div className="bg-white rounded-2xl border border-slate-150 shadow-sm p-6">
                 <div className="mb-4">
-                  <h3 className="font-bold text-slate-800 text-lg">Submitted Documents</h3>
+                  <h3 className="font-bold text-text-primary text-lg">Submitted Documents</h3>
                   <p className="text-xs text-slate-455">Files uploaded by you during application or onboarding.</p>
                 </div>
 
                 <div className="overflow-hidden border border-slate-150 rounded-xl">
                   <table className="w-full text-sm text-left">
-                    <thead className="bg-slate-50 border-b border-slate-150 text-slate-500 text-xs font-bold uppercase tracking-wide">
+                    <thead className="bg-slate-50 border-b border-slate-150 text-text-secondary text-xs font-bold uppercase tracking-wide">
                       <tr>
                         <th className="px-5 py-3 font-semibold">Document Name</th>
                         <th className="px-5 py-3 font-semibold">Type</th>
@@ -445,13 +445,13 @@ export default function SelfServicePage() {
                         <th className="px-5 py-3 font-semibold text-right">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 text-slate-700">
+                    <tbody className="divide-y divide-border text-text-primary">
                       {submittedDocs.map(doc => (
-                        <tr key={doc.name} className="hover:bg-slate-50/50 transition-all font-medium text-slate-800">
-                          <td className="px-5 py-4 font-bold text-slate-800">{doc.name}</td>
-                          <td className="px-5 py-4"><span className="bg-slate-100 text-slate-650 px-2 py-0.5 rounded text-xs">{doc.type}</span></td>
-                          <td className="px-5 py-4 text-xs text-slate-400">{new Date(doc.date).toLocaleDateString()}</td>
-                          <td className="px-5 py-4 text-xs text-slate-450 font-semibold">{doc.size}</td>
+                        <tr key={doc.name} className="hover:bg-slate-50/50 transition-all font-medium text-text-primary">
+                          <td className="px-5 py-4 font-bold text-text-primary">{doc.name}</td>
+                          <td className="px-5 py-4"><span className="bg-slate-100 text-text-secondary px-2 py-0.5 rounded text-xs">{doc.type}</span></td>
+                          <td className="px-5 py-4 text-xs text-text-secondary">{new Date(doc.date).toLocaleDateString()}</td>
+                          <td className="px-5 py-4 text-xs text-text-secondary font-semibold">{doc.size}</td>
                           <td className="px-5 py-4 text-right">
                             <button 
                               onClick={() => handleDownload(doc.name, doc.type)}
@@ -470,13 +470,13 @@ export default function SelfServicePage() {
               {/* Portal Provided documents card */}
               <div className="bg-white rounded-2xl border border-slate-150 shadow-sm p-6">
                 <div className="mb-4">
-                  <h3 className="font-bold text-slate-800 text-lg">Portal Provided Documents</h3>
-                  <p className="text-xs text-slate-450">Official offers, certifications, policy guidelines, and training catalogs.</p>
+                  <h3 className="font-bold text-text-primary text-lg">Portal Provided Documents</h3>
+                  <p className="text-xs text-text-secondary">Official offers, certifications, policy guidelines, and training catalogs.</p>
                 </div>
 
                 <div className="overflow-hidden border border-slate-150 rounded-xl">
                   <table className="w-full text-sm text-left">
-                    <thead className="bg-slate-50 border-b border-slate-150 text-slate-500 text-xs font-bold uppercase tracking-wide">
+                    <thead className="bg-slate-50 border-b border-slate-150 text-text-secondary text-xs font-bold uppercase tracking-wide">
                       <tr>
                         <th className="px-5 py-3 font-semibold">Document Name</th>
                         <th className="px-5 py-3 font-semibold">Type</th>
@@ -485,13 +485,13 @@ export default function SelfServicePage() {
                         <th className="px-5 py-3 font-semibold text-right">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 text-slate-700">
+                    <tbody className="divide-y divide-border text-text-primary">
                       {providedDocs.map(doc => (
-                        <tr key={doc.name} className="hover:bg-slate-50/50 transition-all font-medium text-slate-800">
-                          <td className="px-5 py-4 font-bold text-slate-800">{doc.name}</td>
+                        <tr key={doc.name} className="hover:bg-slate-50/50 transition-all font-medium text-text-primary">
+                          <td className="px-5 py-4 font-bold text-text-primary">{doc.name}</td>
                           <td className="px-5 py-4"><span className="bg-teal-50 text-teal-700 border border-teal-100 px-2 py-0.5 rounded text-xs font-semibold">{doc.type}</span></td>
-                          <td className="px-5 py-4 text-xs text-slate-400">{new Date(doc.date).toLocaleDateString()}</td>
-                          <td className="px-5 py-4 text-xs text-slate-450 font-semibold">{doc.size}</td>
+                          <td className="px-5 py-4 text-xs text-text-secondary">{new Date(doc.date).toLocaleDateString()}</td>
+                          <td className="px-5 py-4 text-xs text-text-secondary font-semibold">{doc.size}</td>
                           <td className="px-5 py-4 text-right">
                             <button 
                               onClick={() => handleDownload(doc.name, doc.type)}
@@ -514,22 +514,22 @@ export default function SelfServicePage() {
             <div className="space-y-6">
               <div className="bg-white rounded-2xl border border-slate-150 shadow-sm p-6">
                 <div className="mb-4">
-                  <h3 className="font-bold text-slate-800 text-lg">My Certificates</h3>
+                  <h3 className="font-bold text-text-primary text-lg">My Certificates</h3>
                   <p className="text-xs text-slate-455">View and download your official program certificates.</p>
                 </div>
 
                 {myCertificates.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {myCertificates.map(cert => (
-                      <div key={cert.id} className="border border-slate-200 rounded-xl p-5 hover:shadow-md transition-all">
+                      <div key={cert.id} className="border border-border rounded-xl p-5 hover:shadow-md transition-all">
                         <div className="flex justify-between items-start mb-4">
                           <div className="flex items-center gap-2">
                             <Award className="w-6 h-6 text-teal-600" />
-                            <h4 className="font-bold text-slate-800">{cert.type}</h4>
+                            <h4 className="font-bold text-text-primary">{cert.type}</h4>
                           </div>
-                          <span className="text-xxs font-mono bg-slate-100 text-slate-500 px-2 py-1 rounded">{cert.certificateNumber}</span>
+                          <span className="text-xxs font-mono bg-slate-100 text-text-secondary px-2 py-1 rounded">{cert.certificateNumber}</span>
                         </div>
-                        <div className="text-sm text-slate-600 mb-4">
+                        <div className="text-sm text-text-secondary mb-4">
                           <p><strong>Program:</strong> {cert.program}</p>
                           <p><strong>Issued On:</strong> {cert.issueDate ? new Date(cert.issueDate).toLocaleDateString() : 'N/A'}</p>
                         </div>
@@ -543,12 +543,12 @@ export default function SelfServicePage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50">
-                    <div className="w-16 h-16 bg-white shadow-sm border border-slate-100 rounded-full flex items-center justify-center mb-4">
+                  <div className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-border rounded-xl bg-slate-50">
+                    <div className="w-16 h-16 bg-white shadow-sm border border-border rounded-full flex items-center justify-center mb-4">
                       <Lock className="w-6 h-6 text-slate-300" />
                     </div>
-                    <h4 className="font-bold text-slate-700 text-lg">No Certificates Issued Yet</h4>
-                    <p className="text-sm text-slate-500 mt-2 max-w-sm text-center">Your certificates will appear here once they have been approved and issued by the administration.</p>
+                    <h4 className="font-bold text-text-primary text-lg">No Certificates Issued Yet</h4>
+                    <p className="text-sm text-text-secondary mt-2 max-w-sm text-center">Your certificates will appear here once they have been approved and issued by the administration.</p>
                   </div>
                 )}
               </div>
@@ -558,13 +558,13 @@ export default function SelfServicePage() {
           {/* TAB 4: NOTIFICATIONS VIEW */}
           {activeTab === 'notifications' && (
             <div className="bg-white rounded-2xl border border-slate-150 shadow-sm p-6 space-y-6">
-              <div className="border-b border-slate-100 pb-4">
-                <h3 className="font-bold text-slate-800 text-lg">In-Portal Notifications</h3>
-                <p className="text-xs text-slate-400">View corporate memos, batch announcements, and alerts matching your profile.</p>
+              <div className="border-b border-border pb-4">
+                <h3 className="font-bold text-text-primary text-lg">In-Portal Notifications</h3>
+                <p className="text-xs text-text-secondary">View corporate memos, batch announcements, and alerts matching your profile.</p>
               </div>
 
               {notifications.length === 0 ? (
-                <div className="p-12 text-center text-slate-500 bg-slate-50 border border-slate-150 border-dashed rounded-xl">
+                <div className="p-12 text-center text-text-secondary bg-slate-50 border border-slate-150 border-dashed rounded-xl">
                   <Bell className="w-10 h-10 mx-auto text-slate-350 mb-3" />
                   <p className="text-sm font-semibold">No active notifications found.</p>
                 </div>
@@ -593,7 +593,7 @@ export default function SelfServicePage() {
                       <div className={`h-10 w-10 shrink-0 rounded-xl flex items-center justify-center border transition-colors ${
                         !n.readStatus 
                           ? 'bg-teal-50 text-teal-600 border-teal-150' 
-                          : 'bg-slate-50 text-slate-400 border-slate-200'
+                          : 'bg-slate-50 text-text-secondary border-border'
                       }`}>
                         <Bell className="h-5 w-5" />
                       </div>
@@ -601,15 +601,15 @@ export default function SelfServicePage() {
                       <div className="flex-1 min-w-0 space-y-1">
                         <div className="flex items-center justify-between gap-4">
                           <span className={`text-sm font-bold truncate leading-tight ${
-                            !n.readStatus ? 'text-slate-900 font-extrabold' : 'text-slate-650'
+                            !n.readStatus ? 'text-text-primary font-extrabold' : 'text-text-secondary'
                           }`}>
                             {n.title}
                           </span>
-                          <span className="text-[10px] text-slate-400 font-semibold uppercase whitespace-nowrap leading-none shrink-0">
+                          <span className="text-[10px] text-text-secondary font-semibold uppercase whitespace-nowrap leading-none shrink-0">
                             {new Date(n.createdTime).toLocaleDateString()}
                           </span>
                         </div>
-                        <p className="text-xs text-slate-500 line-clamp-1 truncate max-w-2xl font-medium">
+                        <p className="text-xs text-text-secondary line-clamp-1 truncate max-w-2xl font-medium">
                           {n.message}
                         </p>
                         
@@ -621,7 +621,7 @@ export default function SelfServicePage() {
                           }`}>
                             {n.priority}
                           </span>
-                          <span className="text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded font-semibold leading-none">
+                          <span className="text-[10px] bg-slate-100 text-text-secondary px-1.5 py-0.5 rounded font-semibold leading-none">
                             {n.module}
                           </span>
                           {!n.readStatus && (

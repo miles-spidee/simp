@@ -607,14 +607,14 @@ export default function BatchManagementPage() {
       <div className="flex h-screen items-center justify-center bg-slate-50">
         <div className="flex flex-col items-center gap-3">
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600"></div>
-          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Loading Cohort Delivery System...</p>
+          <p className="text-xs font-bold text-text-secondary uppercase tracking-widest">Loading Cohort Delivery System...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`space-y-6 select-none text-slate-800 ${
+    <div className={`space-y-6 select-none text-text-primary ${
       (activeActionModal?.type === 'edit' || activeActionModal?.type === 'create') 
         ? 'h-[calc(100vh-80px)] overflow-hidden relative' 
         : 'pb-12 animate-fade-in relative min-h-screen'
@@ -626,37 +626,37 @@ export default function BatchManagementPage() {
           {toast.type === 'success' && <CheckCircle2 className="h-4.5 w-4.5 text-emerald-600 shrink-0" />}
           {toast.type === 'error' && <XCircle className="h-4.5 w-4.5 text-red-600 shrink-0" />}
           {toast.type === 'info' && <AlertCircle className="h-4.5 w-4.5 text-blue-600 shrink-0" />}
-          <span className="text-slate-700">{toast.message}</span>
+          <span className="text-text-primary">{toast.message}</span>
         </div>
       )}
 
       {/* Roster Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-5">
         <div>
-          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+          <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest flex items-center gap-1.5">
             <span>Operations Delivery (ODMS)</span>
             <ChevronRight className="h-3 w-3" />
             <span className="text-blue-600 font-black">Cohort Batches</span>
           </div>
-          <h2 className="text-2xl font-black text-slate-900 mt-1 tracking-tight">Batch Delivery Portal</h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h2 className="text-2xl font-black text-text-primary mt-1 tracking-tight">Batch Delivery Portal</h2>
+          <p className="text-xs text-text-secondary mt-0.5">
             Structure learners into execution modules. Remap coaches, monitor capacities, and audit cohort progressions.
           </p>
         </div>
 
         {/* Global tab toggle */}
         <div className="flex flex-wrap items-center gap-3">
-          <div className="bg-slate-100 p-0.5 rounded-lg flex border border-slate-200 shadow-sm shrink-0">
+          <div className="bg-slate-100 p-0.5 rounded-lg flex border border-border shadow-sm shrink-0">
             <button
               onClick={() => setActiveView('dashboard')}
-              className={`px-3 py-1.5 text-xs font-bold rounded-md flex items-center gap-1.5 transition-all duration-200 ${activeView === 'dashboard' ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
+              className={`px-3 py-1.5 text-xs font-bold rounded-md flex items-center gap-1.5 transition-all duration-200 ${activeView === 'dashboard' ? 'bg-white text-blue-600 shadow-xs' : 'text-text-secondary hover:text-text-primary'}`}
             >
               <LayoutGrid className="h-3.5 w-3.5" />
               <span>Operational Dashboard</span>
             </button>
             <button
               onClick={() => setActiveView('directory')}
-              className={`px-3 py-1.5 text-xs font-bold rounded-md flex items-center gap-1.5 transition-all duration-200 ${activeView === 'directory' ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
+              className={`px-3 py-1.5 text-xs font-bold rounded-md flex items-center gap-1.5 transition-all duration-200 ${activeView === 'directory' ? 'bg-white text-blue-600 shadow-xs' : 'text-text-secondary hover:text-text-primary'}`}
             >
               <Users className="h-3.5 w-3.5" />
               <span>Batch Directory</span>
@@ -665,7 +665,7 @@ export default function BatchManagementPage() {
 
           <button 
             onClick={handleExportRoster}
-            className="flex items-center gap-1.5 px-3.5 py-2 border border-slate-200 hover:border-blue-600 hover:text-blue-600 bg-white rounded-lg text-xs font-bold text-slate-700 shadow-sm transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-2 border border-border hover:border-secondary hover:text-blue-600 bg-white rounded-lg text-xs font-bold text-text-primary shadow-sm transition-all cursor-pointer"
           >
             <FileDown className="h-3.5 w-3.5" />
             <span>Export Roster</span>
@@ -714,11 +714,11 @@ export default function BatchManagementPage() {
                     showToast(`Filtering batches by status: ${kpi.filterVal}`);
                   }
                 }}
-                className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex items-center justify-between group hover:border-blue-500 hover:shadow-md transition-all cursor-pointer"
+                className="bg-white border border-border rounded-xl p-4 shadow-xs flex items-center justify-between group hover:border-secondary hover:shadow-md transition-all cursor-pointer"
               >
                 <div className="space-y-1">
-                  <div className="text-2xl font-black text-slate-900 group-hover:text-blue-600 transition-colors">{kpi.count}</div>
-                  <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{kpi.label}</div>
+                  <div className="text-2xl font-black text-text-primary group-hover:text-blue-600 transition-colors">{kpi.count}</div>
+                  <div className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">{kpi.label}</div>
                 </div>
                 <div className={`h-9 w-9 rounded-lg ${kpi.color} flex items-center justify-center shrink-0`}>
                   <kpi.icon className="h-4.5 w-4.5" />
@@ -731,8 +731,8 @@ export default function BatchManagementPage() {
           <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
             
             {/* Status splits */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
-              <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4">
+              <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary flex items-center gap-1.5">
                 <Activity className="h-4 w-4 text-blue-600" />
                 Status Distribution
               </h3>
@@ -741,7 +741,7 @@ export default function BatchManagementPage() {
                   const pct = Math.round((count / batches.length) * 100) || 0;
                   return (
                     <div key={index} className="space-y-1">
-                      <div className="flex justify-between text-xs font-semibold text-slate-700">
+                      <div className="flex justify-between text-xs font-semibold text-text-primary">
                         <span>{status}</span>
                         <span>{count} ({pct}%)</span>
                       </div>
@@ -758,16 +758,16 @@ export default function BatchManagementPage() {
             </div>
 
             {/* Capacity Util */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
-              <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4">
+              <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary flex items-center gap-1.5">
                 <Layers className="h-4 w-4 text-emerald-600" />
                 Student Roster Allocation
               </h3>
               
               <div className="space-y-4 pt-2">
-                <div className="flex justify-between items-center text-xs font-bold text-slate-600">
+                <div className="flex justify-between items-center text-xs font-bold text-text-secondary">
                   <span>Occupied Capacity:</span>
-                  <span className="text-slate-900">{capacityAlloc.occupied} / {capacityAlloc.total} Seats</span>
+                  <span className="text-text-primary">{capacityAlloc.occupied} / {capacityAlloc.total} Seats</span>
                 </div>
                 
                 {/* SVG circular speedometer or progress meter */}
@@ -796,20 +796,20 @@ export default function BatchManagementPage() {
                       />
                     </svg>
                     <div className="absolute text-center">
-                      <span className="text-sm font-black text-slate-800">{capacityAlloc.utilization}%</span>
-                      <span className="text-[7.5px] uppercase font-bold text-slate-400 block -mt-0.5">Utilized</span>
+                      <span className="text-sm font-black text-text-primary">{capacityAlloc.utilization}%</span>
+                      <span className="text-[7.5px] uppercase font-bold text-text-secondary block -mt-0.5">Utilized</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 text-center text-[10px] font-bold text-slate-600">
-                  <div className="bg-slate-50 border border-slate-100 p-2 rounded">
-                    <span className="text-slate-400 block uppercase">Allocated</span>
-                    <span className="text-slate-800 text-xs">{capacityAlloc.occupied} Seats</span>
+                <div className="grid grid-cols-2 gap-2 text-center text-[10px] font-bold text-text-secondary">
+                  <div className="bg-slate-50 border border-border p-2 rounded">
+                    <span className="text-text-secondary block uppercase">Allocated</span>
+                    <span className="text-text-primary text-xs">{capacityAlloc.occupied} Seats</span>
                   </div>
-                  <div className="bg-slate-50 border border-slate-100 p-2 rounded">
-                    <span className="text-slate-400 block uppercase">Remaining</span>
-                    <span className="text-slate-800 text-xs">{capacityAlloc.remaining} Seats</span>
+                  <div className="bg-slate-50 border border-border p-2 rounded">
+                    <span className="text-text-secondary block uppercase">Remaining</span>
+                    <span className="text-text-primary text-xs">{capacityAlloc.remaining} Seats</span>
                   </div>
                 </div>
 
@@ -817,8 +817,8 @@ export default function BatchManagementPage() {
             </div>
 
             {/* Mentor Workloads */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
-              <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4">
+              <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary flex items-center gap-1.5">
                 <Shield className="h-4 w-4 text-purple-600" />
                 Facilitator Workloads
               </h3>
@@ -829,10 +829,10 @@ export default function BatchManagementPage() {
                   const isOverloaded = mentor.students > 45;
 
                   return (
-                    <div key={index} className="space-y-1 border-b border-slate-50 pb-2">
-                      <div className="flex justify-between text-xs font-semibold text-slate-700">
+                    <div key={index} className="space-y-1 border-b border-border pb-2">
+                      <div className="flex justify-between text-xs font-semibold text-text-primary">
                         <span className="font-extrabold">{mentor.name}</span>
-                        <span className={isOverloaded ? 'text-rose-600 font-bold' : 'text-slate-500'}>
+                        <span className={isOverloaded ? 'text-rose-600 font-bold' : 'text-text-secondary'}>
                           {mentor.students} Students ({mentor.batchesCount} Batches)
                         </span>
                       </div>
@@ -849,8 +849,8 @@ export default function BatchManagementPage() {
             </div>
 
             {/* Program distribution */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
-              <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4">
+              <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary flex items-center gap-1.5">
                 <Award className="h-4 w-4 text-indigo-600" />
                 Program Mapping Split
               </h3>
@@ -859,7 +859,7 @@ export default function BatchManagementPage() {
                   const pct = Math.round((count / batches.length) * 100) || 0;
                   return (
                     <div key={index} className="space-y-1">
-                      <div className="flex justify-between text-xs font-semibold text-slate-700">
+                      <div className="flex justify-between text-xs font-semibold text-text-primary">
                         <span className="truncate max-w-[150px] block">{type}</span>
                         <span>{count}</span>
                       </div>
@@ -881,8 +881,8 @@ export default function BatchManagementPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
             {/* Underperforming Cohorts */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4 lg:col-span-1">
-              <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4 lg:col-span-1">
+              <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary flex items-center gap-1.5">
                 <AlertCircle className="h-4 w-4 text-rose-600" />
                 Critical Watch List (Under 80%)
               </h3>
@@ -891,17 +891,17 @@ export default function BatchManagementPage() {
                   <div 
                     key={b.id} 
                     onClick={() => handleOpenProfile(b)}
-                    className="flex items-center justify-between border-b border-slate-50 pb-2 cursor-pointer hover:bg-slate-50/50 p-1.5 rounded-lg transition"
+                    className="flex items-center justify-between border-b border-border pb-2 cursor-pointer hover:bg-slate-50/50 p-1.5 rounded-lg transition"
                   >
                     <div>
-                      <div className="text-xs font-extrabold text-slate-900">{b.name}</div>
-                      <div className="text-[10px] text-slate-500">Coach: {b.mentor.name || 'Unassigned'}</div>
+                      <div className="text-xs font-extrabold text-text-primary">{b.name}</div>
+                      <div className="text-[10px] text-text-secondary">Coach: {b.mentor.name || 'Unassigned'}</div>
                     </div>
                     <div className="text-right">
                       <span className="text-[10px] font-black text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-100 block">
                         Attend: {b.performance.attendanceRate}%
                       </span>
-                      <span className="text-[9px] text-slate-400 block font-semibold mt-0.5">Quiz Avg: {b.performance.assessmentAverage}/100</span>
+                      <span className="text-[9px] text-text-secondary block font-semibold mt-0.5">Quiz Avg: {b.performance.assessmentAverage}/100</span>
                     </div>
                   </div>
                 ))}
@@ -909,15 +909,15 @@ export default function BatchManagementPage() {
             </div>
 
             {/* Active Projects Overview */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4 lg:col-span-1">
-              <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4 lg:col-span-1">
+              <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary flex items-center gap-1.5">
                 <Briefcase className="h-4 w-4 text-blue-600" />
                 Active Capstones Submission Rates
               </h3>
               <div className="space-y-3.5">
                 {batches.flatMap(b => b.projects.map(p => ({ batchName: b.name, ...p }))).slice(0, 5).map((proj, idx) => (
                   <div key={idx} className="space-y-1">
-                    <div className="flex justify-between text-xs font-semibold text-slate-700">
+                    <div className="flex justify-between text-xs font-semibold text-text-primary">
                       <span className="font-extrabold truncate max-w-[180px]">{proj.name}</span>
                       <span>{proj.submissionRate}% Submitted</span>
                     </div>
@@ -925,7 +925,7 @@ export default function BatchManagementPage() {
                       <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
                         <div className="h-full bg-blue-600 rounded-full" style={{ width: `${proj.submissionRate}%` }} />
                       </div>
-                      <span className="text-[9px] font-bold text-slate-400 uppercase shrink-0">{proj.evaluationStatus}</span>
+                      <span className="text-[9px] font-bold text-text-secondary uppercase shrink-0">{proj.evaluationStatus}</span>
                     </div>
                   </div>
                 ))}
@@ -933,20 +933,20 @@ export default function BatchManagementPage() {
             </div>
 
             {/* Recent timeline events feed */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4 lg:col-span-1">
-              <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4 lg:col-span-1">
+              <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary flex items-center gap-1.5">
                 <Activity className="h-4 w-4 text-indigo-600" />
                 Operational Delivery Logs
               </h3>
-              <div className="relative border-l-2 border-slate-100 ml-2 space-y-4.5 pl-4 max-h-[300px] overflow-y-auto">
+              <div className="relative border-l-2 border-border ml-2 space-y-4.5 pl-4 max-h-[300px] overflow-y-auto">
                 {activityFeed.map((act, index) => (
                   <div key={index} className="relative">
-                    <div className="absolute -left-[23px] top-0.5 bg-slate-100 text-slate-700 h-4 w-4 rounded-full flex items-center justify-center text-[7px] font-black border border-white uppercase">
+                    <div className="absolute -left-[23px] top-0.5 bg-slate-100 text-text-primary h-4 w-4 rounded-full flex items-center justify-center text-[7px] font-black border border-white uppercase">
                       {act.code.slice(-2)}
                     </div>
-                    <div className="text-[10px] text-slate-500 font-bold">{act.date}</div>
-                    <div className="text-xs font-extrabold text-slate-800 mt-0.5">{act.title}</div>
-                    <p className="text-[10.5px] text-slate-600 mt-0.5 leading-tight">
+                    <div className="text-[10px] text-text-secondary font-bold">{act.date}</div>
+                    <div className="text-xs font-extrabold text-text-primary mt-0.5">{act.title}</div>
+                    <p className="text-[10.5px] text-text-secondary mt-0.5 leading-tight">
                       Batch <span className="font-bold text-blue-700">{act.batchName}</span>: {act.desc}
                     </p>
                   </div>
@@ -961,22 +961,22 @@ export default function BatchManagementPage() {
 
       {/* VIEW 2: BATCH DIRECTORY TABLE */}
       {activeView === 'directory' && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-xs overflow-hidden">
+        <div className="bg-white border border-border rounded-xl shadow-xs overflow-hidden">
           
           {/* Filtering and Toolbar */}
-          <div className="p-4 border-b border-slate-200 bg-slate-50/50 space-y-4">
+          <div className="p-4 border-b border-border bg-slate-50/50 space-y-4">
             <div className="flex flex-col md:flex-row justify-between gap-4">
               
               {/* Search Bar */}
               <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary" />
                 <input 
                   type="text" 
                   ref={searchInputRef}
                   placeholder="Search batches (Name, Code, Program, Mentor)... [Ctrl+F]"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  className="w-full pl-9 pr-4 py-2 bg-white border border-border rounded-lg text-xs font-semibold focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                 />
               </div>
 
@@ -984,7 +984,7 @@ export default function BatchManagementPage() {
               <div className="flex items-center gap-2">
                 <button 
                   onClick={() => setShowFilters(!showFilters)}
-                  className={`flex items-center gap-1.5 px-3.5 py-2 border rounded-lg text-xs font-bold shadow-xs transition-all ${showFilters ? 'bg-blue-50 text-blue-700 border-blue-300' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'}`}
+                  className={`flex items-center gap-1.5 px-3.5 py-2 border rounded-lg text-xs font-bold shadow-xs transition-all ${showFilters ? 'bg-blue-50 text-blue-700 border-blue-300' : 'bg-white border-border text-text-primary hover:bg-slate-50'}`}
                 >
                   <ListFilter className="h-3.5 w-3.5" />
                   <span>{showFilters ? 'Hide Filters' : 'Advanced Filters'}</span>
@@ -1012,15 +1012,15 @@ export default function BatchManagementPage() {
 
             {/* Filter Panels */}
             {showFilters && (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 bg-white border border-slate-100 p-4 rounded-lg shadow-sm">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 bg-white border border-border p-4 rounded-lg shadow-sm">
                 
                 {/* Program filter */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-slate-400">Internship Program</label>
+                  <label className="text-[10px] font-black uppercase text-text-secondary">Internship Program</label>
                   <select 
                     value={filterProgram}
                     onChange={(e) => setFilterProgram(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700"
+                    className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary"
                   >
                     <option value="all">All Programs</option>
                     {programsList.map((p, idx) => <option key={idx} value={p}>{p}</option>)}
@@ -1029,11 +1029,11 @@ export default function BatchManagementPage() {
 
                 {/* Status filter */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-slate-400">Batch Status</label>
+                  <label className="text-[10px] font-black uppercase text-text-secondary">Batch Status</label>
                   <select 
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700"
+                    className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary"
                   >
                     <option value="all">All Statuses</option>
                     <option value="Draft">Draft</option>
@@ -1048,11 +1048,11 @@ export default function BatchManagementPage() {
 
                 {/* Mentor filter */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-slate-400">Cohort Coach</label>
+                  <label className="text-[10px] font-black uppercase text-text-secondary">Cohort Coach</label>
                   <select 
                     value={filterMentor}
                     onChange={(e) => setFilterMentor(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700"
+                    className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary"
                   >
                     <option value="all">All Mentors</option>
                     {mentorsList.map((m, idx) => <option key={idx} value={m}>{m}</option>)}
@@ -1061,11 +1061,11 @@ export default function BatchManagementPage() {
 
                 {/* Capacity utilization filter */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-slate-400">Seats Utilization</label>
+                  <label className="text-[10px] font-black uppercase text-text-secondary">Seats Utilization</label>
                   <select 
                     value={filterCapacity}
                     onChange={(e) => setFilterCapacity(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700"
+                    className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary"
                   >
                     <option value="all">All Levels</option>
                     <option value="full">At Capacity (100%+)</option>
@@ -1076,11 +1076,11 @@ export default function BatchManagementPage() {
 
                 {/* Completion rate filter */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-slate-400">Completion Rates</label>
+                  <label className="text-[10px] font-black uppercase text-text-secondary">Completion Rates</label>
                   <select 
                     value={filterCompletion}
                     onChange={(e) => setFilterCompletion(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700"
+                    className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary"
                   >
                     <option value="all">All Ranges</option>
                     <option value="high">Top Out (90%+)</option>
@@ -1091,11 +1091,11 @@ export default function BatchManagementPage() {
 
                 {/* Internship Type filter */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-slate-400">Internship Type</label>
+                  <label className="text-[10px] font-black uppercase text-text-secondary">Internship Type</label>
                   <select 
                     value={filterType}
                     onChange={(e) => setFilterType(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700"
+                    className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary"
                   >
                     <option value="all">All Types</option>
                     <option value="Free Internship">Free Internship</option>
@@ -1115,14 +1115,14 @@ export default function BatchManagementPage() {
           {/* High Density Table */}
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs whitespace-nowrap">
-              <thead className="bg-slate-50 border-b border-slate-200 font-bold uppercase text-slate-500">
+              <thead className="bg-slate-50 border-b border-border font-bold uppercase text-text-secondary">
                 <tr>
                   <th className="px-4 py-3 text-center w-10">
                     <input 
                       type="checkbox"
                       checked={filteredBatches.length > 0 && selectedIds.length === filteredBatches.length}
                       onChange={handleToggleSelectAll}
-                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                      className="rounded border-border text-blue-600 focus:ring-primary"
                     />
                   </th>
                   <th className="px-4 py-3">Batch Name</th>
@@ -1136,7 +1136,7 @@ export default function BatchManagementPage() {
                   <th className="px-4 py-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 font-medium">
+              <tbody className="divide-y divide-border font-medium">
                 {filteredBatches.length > 0 ? (
                   filteredBatches.map(b => {
                     const isSelected = selectedIds.includes(b.id);
@@ -1152,24 +1152,24 @@ export default function BatchManagementPage() {
                             type="checkbox"
                             checked={isSelected}
                             onChange={() => handleToggleSelectRow(b.id)}
-                            className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                            className="rounded border-border text-blue-600 focus:ring-primary"
                           />
                         </td>
                         <td className="px-4 py-3">
                           <div 
                             onClick={() => handleOpenProfile(b)}
-                            className="font-extrabold text-slate-900 hover:text-blue-600 cursor-pointer flex items-center gap-1.5"
+                            className="font-extrabold text-text-primary hover:text-blue-600 cursor-pointer flex items-center gap-1.5"
                           >
-                            <Package className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                            <Package className="h-3.5 w-3.5 text-text-secondary shrink-0" />
                             {b.name}
                           </div>
                         </td>
-                        <td className="px-4 py-3 font-mono font-bold text-slate-500">{b.code}</td>
-                        <td className="px-4 py-3 text-slate-600 truncate max-w-[150px]" title={b.programName}>{b.programName}</td>
+                        <td className="px-4 py-3 font-mono font-bold text-text-secondary">{b.code}</td>
+                        <td className="px-4 py-3 text-text-secondary truncate max-w-[150px]" title={b.programName}>{b.programName}</td>
                         <td className="px-4 py-3">
                           {b.mentor.name ? (
-                            <span className="font-semibold text-slate-700 flex items-center gap-1">
-                              <Shield className="h-3 w-3 text-slate-400" />
+                            <span className="font-semibold text-text-primary flex items-center gap-1">
+                              <Shield className="h-3 w-3 text-text-secondary" />
                               {b.mentor.name}
                             </span>
                           ) : (
@@ -1178,20 +1178,20 @@ export default function BatchManagementPage() {
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-1.5">
-                            <span className={`font-black ${utilPct >= 100 ? 'text-rose-600' : 'text-slate-800'}`}>
+                            <span className={`font-black ${utilPct >= 100 ? 'text-rose-600' : 'text-text-primary'}`}>
                               {b.students.length} / {b.capacity}
                             </span>
-                            <span className="text-[10px] text-slate-400">({utilPct}%)</span>
+                            <span className="text-[10px] text-text-secondary">({utilPct}%)</span>
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-slate-500">{b.startDate} to {b.endDate}</td>
-                        <td className="px-4 py-3 font-black text-slate-700">{b.completionRate}%</td>
+                        <td className="px-4 py-3 text-text-secondary">{b.startDate} to {b.endDate}</td>
+                        <td className="px-4 py-3 font-black text-text-primary">{b.completionRate}%</td>
                         <td className="px-4 py-3">
                           <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold ${
                             b.status === 'Active' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
                             b.status === 'Completed' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
                             b.status === 'Upcoming' || b.status === 'Enrollment Open' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
-                            b.status === 'On Hold' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-slate-100 text-slate-500'
+                            b.status === 'On Hold' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-slate-100 text-text-secondary'
                           }`}>
                             {b.status}
                           </span>
@@ -1200,14 +1200,14 @@ export default function BatchManagementPage() {
                           <div className="flex items-center justify-end gap-1.5">
                             <button 
                               onClick={() => handleOpenProfile(b)}
-                              className="p-1 hover:text-blue-600 hover:bg-slate-100 rounded text-slate-400 transition-colors"
+                              className="p-1 hover:text-blue-600 hover:bg-slate-100 rounded text-text-secondary transition-colors"
                               title="Cohort Command Drawer"
                             >
                               <Eye className="h-4 w-4" />
                             </button>
                             <button 
                               onClick={() => openEditModal(b)}
-                              className="p-1 hover:text-amber-600 hover:bg-slate-100 rounded text-slate-400 transition-colors"
+                              className="p-1 hover:text-amber-600 hover:bg-slate-100 rounded text-text-secondary transition-colors"
                               title="Edit Cohort Parameters"
                             >
                               <PlusCircle className="h-4 w-4" />
@@ -1219,10 +1219,10 @@ export default function BatchManagementPage() {
                   })
                 ) : (
                   <tr>
-                    <td colSpan={10} className="px-4 py-12 text-center text-slate-500">
+                    <td colSpan={10} className="px-4 py-12 text-center text-text-secondary">
                       <Package className="h-12 w-12 text-slate-200 mx-auto mb-3" />
-                      <p className="text-sm font-extrabold text-slate-600">No batches match filters</p>
-                      <p className="text-xs text-slate-400 mt-0.5">Try altering the search terms or department queries.</p>
+                      <p className="text-sm font-extrabold text-text-secondary">No batches match filters</p>
+                      <p className="text-xs text-text-secondary mt-0.5">Try altering the search terms or department queries.</p>
                     </td>
                   </tr>
                 )}
@@ -1230,7 +1230,7 @@ export default function BatchManagementPage() {
             </table>
           </div>
 
-          <div className="p-4 border-t border-slate-100 bg-slate-50/50 flex justify-between items-center text-xs font-bold text-slate-500">
+          <div className="p-4 border-t border-border bg-slate-50/50 flex justify-between items-center text-xs font-bold text-text-secondary">
             <div>
               Showing {filteredBatches.length} of {batches.length} cohorts
             </div>
@@ -1248,7 +1248,7 @@ export default function BatchManagementPage() {
 
       {/* FLOAT-UP BULK ACTION TOOLBAR */}
       {selectedIds.length > 0 && activeView === 'directory' && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-900 text-white rounded-xl shadow-2xl px-5 py-3.5 border border-slate-800 flex items-center justify-between gap-6 max-w-3xl w-[90%] animate-slide-up">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-900 text-white rounded-xl shadow-2xl px-5 py-3.5 border border-border flex items-center justify-between gap-6 max-w-3xl w-[90%] animate-slide-up">
           <div className="flex items-center gap-2">
             <div className="h-5 w-5 bg-blue-600 text-white font-black text-xs rounded-full flex items-center justify-center shrink-0">
               {selectedIds.length}
@@ -1283,7 +1283,7 @@ export default function BatchManagementPage() {
             </button>
             <button 
               onClick={() => setSelectedIds([])}
-              className="p-1.5 hover:bg-slate-800 rounded text-slate-400 hover:text-white transition"
+              className="p-1.5 hover:bg-slate-800 rounded text-text-secondary hover:text-white transition"
             >
               ✕
             </button>
@@ -1303,15 +1303,15 @@ export default function BatchManagementPage() {
             {/* Header section */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900 text-white p-5 -mx-6 -mt-6 sticky top-0 z-30 shadow-md">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 border border-slate-700">
+                <div className="h-10 w-10 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 border border-border">
                   <Package className="h-5 w-5" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="font-extrabold text-sm tracking-tight text-white">{activeProfile.name}</h3>
-                    <span className="text-[10px] font-bold bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-blue-400">{activeProfile.code}</span>
+                    <span className="text-[10px] font-bold bg-slate-800 border border-border px-2 py-0.5 rounded text-blue-400">{activeProfile.code}</span>
                   </div>
-                  <div className="text-[10.5px] text-slate-400 font-semibold truncate max-w-[280px]">
+                  <div className="text-[10.5px] text-text-secondary font-semibold truncate max-w-[280px]">
                     Program: {activeProfile.programName}
                   </div>
                 </div>
@@ -1362,23 +1362,23 @@ export default function BatchManagementPage() {
             </div>
 
             {/* Quick Status Ribbon */}
-            <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 flex flex-wrap justify-between items-center text-xs font-semibold text-slate-600 gap-2">
+            <div className="bg-slate-50 border border-border rounded-lg p-3 flex flex-wrap justify-between items-center text-xs font-semibold text-text-secondary gap-2">
               <div className="flex items-center gap-2">
                 <span>Cohort Status:</span>
                 <span className="font-extrabold text-blue-700 bg-blue-50 px-2 py-0.5 rounded">{activeProfile.status}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span>Occupancy Utilized:</span>
-                <span className="font-extrabold text-slate-800">{activeProfile.students.length} / {activeProfile.capacity} Seats</span>
+                <span className="font-extrabold text-text-primary">{activeProfile.students.length} / {activeProfile.capacity} Seats</span>
               </div>
               <div className="flex items-center gap-2">
                 <span>Completion progress:</span>
-                <span className="font-extrabold text-slate-800">{activeProfile.completionRate}%</span>
+                <span className="font-extrabold text-text-primary">{activeProfile.completionRate}%</span>
               </div>
             </div>
 
             {/* 9 Tabs selector */}
-            <div className="border-b border-slate-200 flex flex-wrap gap-1">
+            <div className="border-b border-border flex flex-wrap gap-1">
               {[
                 { id: 'overview', label: 'Overview' },
                 { id: 'students', label: 'Student Allocation' },
@@ -1393,7 +1393,7 @@ export default function BatchManagementPage() {
                 <button
                   key={tab.id}
                   onClick={() => setProfileTab(tab.id as any)}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-t-lg transition border-b-2 ${profileTab === tab.id ? 'border-blue-600 text-blue-600 bg-blue-50/20' : 'border-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}
+                  className={`px-3 py-1.5 text-xs font-bold rounded-t-lg transition border-b-2 ${profileTab === tab.id ? 'border-blue-600 text-blue-600 bg-blue-50/20' : 'border-transparent text-text-secondary hover:text-text-primary hover:bg-slate-50'}`}
                 >
                   {tab.label}
                 </button>
@@ -1407,62 +1407,62 @@ export default function BatchManagementPage() {
               <div className="space-y-6">
                 
                 {/* Cohorts Details */}
-                <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-3">
-                  <h4 className="text-xs font-black uppercase text-slate-400">Cohort parameters</h4>
-                  <div className="grid grid-cols-2 gap-4 text-xs font-semibold text-slate-700">
+                <div className="bg-white border border-border rounded-lg p-4 space-y-3">
+                  <h4 className="text-xs font-black uppercase text-text-secondary">Cohort parameters</h4>
+                  <div className="grid grid-cols-2 gap-4 text-xs font-semibold text-text-primary">
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Batch Name</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.name}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Batch Name</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.name}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Unique Code</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.code}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Unique Code</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.code}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Program Mapping</span>
-                      <span className="text-slate-900 font-extrabold truncate block" title={activeProfile.programName}>{activeProfile.programName}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Program Mapping</span>
+                      <span className="text-text-primary font-extrabold truncate block" title={activeProfile.programName}>{activeProfile.programName}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Internship Classification</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.internshipType}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Internship Classification</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.internshipType}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Start Date</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.startDate}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Start Date</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.startDate}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">End Date</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.endDate}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">End Date</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.endDate}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Aggregate performance stats */}
-                <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-3">
-                  <h4 className="text-xs font-black uppercase text-slate-400">Cohort aggregates Metrics</h4>
-                  <div className="grid grid-cols-2 gap-4 text-xs font-semibold text-slate-700">
+                <div className="bg-white border border-border rounded-lg p-4 space-y-3">
+                  <h4 className="text-xs font-black uppercase text-text-secondary">Cohort aggregates Metrics</h4>
+                  <div className="grid grid-cols-2 gap-4 text-xs font-semibold text-text-primary">
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Assigned Learners</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.students.length} students</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Assigned Learners</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.students.length} students</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Attendance Rate</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.performance.attendanceRate}%</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Attendance Rate</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.performance.attendanceRate}%</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Completion Rate</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.completionRate}%</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Completion Rate</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.completionRate}%</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Placement Rate</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.performance.placementConversion}%</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Placement Rate</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.performance.placementConversion}%</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Active Capstone Tasks</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.projects.length} Projects</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Active Capstone Tasks</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.projects.length} Projects</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Satisfaction Feedback</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Satisfaction Feedback</span>
                       <span className="text-emerald-700 font-black flex items-center gap-1 mt-0.5">
                         ★ {activeProfile.performance.satisfactionScore} / 5.0
                       </span>
@@ -1479,19 +1479,19 @@ export default function BatchManagementPage() {
                 
                 {/* Allocation metrics */}
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-center">
-                    <div className="text-xl font-black text-slate-900">{activeProfile.students.length} / {activeProfile.capacity}</div>
-                    <div className="text-[9.5px] uppercase font-bold text-slate-400 mt-0.5">Occupied Seats</div>
+                  <div className="bg-slate-50 p-3 rounded-lg border border-border text-center">
+                    <div className="text-xl font-black text-text-primary">{activeProfile.students.length} / {activeProfile.capacity}</div>
+                    <div className="text-[9.5px] uppercase font-bold text-text-secondary mt-0.5">Occupied Seats</div>
                   </div>
-                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-center">
-                    <div className="text-xl font-black text-slate-900">{activeProfile.capacity - activeProfile.students.length}</div>
-                    <div className="text-[9.5px] uppercase font-bold text-slate-400 mt-0.5">Available Seats</div>
+                  <div className="bg-slate-50 p-3 rounded-lg border border-border text-center">
+                    <div className="text-xl font-black text-text-primary">{activeProfile.capacity - activeProfile.students.length}</div>
+                    <div className="text-[9.5px] uppercase font-bold text-text-secondary mt-0.5">Available Seats</div>
                   </div>
                 </div>
 
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <h4 className="text-xs font-black uppercase text-slate-400">Allocated Cohort Roster</h4>
+                    <h4 className="text-xs font-black uppercase text-text-secondary">Allocated Cohort Roster</h4>
                     <button
                       onClick={() => {
                         setStudentForm({ name: '', internId: '', college: 'Stanford University', department: 'CSE', performanceScore: 85 });
@@ -1505,9 +1505,9 @@ export default function BatchManagementPage() {
                   </div>
 
                   {activeProfile.students.length > 0 ? (
-                    <div className="border border-slate-200 rounded-lg overflow-hidden">
+                    <div className="border border-border rounded-lg overflow-hidden">
                       <table className="w-full text-left text-xs whitespace-nowrap">
-                        <thead className="bg-slate-50 border-b border-slate-200 font-bold text-slate-500">
+                        <thead className="bg-slate-50 border-b border-border font-bold text-text-secondary">
                           <tr>
                             <th className="px-4 py-2">Candidate</th>
                             <th className="px-4 py-2">Intern ID</th>
@@ -1516,17 +1516,17 @@ export default function BatchManagementPage() {
                             <th className="px-4 py-2 text-right">Actions</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100 font-semibold text-slate-700">
+                        <tbody className="divide-y divide-border font-semibold text-text-primary">
                           {activeProfile.students.map(stu => (
                             <tr key={stu.id} className="hover:bg-slate-50/50">
-                              <td className="px-4 py-2.5 font-extrabold text-slate-900">{stu.name}</td>
-                              <td className="px-4 py-2.5 font-mono text-slate-500 font-bold">{stu.internId}</td>
-                              <td className="px-4 py-2.5 text-slate-500">{stu.college} ({stu.department})</td>
-                              <td className="px-4 py-2.5 font-black text-slate-700">{stu.performanceScore}%</td>
+                              <td className="px-4 py-2.5 font-extrabold text-text-primary">{stu.name}</td>
+                              <td className="px-4 py-2.5 font-mono text-text-secondary font-bold">{stu.internId}</td>
+                              <td className="px-4 py-2.5 text-text-secondary">{stu.college} ({stu.department})</td>
+                              <td className="px-4 py-2.5 font-black text-text-primary">{stu.performanceScore}%</td>
                               <td className="px-4 py-2.5 text-right">
                                 <button
                                   onClick={() => handleRemoveStudentFromBatch(stu.id)}
-                                  className="p-1 hover:text-red-600 rounded text-slate-400 transition"
+                                  className="p-1 hover:text-red-600 rounded text-text-secondary transition"
                                   title="Deallocate student from cohort batch roster"
                                 >
                                   ✕ Remove
@@ -1538,7 +1538,7 @@ export default function BatchManagementPage() {
                       </table>
                     </div>
                   ) : (
-                    <div className="text-center py-10 border border-dashed border-slate-200 rounded-lg text-xs text-slate-500">
+                    <div className="text-center py-10 border border-dashed border-border rounded-lg text-xs text-text-secondary">
                       No students are currently allocated to this batch cohort.
                     </div>
                   )}
@@ -1550,63 +1550,63 @@ export default function BatchManagementPage() {
             {/* TAB 3: MENTOR ALLOCATION */}
             {profileTab === 'mentor' && (
               <div className="space-y-6">
-                <h4 className="text-xs font-black uppercase text-slate-400">Assigned Cohort Coach</h4>
+                <h4 className="text-xs font-black uppercase text-text-secondary">Assigned Cohort Coach</h4>
                 
                 {activeProfile.mentor.name ? (
                   <div className="space-y-4">
-                    <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 text-xs font-semibold text-slate-700 space-y-3.5">
+                    <div className="bg-slate-50 border border-border rounded-lg p-4 text-xs font-semibold text-text-primary space-y-3.5">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <span className="text-[10px] text-slate-400 uppercase block">Mentor Name</span>
-                          <span className="text-slate-900 font-extrabold">{activeProfile.mentor.name}</span>
+                          <span className="text-[10px] text-text-secondary uppercase block">Mentor Name</span>
+                          <span className="text-text-primary font-extrabold">{activeProfile.mentor.name}</span>
                         </div>
                         <div>
-                          <span className="text-[10px] text-slate-400 uppercase block">Department</span>
-                          <span className="text-slate-900 font-extrabold">{activeProfile.mentor.department}</span>
+                          <span className="text-[10px] text-text-secondary uppercase block">Department</span>
+                          <span className="text-text-primary font-extrabold">{activeProfile.mentor.department}</span>
                         </div>
                         <div>
-                          <span className="text-[10px] text-slate-400 uppercase block">Coach Expertise</span>
-                          <span className="text-slate-900 font-extrabold">{activeProfile.mentor.expertise}</span>
+                          <span className="text-[10px] text-text-secondary uppercase block">Coach Expertise</span>
+                          <span className="text-text-primary font-extrabold">{activeProfile.mentor.expertise}</span>
                         </div>
                         <div>
-                          <span className="text-[10px] text-slate-400 uppercase block">Sessions Completed</span>
-                          <span className="text-slate-900 font-extrabold">{activeProfile.mentor.sessionsConducted} Live Classes</span>
+                          <span className="text-[10px] text-text-secondary uppercase block">Sessions Completed</span>
+                          <span className="text-text-primary font-extrabold">{activeProfile.mentor.sessionsConducted} Live Classes</span>
                         </div>
                       </div>
                     </div>
 
                     {/* Mentor Metrics grid */}
-                    <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-3">
-                      <h5 className="text-[10px] font-black uppercase text-slate-500">Coach performance indices</h5>
+                    <div className="bg-white border border-border rounded-lg p-4 space-y-3">
+                      <h5 className="text-[10px] font-black uppercase text-text-secondary">Coach performance indices</h5>
                       
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
-                        <div className="bg-slate-50 border border-slate-100 p-2.5 rounded">
-                          <div className="text-lg font-black text-slate-800">★ {activeProfile.mentor.rating}</div>
-                          <span className="text-[8px] uppercase text-slate-400 font-bold block mt-0.5">Expert Rating</span>
+                        <div className="bg-slate-50 border border-border p-2.5 rounded">
+                          <div className="text-lg font-black text-text-primary">★ {activeProfile.mentor.rating}</div>
+                          <span className="text-[8px] uppercase text-text-secondary font-bold block mt-0.5">Expert Rating</span>
                         </div>
-                        <div className="bg-slate-50 border border-slate-100 p-2.5 rounded">
-                          <div className="text-lg font-black text-slate-800">{activeProfile.mentor.studentSatisfaction}/5</div>
-                          <span className="text-[8px] uppercase text-slate-400 font-bold block mt-0.5">Learners Rating</span>
+                        <div className="bg-slate-50 border border-border p-2.5 rounded">
+                          <div className="text-lg font-black text-text-primary">{activeProfile.mentor.studentSatisfaction}/5</div>
+                          <span className="text-[8px] uppercase text-text-secondary font-bold block mt-0.5">Learners Rating</span>
                         </div>
-                        <div className="bg-slate-50 border border-slate-100 p-2.5 rounded">
-                          <div className="text-lg font-black text-slate-800">{activeProfile.mentor.successRate}%</div>
-                          <span className="text-[8px] uppercase text-slate-400 font-bold block mt-0.5">Success Rate</span>
+                        <div className="bg-slate-50 border border-border p-2.5 rounded">
+                          <div className="text-lg font-black text-text-primary">{activeProfile.mentor.successRate}%</div>
+                          <span className="text-[8px] uppercase text-text-secondary font-bold block mt-0.5">Success Rate</span>
                         </div>
-                        <div className="bg-slate-50 border border-slate-100 p-2.5 rounded">
-                          <div className="text-lg font-black text-slate-800">{activeProfile.mentor.completionContribution}%</div>
-                          <span className="text-[8px] uppercase text-slate-400 font-bold block mt-0.5">Completion contribution</span>
+                        <div className="bg-slate-50 border border-border p-2.5 rounded">
+                          <div className="text-lg font-black text-text-primary">{activeProfile.mentor.completionContribution}%</div>
+                          <span className="text-[8px] uppercase text-text-secondary font-bold block mt-0.5">Completion contribution</span>
                         </div>
                       </div>
                     </div>
 
                   </div>
                 ) : (
-                  <div className="text-center py-10 border border-dashed border-slate-200 rounded-lg text-xs text-rose-600 font-bold bg-rose-50/50">
+                  <div className="text-center py-10 border border-dashed border-border rounded-lg text-xs text-rose-600 font-bold bg-rose-50/50">
                     Warning: No facilitator coach assigned. Student progress tracking disabled.
                   </div>
                 )}
 
-                <div className="border-t border-slate-200 pt-4 flex gap-2">
+                <div className="border-t border-border pt-4 flex gap-2">
                   <button
                     onClick={() => {
                       setMentorForm({
@@ -1633,7 +1633,7 @@ export default function BatchManagementPage() {
                           showToast('Removed assigned mentor');
                         }
                       }}
-                      className="px-3.5 py-2 border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 rounded-lg text-xs font-bold transition"
+                      className="px-3.5 py-2 border border-border text-text-primary bg-white hover:bg-slate-50 rounded-lg text-xs font-bold transition"
                     >
                       Remove Mentor
                     </button>
@@ -1646,24 +1646,24 @@ export default function BatchManagementPage() {
             {/* TAB 4: CAPACITY MANAGEMENT */}
             {profileTab === 'capacity' && (
               <div className="space-y-4">
-                <h4 className="text-xs font-black uppercase text-slate-400">Capacity Management Control</h4>
+                <h4 className="text-xs font-black uppercase text-text-secondary">Capacity Management Control</h4>
                 
-                <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 text-xs font-semibold text-slate-700 space-y-4">
+                <div className="bg-slate-50 border border-border rounded-lg p-4 text-xs font-semibold text-text-primary space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase block">Maximum Capacity</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.capacity} Seats</span>
+                      <span className="text-[10px] text-text-secondary uppercase block">Maximum Capacity</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.capacity} Seats</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase block">Allocated Capacity</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.students.length} Seats</span>
+                      <span className="text-[10px] text-text-secondary uppercase block">Allocated Capacity</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.students.length} Seats</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase block">Remaining Vacancy</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.capacity - activeProfile.students.length} Seats</span>
+                      <span className="text-[10px] text-text-secondary uppercase block">Remaining Vacancy</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.capacity - activeProfile.students.length} Seats</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase block">Enrollment Phase</span>
+                      <span className="text-[10px] text-text-secondary uppercase block">Enrollment Phase</span>
                       <span className="font-extrabold text-blue-700 bg-blue-50 px-2 py-0.5 rounded inline-block mt-0.5 border border-blue-100">
                         {activeProfile.status === 'Enrollment Open' ? 'Enrollment Active' : 'Enrollment Frozen'}
                       </span>
@@ -1671,7 +1671,7 @@ export default function BatchManagementPage() {
                   </div>
                 </div>
 
-                <div className="border-t border-slate-200 pt-4 flex gap-2">
+                <div className="border-t border-border pt-4 flex gap-2">
                   <button
                     onClick={() => {
                       setCapacityForm(activeProfile.capacity);
@@ -1691,7 +1691,7 @@ export default function BatchManagementPage() {
                           showToast('Enrollment open status activated');
                         }
                       }}
-                      className="px-3.5 py-2 border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 rounded-lg text-xs font-bold transition"
+                      className="px-3.5 py-2 border border-border text-text-primary bg-white hover:bg-slate-50 rounded-lg text-xs font-bold transition"
                     >
                       Open Enrollment
                     </button>
@@ -1705,7 +1705,7 @@ export default function BatchManagementPage() {
                           showToast('Enrollment frozen');
                         }
                       }}
-                      className="px-3.5 py-2 border border-slate-200 text-rose-700 bg-rose-50 hover:bg-rose-100 rounded-lg text-xs font-bold transition"
+                      className="px-3.5 py-2 border border-border text-rose-700 bg-rose-50 hover:bg-rose-100 rounded-lg text-xs font-bold transition"
                     >
                       Freeze Enrollment
                     </button>
@@ -1718,7 +1718,7 @@ export default function BatchManagementPage() {
             {/* TAB 5: INTELLIGENCE STATS */}
             {profileTab === 'performance' && (
               <div className="space-y-6">
-                <h4 className="text-xs font-black uppercase text-slate-400">Cohort Intelligence Center</h4>
+                <h4 className="text-xs font-black uppercase text-text-secondary">Cohort Intelligence Center</h4>
 
                 {/* Scorecard KPIs */}
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3 text-center">
@@ -1729,9 +1729,9 @@ export default function BatchManagementPage() {
                     { label: 'Hiring Conversion', value: `${activeProfile.performance.placementConversion}%`, color: 'bg-purple-50 text-purple-700' },
                     { label: 'Satisfaction Score', value: `★ ${activeProfile.performance.satisfactionScore}/5`, color: 'bg-amber-50 text-amber-700' }
                   ].map((card, idx) => (
-                    <div key={idx} className={`p-3 rounded-lg border border-slate-100 flex flex-col justify-center ${card.color}`}>
+                    <div key={idx} className={`p-3 rounded-lg border border-border flex flex-col justify-center ${card.color}`}>
                       <div className="text-lg font-black">{card.value}</div>
-                      <div className="text-[9px] uppercase font-bold text-slate-400 mt-0.5">{card.label}</div>
+                      <div className="text-[9px] uppercase font-bold text-text-secondary mt-0.5">{card.label}</div>
                     </div>
                   ))}
                 </div>
@@ -1741,28 +1741,28 @@ export default function BatchManagementPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     
                     {/* Attendance */}
-                    <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-3">
-                      <h5 className="text-[10px] font-black uppercase text-slate-500">Weekly Attendance Trends</h5>
+                    <div className="bg-slate-50 border border-border rounded-lg p-4 space-y-3">
+                      <h5 className="text-[10px] font-black uppercase text-text-secondary">Weekly Attendance Trends</h5>
                       <div className="h-32 w-full flex items-end justify-between px-2 pt-4">
                         {activeProfile.performance.attendanceTrend.map((t, idx) => (
                           <div key={idx} className="flex flex-col items-center gap-1.5 flex-1">
-                            <div className="text-[9px] font-bold text-slate-500">{t.rate}%</div>
+                            <div className="text-[9px] font-bold text-text-secondary">{t.rate}%</div>
                             <div className="w-8 bg-emerald-600 rounded-t" style={{ height: `${t.rate * 0.8}px` }} />
-                            <div className="text-[8.5px] font-semibold text-slate-400 mt-1 truncate max-w-[40px]">{t.week}</div>
+                            <div className="text-[8.5px] font-semibold text-text-secondary mt-1 truncate max-w-[40px]">{t.week}</div>
                           </div>
                         ))}
                       </div>
                     </div>
 
                     {/* Assessments */}
-                    <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-3">
-                      <h5 className="text-[10px] font-black uppercase text-slate-500">Assessment Average</h5>
+                    <div className="bg-slate-50 border border-border rounded-lg p-4 space-y-3">
+                      <h5 className="text-[10px] font-black uppercase text-text-secondary">Assessment Average</h5>
                       <div className="h-32 w-full flex items-end justify-between px-2 pt-4">
                         {activeProfile.performance.assessmentTrend.map((t, idx) => (
                           <div key={idx} className="flex flex-col items-center gap-1.5 flex-1">
-                            <div className="text-[9px] font-bold text-slate-500">{t.average}</div>
+                            <div className="text-[9px] font-bold text-text-secondary">{t.average}</div>
                             <div className="w-8 bg-indigo-600 rounded-t" style={{ height: `${t.average * 0.8}px` }} />
-                            <div className="text-[8.5px] font-semibold text-slate-400 mt-1 truncate max-w-[50px]" title={t.test}>{t.test}</div>
+                            <div className="text-[8.5px] font-semibold text-text-secondary mt-1 truncate max-w-[50px]" title={t.test}>{t.test}</div>
                           </div>
                         ))}
                       </div>
@@ -1770,7 +1770,7 @@ export default function BatchManagementPage() {
 
                   </div>
                 ) : (
-                  <div className="text-center py-10 border border-dashed border-slate-200 rounded-lg text-xs text-slate-500">
+                  <div className="text-center py-10 border border-dashed border-border rounded-lg text-xs text-text-secondary">
                     Cohort statistics parameters are generating. Check back post program activation milestones.
                   </div>
                 )}
@@ -1781,7 +1781,7 @@ export default function BatchManagementPage() {
             {/* TAB 6: LIFECYCLE PROGRESS */}
             {profileTab === 'lifecycle' && (
               <div className="space-y-4">
-                <h4 className="text-xs font-black uppercase text-slate-400">Cohort Lifecycle progression</h4>
+                <h4 className="text-xs font-black uppercase text-text-secondary">Cohort Lifecycle progression</h4>
 
                 <div className="relative border-l-2 border-blue-500 ml-4 pl-6 space-y-6 pt-2">
                   {[
@@ -1798,13 +1798,13 @@ export default function BatchManagementPage() {
 
                     return (
                       <div key={idx} className="relative">
-                        <div className={`absolute -left-[31px] top-0 h-4 w-4 rounded-full flex items-center justify-center border transition ${isCurrent ? 'bg-blue-600 border-blue-600 text-white shadow' : isPast ? 'bg-emerald-500 border-emerald-500 text-white' : 'bg-white border-slate-300 text-slate-400'}`}>
+                        <div className={`absolute -left-[31px] top-0 h-4 w-4 rounded-full flex items-center justify-center border transition ${isCurrent ? 'bg-blue-600 border-blue-600 text-white shadow' : isPast ? 'bg-emerald-500 border-emerald-500 text-white' : 'bg-white border-border text-text-secondary'}`}>
                           {isPast ? <Check className="h-2.5 w-2.5" /> : <div className="h-1 w-1 bg-slate-300 rounded-full" />}
                         </div>
-                        <div className={`text-xs font-extrabold ${isCurrent ? 'text-blue-700' : isPast ? 'text-slate-800' : 'text-slate-400'}`}>
+                        <div className={`text-xs font-extrabold ${isCurrent ? 'text-blue-700' : isPast ? 'text-text-primary' : 'text-text-secondary'}`}>
                           {phase.title}
                         </div>
-                        <p className="text-[10.5px] text-slate-500 font-medium leading-relaxed mt-0.5">{phase.desc}</p>
+                        <p className="text-[10.5px] text-text-secondary font-medium leading-relaxed mt-0.5">{phase.desc}</p>
                       </div>
                     );
                   })}
@@ -1816,21 +1816,21 @@ export default function BatchManagementPage() {
             {/* TAB 7: PROJECTS & TASKS */}
             {profileTab === 'projects' && (
               <div className="space-y-4">
-                <h4 className="text-xs font-black uppercase text-slate-400">Cohort Tasks & Capstones</h4>
+                <h4 className="text-xs font-black uppercase text-text-secondary">Cohort Tasks & Capstones</h4>
 
                 {activeProfile.projects.length > 0 ? (
                   <div className="space-y-3">
                     {activeProfile.projects.map((proj, idx) => (
-                      <div key={idx} className="bg-slate-50 border border-slate-200 rounded-lg p-3 space-y-2">
-                        <div className="flex justify-between items-center text-xs font-extrabold text-slate-800">
+                      <div key={idx} className="bg-slate-50 border border-border rounded-lg p-3 space-y-2">
+                        <div className="flex justify-between items-center text-xs font-extrabold text-text-primary">
                           <span>{proj.name}</span>
                           <span className={`px-2 py-0.5 rounded text-[10px] ${
                             proj.evaluationStatus === 'Completed' ? 'bg-emerald-50 text-emerald-700' :
-                            proj.evaluationStatus === 'Ongoing' ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-500'
+                            proj.evaluationStatus === 'Ongoing' ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-text-secondary'
                           }`}>{proj.evaluationStatus}</span>
                         </div>
                         <div className="space-y-1">
-                          <div className="flex justify-between text-[10px] text-slate-400 font-bold">
+                          <div className="flex justify-between text-[10px] text-text-secondary font-bold">
                             <span>Learner Submissions:</span>
                             <span>{proj.submissionRate}%</span>
                           </div>
@@ -1842,12 +1842,12 @@ export default function BatchManagementPage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-10 border border-dashed border-slate-200 rounded-lg text-xs text-slate-500">
+                  <div className="text-center py-10 border border-dashed border-border rounded-lg text-xs text-text-secondary">
                     No active tasks or capstones mapped to this cohort batch yet.
                   </div>
                 )}
 
-                <div className="border-t border-slate-200 pt-4">
+                <div className="border-t border-border pt-4">
                   <button
                     onClick={async () => {
                       const updatedProj = [...activeProfile.projects, {
@@ -1876,11 +1876,11 @@ export default function BatchManagementPage() {
               <div className="space-y-6">
                 
                 {/* Tech Stack */}
-                <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-3">
-                  <h4 className="text-xs font-black uppercase text-slate-400">Software Stack Dependencies</h4>
+                <div className="bg-white border border-border rounded-lg p-4 space-y-3">
+                  <h4 className="text-xs font-black uppercase text-text-secondary">Software Stack Dependencies</h4>
                   <div className="flex flex-wrap gap-1.5">
                     {activeProfile.metadata.techStack.map((tech, idx) => (
-                      <span key={idx} className="bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded font-mono text-[10.5px]">
+                      <span key={idx} className="bg-slate-100 text-text-primary border border-border px-2 py-0.5 rounded font-mono text-[10.5px]">
                         {tech}
                       </span>
                     ))}
@@ -1888,8 +1888,8 @@ export default function BatchManagementPage() {
                 </div>
 
                 {/* Tags */}
-                <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-3">
-                  <h4 className="text-xs font-black uppercase text-slate-400">Batch Categorization Tags</h4>
+                <div className="bg-white border border-border rounded-lg p-4 space-y-3">
+                  <h4 className="text-xs font-black uppercase text-text-secondary">Batch Categorization Tags</h4>
                   <div className="flex flex-wrap gap-1.5">
                     {activeProfile.metadata.tags.map((tag, idx) => (
                       <span key={idx} className="bg-blue-50 text-blue-700 border border-blue-100 px-2 py-0.5 rounded text-[10.5px] font-bold">
@@ -1900,26 +1900,26 @@ export default function BatchManagementPage() {
                 </div>
 
                 {/* Settings list */}
-                <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-3">
-                  <h4 className="text-xs font-black uppercase text-slate-400">Additional Domain Parameters</h4>
-                  <div className="grid grid-cols-2 gap-4 text-xs font-semibold text-slate-700">
+                <div className="bg-white border border-border rounded-lg p-4 space-y-3">
+                  <h4 className="text-xs font-black uppercase text-text-secondary">Additional Domain Parameters</h4>
+                  <div className="grid grid-cols-2 gap-4 text-xs font-semibold text-text-primary">
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Program Category</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.metadata.category}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Program Category</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.metadata.category}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Domain Focus</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.metadata.domain}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Domain Focus</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.metadata.domain}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Urgency Priority</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Urgency Priority</span>
                       <span className={`font-black px-1.5 py-0.5 rounded text-[10.5px] ${
                         activeProfile.metadata.priority === 'High' ? 'text-red-700 bg-red-50' : 'text-blue-700 bg-blue-50'
                       }`}>{activeProfile.metadata.priority}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Academic Year Mapped</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.metadata.academicYear}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Academic Year Mapped</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.metadata.academicYear}</span>
                     </div>
                   </div>
                 </div>
@@ -1930,15 +1930,15 @@ export default function BatchManagementPage() {
             {/* TAB 9: TIMELINE */}
             {profileTab === 'timeline' && (
               <div className="space-y-4">
-                <h4 className="text-xs font-black uppercase text-slate-400">Chronological Audit Timeline</h4>
+                <h4 className="text-xs font-black uppercase text-text-secondary">Chronological Audit Timeline</h4>
                 
-                <div className="relative border-l border-slate-200 ml-2 space-y-4 pl-4 pt-1">
+                <div className="relative border-l border-border ml-2 space-y-4 pl-4 pt-1">
                   {activeProfile.timeline.map((evt, idx) => (
                     <div key={idx} className="relative text-xs">
                       <div className="absolute -left-[21px] top-1.5 h-2 w-2 rounded-full bg-slate-400 border border-white" />
-                      <div className="text-[9.5px] font-bold text-slate-400">{evt.date}</div>
-                      <div className="font-extrabold text-slate-800 mt-0.5">{evt.title}</div>
-                      <p className="text-[10.5px] text-slate-500 font-medium leading-normal mt-0.5">{evt.description}</p>
+                      <div className="text-[9.5px] font-bold text-text-secondary">{evt.date}</div>
+                      <div className="font-extrabold text-text-primary mt-0.5">{evt.title}</div>
+                      <p className="text-[10.5px] text-text-secondary font-medium leading-normal mt-0.5">{evt.description}</p>
                     </div>
                   ))}
                 </div>
@@ -1959,11 +1959,11 @@ export default function BatchManagementPage() {
           <div className={`bg-white overflow-hidden transition-all duration-300 ${
             (activeActionModal.type === 'edit' || activeActionModal.type === 'create') 
               ? 'max-w-none w-full h-full rounded-none border-none flex flex-col' 
-              : 'rounded-xl shadow-2xl border border-slate-200 w-full max-w-md animate-zoom-in'
+              : 'rounded-xl shadow-2xl border border-border w-full max-w-md animate-zoom-in'
           }`}>
             
             {/* Modal Header */}
-            <div className="bg-slate-50 px-5 py-4 border-b border-slate-100 flex justify-between items-center text-sm font-black text-slate-900">
+            <div className="bg-slate-50 px-5 py-4 border-b border-border flex justify-between items-center text-sm font-black text-text-primary">
               <h3>
                 {activeActionModal.type === 'create' && 'Create Cohort Batch'}
                 {activeActionModal.type === 'edit' && 'Edit Cohort Parameters'}
@@ -1978,7 +1978,7 @@ export default function BatchManagementPage() {
               </h3>
               <button 
                 onClick={() => setActiveActionModal(null)}
-                className="text-slate-400 hover:text-slate-700 transition text-lg"
+                className="text-text-secondary hover:text-text-primary transition text-lg"
               >
                 ✕
               </button>
@@ -2008,34 +2008,34 @@ export default function BatchManagementPage() {
                   
                   {/* Section 1 */}
                   <div className="space-y-2">
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                    <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest border-b border-border pb-1">
                       Section 1: Batch Parameters
                     </div>
                     <div className="grid grid-cols-3 gap-3">
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Batch Name *</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Batch Name *</label>
                         <input 
                           type="text" 
                           required 
                           value={editForm.name}
                           onChange={e => setEditForm({ ...editForm, name: e.target.value })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         />
                       </div>
                       
                       {activeActionModal.type === 'edit' ? (
                         <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-500">Batch Code</label>
+                          <label className="text-[10px] font-bold text-text-secondary">Batch Code</label>
                           <input 
                             type="text" 
                             disabled
                             value={editForm.code}
-                            className="w-full bg-slate-100 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-500 focus:outline-none"
+                            className="w-full bg-slate-100 border border-border rounded p-1.5 text-xs font-semibold text-text-secondary focus:outline-none"
                           />
                         </div>
                       ) : (
                         <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-500">Program ID Mapped</label>
+                          <label className="text-[10px] font-bold text-text-secondary">Program ID Mapped</label>
                           <select 
                             value={editForm.programId}
                             onChange={e => {
@@ -2043,7 +2043,7 @@ export default function BatchManagementPage() {
                               const pName = pId === 'prog-1' ? 'Summer Software Engineering Internship' : pId === 'prog-2' ? 'Data Science Boot Camp' : 'Sales Boot Camp';
                               setEditForm({ ...editForm, programId: pId, programName: pName });
                             }}
-                            className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                            className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                           >
                             <option value="prog-1">Summer Software Engineering</option>
                             <option value="prog-2">Data Science Boot Camp</option>
@@ -2054,7 +2054,7 @@ export default function BatchManagementPage() {
 
                       {activeActionModal.type === 'edit' && (
                         <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-500">Program ID Mapped</label>
+                          <label className="text-[10px] font-bold text-text-secondary">Program ID Mapped</label>
                           <select 
                             value={editForm.programId}
                             onChange={e => {
@@ -2062,7 +2062,7 @@ export default function BatchManagementPage() {
                               const pName = pId === 'prog-1' ? 'Summer Software Engineering Internship' : pId === 'prog-2' ? 'Data Science Boot Camp' : 'Sales Boot Camp';
                               setEditForm({ ...editForm, programId: pId, programName: pName });
                             }}
-                            className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                            className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                           >
                             <option value="prog-1">Summer Software Engineering</option>
                             <option value="prog-2">Data Science Boot Camp</option>
@@ -2072,11 +2072,11 @@ export default function BatchManagementPage() {
                       )}
 
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Internship Classification</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Internship Classification</label>
                         <select 
                           value={editForm.internshipType}
                           onChange={e => setEditForm({ ...editForm, internshipType: e.target.value as any })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         >
                           <option value="Free Internship">Free Internship</option>
                           <option value="Paid Internship">Paid Internship</option>
@@ -2088,41 +2088,41 @@ export default function BatchManagementPage() {
                       </div>
                       
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Start Date</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Start Date</label>
                         <input 
                           type="date" 
                           value={editForm.startDate}
                           onChange={e => setEditForm({ ...editForm, startDate: e.target.value })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         />
                       </div>
                       
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">End Date</label>
+                        <label className="text-[10px] font-bold text-text-secondary">End Date</label>
                         <input 
                           type="date" 
                           value={editForm.endDate}
                           onChange={e => setEditForm({ ...editForm, endDate: e.target.value })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Seat Capacity limit</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Seat Capacity limit</label>
                         <input 
                           type="number" 
                           value={editForm.capacity}
                           onChange={e => setEditForm({ ...editForm, capacity: Number(e.target.value) })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Lifecycle Status</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Lifecycle Status</label>
                         <select 
                           value={editForm.status}
                           onChange={e => setEditForm({ ...editForm, status: e.target.value as any })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         >
                           <option value="Draft">Draft</option>
                           <option value="Upcoming">Upcoming</option>
@@ -2138,34 +2138,34 @@ export default function BatchManagementPage() {
 
                   {/* Section 2 */}
                   <div className="space-y-2">
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                    <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest border-b border-border pb-1">
                       Section 2: Domain Details
                     </div>
                     <div className="grid grid-cols-3 gap-3">
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Category</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Category</label>
                         <input 
                           type="text" 
                           value={editForm.category}
                           onChange={e => setEditForm({ ...editForm, category: e.target.value })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Domain Focus</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Domain Focus</label>
                         <input 
                           type="text" 
                           value={editForm.domain}
                           onChange={e => setEditForm({ ...editForm, domain: e.target.value })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Priority Urgency</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Priority Urgency</label>
                         <select 
                           value={editForm.priority}
                           onChange={e => setEditForm({ ...editForm, priority: e.target.value as any })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         >
                           <option value="High">High</option>
                           <option value="Medium">Medium</option>
@@ -2173,22 +2173,22 @@ export default function BatchManagementPage() {
                         </select>
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Academic Year Mapped</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Academic Year Mapped</label>
                         <input 
                           type="text" 
                           value={editForm.academicYear}
                           onChange={e => setEditForm({ ...editForm, academicYear: e.target.value })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         />
                       </div>
                       <div className="col-span-2 space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Software Stack Dependencies (comma separated)</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Software Stack Dependencies (comma separated)</label>
                         <input 
                           type="text" 
                           value={editForm.techStackString}
                           onChange={e => setEditForm({ ...editForm, techStackString: e.target.value })}
                           placeholder="e.g. React, Node.js, Docker"
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         />
                       </div>
                     </div>
@@ -2201,56 +2201,56 @@ export default function BatchManagementPage() {
               {activeActionModal.type === 'studentAdd' && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">Student Full Name *</label>
+                    <label className="text-[10px] font-bold text-text-secondary uppercase">Student Full Name *</label>
                     <input 
                       type="text" 
                       required
                       value={studentForm.name}
                       onChange={e => setStudentForm({ ...studentForm, name: e.target.value })}
                       placeholder="e.g. John Doe"
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase">Intern ID *</label>
+                      <label className="text-[10px] font-bold text-text-secondary uppercase">Intern ID *</label>
                       <input 
                         type="text" 
                         required
                         value={studentForm.internId}
                         onChange={e => setStudentForm({ ...studentForm, internId: e.target.value })}
                         placeholder="e.g. INT-2026-999"
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700"
+                        className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase">GPA Score (0-100) *</label>
+                      <label className="text-[10px] font-bold text-text-secondary uppercase">GPA Score (0-100) *</label>
                       <input 
                         type="number" 
                         required
                         value={studentForm.performanceScore}
                         onChange={e => setStudentForm({ ...studentForm, performanceScore: Number(e.target.value) })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700"
+                        className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary"
                       />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase">College Institution</label>
+                      <label className="text-[10px] font-bold text-text-secondary uppercase">College Institution</label>
                       <input 
                         type="text" 
                         value={studentForm.college}
                         onChange={e => setStudentForm({ ...studentForm, college: e.target.value })}
                         placeholder="e.g. Stanford University"
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700"
+                        className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase">Department</label>
+                      <label className="text-[10px] font-bold text-text-secondary uppercase">Department</label>
                       <select 
                         value={studentForm.department}
                         onChange={e => setStudentForm({ ...studentForm, department: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 focus:outline-none"
+                        className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                       >
                         <option value="CSE">CSE</option>
                         <option value="IT">IT</option>
@@ -2270,7 +2270,7 @@ export default function BatchManagementPage() {
               {activeActionModal.type === 'mentorRemap' && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">Lead Cohort Coach *</label>
+                    <label className="text-[10px] font-bold text-text-secondary uppercase">Lead Cohort Coach *</label>
                     <select
                       value={mentorForm.mentorId}
                       onChange={e => {
@@ -2278,7 +2278,7 @@ export default function BatchManagementPage() {
                         const mName = mId === 'emp-2' ? 'Bob Johnson' : mId === 'emp-3' ? 'Diana Prince' : 'Charlie Davis';
                         setMentorForm({ mentorId: mId, mentorName: mName });
                       }}
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 focus:outline-none"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     >
                       <option value="emp-2">Bob Johnson (Technical Engineering)</option>
                       <option value="emp-3">Diana Prince (Data Operations)</option>
@@ -2292,13 +2292,13 @@ export default function BatchManagementPage() {
               {activeActionModal.type === 'capacityChange' && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">Scale Max Cohort Size *</label>
+                    <label className="text-[10px] font-bold text-text-secondary uppercase">Scale Max Cohort Size *</label>
                     <input 
                       type="number" 
                       required
                       value={capacityForm}
                       onChange={e => setCapacityForm(Number(e.target.value))}
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 focus:outline-none"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     />
                   </div>
                 </div>
@@ -2308,11 +2308,11 @@ export default function BatchManagementPage() {
               {activeActionModal.type === 'statusShift' && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">Update Lifecycle Status *</label>
+                    <label className="text-[10px] font-bold text-text-secondary uppercase">Update Lifecycle Status *</label>
                     <select
                       value={statusForm}
                       onChange={e => setStatusForm(e.target.value as any)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 focus:outline-none"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     >
                       <option value="Draft">Draft</option>
                       <option value="Upcoming">Upcoming</option>
@@ -2330,11 +2330,11 @@ export default function BatchManagementPage() {
               {activeActionModal.type === 'bulkStatus' && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">Bulk Status Update *</label>
+                    <label className="text-[10px] font-bold text-text-secondary uppercase">Bulk Status Update *</label>
                     <select
                       value={bulkVal}
                       onChange={e => setBulkVal(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 focus:outline-none"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     >
                       <option value="">-- Choose Status --</option>
                       <option value="Draft">Draft</option>
@@ -2352,11 +2352,11 @@ export default function BatchManagementPage() {
               {activeActionModal.type === 'bulkMentor' && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">Map Coach *</label>
+                    <label className="text-[10px] font-bold text-text-secondary uppercase">Map Coach *</label>
                     <select
                       value={bulkVal}
                       onChange={e => setBulkVal(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 focus:outline-none"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     >
                       <option value="">-- Choose Mentor --</option>
                       <option value="emp-2">Bob Johnson (Technical Engineering)</option>
@@ -2370,13 +2370,13 @@ export default function BatchManagementPage() {
               {activeActionModal.type === 'bulkCapacity' && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">Max Seat Capacities limit *</label>
+                    <label className="text-[10px] font-bold text-text-secondary uppercase">Max Seat Capacities limit *</label>
                     <input 
                       type="number"
                       required
                       value={bulkVal}
                       onChange={e => setBulkVal(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 focus:outline-none"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     />
                   </div>
                 </div>
@@ -2385,21 +2385,21 @@ export default function BatchManagementPage() {
               {activeActionModal.type === 'bulkNotify' && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">Notice Broadcast alert msg *</label>
+                    <label className="text-[10px] font-bold text-text-secondary uppercase">Notice Broadcast alert msg *</label>
                     <textarea
                       required
                       rows={3}
                       value={notifyMsg}
                       onChange={e => setNotifyMsg(e.target.value)}
                       placeholder="Write cohort email notifications content..."
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 focus:outline-none"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     />
                   </div>
                 </div>
               )}
 
               {/* Modal Buttons */}
-              <div className={`flex gap-2 justify-end pt-4 border-t border-slate-100 ${
+              <div className={`flex gap-2 justify-end pt-4 border-t border-border ${
                 (activeActionModal.type === 'edit' || activeActionModal.type === 'create') 
                   ? 'max-w-5xl mx-auto w-full' 
                   : ''
@@ -2407,7 +2407,7 @@ export default function BatchManagementPage() {
                 <button
                   type="button"
                   onClick={() => setActiveActionModal(null)}
-                  className="px-4 py-2 border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 rounded-lg text-xs font-bold transition"
+                  className="px-4 py-2 border border-border text-text-primary bg-white hover:bg-slate-50 rounded-lg text-xs font-bold transition"
                 >
                   Cancel
                 </button>

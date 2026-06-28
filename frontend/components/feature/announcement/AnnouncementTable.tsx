@@ -30,7 +30,7 @@ export default function AnnouncementTable() {
   const getStatusBadge = (status: string) => {
     const map: Record<string, string> = {
       Published: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-      Draft: 'bg-gray-100 text-gray-700 border-gray-200',
+      Draft: 'bg-gray-100 text-text-primary border-border',
       Archived: 'bg-rose-100 text-rose-700 border-rose-200'
     };
     return (
@@ -55,17 +55,17 @@ export default function AnnouncementTable() {
 
   if (loading) {
     return (
-      <div className="flex h-64 items-center justify-center bg-white/50 backdrop-blur-xl rounded-2xl border border-gray-100 shadow-sm">
-        <RefreshCw className="h-6 w-6 animate-spin text-gray-500" />
+      <div className="flex h-64 items-center justify-center bg-white/50 backdrop-blur-xl rounded-2xl border border-border shadow-sm">
+        <RefreshCw className="h-6 w-6 animate-spin text-text-secondary" />
       </div>
     );
   }
 
   return (
-    <div className="bg-white/70 backdrop-blur-xl rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div className="bg-white/70 backdrop-blur-xl rounded-2xl border border-border shadow-sm overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left">
-          <thead className="text-xs text-gray-500 uppercase bg-gray-50/50 border-b border-gray-100">
+          <thead className="text-xs text-text-secondary uppercase bg-gray-50/50 border-b border-border">
             <tr>
               <th className="px-6 py-4 font-medium">Announcement</th>
               <th className="px-6 py-4 font-medium">Audience</th>
@@ -74,7 +74,7 @@ export default function AnnouncementTable() {
               <th className="px-6 py-4 font-medium text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-border">
             {announcements.slice(0, 50).map((a) => (
               <tr 
                 key={a.id} 
@@ -87,11 +87,11 @@ export default function AnnouncementTable() {
                 <td className="px-6 py-4">
                   <div className="flex gap-3 items-start">
                     <div className="mt-1">
-                      {a.pinned ? <Pin className="h-4 w-4 text-amber-500 fill-amber-500" /> : <Megaphone className="h-4 w-4 text-gray-400" />}
+                      {a.pinned ? <Pin className="h-4 w-4 text-amber-500 fill-amber-500" /> : <Megaphone className="h-4 w-4 text-text-secondary" />}
                     </div>
                     <div className="flex flex-col">
-                      <span className="font-medium text-gray-900">{a.title}</span>
-                      <span className="text-xs text-gray-500 line-clamp-1 max-w-sm mt-0.5">{a.description}</span>
+                      <span className="font-medium text-text-primary">{a.title}</span>
+                      <span className="text-xs text-text-secondary line-clamp-1 max-w-sm mt-0.5">{a.description}</span>
                       <span className="text-xs text-blue-600 mt-1 font-medium">{a.category}</span>
                     </div>
                   </div>
@@ -99,7 +99,7 @@ export default function AnnouncementTable() {
                 <td className="px-6 py-4">
                   <div className="flex flex-wrap gap-1 max-w-[150px]">
                     {a.audience.map(aud => (
-                      <span key={aud} className="px-2 py-1 bg-gray-100 text-gray-700 text-[10px] font-medium rounded">
+                      <span key={aud} className="px-2 py-1 bg-gray-100 text-text-primary text-[10px] font-medium rounded">
                         {aud}
                       </span>
                     ))}
@@ -112,13 +112,13 @@ export default function AnnouncementTable() {
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <div className="flex items-center gap-1.5 text-gray-500 text-xs">
+                  <div className="flex items-center gap-1.5 text-text-secondary text-xs">
                     <Clock className="h-3.5 w-3.5" />
                     {new Date(a.publishDate).toLocaleDateString()}
                   </div>
                 </td>
                 <td className="px-6 py-4 text-right">
-                  <button className="text-gray-400 hover:text-gray-900 transition-colors">
+                  <button className="text-text-secondary hover:text-text-primary transition-colors">
                     <MoreVertical className="h-5 w-5" />
                   </button>
                 </td>

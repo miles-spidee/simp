@@ -111,10 +111,10 @@ export function TopNav({ setMobileOpen }: TopNavProps) {
 
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-x-4 border-b border-slate-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-x-4 border-b border-border bg-navbar px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
       <button
         type="button"
-        className="-m-2.5 p-2.5 text-slate-700 lg:hidden"
+        className="-m-2.5 p-2.5 text-text-primary lg:hidden"
         onClick={() => setMobileOpen(true)}
       >
         <span className="sr-only">Open sidebar</span>
@@ -125,12 +125,12 @@ export function TopNav({ setMobileOpen }: TopNavProps) {
         <div className="relative flex flex-1 items-center" ref={searchRef}>
           <label htmlFor="search-field" className="sr-only">Search modules</label>
           <Search
-            className="pointer-events-none absolute left-0 h-5 w-5 text-slate-400"
+            className="pointer-events-none absolute left-0 h-5 w-5 text-text-secondary"
             aria-hidden="true"
           />
           <input
             id="search-field"
-            className="block h-full w-full border-0 py-0 pl-8 pr-0 text-slate-900 placeholder:text-slate-400 focus:ring-0 sm:text-sm bg-transparent outline-none"
+            className="block h-full w-full border-0 py-0 pl-8 pr-0 text-text-primary placeholder:text-placeholder focus:ring-0 sm:text-sm bg-transparent outline-none"
             placeholder="Search modules..."
             type="text"
             value={searchQuery}
@@ -143,7 +143,7 @@ export function TopNav({ setMobileOpen }: TopNavProps) {
           {searchQuery && (
             <button 
               onClick={() => { setSearchQuery(''); setShowDropdown(false); }}
-              className="absolute right-2 p-1 text-slate-400 hover:text-slate-600"
+              className="absolute right-2 p-1 text-text-secondary hover:text-text-secondary"
             >
               <X className="h-4 w-4" />
             </button>
@@ -151,8 +151,8 @@ export function TopNav({ setMobileOpen }: TopNavProps) {
 
           {/* Search Dropdown */}
           {showDropdown && searchQuery.length > 0 && (
-            <div className="absolute top-14 left-0 w-full max-w-lg bg-white border border-slate-200 shadow-xl rounded-xl overflow-hidden z-50">
-              <div className="p-2 border-b border-slate-100 bg-slate-50 text-xs font-bold text-slate-400 uppercase tracking-wider">
+            <div className="absolute top-14 left-0 w-full max-w-lg bg-white border border-border shadow-xl rounded-xl overflow-hidden z-50">
+              <div className="p-2 border-b border-border bg-slate-50 text-xs font-bold text-text-secondary uppercase tracking-wider">
                 Quick Navigation
               </div>
               <ul className="max-h-80 overflow-y-auto">
@@ -165,18 +165,18 @@ export function TopNav({ setMobileOpen }: TopNavProps) {
                           setShowDropdown(false);
                           setSearchQuery('');
                         }}
-                        className="w-full text-left flex items-center justify-between px-4 py-3 hover:bg-slate-50 border-b border-slate-50 transition-colors last:border-0"
+                        className="w-full text-left flex items-center justify-between px-4 py-3 hover:bg-slate-50 border-b border-border transition-colors last:border-0"
                       >
                         <div>
-                          <div className="text-sm font-bold text-slate-900">{route.name}</div>
-                          <div className="text-xs text-slate-500 mt-0.5">{route.description}</div>
+                          <div className="text-sm font-bold text-text-primary">{route.name}</div>
+                          <div className="text-xs text-text-secondary mt-0.5">{route.description}</div>
                         </div>
                         <ChevronRight className="h-4 w-4 text-slate-300" />
                       </button>
                     </li>
                   ))
                 ) : (
-                  <li className="px-4 py-8 text-center text-sm text-slate-500">
+                  <li className="px-4 py-8 text-center text-sm text-text-secondary">
                     No modules matching &quot;{searchQuery}&quot;
                   </li>
                 )}
@@ -193,8 +193,8 @@ export function TopNav({ setMobileOpen }: TopNavProps) {
               onClick={() => setShowNotifDropdown(!showNotifDropdown)}
               className={`relative p-2.5 rounded-xl border transition-all duration-300 outline-none ${
                 showNotifDropdown 
-                  ? 'bg-slate-900 text-white border-slate-950 shadow-lg shadow-slate-900/20 scale-95' 
-                  : 'text-slate-600 bg-slate-50 hover:bg-white hover:text-indigo-600 border-slate-200/60 hover:border-indigo-200 hover:shadow-md hover:shadow-indigo-500/5'
+                  ? 'bg-slate-900 text-white border-border shadow-lg shadow-slate-900/20 scale-95' 
+                  : 'text-text-secondary bg-slate-50 hover:bg-white hover:text-indigo-600 border-border/60 hover:border-secondary hover:shadow-md hover:shadow-indigo-500/5'
               }`}
             >
               <span className="sr-only">View notifications</span>
@@ -208,16 +208,16 @@ export function TopNav({ setMobileOpen }: TopNavProps) {
             </button>
 
             {showNotifDropdown && (
-              <div className="absolute right-0 mt-3 z-50 w-96 rounded-3xl bg-white/95 backdrop-blur-xl border border-slate-200/60 shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden py-1 animate-in fade-in slide-in-from-top-2 duration-300 font-premium">
-                <div className="px-5 py-4 border-b border-slate-100/80 bg-slate-50/40 flex justify-between items-center">
-                  <span className="font-extrabold text-slate-900 text-sm tracking-tight font-display-premium">Notifications</span>
+              <div className="absolute right-0 mt-3 z-50 w-96 rounded-3xl bg-white/95 backdrop-blur-xl border border-border/60 shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden py-1 animate-in fade-in slide-in-from-top-2 duration-300 font-premium">
+                <div className="px-5 py-4 border-b border-border/80 bg-slate-50/40 flex justify-between items-center">
+                  <span className="font-extrabold text-text-primary text-sm tracking-tight font-display-premium">Notifications</span>
                   <span className="text-[10px] font-bold bg-indigo-50 text-indigo-650 border border-indigo-100 px-2.5 py-0.5 rounded-full tracking-wide">
                     {notifications.filter(n => !n.readStatus).length} New
                   </span>
                 </div>
-                <div className="divide-y divide-slate-100 max-h-80 overflow-y-auto custom-scrollbar">
+                <div className="divide-y divide-border max-h-80 overflow-y-auto custom-scrollbar">
                   {notifications.length === 0 ? (
-                    <div className="p-8 text-center text-xs text-slate-450">
+                    <div className="p-8 text-center text-xs text-text-secondary">
                       No notifications yet
                     </div>
                   ) : (
@@ -245,7 +245,7 @@ export function TopNav({ setMobileOpen }: TopNavProps) {
                           className={`p-4 hover:bg-slate-50/80 flex items-start gap-3.5 cursor-pointer transition-all duration-200 border-l-4 ${
                             isUnread 
                               ? 'border-indigo-600 bg-indigo-50/10' 
-                              : 'border-transparent hover:border-slate-200'
+                              : 'border-transparent hover:border-secondary'
                           }`}
                         >
                           <div className="relative shrink-0 mt-0.5">
@@ -261,17 +261,17 @@ export function TopNav({ setMobileOpen }: TopNavProps) {
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between gap-2">
-                              <p className={`text-xs truncate font-premium ${isUnread ? 'font-bold text-slate-900' : 'font-medium text-slate-700'}`}>
+                              <p className={`text-xs truncate font-premium ${isUnread ? 'font-bold text-text-primary' : 'font-medium text-text-primary'}`}>
                                 {n.title}
                               </p>
-                              <span className="text-[9px] text-slate-400 font-medium shrink-0 flex items-center gap-1">
+                              <span className="text-[9px] text-text-secondary font-medium shrink-0 flex items-center gap-1">
                                 <Clock className="w-3 h-3 text-slate-350" />
                                 {getRelativeTime(n.createdTime)}
                               </span>
                             </div>
-                            <p className="text-[11px] text-slate-500 line-clamp-2 mt-1 leading-normal font-medium">{n.message}</p>
+                            <p className="text-[11px] text-text-secondary line-clamp-2 mt-1 leading-normal font-medium">{n.message}</p>
                             <div className="flex items-center gap-2 mt-2">
-                              <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 bg-slate-100/80 px-1.5 py-0.5 rounded">
+                              <span className="text-[9px] font-bold uppercase tracking-wider text-text-secondary bg-slate-100/80 px-1.5 py-0.5 rounded">
                                 {n.module}
                               </span>
                               {n.priority === 'Critical' && (
@@ -286,7 +286,7 @@ export function TopNav({ setMobileOpen }: TopNavProps) {
                     })
                   )}
                 </div>
-                <div className="p-3.5 border-t border-slate-100 bg-slate-50/40 text-center">
+                <div className="p-3.5 border-t border-border bg-slate-50/40 text-center">
                   <button 
                     onClick={() => {
                       setShowNotifDropdown(false);
@@ -304,9 +304,13 @@ export function TopNav({ setMobileOpen }: TopNavProps) {
           
 
 
-          <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-slate-200" aria-hidden="true" />
+          <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-border" aria-hidden="true" />
           
-          <button type="button" className="-m-2.5 p-2.5 ml-2 text-slate-400 hover:text-slate-500">
+          <button 
+            type="button" 
+            onClick={() => router.push('/feature/settings')}
+            className="-m-2.5 p-2.5 ml-2 text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
+          >
             <span className="sr-only">Settings</span>
             <Settings className="h-5 w-5" aria-hidden="true" />
           </button>

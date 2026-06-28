@@ -118,7 +118,7 @@ export default function KPIManagementPage() {
 
   if (!hasPermission('kpi.view')) {
     return (
-      <div className="flex h-[50vh] items-center justify-center text-slate-500 font-sans">
+      <div className="flex h-[50vh] items-center justify-center text-text-secondary font-sans">
         <p className="font-semibold">You do not have permission to view KPIs.</p>
       </div>
     );
@@ -127,7 +127,7 @@ export default function KPIManagementPage() {
   if (loading) {
     return (
       <div className="flex h-[50vh] items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+        <Loader2 className="w-8 h-8 animate-spin text-text-secondary" />
       </div>
     );
   }
@@ -138,11 +138,11 @@ export default function KPIManagementPage() {
       {/* Header section */}
       <div className="mb-6 flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2 tracking-tight">
+          <h1 className="text-2xl font-bold text-text-primary flex items-center gap-2 tracking-tight">
             <Target className="w-6 h-6 text-amber-600 animate-pulse" />
             KPI Management
           </h1>
-          <p className="text-slate-500 text-sm mt-0.5">Track, edit, and manage critical performance metrics across all departments.</p>
+          <p className="text-text-secondary text-sm mt-0.5">Track, edit, and manage critical performance metrics across all departments.</p>
         </div>
         {hasPermission('kpi.view') && (
           <button 
@@ -162,17 +162,17 @@ export default function KPIManagementPage() {
           return (
             <div 
               key={kpi.id} 
-              className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 relative overflow-hidden group hover:shadow-md transition-shadow"
+              className="bg-white rounded-2xl border border-border shadow-sm p-6 relative overflow-hidden group hover:shadow-md transition-shadow"
             >
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{kpi.category}</span>
-                  <h3 className="font-bold text-slate-800 mt-1 leading-snug">{kpi.name}</h3>
+                  <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">{kpi.category}</span>
+                  <h3 className="font-bold text-text-primary mt-1 leading-snug">{kpi.name}</h3>
                 </div>
                 <div className="flex items-center gap-2">
                   <button 
                     onClick={() => handleOpenEdit(kpi)}
-                    className="p-1.5 text-slate-400 hover:text-indigo-650 bg-slate-50 hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer"
+                    className="p-1.5 text-text-secondary hover:text-indigo-650 bg-slate-50 hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer"
                   >
                     <Edit2 className="w-3.5 h-3.5" />
                   </button>
@@ -183,10 +183,10 @@ export default function KPIManagementPage() {
               </div>
 
               <div className="flex items-end gap-2.5 mb-4">
-                <span className="text-3xl font-extrabold text-slate-900 font-mono tracking-tight">
+                <span className="text-3xl font-extrabold text-text-primary font-mono tracking-tight">
                   {kpi.currentValue}{kpi.unit}
                 </span>
-                <span className="text-xs font-semibold text-slate-400 pb-1">
+                <span className="text-xs font-semibold text-text-secondary pb-1">
                   / {kpi.targetValue}{kpi.unit} target
                 </span>
               </div>
@@ -203,18 +203,18 @@ export default function KPIManagementPage() {
                 />
               </div>
 
-              <div className="flex items-center justify-between text-xs font-semibold text-slate-500">
+              <div className="flex items-center justify-between text-xs font-semibold text-text-secondary">
                 <div className={`flex items-center gap-1 font-bold ${
                   kpi.trend === 'up' ? 'text-emerald-600' : 
                   kpi.trend === 'down' ? 'text-rose-600' : 
-                  'text-slate-500'
+                  'text-text-secondary'
                 }`}>
                   {kpi.trend === 'up' && <ArrowUpRight className="w-4 h-4" />}
                   {kpi.trend === 'down' && <ArrowDownRight className="w-4 h-4" />}
                   {kpi.trend === 'flat' && <Minus className="w-4 h-4" />}
                   <span>{Math.abs(kpi.trendPercentage)}%</span>
                 </div>
-                <span className="text-slate-400 font-medium">
+                <span className="text-text-secondary font-medium">
                   Updated {new Date(kpi.lastUpdated).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}
                 </span>
               </div>
@@ -233,24 +233,24 @@ export default function KPIManagementPage() {
       >
         <form onSubmit={handleCreateKPI} className="flex-1 flex flex-col p-6 space-y-5 overflow-y-auto">
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">KPI Metric Name</label>
+            <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">KPI Metric Name</label>
             <input
               type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., Active Placement Rate"
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800 placeholder-slate-400"
+              className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary placeholder-slate-400"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Category</label>
+              <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Category</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800 cursor-pointer"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary cursor-pointer"
               >
                 <option value="Attendance">Attendance</option>
                 <option value="Placement">Placement</option>
@@ -261,50 +261,50 @@ export default function KPIManagementPage() {
               </select>
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Metric Unit</label>
+              <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Metric Unit</label>
               <input
                 type="text"
                 required
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
                 placeholder="e.g., %, M, Students"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800 placeholder-slate-400"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary placeholder-slate-400"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Current Value</label>
+              <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Current Value</label>
               <input
                 type="number"
                 step="any"
                 required
                 value={currentValue}
                 onChange={(e) => setCurrentValue(parseFloat(e.target.value) || 0)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-mono font-bold text-slate-800"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-mono font-bold text-text-primary"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Target Value</label>
+              <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Target Value</label>
               <input
                 type="number"
                 step="any"
                 required
                 value={targetValue}
                 onChange={(e) => setTargetValue(parseFloat(e.target.value) || 100)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-mono font-bold text-slate-800"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-mono font-bold text-text-primary"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Initial Status</label>
+              <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Initial Status</label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as any)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800 cursor-pointer"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary cursor-pointer"
               >
                 <option value="on_track">On Track (Green)</option>
                 <option value="at_risk">At Risk (Amber)</option>
@@ -312,11 +312,11 @@ export default function KPIManagementPage() {
               </select>
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Trend Direction</label>
+              <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Trend Direction</label>
               <select
                 value={trend}
                 onChange={(e) => setTrend(e.target.value as any)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800 cursor-pointer"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary cursor-pointer"
               >
                 <option value="up">Trending Up (Positive)</option>
                 <option value="down">Trending Down (Negative)</option>
@@ -326,22 +326,22 @@ export default function KPIManagementPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Trend Change (%)</label>
+            <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Trend Change (%)</label>
             <input
               type="number"
               step="any"
               required
               value={trendPercentage}
               onChange={(e) => setTrendPercentage(parseFloat(e.target.value) || 0)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 font-medium text-slate-800"
+              className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary font-medium text-text-primary"
             />
           </div>
 
-          <div className="flex gap-3 pt-4 border-t border-slate-100 mt-auto">
+          <div className="flex gap-3 pt-4 border-t border-border mt-auto">
             <button
               type="button"
               onClick={() => setIsCreateOpen(false)}
-              className="flex-1 py-3 border border-slate-200 text-slate-700 font-bold text-sm rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+              className="flex-1 py-3 border border-border text-text-primary font-bold text-sm rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
             >
               Cancel
             </button>
@@ -372,42 +372,42 @@ export default function KPIManagementPage() {
         {selectedKpi && (
           <form onSubmit={handleEditKPI} className="flex-1 flex flex-col p-6 space-y-5 overflow-y-auto">
             <div className="space-y-1">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{selectedKpi.category}</span>
+              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">{selectedKpi.category}</span>
               <h3 className="text-base font-bold text-slate-850">{selectedKpi.name}</h3>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Current Value ({selectedKpi.unit})</label>
+                <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Current Value ({selectedKpi.unit})</label>
                 <input
                   type="number"
                   step="any"
                   required
                   value={editCurrentValue}
                   onChange={(e) => setEditCurrentValue(parseFloat(e.target.value) || 0)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-mono font-bold text-slate-800"
+                  className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-mono font-bold text-text-primary"
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Target Value ({selectedKpi.unit})</label>
+                <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Target Value ({selectedKpi.unit})</label>
                 <input
                   type="number"
                   step="any"
                   required
                   value={editTargetValue}
                   onChange={(e) => setEditTargetValue(parseFloat(e.target.value) || 0)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-mono font-bold text-slate-800"
+                  className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-mono font-bold text-text-primary"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">KPI Status</label>
+                <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">KPI Status</label>
                 <select
                   value={editStatus}
                   onChange={(e) => setEditStatus(e.target.value as any)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800 cursor-pointer"
+                  className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary cursor-pointer"
                 >
                   <option value="on_track">On Track (Green)</option>
                   <option value="at_risk">At Risk (Amber)</option>
@@ -415,11 +415,11 @@ export default function KPIManagementPage() {
                 </select>
               </div>
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Trend Direction</label>
+                <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Trend Direction</label>
                 <select
                   value={editTrend}
                   onChange={(e) => setEditTrend(e.target.value as any)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800 cursor-pointer"
+                  className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary cursor-pointer"
                 >
                   <option value="up">Trending Up</option>
                   <option value="down">Trending Down</option>
@@ -429,22 +429,22 @@ export default function KPIManagementPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Trend Change Percentage (%)</label>
+              <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Trend Change Percentage (%)</label>
               <input
                 type="number"
                 step="any"
                 required
                 value={editTrendPercentage}
                 onChange={(e) => setEditTrendPercentage(parseFloat(e.target.value) || 0)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 font-medium text-slate-850"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary font-medium text-slate-850"
               />
             </div>
 
-            <div className="flex gap-3 pt-4 border-t border-slate-100 mt-auto">
+            <div className="flex gap-3 pt-4 border-t border-border mt-auto">
               <button
                 type="button"
                 onClick={() => setSelectedKpi(null)}
-                className="flex-1 py-3 border border-slate-200 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+                className="flex-1 py-3 border border-border text-text-primary font-bold text-xs rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
               >
                 Cancel
               </button>

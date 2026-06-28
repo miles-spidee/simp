@@ -47,24 +47,24 @@ export default function ViewNotificationModal({ isOpen, onClose, data }: ViewNot
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white/90 backdrop-blur-xl border border-slate-150 rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[85vh]">
         {/* Header */}
-        <div className="p-6 border-b border-slate-100 flex items-start justify-between gap-4">
+        <div className="p-6 border-b border-border flex items-start justify-between gap-4">
           <div className="space-y-2">
             <div className="flex flex-wrap gap-2">
               <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${getPriorityColor(priority)}`}>
                 {priority}
               </span>
-              <span className="bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-0.5 rounded-full text-xs font-semibold flex items-center gap-1">
+              <span className="bg-slate-100 text-text-primary border border-border px-2.5 py-0.5 rounded-full text-xs font-semibold flex items-center gap-1">
                 <Tag className="w-3 h-3" />
                 {category}
               </span>
             </div>
-            <h3 className="text-xl font-bold text-slate-900 leading-snug">
+            <h3 className="text-xl font-bold text-text-primary leading-snug">
               {title}
             </h3>
           </div>
           <button 
             onClick={onClose}
-            className="p-1.5 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors shrink-0 border border-transparent hover:border-slate-200"
+            className="p-1.5 rounded-xl hover:bg-slate-100 text-text-secondary hover:text-text-primary transition-colors shrink-0 border border-transparent hover:border-secondary"
           >
             <X className="h-5 w-5" />
           </button>
@@ -73,37 +73,37 @@ export default function ViewNotificationModal({ isOpen, onClose, data }: ViewNot
         {/* Content Body */}
         <div className="p-6 overflow-y-auto space-y-6 flex-1 custom-scrollbar">
           {/* Metadata Grid */}
-          <div className="grid grid-cols-2 gap-4 bg-slate-50 border border-slate-150 rounded-xl p-4 text-xs text-slate-500">
+          <div className="grid grid-cols-2 gap-4 bg-slate-50 border border-slate-150 rounded-xl p-4 text-xs text-text-secondary">
             <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
+              <Calendar className="w-4 h-4 text-text-secondary shrink-0" />
               <div>
-                <span className="block font-medium text-slate-400">Date & Time</span>
-                <span className="font-bold text-slate-700">{new Date(date).toLocaleString()}</span>
+                <span className="block font-medium text-text-secondary">Date & Time</span>
+                <span className="font-bold text-text-primary">{new Date(date).toLocaleString()}</span>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <User className="w-4 h-4 text-slate-400 shrink-0" />
+              <User className="w-4 h-4 text-text-secondary shrink-0" />
               <div>
-                <span className="block font-medium text-slate-400">Sent By</span>
-                <span className="font-bold text-slate-700">{author}</span>
+                <span className="block font-medium text-text-secondary">Sent By</span>
+                <span className="font-bold text-text-primary">{author}</span>
               </div>
             </div>
           </div>
 
           {/* Message Text */}
           <div className="space-y-2">
-            <span className="block text-xs font-bold text-slate-400 uppercase tracking-wider">Message Details</span>
-            <div className="text-sm text-slate-700 leading-relaxed whitespace-pre-line bg-slate-50/50 border border-slate-100 rounded-xl p-5 font-medium">
+            <span className="block text-xs font-bold text-text-secondary uppercase tracking-wider">Message Details</span>
+            <div className="text-sm text-text-primary leading-relaxed whitespace-pre-line bg-slate-50/50 border border-border rounded-xl p-5 font-medium">
               {message}
             </div>
           </div>
 
           {/* Delivery Channels / Target Info */}
           {(data.channels || data.audience) && (
-            <div className="border-t border-slate-100 pt-4 space-y-3">
+            <div className="border-t border-border pt-4 space-y-3">
               {data.channels && data.channels.length > 0 && (
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-slate-400">Sent via:</span>
+                  <span className="font-semibold text-text-secondary">Sent via:</span>
                   <div className="flex gap-2">
                     {data.channels.map(ch => (
                       <span key={ch} className="px-2 py-1 bg-teal-50 border border-teal-150 text-teal-700 font-semibold rounded-lg">
@@ -115,7 +115,7 @@ export default function ViewNotificationModal({ isOpen, onClose, data }: ViewNot
               )}
               {data.channel && (
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-slate-400">Channel:</span>
+                  <span className="font-semibold text-text-secondary">Channel:</span>
                   <span className="px-2 py-1 bg-teal-50 border border-teal-150 text-teal-700 font-semibold rounded-lg">
                     {data.channel}
                   </span>
@@ -123,10 +123,10 @@ export default function ViewNotificationModal({ isOpen, onClose, data }: ViewNot
               )}
               {data.audience && data.audience.length > 0 && (
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-slate-400">Audience:</span>
+                  <span className="font-semibold text-text-secondary">Audience:</span>
                   <div className="flex gap-1">
                     {data.audience.map(aud => (
-                      <span key={aud} className="px-2 py-0.5 bg-slate-100 border border-slate-200 text-slate-650 font-bold rounded">
+                      <span key={aud} className="px-2 py-0.5 bg-slate-100 border border-border text-text-secondary font-bold rounded">
                         {aud}
                       </span>
                     ))}
@@ -138,7 +138,7 @@ export default function ViewNotificationModal({ isOpen, onClose, data }: ViewNot
         </div>
 
         {/* Footer Actions */}
-        <div className="p-4 bg-slate-50/50 border-t border-slate-100 flex justify-end gap-3">
+        <div className="p-4 bg-slate-50/50 border-t border-border flex justify-end gap-3">
           <button 
             onClick={onClose}
             className="px-5 py-2.5 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-all font-semibold text-sm shadow-sm"

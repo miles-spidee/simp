@@ -17,11 +17,11 @@ export function AccessRestrictedPage() {
 
         {/* Content */}
         <div className="space-y-3">
-          <h1 className="text-2xl font-bold text-slate-900">Access Restricted</h1>
-          <p className="text-sm text-slate-500 leading-relaxed">
+          <h1 className="text-2xl font-bold text-text-primary">Access Restricted</h1>
+          <p className="text-sm text-text-secondary leading-relaxed">
             You do not have permission to access this module.
           </p>
-          <p className="text-sm text-slate-500 leading-relaxed">
+          <p className="text-sm text-text-secondary leading-relaxed">
             Please contact your administrator if you believe this is an error.
           </p>
         </div>

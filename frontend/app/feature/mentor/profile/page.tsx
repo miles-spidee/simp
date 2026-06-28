@@ -104,28 +104,28 @@ export default function MentorProfilePage() {
     <div className={`flex flex-col h-full bg-slate-50 ${
       isCreateOpen ? 'h-[calc(100vh-80px)] overflow-hidden relative' : ''
     }`}>
-      <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shrink-0">
+      <div className="bg-white border-b border-border px-6 py-4 flex items-center justify-between shrink-0">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Mentor Profile</h1>
-          <p className="text-sm text-slate-500 mt-1">Manage mentor-specific profiles linked to employees with role MENTOR.</p>
+          <h1 className="text-xl font-bold text-text-primary">Mentor Profile</h1>
+          <p className="text-sm text-text-secondary mt-1">Manage mentor-specific profiles linked to employees with role MENTOR.</p>
         </div>
         <div className="flex gap-2">
-          <div className="bg-slate-100 p-1 rounded-lg flex items-center gap-1 shadow-inner border border-slate-200 mr-2">
+          <div className="bg-slate-100 p-1 rounded-lg flex items-center gap-1 shadow-inner border border-border mr-2">
             <button 
               onClick={() => setActiveView('profiles')}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${activeView === 'profiles' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${activeView === 'profiles' ? 'bg-white text-blue-700 shadow-sm' : 'text-text-secondary hover:text-text-primary'}`}
             >
               Profiles
             </button>
             <button 
               onClick={() => setActiveView('batch-mapping')}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${activeView === 'batch-mapping' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${activeView === 'batch-mapping' ? 'bg-white text-blue-700 shadow-sm' : 'text-text-secondary hover:text-text-primary'}`}
             >
               Batch Mapping
             </button>
             <button 
               onClick={() => setActiveView('performance')}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${activeView === 'performance' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${activeView === 'performance' ? 'bg-white text-blue-700 shadow-sm' : 'text-text-secondary hover:text-text-primary'}`}
             >
               Performance
             </button>
@@ -145,20 +145,20 @@ export default function MentorProfilePage() {
         ) : activeView === 'performance' ? (
           <MentorPerformanceView />
         ) : (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm max-w-7xl mx-auto flex flex-col h-[calc(100vh-12rem)]">
-          <div className="p-4 border-b border-slate-100 flex items-center justify-between gap-4 bg-slate-50/50">
+        <div className="bg-white border border-border rounded-xl shadow-sm max-w-7xl mx-auto flex flex-col h-[calc(100vh-12rem)]">
+          <div className="p-4 border-b border-border flex items-center justify-between gap-4 bg-slate-50/50">
             <div className="flex items-center gap-2 flex-1 max-w-md">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary" />
                 <input
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Search by name, employee ID..."
-                  className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                  className="w-full pl-9 pr-4 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 />
               </div>
-              <button className="p-2 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50">
+              <button className="p-2 border border-border text-text-secondary rounded-lg hover:bg-slate-50">
                 <Filter className="h-4 w-4" />
               </button>
             </div>
@@ -166,7 +166,7 @@ export default function MentorProfilePage() {
 
           <div className="flex-1 overflow-auto">
             <table className="w-full text-left text-sm whitespace-nowrap">
-              <thead className="bg-slate-50 sticky top-0 z-10 border-b border-slate-200 text-slate-500 font-medium">
+              <thead className="bg-slate-50 sticky top-0 z-10 border-b border-border text-text-secondary font-medium">
                 <tr>
                   <th className="px-6 py-3">Mentor</th>
                   <th className="px-6 py-3">Employee ID</th>
@@ -177,33 +177,33 @@ export default function MentorProfilePage() {
                   <th className="px-6 py-3"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-border">
                 {filtered.map(p => (
                   <tr
                     key={p.mentor_profile_id}
                     className="hover:bg-blue-50/50 cursor-pointer transition-colors"
                     onClick={() => openProfile(p)}
                   >
-                    <td className="px-6 py-4 font-medium text-slate-900">
+                    <td className="px-6 py-4 font-medium text-text-primary">
                       <div className="flex items-center gap-2">
-                        <User className="h-4 w-4 text-slate-400" />
+                        <User className="h-4 w-4 text-text-secondary" />
                         {p.employeeName}
                       </div>
-                      <span className="text-xs text-slate-400 font-mono">{p.mentor_profile_id}</span>
+                      <span className="text-xs text-text-secondary font-mono">{p.mentor_profile_id}</span>
                     </td>
-                    <td className="px-6 py-4 text-slate-600 font-mono">{p.employee_id}</td>
-                    <td className="px-6 py-4 text-slate-600">{p.years_of_experience} yrs</td>
+                    <td className="px-6 py-4 text-text-secondary font-mono">{p.employee_id}</td>
+                    <td className="px-6 py-4 text-text-secondary">{p.years_of_experience} yrs</td>
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-1 max-w-xs">
                         {p.mentor_expertise.slice(0, 2).map(exp => (
-                          <span key={exp} className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-xs font-semibold">{exp}</span>
+                          <span key={exp} className="px-2 py-0.5 bg-slate-100 text-text-secondary rounded text-xs font-semibold">{exp}</span>
                         ))}
                         {p.mentor_expertise.length > 2 && (
-                          <span className="text-xs text-slate-400">+{p.mentor_expertise.length - 2}</span>
+                          <span className="text-xs text-text-secondary">+{p.mentor_expertise.length - 2}</span>
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-slate-600">
+                    <td className="px-6 py-4 text-text-secondary">
                       {p.current_student_count} / {p.max_student_capacity}
                       <div className="w-20 h-1.5 bg-slate-100 rounded-full mt-1 overflow-hidden">
                         <div
@@ -220,7 +220,7 @@ export default function MentorProfilePage() {
                       )}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <button className="p-1 text-slate-400 hover:text-blue-600 transition-colors">
+                      <button className="p-1 text-text-secondary hover:text-blue-600 transition-colors">
                         <Eye className="h-4 w-4" />
                       </button>
                     </td>
@@ -236,14 +236,14 @@ export default function MentorProfilePage() {
       <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} title="Mentor Profile Details" size="lg">
         {selected && (
           <div className="flex flex-col h-full bg-slate-50 min-h-0">
-            <div className="bg-white border-b border-slate-200 px-6 py-4 shrink-0 flex items-center justify-between">
+            <div className="bg-white border-b border-border px-6 py-4 shrink-0 flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="h-12 w-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xl font-bold">
                   {selected.employeeName.charAt(0)}
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-slate-900">{selected.employeeName}</h2>
-                  <p className="text-sm text-slate-500">Employee: {selected.employee_id} · Profile: {selected.mentor_profile_id}</p>
+                  <h2 className="text-lg font-bold text-text-primary">{selected.employeeName}</h2>
+                  <p className="text-sm text-text-secondary">Employee: {selected.employee_id} · Profile: {selected.mentor_profile_id}</p>
                 </div>
               </div>
               <button
@@ -255,57 +255,57 @@ export default function MentorProfilePage() {
             </div>
 
             <div className="flex-1 p-6 overflow-y-auto space-y-6">
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                <h3 className="text-sm font-semibold text-slate-900 border-b border-slate-100 pb-2 mb-4 flex items-center gap-2">
+              <div className="bg-white p-5 rounded-xl border border-border shadow-sm">
+                <h3 className="text-sm font-semibold text-text-primary border-b border-border pb-2 mb-4 flex items-center gap-2">
                   <Briefcase className="h-4 w-4 text-blue-500" /> Bio
                 </h3>
-                <p className="text-slate-600 text-sm">{selected.mentor_bio}</p>
+                <p className="text-text-secondary text-sm">{selected.mentor_bio}</p>
               </div>
 
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                <h3 className="text-sm font-semibold text-slate-900 border-b border-slate-100 pb-2 mb-4">Expertise</h3>
+              <div className="bg-white p-5 rounded-xl border border-border shadow-sm">
+                <h3 className="text-sm font-semibold text-text-primary border-b border-border pb-2 mb-4">Expertise</h3>
                 <div className="flex flex-wrap gap-2">
                   {selected.mentor_expertise.map(exp => (
-                    <span key={exp} className="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold">{exp}</span>
+                    <span key={exp} className="px-2.5 py-1 bg-slate-100 text-text-primary rounded-lg text-xs font-semibold">{exp}</span>
                   ))}
                 </div>
               </div>
 
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                <h3 className="text-sm font-semibold text-slate-900 border-b border-slate-100 pb-2 mb-4">Capacity & Experience</h3>
+              <div className="bg-white p-5 rounded-xl border border-border shadow-sm">
+                <h3 className="text-sm font-semibold text-text-primary border-b border-border pb-2 mb-4">Capacity & Experience</h3>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Years of Experience</p>
-                    <p className="text-2xl font-black text-slate-900">{selected.years_of_experience}</p>
+                    <p className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-1">Years of Experience</p>
+                    <p className="text-2xl font-black text-text-primary">{selected.years_of_experience}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Max Student Capacity</p>
-                    <p className="text-2xl font-black text-slate-900">{selected.max_student_capacity}</p>
+                    <p className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-1">Max Student Capacity</p>
+                    <p className="text-2xl font-black text-text-primary">{selected.max_student_capacity}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Current Students</p>
-                    <p className="text-2xl font-black text-slate-900">{selected.current_student_count}</p>
+                    <p className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-1">Current Students</p>
+                    <p className="text-2xl font-black text-text-primary">{selected.current_student_count}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Workload</p>
-                    <p className="text-2xl font-black text-slate-900">
+                    <p className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-1">Workload</p>
+                    <p className="text-2xl font-black text-text-primary">
                       {Math.round((selected.current_student_count / selected.max_student_capacity) * 100)}%
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                <h3 className="text-sm font-semibold text-slate-900 border-b border-slate-100 pb-2 mb-4 flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-slate-400" /> Timestamps
+              <div className="bg-white p-5 rounded-xl border border-border shadow-sm">
+                <h3 className="text-sm font-semibold text-text-primary border-b border-border pb-2 mb-4 flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-text-secondary" /> Timestamps
                 </h3>
-                <div className="grid grid-cols-2 gap-4 text-xs text-slate-600">
+                <div className="grid grid-cols-2 gap-4 text-xs text-text-secondary">
                   <div>
-                    <span className="font-bold text-slate-400 uppercase block mb-1">Created</span>
+                    <span className="font-bold text-text-secondary uppercase block mb-1">Created</span>
                     {new Date(selected.created_at).toLocaleString()}
                   </div>
                   <div>
-                    <span className="font-bold text-slate-400 uppercase block mb-1">Updated</span>
+                    <span className="font-bold text-text-secondary uppercase block mb-1">Updated</span>
                     {new Date(selected.updated_at).toLocaleString()}
                   </div>
                 </div>
@@ -320,14 +320,14 @@ export default function MentorProfilePage() {
           <div className="max-w-none w-full h-full rounded-none border-none flex flex-col">
             
             {/* Modal Header */}
-            <div className="bg-slate-50 border-b border-slate-100 px-6 py-4 flex justify-between items-center">
-              <h3 className="font-extrabold text-sm text-slate-900 uppercase tracking-wide">
+            <div className="bg-slate-50 border-b border-border px-6 py-4 flex justify-between items-center">
+              <h3 className="font-extrabold text-sm text-text-primary uppercase tracking-wide">
                 Create Mentor Profile
               </h3>
               
               <button 
                 onClick={() => setIsCreateOpen(false)}
-                className="text-xs font-bold text-slate-400 hover:text-slate-800"
+                className="text-xs font-bold text-text-secondary hover:text-text-primary"
               >
                 Cancel
               </button>
@@ -336,18 +336,18 @@ export default function MentorProfilePage() {
             {/* Forms body */}
             <form 
               onSubmit={handleCreateProfile} 
-              className="text-xs font-semibold text-slate-700 flex flex-col min-h-0 p-8 space-y-6 flex-1 h-full justify-between"
+              className="text-xs font-semibold text-text-primary flex flex-col min-h-0 p-8 space-y-6 flex-1 h-full justify-between"
             >
               <div className="space-y-6 max-w-5xl mx-auto w-full flex-1 flex flex-col justify-start overflow-hidden pt-4">
                 
                 {/* Section 1 */}
                 <div className="space-y-2">
-                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                  <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest border-b border-border pb-1">
                     Section 1: Link Employee & Configuration
                   </div>
                   <div className="grid grid-cols-4 gap-3">
                     <div className="col-span-2 space-y-1">
-                      <label className="block text-slate-500 text-[10px]">Select Employee *</label>
+                      <label className="block text-text-secondary text-[10px]">Select Employee *</label>
                       <select 
                         required
                         value={createForm.employee_id}
@@ -360,7 +360,7 @@ export default function MentorProfilePage() {
                             employeeName: emp ? emp.name : '',
                           });
                         }}
-                        className="w-full p-2 border border-slate-200 rounded bg-white text-xs focus:outline-none text-slate-700 font-semibold"
+                        className="w-full p-2 border border-border rounded bg-white text-xs focus:outline-none text-text-primary font-semibold"
                       >
                         <option value="">-- Choose Employee --</option>
                         {employees.map(emp => (
@@ -372,37 +372,37 @@ export default function MentorProfilePage() {
                     </div>
                     
                     <div className="space-y-1">
-                      <label className="block text-slate-500 text-[10px]">Years of Experience</label>
+                      <label className="block text-text-secondary text-[10px]">Years of Experience</label>
                       <input 
                         type="number" 
                         required
                         min={0}
                         value={createForm.years_of_experience}
                         onChange={(e) => setCreateForm({ ...createForm, years_of_experience: Number(e.target.value) })}
-                        className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none text-slate-700 font-semibold"
+                        className="w-full p-2 border border-border rounded text-xs focus:outline-none text-text-primary font-semibold"
                       />
                     </div>
 
                     <div className="space-y-1">
-                      <label className="block text-slate-500 text-[10px]">Max Student Capacity</label>
+                      <label className="block text-text-secondary text-[10px]">Max Student Capacity</label>
                       <input 
                         type="number" 
                         required
                         min={1}
                         value={createForm.max_student_capacity}
                         onChange={(e) => setCreateForm({ ...createForm, max_student_capacity: Number(e.target.value) })}
-                        className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none text-slate-700 font-semibold"
+                        className="w-full p-2 border border-border rounded text-xs focus:outline-none text-text-primary font-semibold"
                       />
                     </div>
                   </div>
                   
                   <div className="grid grid-cols-4 gap-3 mt-2">
                     <div className="space-y-1 col-span-2">
-                      <label className="block text-slate-500 text-[10px]">Availability Status</label>
+                      <label className="block text-text-secondary text-[10px]">Availability Status</label>
                       <select 
                         value={createForm.is_available ? 'true' : 'false'}
                         onChange={(e) => setCreateForm({ ...createForm, is_available: e.target.value === 'true' })}
-                        className="w-full p-2 border border-slate-200 rounded bg-white text-xs focus:outline-none text-slate-700 font-semibold"
+                        className="w-full p-2 border border-border rounded bg-white text-xs focus:outline-none text-text-primary font-semibold"
                       >
                         <option value="true">Available</option>
                         <option value="false">Unavailable</option>
@@ -413,29 +413,29 @@ export default function MentorProfilePage() {
 
                 {/* Section 2 */}
                 <div className="space-y-2">
-                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                  <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest border-b border-border pb-1">
                     Section 2: Expertise & Bio
                   </div>
                   <div className="space-y-3">
                     <div className="space-y-1">
-                      <label className="block text-slate-500 text-[10px]">Expertise Fields (comma separated)</label>
+                      <label className="block text-text-secondary text-[10px]">Expertise Fields (comma separated)</label>
                       <input 
                         type="text" 
                         placeholder="e.g. React, Node.js, Cloud Architecture"
                         value={createForm.mentor_expertise_string}
                         onChange={(e) => setCreateForm({ ...createForm, mentor_expertise_string: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none text-slate-700 font-semibold"
+                        className="w-full p-2 border border-border rounded text-xs focus:outline-none text-text-primary font-semibold"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="block text-slate-500 text-[10px]">Mentor Biography / Bio</label>
+                      <label className="block text-text-secondary text-[10px]">Mentor Biography / Bio</label>
                       <textarea 
                         rows={3}
                         required
                         placeholder="Write a brief biography..."
                         value={createForm.mentor_bio}
                         onChange={(e) => setCreateForm({ ...createForm, mentor_bio: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none font-semibold text-slate-700"
+                        className="w-full p-2 border border-border rounded text-xs focus:outline-none font-semibold text-text-primary"
                       />
                     </div>
                   </div>
@@ -444,11 +444,11 @@ export default function MentorProfilePage() {
               </div>
 
               {/* Footer button */}
-              <div className="pt-4 border-t border-slate-100 max-w-5xl mx-auto w-full flex justify-end gap-2">
+              <div className="pt-4 border-t border-border max-w-5xl mx-auto w-full flex justify-end gap-2">
                 <button 
                   type="button"
                   onClick={() => setIsCreateOpen(false)}
-                  className="px-4 py-2 border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 rounded-lg text-xs font-bold transition cursor-pointer"
+                  className="px-4 py-2 border border-border text-text-primary bg-white hover:bg-slate-50 rounded-lg text-xs font-bold transition cursor-pointer"
                 >
                   Cancel
                 </button>

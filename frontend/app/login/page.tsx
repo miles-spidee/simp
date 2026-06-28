@@ -70,14 +70,14 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans flex flex-col justify-between text-slate-800 animate-slide-in">
+    <div className="min-h-screen bg-[var(--background)] font-[family-name:var(--font-work-sans)] flex flex-col justify-between text-[var(--foreground)] animate-slide-in">
       
       {/* Navigation Header */}
-      <header className="h-16 w-full bg-white flex items-center justify-between px-6 lg:px-16 border-b border-slate-100 sticky top-0 z-40 backdrop-blur-md bg-white/90">
+      <header className="h-16 w-full bg-white flex items-center justify-between px-6 lg:px-16 border-b border-border sticky top-0 z-40 backdrop-blur-md bg-white/90">
         <Link href="/" className="flex items-center">
           <img src="/logo.png" alt="Pinesphere Logo" className="h-13.5 w-auto object-contain transition-transform hover:scale-[1.02]" />
         </Link>
-        <Link href="/" className="text-xs font-bold uppercase tracking-wider text-slate-600 hover:text-blue-600 transition-colors flex items-center gap-1.5">
+        <Link href="/" className="text-xs font-bold uppercase tracking-wider text-text-secondary hover:text-blue-600 transition-colors flex items-center gap-1.5">
           <span>←</span> Return to Homepage
         </Link>
       </header>
@@ -86,7 +86,7 @@ const LoginPage = () => {
       <div className="flex flex-1 flex-col lg:flex-row h-[calc(100vh-4rem)]">
         
         {/* Left Panel - Premium Gradient & Background Video & Ambient Glow */}
-        <div className="hidden lg:flex w-1/2 flex-col justify-between p-12 relative overflow-hidden bg-slate-950 text-white border-r border-slate-950/20">
+        <div className="hidden lg:flex w-1/2 flex-col justify-between p-12 relative overflow-hidden bg-sky-950 text-white border-r border-border/20">
           
           {/* Looping corporate background video from pinesphere.com */}
           <video
@@ -104,7 +104,7 @@ const LoginPage = () => {
           </video>
           
           {/* Dark gradient overlay with blue tint */}
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-950/80 via-blue-950/60 to-slate-950/85 z-10" />
+          <div className="absolute inset-0 bg-gradient-to-br from-sky-950/80 via-sky-900/60 to-sky-950/85 z-10" />
 
           {/* Tech Grid Blueprint Overlay */}
           <div className="absolute inset-0 tech-grid z-10 opacity-40 pointer-events-none" />
@@ -115,9 +115,9 @@ const LoginPage = () => {
               Enterprise Portal
             </span>
             
-            <h1 className="text-4xl lg:text-5xl font-black leading-tight tracking-tight mb-6 text-white drop-shadow-sm">
+            <h1 className="text-4xl lg:text-5xl font-black leading-tight tracking-tight mb-6 text-white drop-shadow-sm font-[family-name:var(--font-outfit)]">
               Transforming <br />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-300 to-teal-400">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 via-sky-300 to-sky-200">
                 Internships Into Careers
               </span>
             </h1>
@@ -130,12 +130,12 @@ const LoginPage = () => {
             <div className="border-t border-white/10 pt-8 flex items-center gap-10">
               <div>
                 <div className="text-3xl font-extrabold text-white tracking-tight">10K+</div>
-                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Careers Launched</div>
+                <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-1">Careers Launched</div>
               </div>
               <div className="w-px h-8 bg-white/10" />
               <div>
                 <div className="text-3xl font-extrabold text-white tracking-tight">92%</div>
-                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Placement Rate</div>
+                <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mt-1">Placement Rate</div>
               </div>
             </div>
           </div>
@@ -173,15 +173,15 @@ const LoginPage = () => {
 
         {/* Right Panel - Login Form & Footer (Colored White to match main right division) */}
         <div className="flex w-full flex-col lg:w-1/2 bg-white justify-between">
-          <div className="flex flex-1 flex-col justify-center px-8 sm:px-16 lg:px-24">
+          <div className="flex flex-1 flex-col justify-center px-4 sm:px-16 lg:px-24">
             <div className="mx-auto w-full max-w-sm">
-              <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">Welcome Back</h2>
-              <p className="mt-1.5 text-sm text-slate-500">Sign in to continue to your workspace</p>
+              <h2 className="text-2xl font-extrabold text-text-primary tracking-tight font-[family-name:var(--font-outfit)]">Welcome Back</h2>
+              <p className="mt-1.5 text-sm text-text-secondary/70">Sign in to continue to your workspace</p>
 
               {/* Form */}
               <form className="mt-8 space-y-6" onSubmit={handleLogin}>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500">Username</label>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-label">Username</label>
                   <div className="mt-2">
                     <input 
                       type="text" 
@@ -189,15 +189,15 @@ const LoginPage = () => {
                       required 
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
-                      className="block w-full rounded-none border border-slate-300 px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-0 transition-all placeholder-slate-400" 
+                      className="block w-full rounded-none border border-border px-4 py-3 text-sm focus:border-orange-500 focus:outline-none focus:ring-0 transition-all placeholder-sky-300 bg-white" 
                     />
                   </div>
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500">Password</label>
-                    <Link href="/forgot-password" className="text-xs font-bold text-blue-600 hover:text-blue-500 transition-colors">Forgot Password?</Link>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-label">Password</label>
+                    <Link href="/forgot-password" className="text-xs font-bold text-orange-600 hover:text-orange-500 transition-colors">Forgot Password?</Link>
                   </div>
                   <div className="relative mt-2">
                     <input 
@@ -206,17 +206,17 @@ const LoginPage = () => {
                       placeholder="••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="block w-full rounded-none border border-slate-300 px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-0 transition-all placeholder-slate-400" 
+                      className="block w-full rounded-none border border-border px-4 py-3 text-sm focus:border-orange-500 focus:outline-none focus:ring-0 transition-all placeholder-sky-300 bg-white" 
                     />
                   </div>
                 </div>
 
                 <div className="flex items-center">
-                  <input id="remember-me" type="checkbox" className="h-4 w-4 rounded-none border-slate-300 text-blue-600 focus:ring-blue-600" />
-                  <label htmlFor="remember-me" className="ml-2 block text-xs font-semibold text-slate-600 select-none">Remember Me</label>
+                  <input id="remember-me" type="checkbox" className="h-4 w-4 rounded-none border-border text-orange-600 focus:ring-orange-500" />
+                  <label htmlFor="remember-me" className="ml-2 block text-xs font-semibold text-label select-none">Remember Me</label>
                 </div>
 
-                <button type="submit" className="flex w-full justify-center rounded-none bg-blue-600 hover:bg-blue-700 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:shadow transition-all duration-200 active:scale-[0.98]">
+                <button type="submit" className="flex w-full justify-center rounded-none bg-orange-500 hover:bg-orange-600 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:shadow transition-all duration-200 active:scale-[0.98] font-[family-name:var(--font-outfit)]">
                   Sign In <span className="ml-2">→</span>
                 </button>
               </form>

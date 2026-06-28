@@ -13,11 +13,11 @@ export function AccessRestrictedModal({ isOpen, onClose }: AccessRestrictedModal
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm">
-      <div className="relative bg-white rounded-2xl shadow-2xl border border-slate-200 p-8 max-w-md w-full mx-4 animate-in fade-in zoom-in duration-200">
+      <div className="relative bg-white rounded-2xl shadow-2xl border border-border p-8 max-w-md w-full mx-4 animate-in fade-in zoom-in duration-200">
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1 text-slate-400 hover:text-slate-600 transition-colors rounded-lg hover:bg-slate-100"
+          className="absolute top-4 right-4 p-1 text-text-secondary hover:text-text-secondary transition-colors rounded-lg hover:bg-slate-100"
         >
           <X className="h-5 w-5" />
         </button>
@@ -31,11 +31,11 @@ export function AccessRestrictedModal({ isOpen, onClose }: AccessRestrictedModal
 
         {/* Content */}
         <div className="text-center space-y-3">
-          <h2 className="text-xl font-bold text-slate-900">Access Restricted</h2>
-          <p className="text-sm text-slate-500 leading-relaxed">
+          <h2 className="text-xl font-bold text-text-primary">Access Restricted</h2>
+          <p className="text-sm text-text-secondary leading-relaxed">
             You do not have permission to perform this action.
           </p>
-          <p className="text-sm text-slate-500 leading-relaxed">
+          <p className="text-sm text-text-secondary leading-relaxed">
             Please contact your administrator.
           </p>
         </div>

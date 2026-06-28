@@ -300,7 +300,7 @@ export default function MyAssessmentsPage() {
   return (
     <div className="space-y-6 animate-slide-in select-none">
       {toastMessage && (
-        <div className="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 bg-slate-900 border border-slate-800 text-white rounded-xl shadow-2xl animate-bounce-in">
+        <div className="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 bg-slate-900 border border-border text-white rounded-xl shadow-2xl animate-bounce-in">
           <CheckCircle className="h-5 w-5 text-emerald-400 shrink-0" />
           <div className="text-xs font-semibold">{toastMessage}</div>
         </div>
@@ -312,13 +312,13 @@ export default function MyAssessmentsPage() {
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+              <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest flex items-center gap-1.5">
                 <span>Student Hub</span>
                 <ChevronRight className="h-3 w-3" />
                 <span className="text-blue-600 font-extrabold text-[10px]">My Assessments</span>
               </div>
-              <h2 className="text-2xl font-black text-slate-900 mt-2 tracking-tight">Active Quizzes & Exams</h2>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <h2 className="text-2xl font-black text-text-primary mt-2 tracking-tight">Active Quizzes & Exams</h2>
+              <p className="text-xs text-text-secondary mt-0.5">
                 Take tests under secure conditions. Browser switches are monitored.
               </p>
             </div>
@@ -326,20 +326,20 @@ export default function MyAssessmentsPage() {
 
           {/* Active Quizzes */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
-              <h3 className="font-bold text-xs text-slate-455 uppercase tracking-widest border-b border-slate-100 pb-3 flex items-center gap-2">
+            <div className="bg-white border border-border rounded-2xl p-6 shadow-sm space-y-4">
+              <h3 className="font-bold text-xs text-slate-455 uppercase tracking-widest border-b border-border pb-3 flex items-center gap-2">
                 <Play className="h-4 w-4 text-emerald-500" />
                 <span>Available Assessments</span>
               </h3>
 
               <div className="space-y-3">
                 {quizzes.filter(q => q.status === 'Active').map(q => (
-                  <div key={q.id} className="p-4 border border-slate-100 bg-slate-50/20 rounded-xl space-y-3 hover:border-slate-350 transition-all">
+                  <div key={q.id} className="p-4 border border-border bg-slate-50/20 rounded-xl space-y-3 hover:border-secondary transition-all">
                     <div className="flex justify-between items-center text-xs font-bold">
-                      <span className="text-slate-800">{q.title}</span>
+                      <span className="text-text-primary">{q.title}</span>
                       <span className="text-indigo-650 text-[10px]">{q.id}</span>
                     </div>
-                    <div className="text-[11px] text-slate-450 leading-relaxed">
+                    <div className="text-[11px] text-text-secondary leading-relaxed">
                       Duration: <strong>{q.duration} Mins</strong> • Pass threshold: <strong>{q.passingMarks}%</strong>
                       <br />
                       Security: <strong className="text-rose-600">{formatSecurityChecklist(q)}</strong>
@@ -354,56 +354,56 @@ export default function MyAssessmentsPage() {
                   </div>
                 ))}
                 {quizzes.filter(q => q.status === 'Active').length === 0 && (
-                  <p className="text-xs text-slate-400 italic text-center py-8">No exams active currently.</p>
+                  <p className="text-xs text-text-secondary italic text-center py-8">No exams active currently.</p>
                 )}
               </div>
             </div>
 
             {/* Completed and Upcoming */}
             <div className="space-y-6">
-              <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
-                <h3 className="font-bold text-xs text-slate-455 uppercase tracking-widest border-b border-slate-100 pb-3 flex items-center gap-2">
+              <div className="bg-white border border-border rounded-2xl p-6 shadow-sm space-y-4">
+                <h3 className="font-bold text-xs text-slate-455 uppercase tracking-widest border-b border-border pb-3 flex items-center gap-2">
                   <Award className="h-4 w-4 text-indigo-500" />
                   <span>My Results & Gradings</span>
                 </h3>
 
                 <div className="space-y-3 max-h-[160px] overflow-y-auto custom-scrollbar">
                   {quizzes.filter(q => q.status === 'Completed').map(q => (
-                    <div key={q.id} className="p-3 border border-slate-100 bg-slate-50/30 rounded-xl flex items-center justify-between text-xs font-semibold">
+                    <div key={q.id} className="p-3 border border-border bg-slate-50/30 rounded-xl flex items-center justify-between text-xs font-semibold">
                       <div>
-                        <span className="block font-bold text-slate-800">{q.title}</span>
-                        <span className="text-[10px] text-slate-400">{q.id}</span>
+                        <span className="block font-bold text-text-primary">{q.title}</span>
+                        <span className="text-[10px] text-text-secondary">{q.id}</span>
                       </div>
                       <div className="text-right">
                         <span className={`block font-black text-sm ${q.passed ? 'text-emerald-650' : 'text-rose-600'}`}>{q.score}%</span>
-                        <span className="text-[9px] text-slate-400 font-bold uppercase">{q.passed ? 'Pass' : 'Fail'}</span>
+                        <span className="text-[9px] text-text-secondary font-bold uppercase">{q.passed ? 'Pass' : 'Fail'}</span>
                       </div>
                     </div>
                   ))}
                   {quizzes.filter(q => q.status === 'Completed').length === 0 && (
-                    <p className="text-xs text-slate-400 italic text-center py-6">No completed tests yet.</p>
+                    <p className="text-xs text-text-secondary italic text-center py-6">No completed tests yet.</p>
                   )}
                 </div>
               </div>
 
-              <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
-                <h3 className="font-bold text-xs text-slate-455 uppercase tracking-widest border-b border-slate-100 pb-3 flex items-center gap-2">
+              <div className="bg-white border border-border rounded-2xl p-6 shadow-sm space-y-4">
+                <h3 className="font-bold text-xs text-slate-455 uppercase tracking-widest border-b border-border pb-3 flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-blue-500" />
                   <span>Upcoming Schedule</span>
                 </h3>
 
                 <div className="space-y-2.5">
                   {quizzes.filter(q => q.status === 'Upcoming').map(q => (
-                    <div key={q.id} className="p-3 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-between text-xs">
+                    <div key={q.id} className="p-3 bg-slate-50 border border-border rounded-xl flex items-center justify-between text-xs">
                       <div>
-                        <span className="block font-bold text-slate-700">{q.title}</span>
-                        <span className="text-[10px] text-slate-400">Attempts configured: {q.attempts}</span>
+                        <span className="block font-bold text-text-primary">{q.title}</span>
+                        <span className="text-[10px] text-text-secondary">Attempts configured: {q.attempts}</span>
                       </div>
                       <span className="bg-slate-200 text-slate-655 px-2 py-0.5 rounded text-[10px] font-bold uppercase">Locked</span>
                     </div>
                   ))}
                   {quizzes.filter(q => q.status === 'Upcoming').length === 0 && (
-                    <p className="text-xs text-slate-400 italic text-center py-4">No upcoming tests.</p>
+                    <p className="text-xs text-text-secondary italic text-center py-4">No upcoming tests.</p>
                   )}
                 </div>
               </div>
@@ -455,7 +455,7 @@ export default function MyAssessmentsPage() {
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                   </span>
                   
-                  <Camera className="h-10 w-10 text-slate-500 mb-1" />
+                  <Camera className="h-10 w-10 text-text-secondary mb-1" />
                   <span className="text-[10px] font-bold text-slate-300">Camera Feed Compliant</span>
                   
                   {/* Fake wave indicators */}
@@ -468,7 +468,7 @@ export default function MyAssessmentsPage() {
 
               {/* Questions Grid */}
               <div className="bg-[#1e293b] border border-[#334155] rounded-2xl p-5 flex-1 overflow-y-auto space-y-4">
-                <span className="block text-[9px] font-bold text-slate-450 uppercase tracking-widest border-b border-[#334155] pb-2">Questions map</span>
+                <span className="block text-[9px] font-bold text-text-secondary uppercase tracking-widest border-b border-[#334155] pb-2">Questions map</span>
                 
                 <div className="grid grid-cols-4 gap-2">
                   {selectedQuiz?.questions.map((_, idx) => (
@@ -480,7 +480,7 @@ export default function MyAssessmentsPage() {
                           ? 'bg-indigo-600 border-indigo-500 text-white shadow' 
                           : selectedAnswers[idx] !== undefined
                           ? 'bg-emerald-950/45 border-emerald-900 text-emerald-400'
-                          : 'bg-[#1a2336] border-[#334155] text-slate-400 hover:border-[#475569]'
+                          : 'bg-[#1a2336] border-[#334155] text-text-secondary hover:border-[#475569]'
                       }`}
                     >
                       {idx + 1}
@@ -523,7 +523,7 @@ export default function MyAssessmentsPage() {
                         <span className={`h-6 w-6 rounded-lg flex items-center justify-center text-[10px] font-bold border ${
                           isSelected 
                             ? 'bg-indigo-750 border-indigo-400 text-white' 
-                            : 'bg-[#1e293b] border-[#334155] text-slate-400'
+                            : 'bg-[#1e293b] border-[#334155] text-text-secondary'
                         }`}>
                           {optionChar}
                         </span>
@@ -563,7 +563,7 @@ export default function MyAssessmentsPage() {
 
               {/* Developer Test Helper Tooltips */}
               <div className="absolute bottom-4 right-8 flex items-center gap-2">
-                <span className="text-[9px] font-bold text-slate-500 uppercase">Test Security Monitor:</span>
+                <span className="text-[9px] font-bold text-text-secondary uppercase">Test Security Monitor:</span>
                 <button 
                   onClick={triggerFocusWarning} 
                   className="bg-rose-950/60 border border-rose-900 text-rose-400 px-2 py-0.5 rounded text-[8px] font-bold hover:bg-rose-900 hover:text-white transition-colors"
@@ -576,7 +576,7 @@ export default function MyAssessmentsPage() {
           </div>
 
           {/* Compliance Footer bar */}
-          <div className="bg-[#1a2336] border-t border-[#334155] px-6 py-3 text-center text-[10px] font-mono text-slate-500 flex justify-between items-center">
+          <div className="bg-[#1a2336] border-t border-[#334155] px-6 py-3 text-center text-[10px] font-mono text-text-secondary flex justify-between items-center">
             <span>Client Platform Fingerprint: Pinesphere-SecureAgent-Chrome122</span>
             <span>Focus Activity Lock status: <strong className="text-emerald-500 font-bold">MONITORED</strong></span>
           </div>

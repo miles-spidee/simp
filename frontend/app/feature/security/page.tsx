@@ -43,13 +43,13 @@ export default function SecurityCenterPage() {
     <div className="space-y-6 animate-slide-in">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+          <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest flex items-center gap-1.5">
             <span>Identity</span>
             <span className="text-slate-300">/</span>
             <span className="text-blue-600 font-extrabold">Security</span>
           </div>
-          <h2 className="text-2xl font-black text-slate-900 mt-2 tracking-tight">Security Center</h2>
-          <p className="text-xs text-slate-500 mt-1">
+          <h2 className="text-2xl font-black text-text-primary mt-2 tracking-tight">Security Center</h2>
+          <p className="text-xs text-helper mt-1">
             Monitor authentication events and platform security posture.
           </p>
         </div>
@@ -63,11 +63,11 @@ export default function SecurityCenterPage() {
           { label: 'Locked Accounts', value: 0, icon: Lock, color: 'text-red-600', bg: 'bg-red-50' },
           { label: 'Permission Coverage', value: '100%', icon: Shield, color: 'text-blue-600', bg: 'bg-blue-50' }
         ].map((kpi, idx) => (
-          <div key={idx} className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+          <div key={idx} className="bg-white border border-border rounded-xl p-5 shadow-sm">
             <div className="flex justify-between items-start">
               <div>
-                <div className="text-2xl font-bold text-slate-900">{kpi.value}</div>
-                <div className="text-sm font-medium text-slate-500 mt-1">{kpi.label}</div>
+                <div className="text-2xl font-bold text-text-primary">{kpi.value}</div>
+                <div className="text-sm font-medium text-text-secondary mt-1">{kpi.label}</div>
               </div>
               <div className={`p-2 rounded-lg ${kpi.bg}`}>
                 <kpi.icon className={`h-5 w-5 ${kpi.color}`} />
@@ -79,14 +79,14 @@ export default function SecurityCenterPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Login Activity Chart (Mock) */}
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-          <h3 className="text-sm font-semibold text-slate-900 mb-4 flex items-center gap-2">
+        <div className="bg-white border border-border rounded-xl p-6 shadow-sm">
+          <h3 className="text-sm font-semibold text-text-primary mb-4 flex items-center gap-2">
             <Activity className="h-4 w-4 text-blue-600" /> Login Activity Trend (Last 7 Days)
           </h3>
-          <div className="h-48 flex items-end justify-between gap-2 border-b border-slate-100 pb-2">
+          <div className="h-48 flex items-end justify-between gap-2 border-b border-border pb-2">
             {[45, 52, 38, 65, 59, 48, 62].map((val, idx) => (
               <div key={idx} className="w-full relative group flex flex-col items-center justify-end h-full">
-                <div className="opacity-0 group-hover:opacity-100 absolute -top-8 text-xs font-bold text-slate-700 bg-white shadow-sm border border-slate-200 px-2 py-1 rounded transition-opacity">
+                <div className="opacity-0 group-hover:opacity-100 absolute -top-8 text-xs font-bold text-text-primary bg-white shadow-sm border border-border px-2 py-1 rounded transition-opacity">
                   {val}
                 </div>
                 <div 
@@ -96,20 +96,20 @@ export default function SecurityCenterPage() {
               </div>
             ))}
           </div>
-          <div className="flex justify-between mt-2 text-xs text-slate-400">
+          <div className="flex justify-between mt-2 text-xs text-text-secondary">
             <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
           </div>
         </div>
 
         {/* Failed Login Trend */}
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-          <h3 className="text-sm font-semibold text-slate-900 mb-4 flex items-center gap-2">
+        <div className="bg-white border border-border rounded-xl p-6 shadow-sm">
+          <h3 className="text-sm font-semibold text-text-primary mb-4 flex items-center gap-2">
             <ShieldAlert className="h-4 w-4 text-amber-600" /> Failed Logins (Last 7 Days)
           </h3>
-          <div className="h-48 flex items-end justify-between gap-2 border-b border-slate-100 pb-2">
+          <div className="h-48 flex items-end justify-between gap-2 border-b border-border pb-2">
             {[2, 0, 1, 4, 0, 0, 0].map((val, idx) => (
               <div key={idx} className="w-full relative group flex flex-col items-center justify-end h-full">
-                <div className="opacity-0 group-hover:opacity-100 absolute -top-8 text-xs font-bold text-slate-700 bg-white shadow-sm border border-slate-200 px-2 py-1 rounded transition-opacity">
+                <div className="opacity-0 group-hover:opacity-100 absolute -top-8 text-xs font-bold text-text-primary bg-white shadow-sm border border-border px-2 py-1 rounded transition-opacity">
                   {val}
                 </div>
                 <div 
@@ -119,15 +119,15 @@ export default function SecurityCenterPage() {
               </div>
             ))}
           </div>
-          <div className="flex justify-between mt-2 text-xs text-slate-400">
+          <div className="flex justify-between mt-2 text-xs text-text-secondary">
             <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
           </div>
         </div>
       </div>
 
       {/* Recent Security Events */}
-      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-        <h3 className="text-sm font-semibold text-slate-900 mb-4">Recent Security Events</h3>
+      <div className="bg-white border border-border rounded-xl p-6 shadow-sm">
+        <h3 className="text-sm font-semibold text-text-primary mb-4">Recent Security Events</h3>
         <div className="space-y-4">
           {[
             { msg: 'New device login detected (MacBook Pro, San Francisco)', time: '2 hours ago', icon: Monitor, color: 'text-blue-500', bg: 'bg-blue-50' },
@@ -139,8 +139,8 @@ export default function SecurityCenterPage() {
                 <event.icon className={`h-4 w-4 ${event.color}`} />
               </div>
               <div>
-                <p className="text-sm font-medium text-slate-900">{event.msg}</p>
-                <p className="text-xs text-slate-500 mt-1">{event.time}</p>
+                <p className="text-sm font-medium text-text-primary">{event.msg}</p>
+                <p className="text-xs text-helper mt-1">{event.time}</p>
               </div>
             </div>
           ))}
@@ -148,20 +148,20 @@ export default function SecurityCenterPage() {
       </div>
 
       {/* Session Monitoring Table (Integrated) */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row justify-between gap-4">
+      <div className="bg-white border border-border rounded-xl shadow-sm overflow-hidden">
+        <div className="p-4 border-b border-border bg-slate-50/50 flex flex-col sm:flex-row justify-between gap-4">
           <div>
-            <h3 className="font-semibold text-slate-900">Active User Sessions</h3>
-            <p className="text-xs text-slate-500 mt-1">Monitor and manage current user logins across the platform.</p>
+            <h3 className="font-semibold text-text-primary">Active User Sessions</h3>
+            <p className="text-xs text-helper mt-1">Monitor and manage current user logins across the platform.</p>
           </div>
           <div className="relative w-full sm:w-72">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary" />
             <input 
               type="text" 
               placeholder="Search by User ID or IP..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="w-full pl-9 pr-4 py-2 bg-white border border-border rounded-lg text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
           </div>
         </div>
@@ -172,8 +172,8 @@ export default function SecurityCenterPage() {
               <div className="h-6 w-6 animate-spin rounded-full border-2 border-blue-200 border-t-blue-600"></div>
             </div>
           ) : (
-            <table className="w-full text-left text-sm text-slate-600">
-              <thead className="bg-slate-50 text-xs uppercase font-semibold text-slate-500 border-b border-slate-200">
+            <table className="w-full text-left text-sm text-text-secondary">
+              <thead className="bg-slate-50 text-xs uppercase font-semibold text-text-secondary border-b border-border">
                 <tr>
                   <th className="px-6 py-3">User</th>
                   <th className="px-6 py-3">Device & Browser</th>
@@ -183,33 +183,33 @@ export default function SecurityCenterPage() {
                   <th className="px-6 py-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-border">
                 {filteredSessions.map((session) => (
                   <tr key={session.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-6 py-4 font-medium text-slate-900">{session.userId}</td>
+                    <td className="px-6 py-4 font-medium text-text-primary">{session.userId}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
-                        {session.device.includes('iPhone') || session.device.includes('Mobile') ? <Smartphone className="h-4 w-4 text-slate-400" /> : <Monitor className="h-4 w-4 text-slate-400" />}
+                        {session.device.includes('iPhone') || session.device.includes('Mobile') ? <Smartphone className="h-4 w-4 text-text-secondary" /> : <Monitor className="h-4 w-4 text-text-secondary" />}
                         <div>
-                          <div className="text-slate-900">{session.device}</div>
-                          <div className="text-xs text-slate-500">{session.os} • {session.browser}</div>
+                          <div className="text-text-primary">{session.device}</div>
+                          <div className="text-xs text-text-secondary">{session.os} • {session.browser}</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
-                        <span className="text-slate-900">{session.location}</span>
-                        <span className="text-xs text-slate-500 font-mono">{session.ipAddress}</span>
+                        <span className="text-text-primary">{session.location}</span>
+                        <span className="text-xs text-text-secondary font-mono">{session.ipAddress}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-1 text-slate-600">
+                      <div className="flex items-center gap-1 text-text-secondary">
                         <Clock className="h-3.5 w-3.5" />
                         <span>{new Date(session.lastActivity).toLocaleString()}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${session.status === 'Active' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700'}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${session.status === 'Active' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-text-primary'}`}>
                         {session.status}
                       </span>
                     </td>
@@ -227,7 +227,7 @@ export default function SecurityCenterPage() {
                 ))}
                 {filteredSessions.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
+                    <td colSpan={6} className="px-6 py-12 text-center text-text-secondary">
                       <AlertCircle className="h-8 w-8 mx-auto text-slate-300 mb-2" />
                       <p>No sessions found.</p>
                     </td>

@@ -100,7 +100,7 @@ function ForecastChart({ forecast }: { forecast: InsightForecast }) {
   const isRevenue = forecast.metric.includes('Revenue');
 
   return (
-    <div className="w-full bg-slate-900 border border-slate-800 rounded-2xl p-6 text-white relative overflow-hidden">
+    <div className="w-full bg-slate-900 border border-border rounded-2xl p-6 text-white relative overflow-hidden">
       <div className="absolute -top-12 -right-12 w-48 h-48 bg-fuchsia-600/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-indigo-650/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -109,7 +109,7 @@ function ForecastChart({ forecast }: { forecast: InsightForecast }) {
           <span className="text-[10px] uppercase font-bold text-fuchsia-400 tracking-widest">AI Forecast Model</span>
           <h4 className="text-base font-bold text-slate-100 mt-0.5">{forecast.metric} Timeline</h4>
         </div>
-        <div className="flex gap-4 text-[9px] font-bold uppercase tracking-wider text-slate-400">
+        <div className="flex gap-4 text-[9px] font-bold uppercase tracking-wider text-text-secondary">
           <div className="flex items-center gap-1.5">
             <span className="h-2.5 w-2.5 rounded-full bg-indigo-500" />
             <span>Historical</span>
@@ -218,7 +218,7 @@ function ForecastChart({ forecast }: { forecast: InsightForecast }) {
         </svg>
       </div>
 
-      <div className="flex justify-between items-center mt-4 pt-4 border-t border-slate-800 text-[10px] text-slate-500 font-medium">
+      <div className="flex justify-between items-center mt-4 pt-4 border-t border-border text-[10px] text-text-secondary font-medium">
         <span>Model: ARIMA-LSTM Fusion</span>
         <span>Confidence Interval: {forecast.confidence}%</span>
       </div>
@@ -324,7 +324,7 @@ export default function PredictiveInsightsPage() {
 
   if (!hasPermission('insights.view')) {
     return (
-      <div className="flex h-[50vh] items-center justify-center text-slate-500 font-sans">
+      <div className="flex h-[50vh] items-center justify-center text-text-secondary font-sans">
         <p className="font-semibold">You do not have permission to view predictive insights.</p>
       </div>
     );
@@ -346,13 +346,13 @@ export default function PredictiveInsightsPage() {
       {/* Header Area */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2 tracking-tight">
+          <h1 className="text-2xl font-bold text-text-primary flex items-center gap-2 tracking-tight">
             <Lightbulb className="w-6 h-6 text-fuchsia-600 animate-pulse" />
             Predictive AI Insights
           </h1>
-          <p className="text-slate-500 text-sm mt-0.5">Machine learning forecasts, enrollment trends, and academic student risk matrix.</p>
+          <p className="text-text-secondary text-sm mt-0.5">Machine learning forecasts, enrollment trends, and academic student risk matrix.</p>
         </div>
-        <div className="flex items-center gap-2 text-xs bg-slate-50 border border-slate-100 rounded-xl px-4 py-2 text-slate-500 font-medium">
+        <div className="flex items-center gap-2 text-xs bg-slate-50 border border-border rounded-xl px-4 py-2 text-text-secondary font-medium">
           <span className="h-2 w-2 bg-emerald-500 rounded-full animate-ping" />
           <span>Model Updated: Just now</span>
         </div>
@@ -365,7 +365,7 @@ export default function PredictiveInsightsPage() {
           className={`cursor-pointer rounded-2xl p-5 border transition-all ${
             selectedForecastIndex === 0 
               ? 'bg-fuchsia-50/50 border-fuchsia-200 shadow-md ring-1 ring-fuchsia-300/30' 
-              : 'bg-white border-slate-100 hover:shadow-md'
+              : 'bg-white border-border hover:shadow-md'
           }`}
         >
           <div className="flex justify-between items-start">
@@ -374,9 +374,9 @@ export default function PredictiveInsightsPage() {
             </div>
             <span className="text-[10px] bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-full">+15% Predicted</span>
           </div>
-          <h3 className="text-slate-400 text-xs font-bold uppercase tracking-wider mt-4">Next Quarter Revenue</h3>
-          <p className="text-2xl font-bold text-slate-800 mt-1">${forecasts[0].predictedValues[0]}M</p>
-          <p className="text-[11px] text-slate-400 mt-2 font-medium">Confidence Score: {forecasts[0].confidence}%</p>
+          <h3 className="text-text-secondary text-xs font-bold uppercase tracking-wider mt-4">Next Quarter Revenue</h3>
+          <p className="text-2xl font-bold text-text-primary mt-1">${forecasts[0].predictedValues[0]}M</p>
+          <p className="text-[11px] text-text-secondary mt-2 font-medium">Confidence Score: {forecasts[0].confidence}%</p>
         </div>
 
         <div 
@@ -384,7 +384,7 @@ export default function PredictiveInsightsPage() {
           className={`cursor-pointer rounded-2xl p-5 border transition-all ${
             selectedForecastIndex === 1 
               ? 'bg-fuchsia-50/50 border-fuchsia-200 shadow-md ring-1 ring-fuchsia-300/30' 
-              : 'bg-white border-slate-100 hover:shadow-md'
+              : 'bg-white border-border hover:shadow-md'
           }`}
         >
           <div className="flex justify-between items-start">
@@ -393,23 +393,23 @@ export default function PredictiveInsightsPage() {
             </div>
             <span className="text-[10px] bg-indigo-100 text-indigo-700 font-bold px-2 py-0.5 rounded-full">+8% Predicted</span>
           </div>
-          <h3 className="text-slate-400 text-xs font-bold uppercase tracking-wider mt-4">Expected Placements</h3>
-          <p className="text-2xl font-bold text-slate-800 mt-1">{forecasts[1].predictedValues[0]} Students</p>
-          <p className="text-[11px] text-slate-400 mt-2 font-medium">Confidence Score: {forecasts[1].confidence}%</p>
+          <h3 className="text-text-secondary text-xs font-bold uppercase tracking-wider mt-4">Expected Placements</h3>
+          <p className="text-2xl font-bold text-text-primary mt-1">{forecasts[1].predictedValues[0]} Students</p>
+          <p className="text-[11px] text-text-secondary mt-2 font-medium">Confidence Score: {forecasts[1].confidence}%</p>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 border border-slate-100">
+        <div className="bg-white rounded-2xl p-5 border border-border">
           <div className="flex justify-between items-start">
             <div className="h-10 w-10 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center">
               <Users className="w-5 h-5" />
             </div>
             <span className="text-[10px] bg-rose-100 text-rose-700 font-bold px-2 py-0.5 rounded-full">Requires Review</span>
           </div>
-          <h3 className="text-slate-400 text-xs font-bold uppercase tracking-wider mt-4">High Risk Students</h3>
-          <p className="text-2xl font-bold text-slate-800 mt-1">
+          <h3 className="text-text-secondary text-xs font-bold uppercase tracking-wider mt-4">High Risk Students</h3>
+          <p className="text-2xl font-bold text-text-primary mt-1">
             {risks.filter(r => r.riskScore >= 80).length} Defaulters
           </p>
-          <p className="text-[11px] text-slate-400 mt-2 font-medium">Based on Attendance & Assessments</p>
+          <p className="text-[11px] text-text-secondary mt-2 font-medium">Based on Attendance & Assessments</p>
         </div>
       </div>
 
@@ -423,10 +423,10 @@ export default function PredictiveInsightsPage() {
           <ForecastChart forecast={currentForecast} />
 
           {/* AI Prescriptive Recommendations */}
-          <div className="bg-white border border-slate-100 shadow-sm rounded-2xl p-6 space-y-5">
-            <div className="flex items-center gap-2 pb-1.5 border-b border-slate-100">
+          <div className="bg-white border border-border shadow-sm rounded-2xl p-6 space-y-5">
+            <div className="flex items-center gap-2 pb-1.5 border-b border-border">
               <Lightbulb className="w-5 h-5 text-indigo-650 animate-bounce" />
-              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">AI Recommendations Engine</h3>
+              <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider">AI Recommendations Engine</h3>
             </div>
 
             <div className="space-y-4">
@@ -434,7 +434,7 @@ export default function PredictiveInsightsPage() {
                 <div 
                   key={rec.id} 
                   className={`border rounded-xl p-4.5 transition-all flex flex-col sm:flex-row sm:items-start gap-4 justify-between ${
-                    rec.status === 'Applied' ? 'bg-slate-50 border-slate-200 opacity-70' : 'bg-white border-slate-100 hover:shadow-sm'
+                    rec.status === 'Applied' ? 'bg-slate-50 border-border opacity-70' : 'bg-white border-border hover:shadow-sm'
                   }`}
                 >
                   <div className="space-y-1.5">
@@ -449,13 +449,13 @@ export default function PredictiveInsightsPage() {
                       <span className={`text-[9px] font-bold ${
                         rec.impact === 'Critical Impact' ? 'text-rose-600' :
                         rec.impact === 'High Impact' ? 'text-orange-500' :
-                        'text-slate-500'
+                        'text-text-secondary'
                       }`}>
                         {rec.impact}
                       </span>
                     </div>
-                    <h4 className="font-bold text-slate-800 text-sm leading-snug">{rec.title}</h4>
-                    <p className="text-xs text-slate-500 leading-relaxed">{rec.description}</p>
+                    <h4 className="font-bold text-text-primary text-sm leading-snug">{rec.title}</h4>
+                    <p className="text-xs text-text-secondary leading-relaxed">{rec.description}</p>
                   </div>
 
                   <div className="shrink-0 flex items-center">
@@ -487,13 +487,13 @@ export default function PredictiveInsightsPage() {
 
         {/* Right Column: Student Risk Matrix */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="bg-white border border-slate-100 shadow-sm rounded-2xl p-6 space-y-5">
-            <div className="flex justify-between items-center pb-1.5 border-b border-slate-100">
-              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+          <div className="bg-white border border-border shadow-sm rounded-2xl p-6 space-y-5">
+            <div className="flex justify-between items-center pb-1.5 border-b border-border">
+              <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider flex items-center gap-2">
                 <ShieldAlert className="w-4 h-4 text-rose-500" />
                 Student Risk Directory
               </h3>
-              <span className="text-[10px] font-bold bg-slate-100 px-2 py-0.5 rounded text-slate-500">
+              <span className="text-[10px] font-bold bg-slate-100 px-2 py-0.5 rounded text-text-secondary">
                 {filteredRisks.length} Students
               </span>
             </div>
@@ -502,24 +502,24 @@ export default function PredictiveInsightsPage() {
             <div className="space-y-3">
               {/* Search */}
               <div className="relative">
-                <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-text-secondary" />
                 <input
                   type="text"
                   placeholder="Search name or program..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2.5 text-xs focus:outline-none focus:border-fuchsia-500 transition-all font-medium text-slate-700 placeholder-slate-400"
+                  className="w-full bg-slate-50 border border-border rounded-xl pl-9 pr-4 py-2.5 text-xs focus:outline-none focus:border-fuchsia-500 transition-all font-medium text-text-primary placeholder-slate-400"
                 />
               </div>
 
               {/* Select Category filters */}
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-0.5">
-                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Severity</span>
+                  <span className="text-[9px] font-bold text-text-secondary uppercase tracking-wider">Severity</span>
                   <select
                     value={riskFilter}
                     onChange={(e) => setRiskFilter(e.target.value as any)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-[10px] font-bold text-slate-600 focus:outline-none cursor-pointer"
+                    className="w-full bg-slate-50 border border-border rounded-lg px-2 py-1.5 text-[10px] font-bold text-text-secondary focus:outline-none cursor-pointer"
                   >
                     <option value="All">All Severity</option>
                     <option value="Critical">Critical (85+)</option>
@@ -529,11 +529,11 @@ export default function PredictiveInsightsPage() {
                 </div>
                 
                 <div className="space-y-0.5">
-                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Risk Driver</span>
+                  <span className="text-[9px] font-bold text-text-secondary uppercase tracking-wider">Risk Driver</span>
                   <select
                     value={factorFilter}
                     onChange={(e) => setFactorFilter(e.target.value as any)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-[10px] font-bold text-slate-600 focus:outline-none cursor-pointer"
+                    className="w-full bg-slate-50 border border-border rounded-lg px-2 py-1.5 text-[10px] font-bold text-text-secondary focus:outline-none cursor-pointer"
                   >
                     <option value="All">All Factors</option>
                     <option value="Low Attendance">Low Attendance</option>
@@ -544,7 +544,7 @@ export default function PredictiveInsightsPage() {
             </div>
 
             {/* Student Directory List */}
-            <div className="divide-y divide-slate-100 max-h-[350px] overflow-y-auto pr-1">
+            <div className="divide-y divide-border max-h-[350px] overflow-y-auto pr-1">
               {filteredRisks.map((risk) => (
                 <div 
                   key={risk.studentId} 
@@ -552,8 +552,8 @@ export default function PredictiveInsightsPage() {
                   className="py-3.5 hover:bg-slate-50/50 rounded-xl px-2 cursor-pointer transition-colors flex items-center justify-between group"
                 >
                   <div className="space-y-1">
-                    <h4 className="font-bold text-slate-800 text-xs group-hover:text-fuchsia-600 transition-colors">{risk.name}</h4>
-                    <p className="text-[10px] text-slate-500 font-medium">{risk.program}</p>
+                    <h4 className="font-bold text-text-primary text-xs group-hover:text-fuchsia-600 transition-colors">{risk.name}</h4>
+                    <p className="text-[10px] text-text-secondary font-medium">{risk.program}</p>
                     <div className="flex gap-1.5 mt-1">
                       {risk.factors.map(f => (
                         <span key={f} className="bg-rose-50 text-rose-600 border border-rose-100 rounded text-[9px] px-1.5 py-0.5 font-bold uppercase tracking-wider">
@@ -572,15 +572,15 @@ export default function PredictiveInsightsPage() {
                       }`}>
                         {risk.riskScore}
                       </div>
-                      <div className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Score</div>
+                      <div className="text-[8px] font-bold text-text-secondary uppercase tracking-widest">Score</div>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                    <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-text-secondary transition-colors" />
                   </div>
                 </div>
               ))}
 
               {filteredRisks.length === 0 && (
-                <div className="text-center py-10 text-slate-400">
+                <div className="text-center py-10 text-text-secondary">
                   <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
                   <p className="font-semibold text-xs">No high risk students found matching filters.</p>
                 </div>
@@ -602,15 +602,15 @@ export default function PredictiveInsightsPage() {
           <form onSubmit={handleCounselSubmit} className="flex-1 flex flex-col p-6 space-y-5 overflow-y-auto">
             {/* Header info */}
             <div>
-              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Enrollment Details</span>
-              <h3 className="text-base font-bold text-slate-900">{selectedStudent.name}</h3>
-              <p className="text-xs text-slate-500 font-semibold">{selectedStudent.program}</p>
+              <span className="text-[9px] font-bold text-text-secondary uppercase tracking-widest">Enrollment Details</span>
+              <h3 className="text-base font-bold text-text-primary">{selectedStudent.name}</h3>
+              <p className="text-xs text-text-secondary font-semibold">{selectedStudent.program}</p>
             </div>
 
             {/* Risk factors status indicator */}
-            <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 space-y-4">
+            <div className="bg-slate-50 rounded-2xl p-5 border border-border space-y-4">
               <div className="flex justify-between items-center">
-                <span className="text-xs font-bold text-slate-500 uppercase">AI Severity Grade</span>
+                <span className="text-xs font-bold text-text-secondary uppercase">AI Severity Grade</span>
                 <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                   selectedStudent.riskScore >= 85 ? 'bg-rose-100 text-rose-700' :
                   selectedStudent.riskScore >= 70 ? 'bg-orange-100 text-orange-700' :
@@ -623,7 +623,7 @@ export default function PredictiveInsightsPage() {
               {/* Progress gauge */}
               <div className="space-y-1.5">
                 <div className="flex justify-between text-[11px] font-bold">
-                  <span className="text-slate-400">Current Risk Index</span>
+                  <span className="text-text-secondary">Current Risk Index</span>
                   <span className={selectedStudent.riskScore >= 85 ? 'text-rose-600' : 'text-orange-500'}>
                     {selectedStudent.riskScore} / 100
                   </span>
@@ -640,7 +640,7 @@ export default function PredictiveInsightsPage() {
 
               {/* Drivers list */}
               <div className="space-y-2">
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Risk Drivers Detected</span>
+                <span className="text-[9px] font-bold text-text-secondary uppercase tracking-wider block">Risk Drivers Detected</span>
                 <div className="flex flex-wrap gap-2">
                   {selectedStudent.factors.map(f => (
                     <span key={f} className="inline-flex items-center gap-1 bg-white border border-rose-200 text-rose-600 font-bold text-[9px] px-2 py-1 rounded-lg">
@@ -654,17 +654,17 @@ export default function PredictiveInsightsPage() {
 
             {/* Actions panel */}
             <div className="space-y-4">
-              <div className="flex items-center gap-1.5 pb-1 border-b border-slate-100">
+              <div className="flex items-center gap-1.5 pb-1 border-b border-border">
                 <UserCheck className="w-4 h-4 text-indigo-650" />
-                <h4 className="text-xs font-bold text-slate-900 uppercase">Intervention Action Form</h4>
+                <h4 className="text-xs font-bold text-text-primary uppercase">Intervention Action Form</h4>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Action Type</label>
+                <label className="text-[10px] font-bold text-text-secondary uppercase">Action Type</label>
                 <select
                   value={counselAction}
                   onChange={(e) => setCounselAction(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 cursor-pointer"
+                  className="w-full bg-slate-50 border border-border rounded-xl px-3 py-2.5 text-xs font-bold text-text-primary cursor-pointer"
                 >
                   <option value="Schedule Counseling">Schedule Counseling Interview</option>
                   <option value="Send Warning Notification">Send Warning Notification (SMS/Email)</option>
@@ -674,24 +674,24 @@ export default function PredictiveInsightsPage() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Counseling Notes / Action Log</label>
+                <label className="text-[10px] font-bold text-text-secondary uppercase">Counseling Notes / Action Log</label>
                 <textarea
                   required
                   rows={4}
                   value={counselNote}
                   onChange={(e) => setCounselNote(e.target.value)}
                   placeholder="Record intervention details, communication logs, or recommendations here..."
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 focus:outline-none focus:border-indigo-500 resize-none"
+                  className="w-full bg-slate-50 border border-border rounded-xl px-3 py-2 text-xs font-medium text-text-primary focus:outline-none focus:border-primary resize-none"
                 />
               </div>
             </div>
 
             {/* Bottom Actions */}
-            <div className="flex gap-3 pt-4 border-t border-slate-100 mt-auto">
+            <div className="flex gap-3 pt-4 border-t border-border mt-auto">
               <button
                 type="button"
                 onClick={() => setSelectedStudent(null)}
-                className="flex-1 py-3 border border-slate-200 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+                className="flex-1 py-3 border border-border text-text-primary font-bold text-xs rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
               >
                 Close
               </button>

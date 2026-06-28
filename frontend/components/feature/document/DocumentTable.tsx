@@ -50,7 +50,7 @@ export default function DocumentTable({ documents, loading, onUpdate }: Document
 
   const getStatusBadge = (status: string) => {
     const map: Record<string, string> = {
-      'Draft': 'bg-slate-100 text-slate-700 border-slate-200',
+      'Draft': 'bg-slate-100 text-text-primary border-border',
       'Generated': 'bg-blue-50 text-blue-700 border-blue-150',
       'Sent': 'bg-amber-50 text-amber-700 border-amber-150',
       'Signed': 'bg-emerald-50 text-emerald-700 border-emerald-150'
@@ -63,16 +63,16 @@ export default function DocumentTable({ documents, loading, onUpdate }: Document
   };
 
   return (
-    <div className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden mt-6 font-sans">
-      <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-        <h2 className="text-sm font-bold text-slate-800 tracking-tight flex items-center gap-2">
+    <div className="bg-white border border-border rounded-2xl shadow-sm overflow-hidden mt-6 font-sans">
+      <div className="p-4 border-b border-border flex justify-between items-center bg-slate-50/50">
+        <h2 className="text-sm font-bold text-text-primary tracking-tight flex items-center gap-2">
           <FileText className="h-5 w-5 text-indigo-650" /> Generated Documents Registry
         </h2>
       </div>
       
       <div className="overflow-x-auto">
-        <table className="w-full text-xs text-slate-650 text-left">
-          <thead className="bg-slate-50 text-[10px] uppercase font-bold tracking-wider text-slate-500 border-b border-slate-100">
+        <table className="w-full text-xs text-text-secondary text-left">
+          <thead className="bg-slate-50 text-[10px] uppercase font-bold tracking-wider text-text-secondary border-b border-border">
             <tr>
               <th className="px-5 py-4 font-bold">Document Info</th>
               <th className="px-5 py-4 font-bold">Candidate / Subject</th>
@@ -80,10 +80,10 @@ export default function DocumentTable({ documents, loading, onUpdate }: Document
               <th className="px-5 py-4 font-bold text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-border">
             {loading ? (
               <tr>
-                <td colSpan={4} className="px-5 py-12 text-center text-slate-400 font-semibold">
+                <td colSpan={4} className="px-5 py-12 text-center text-text-secondary font-semibold">
                   <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
                   Loading generated documents...
                 </td>
@@ -92,28 +92,28 @@ export default function DocumentTable({ documents, loading, onUpdate }: Document
               <tr key={doc.id} className="hover:bg-slate-50/50 transition-colors">
                 <td className="px-5 py-4">
                   <div className="flex flex-col">
-                    <span className="font-bold text-slate-800 text-sm">{doc.type}</span>
-                    <span className="text-[10px] text-slate-400 font-medium mt-0.5">Version: {doc.version}</span>
-                    <span className="text-[9px] text-slate-400 font-mono mt-0.5">
+                    <span className="font-bold text-text-primary text-sm">{doc.type}</span>
+                    <span className="text-[10px] text-text-secondary font-medium mt-0.5">Version: {doc.version}</span>
+                    <span className="text-[9px] text-text-secondary font-mono mt-0.5">
                       {new Date(doc.generatedDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
                 </td>
                 <td className="px-5 py-4">
                   <div className="flex flex-col">
-                    <span className="font-bold text-slate-800">{doc.studentName}</span>
-                    <span className="text-[10px] text-slate-500 font-medium">{doc.program}</span>
+                    <span className="font-bold text-text-primary">{doc.studentName}</span>
+                    <span className="text-[10px] text-text-secondary font-medium">{doc.program}</span>
                   </div>
                 </td>
                 <td className="px-5 py-4">
                   {getStatusBadge(doc.status)}
                 </td>
                 <td className="px-5 py-4 text-right">
-                  <div className="flex items-center justify-end gap-3 text-slate-400">
+                  <div className="flex items-center justify-end gap-3 text-text-secondary">
                     <button 
                       onClick={() => setSelectedDoc(doc)}
                       title="View Details"
-                      className="p-1.5 hover:text-slate-900 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+                      className="p-1.5 hover:text-text-primary bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
                     >
                       <Eye className="h-4 w-4" />
                     </button>
@@ -151,7 +151,7 @@ export default function DocumentTable({ documents, loading, onUpdate }: Document
             ))}
             {documents.length === 0 && !loading && (
               <tr>
-                <td colSpan={4} className="px-5 py-8 text-center text-slate-400 font-medium">
+                <td colSpan={4} className="px-5 py-8 text-center text-text-secondary font-medium">
                   No documents generated yet.
                 </td>
               </tr>
@@ -172,60 +172,60 @@ export default function DocumentTable({ documents, loading, onUpdate }: Document
           <div className="p-6 space-y-6 overflow-y-auto font-sans">
             <div className="flex justify-between items-center bg-slate-50 border border-slate-150 p-4 rounded-2xl">
               <div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Document Registry ID</span>
-                <h4 className="text-sm font-extrabold text-slate-800 font-mono mt-0.5">{selectedDoc.id}</h4>
+                <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Document Registry ID</span>
+                <h4 className="text-sm font-extrabold text-text-primary font-mono mt-0.5">{selectedDoc.id}</h4>
               </div>
               <div>{getStatusBadge(selectedDoc.status)}</div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Document Type</span>
-                <p className="text-xs font-bold text-slate-700">{selectedDoc.type}</p>
+                <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Document Type</span>
+                <p className="text-xs font-bold text-text-primary">{selectedDoc.type}</p>
               </div>
               <div className="space-y-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">File Format</span>
-                <p className="text-xs font-bold text-slate-700">Adobe PDF (.pdf)</p>
+                <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">File Format</span>
+                <p className="text-xs font-bold text-text-primary">Adobe PDF (.pdf)</p>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Candidate Name</span>
-                <p className="text-xs font-bold text-slate-700">{selectedDoc.studentName}</p>
+                <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Candidate Name</span>
+                <p className="text-xs font-bold text-text-primary">{selectedDoc.studentName}</p>
               </div>
               <div className="space-y-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Training Program</span>
-                <p className="text-xs font-bold text-slate-700">{selectedDoc.program}</p>
+                <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Training Program</span>
+                <p className="text-xs font-bold text-text-primary">{selectedDoc.program}</p>
               </div>
             </div>
 
-            <div className="pt-3.5 border-t border-slate-100 space-y-3">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Document Attributes (Metadata)</span>
+            <div className="pt-3.5 border-t border-border space-y-3">
+              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider block">Document Attributes (Metadata)</span>
               
               <div className="bg-slate-50 rounded-xl p-3.5 space-y-2 border border-slate-150">
                 {Object.entries(selectedDoc.metadata).map(([key, value]) => (
                   <div key={key} className="flex justify-between text-xs">
-                    <span className="text-slate-400 font-bold uppercase tracking-wider text-[9px]">{key}:</span>
-                    <span className="text-slate-700 font-bold">{value}</span>
+                    <span className="text-text-secondary font-bold uppercase tracking-wider text-[9px]">{key}:</span>
+                    <span className="text-text-primary font-bold">{value}</span>
                   </div>
                 ))}
                 <div className="flex justify-between text-xs pt-1 border-t border-slate-150">
-                  <span className="text-slate-400 font-bold uppercase tracking-wider text-[9px]">version:</span>
-                  <span className="text-slate-700 font-bold">{selectedDoc.version}</span>
+                  <span className="text-text-secondary font-bold uppercase tracking-wider text-[9px]">version:</span>
+                  <span className="text-text-primary font-bold">{selectedDoc.version}</span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-400 font-bold uppercase tracking-wider text-[9px]">generated date:</span>
+                  <span className="text-text-secondary font-bold uppercase tracking-wider text-[9px]">generated date:</span>
                   <span className="text-slate-750 font-mono text-[10px]">{new Date(selectedDoc.generatedDate).toLocaleString()}</span>
                 </div>
               </div>
             </div>
 
-            <div className="flex gap-3 pt-4 border-t border-slate-100 mt-auto">
+            <div className="flex gap-3 pt-4 border-t border-border mt-auto">
               <button
                 type="button"
                 onClick={() => setSelectedDoc(null)}
-                className="flex-1 py-3 border border-slate-200 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+                className="flex-1 py-3 border border-border text-text-primary font-bold text-xs rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
               >
                 Close Details
               </button>

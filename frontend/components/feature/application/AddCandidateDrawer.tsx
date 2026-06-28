@@ -112,14 +112,14 @@ export function AddCandidateDrawer({
     <Drawer isOpen={isOpen} onClose={onClose} title="Add Candidate">
       <form onSubmit={handleSubmit} className="flex flex-col h-[calc(100vh-65px)]">
         <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-white">
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-text-secondary">
             Fill in the information below to add a new candidate to the pipeline.
           </p>
 
           {/* Name Field */}
           <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-700 flex items-center gap-1.5">
-              <User className="h-4 w-4 text-slate-400" />
+            <label className="text-sm font-bold text-label flex items-center gap-1.5">
+              <User className="h-4 w-4 text-text-secondary" />
               <span>Full Name *</span>
             </label>
             <input
@@ -133,7 +133,7 @@ export function AddCandidateDrawer({
               className={`w-full rounded-lg border px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 transition-all ${
                 errors.name
                   ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
-                  : 'border-slate-200 focus:border-blue-500 focus:ring-blue-100'
+                  : 'border-border focus:border-primary focus:ring-primary'
               }`}
             />
             {errors.name && <p className="text-xs font-semibold text-red-500 mt-1">{errors.name}</p>}
@@ -141,8 +141,8 @@ export function AddCandidateDrawer({
 
           {/* Email Field */}
           <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-700 flex items-center gap-1.5">
-              <Mail className="h-4 w-4 text-slate-400" />
+            <label className="text-sm font-bold text-label flex items-center gap-1.5">
+              <Mail className="h-4 w-4 text-text-secondary" />
               <span>Email Address *</span>
             </label>
             <input
@@ -156,7 +156,7 @@ export function AddCandidateDrawer({
               className={`w-full rounded-lg border px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 transition-all ${
                 errors.email
                   ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
-                  : 'border-slate-200 focus:border-blue-500 focus:ring-blue-100'
+                  : 'border-border focus:border-primary focus:ring-primary'
               }`}
             />
             {errors.email && <p className="text-xs font-semibold text-red-500 mt-1">{errors.email}</p>}
@@ -164,8 +164,8 @@ export function AddCandidateDrawer({
 
           {/* Phone Field */}
           <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-700 flex items-center gap-1.5">
-              <Phone className="h-4 w-4 text-slate-400" />
+            <label className="text-sm font-bold text-label flex items-center gap-1.5">
+              <Phone className="h-4 w-4 text-text-secondary" />
               <span>Phone Number *</span>
             </label>
             <input
@@ -179,7 +179,7 @@ export function AddCandidateDrawer({
               className={`w-full rounded-lg border px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 transition-all ${
                 errors.phone
                   ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
-                  : 'border-slate-200 focus:border-blue-500 focus:ring-blue-100'
+                  : 'border-border focus:border-primary focus:ring-primary'
               }`}
             />
             {errors.phone && <p className="text-xs font-semibold text-red-500 mt-1">{errors.phone}</p>}
@@ -187,8 +187,8 @@ export function AddCandidateDrawer({
 
           {/* Opportunity Dropdown */}
           <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-700 flex items-center gap-1.5">
-              <Briefcase className="h-4 w-4 text-slate-400" />
+            <label className="text-sm font-bold text-label flex items-center gap-1.5">
+              <Briefcase className="h-4 w-4 text-text-secondary" />
               <span>Applied Opportunity *</span>
             </label>
             <select
@@ -200,7 +200,7 @@ export function AddCandidateDrawer({
               className={`w-full rounded-lg border px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 transition-all bg-white ${
                 errors.opportunityId
                   ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
-                  : 'border-slate-200 focus:border-blue-500 focus:ring-blue-100'
+                  : 'border-border focus:border-primary focus:ring-primary'
               }`}
             >
               <option value="">Select Opportunity</option>
@@ -217,11 +217,11 @@ export function AddCandidateDrawer({
 
           {/* Status Field */}
           <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-700">Initial Pipeline Status</label>
+            <label className="text-sm font-bold text-label">Initial Pipeline Status</label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as 'Pending' | 'Interview' | 'Accepted' | 'Rejected')}
-              className="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all bg-white"
+              className="w-full rounded-lg border border-border px-3.5 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary transition-all bg-white"
             >
               <option value="Pending">Pending Review</option>
               <option value="Interview">Interviewing</option>
@@ -232,7 +232,7 @@ export function AddCandidateDrawer({
         </div>
 
         {/* Action Buttons Footer */}
-        <div className="shrink-0 border-t border-slate-200 p-4 bg-slate-50 flex items-center justify-end gap-3">
+        <div className="shrink-0 border-t border-border p-4 bg-slate-50 flex items-center justify-end gap-3">
           <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>
             Cancel
           </Button>

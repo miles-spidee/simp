@@ -26,7 +26,7 @@ export default function PublicVerificationPortal() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
-      <div className="w-full max-w-2xl bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+      <div className="w-full max-w-2xl bg-white rounded-3xl shadow-xl overflow-hidden border border-border">
         
         {/* Header */}
         <div className="bg-gray-900 px-8 py-10 text-center relative overflow-hidden">
@@ -35,7 +35,7 @@ export default function PublicVerificationPortal() {
           
           <ShieldCheck className="h-16 w-16 text-emerald-400 mx-auto mb-4 relative z-10" />
           <h1 className="text-3xl font-bold text-white relative z-10">Verify a Certificate</h1>
-          <p className="text-gray-400 mt-2 max-w-md mx-auto relative z-10">
+          <p className="text-text-secondary mt-2 max-w-md mx-auto relative z-10">
             Enter the certificate number to instantly verify its authenticity on the Pinesphere network.
           </p>
         </div>
@@ -44,13 +44,13 @@ export default function PublicVerificationPortal() {
         <div className="p-8">
           <form onSubmit={handleVerify} className="relative">
             <div className="relative flex items-center">
-              <Search className="h-6 w-6 text-gray-400 absolute left-4" />
+              <Search className="h-6 w-6 text-text-secondary absolute left-4" />
               <input 
                 type="text" 
                 value={certNumber}
                 onChange={(e) => setCertNumber(e.target.value)}
                 placeholder="e.g. PS-CERT-2026-00001" 
-                className="w-full bg-gray-50 border-2 border-gray-200 rounded-2xl pl-14 pr-32 py-5 text-lg font-mono tracking-wider focus:outline-none focus:border-gray-900 focus:bg-white transition-all"
+                className="w-full bg-gray-50 border-2 border-border rounded-2xl pl-14 pr-32 py-5 text-lg font-mono tracking-wider focus:outline-none focus:border-primary focus:bg-white transition-all"
                 required
               />
               <button 
@@ -78,26 +78,26 @@ export default function PublicVerificationPortal() {
                   
                   <div className="bg-white rounded-xl p-5 border border-emerald-100 space-y-4">
                     <div className="flex items-center gap-3">
-                      <User className="h-5 w-5 text-gray-400" />
+                      <User className="h-5 w-5 text-text-secondary" />
                       <div>
-                        <p className="text-xs text-gray-500 uppercase tracking-wider font-bold">Issued To</p>
-                        <p className="font-medium text-gray-900 text-lg">{result.studentName}</p>
+                        <p className="text-xs text-text-secondary uppercase tracking-wider font-bold">Issued To</p>
+                        <p className="font-medium text-text-primary text-lg">{result.studentName}</p>
                       </div>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div className="flex items-center gap-3">
-                        <Building className="h-5 w-5 text-gray-400" />
+                        <Building className="h-5 w-5 text-text-secondary" />
                         <div>
-                          <p className="text-xs text-gray-500 uppercase tracking-wider font-bold">Organization</p>
-                          <p className="font-medium text-gray-900">{result.organization}</p>
+                          <p className="text-xs text-text-secondary uppercase tracking-wider font-bold">Organization</p>
+                          <p className="font-medium text-text-primary">{result.organization}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <Calendar className="h-5 w-5 text-gray-400" />
+                        <Calendar className="h-5 w-5 text-text-secondary" />
                         <div>
-                          <p className="text-xs text-gray-500 uppercase tracking-wider font-bold">Issue Date</p>
-                          <p className="font-medium text-gray-900">{result.issueDate ? new Date(result.issueDate).toLocaleDateString() : 'N/A'}</p>
+                          <p className="text-xs text-text-secondary uppercase tracking-wider font-bold">Issue Date</p>
+                          <p className="font-medium text-text-primary">{result.issueDate ? new Date(result.issueDate).toLocaleDateString() : 'N/A'}</p>
                         </div>
                       </div>
                     </div>
@@ -110,10 +110,10 @@ export default function PublicVerificationPortal() {
                   <p className="text-rose-700 mt-2">{result.message}</p>
                 </div>
               ) : (
-                <div className="bg-gray-50 border-2 border-gray-200 rounded-2xl p-6 text-center">
-                  <XCircle className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                  <h3 className="text-xl font-bold text-gray-900">Invalid Certificate</h3>
-                  <p className="text-gray-500 mt-2">{result.message}</p>
+                <div className="bg-gray-50 border-2 border-border rounded-2xl p-6 text-center">
+                  <XCircle className="h-12 w-12 text-text-secondary mx-auto mb-3" />
+                  <h3 className="text-xl font-bold text-text-primary">Invalid Certificate</h3>
+                  <p className="text-text-secondary mt-2">{result.message}</p>
                 </div>
               )}
             </div>
@@ -121,7 +121,7 @@ export default function PublicVerificationPortal() {
         </div>
       </div>
       
-      <div className="mt-8 text-center text-gray-400 text-sm">
+      <div className="mt-8 text-center text-text-secondary text-sm">
         <p>Secured by Pinesphere ERP &bull; 2026</p>
       </div>
     </div>

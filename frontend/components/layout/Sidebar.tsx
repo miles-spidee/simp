@@ -55,25 +55,22 @@ export function Sidebar({ isMobileOpen, setMobileOpen, isCollapsed, setCollapsed
 
       {/* Sidebar container */}
       <div 
-        className={`fixed inset-y-0 left-0 z-50 bg-[#0b1329] text-slate-300 transition-all duration-300 ease-in-out lg:static lg:inset-auto flex flex-col border-r border-slate-800 ${
+        className={`fixed inset-y-0 left-0 z-50 bg-sidebar text-text-primary transition-all duration-300 ease-in-out lg:static lg:inset-auto flex flex-col border-r border-border ${
           isMobileOpen ? 'translate-x-0 w-72' : '-translate-x-full w-72 lg:translate-x-0'
         } ${
           isCollapsed ? 'lg:w-20' : 'lg:w-72'
         }`}
       >
         {/* Branding header */}
-        <div className="flex h-16 shrink-0 items-center px-6 border-b border-slate-800 justify-between">
+        <div className="flex h-16 shrink-0 items-center px-6 border-b border-border justify-between">
           <Link href="/feature" className="flex items-center gap-3 overflow-hidden">
-            <div className="h-8 w-8 shrink-0 rounded bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center font-black text-white text-lg shadow-lg shadow-blue-500/30">
-              P
-            </div>
-            {!isCollapsed && (
-              <span className="text-sm font-black text-white tracking-wider uppercase font-sans whitespace-nowrap animate-fade-in">
-                Pinesphere ERP
-              </span>
+            {!isCollapsed ? (
+              <img src="/logo.png" alt="Pinesphere Logo" className="h-15 w-auto object-contain transition-transform hover:scale-[1.02] animate-fade-in" />
+            ) : (
+              <img src="/pinesphere_ai_app_icon.png" alt="Pinesphere Icon" className="h-8 w-8 object-contain transition-transform hover:scale-[1.02] animate-fade-in shadow-sm shadow-primary/30 rounded" />
             )}
           </Link>
-          <button className="lg:hidden text-slate-400 hover:text-white" onClick={() => setMobileOpen(false)}>
+          <button className="lg:hidden text-text-secondary hover:text-text-primary cursor-pointer" onClick={() => setMobileOpen(false)}>
             <X className="h-6 w-6" />
           </button>
         </div>
@@ -89,14 +86,14 @@ export function Sidebar({ isMobileOpen, setMobileOpen, isCollapsed, setCollapsed
                 href={item.route}
                 onClick={() => setMobileOpen(false)}
                 className={`
-                  group flex items-center justify-between rounded-xl px-3 py-2.5 transition-all duration-200
+                  group flex items-center justify-between rounded-xl px-3 py-2.5 transition-all duration-200 cursor-pointer
                   ${active 
-                    ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20' 
-                    : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'}
+                    ? 'bg-selected text-primary shadow-sm shadow-primary/5 font-bold' 
+                    : 'text-text-secondary hover:bg-selected/60 hover:text-primary-hover font-medium'}
                 `}
               >
                 <div className="flex items-center gap-3 overflow-hidden">
-                  <IconComponent className={`h-5 w-5 shrink-0 ${active ? 'text-white' : 'text-slate-400 group-hover:text-blue-400'}`} />
+                  <IconComponent className={`h-5 w-5 shrink-0 ${active ? 'text-primary' : 'text-text-secondary group-hover:text-primary-hover'}`} />
                   {!isCollapsed && (
                     <span className="text-sm font-medium whitespace-nowrap truncate animate-fade-in">
                       {item.navigationLabel}
@@ -109,20 +106,20 @@ export function Sidebar({ isMobileOpen, setMobileOpen, isCollapsed, setCollapsed
         </nav>
 
         {/* Sidebar Footer / User section */}
-        <div className="p-4 border-t border-slate-800 shrink-0">
+        <div className="p-4 border-t border-border shrink-0">
           <div className={`flex items-center justify-between ${isCollapsed ? 'flex-col gap-2' : 'px-2 py-2'}`}>
             <div className="flex items-center gap-x-3 overflow-hidden">
-              <div className="h-9 w-9 shrink-0 rounded-full bg-slate-200 border border-white shadow-sm flex items-center justify-center overflow-hidden">
+              <div className="h-9 w-9 shrink-0 rounded-full bg-selected border border-border shadow-sm flex items-center justify-center overflow-hidden">
                 <img 
-                  src={`https://api.dicebear.com/7.x/initials/svg?seed=${user?.name || 'User'}&backgroundColor=0f172a,1e293b,334155`} 
+                  src={`https://api.dicebear.com/7.x/initials/svg?seed=${user?.name || 'User'}&backgroundColor=3183C8,256DB4,83B9E5`} 
                   alt={user?.name || "User"} 
                   className="h-full w-full object-cover" 
                 />
               </div>
               {!isCollapsed && (
-                <div className="overflow-hidden animate-fade-in">
-                  <p className="text-sm font-bold text-slate-200 truncate leading-tight">{user?.name || "User"}</p>
-                  <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500 truncate mt-0.5">{user?.roleName || "Role"}</p>
+                <div className="overflow-hidden animate-fade-in font-[family-name:var(--font-outfit)]">
+                  <p className="text-sm font-bold text-text-primary truncate leading-tight">{user?.name || "User"}</p>
+                  <p className="text-[9px] font-bold uppercase tracking-wider text-text-secondary truncate mt-0.5">{user?.roleName || "Role"}</p>
                 </div>
               )}
             </div>
@@ -131,7 +128,7 @@ export function Sidebar({ isMobileOpen, setMobileOpen, isCollapsed, setCollapsed
                 logout();
                 router.push('/');
               }}
-              className="p-1.5 rounded-lg text-slate-400 hover:bg-red-950/30 hover:text-red-400 transition-colors"
+              className="p-1.5 rounded-lg text-text-secondary hover:bg-error/10 hover:text-error transition-colors cursor-pointer"
              
             >
               <LogOut className="h-5 w-5" />
@@ -139,10 +136,10 @@ export function Sidebar({ isMobileOpen, setMobileOpen, isCollapsed, setCollapsed
           </div>
           
           {/* Collapse sidebar toggle button for desktop/tablet */}
-          <div className="hidden lg:flex justify-end mt-4 pt-2 border-t border-slate-800/50">
+          <div className="hidden lg:flex justify-end mt-4 pt-2 border-t border-border">
             <button 
               onClick={() => setCollapsed(!isCollapsed)} 
-              className="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white transition-colors"
+              className="p-1.5 rounded-lg bg-selected/50 text-text-secondary hover:bg-selected hover:text-primary-hover transition-colors cursor-pointer"
               title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
             >
               {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}

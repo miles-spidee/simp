@@ -641,7 +641,7 @@ export default function ProgramManagementPage() {
       
       {/* Toast Notification Banner */}
       {toast && (
-        <div className="fixed top-5 right-5 z-[9999] flex items-center gap-3 px-4 py-3 bg-slate-900 border border-slate-800 text-white rounded-xl shadow-2xl animate-bounce-in max-w-sm">
+        <div className="fixed top-5 right-5 z-[9999] flex items-center gap-3 px-4 py-3 bg-slate-900 border border-border text-white rounded-xl shadow-2xl animate-bounce-in max-w-sm">
           {toast.type === 'success' && <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />}
           {toast.type === 'error' && <XCircle className="h-5 w-5 text-rose-400 shrink-0" />}
           {toast.type === 'info' && <AlertCircle className="h-5 w-5 text-blue-400 shrink-0" />}
@@ -650,16 +650,16 @@ export default function ProgramManagementPage() {
       )}
 
       {/* Header Sticky Navigation Panel */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4 bg-white/60 backdrop-blur-md sticky top-0 z-40">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-4 bg-white/60 backdrop-blur-md sticky top-0 z-40">
         <div>
-          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+          <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest flex items-center gap-1.5">
             <span>PLMS Console</span>
             <ChevronRight className="h-3 w-3" />
             <span className="text-blue-600 font-extrabold">Program Lifecycles</span>
           </div>
-          <h2 className="text-2xl font-black text-slate-900 mt-1 tracking-tight flex items-center gap-2">
+          <h2 className="text-2xl font-black text-text-primary mt-1 tracking-tight flex items-center gap-2">
             Program Workspace
-            <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-mono font-medium">v3.1 (Enterprise)</span>
+            <span className="text-[10px] bg-slate-100 text-text-secondary px-2 py-0.5 rounded font-mono font-medium">v3.1 (Enterprise)</span>
           </h2>
         </div>
 
@@ -669,8 +669,8 @@ export default function ProgramManagementPage() {
               onClick={() => setActiveView('dashboard')}
               className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all duration-200 cursor-pointer ${
                 activeView === 'dashboard' 
-                  ? 'bg-white text-slate-900 shadow-sm' 
-                  : 'text-slate-500 hover:text-slate-800'
+                  ? 'bg-white text-text-primary shadow-sm' 
+                  : 'text-text-secondary hover:text-text-primary'
               }`}
             >
               Executive Dashboard
@@ -679,8 +679,8 @@ export default function ProgramManagementPage() {
               onClick={() => setActiveView('directory')}
               className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all duration-200 cursor-pointer ${
                 activeView === 'directory' 
-                  ? 'bg-white text-slate-900 shadow-sm' 
-                  : 'text-slate-500 hover:text-slate-800'
+                  ? 'bg-white text-text-primary shadow-sm' 
+                  : 'text-text-secondary hover:text-text-primary'
               }`}
             >
               Program Directory ({filteredPrograms.length})
@@ -690,7 +690,7 @@ export default function ProgramManagementPage() {
           <PermissionGuard required="program.export">
             <button 
               onClick={handleExportData}
-              className="flex items-center gap-1.5 px-3 py-2 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 bg-white rounded-lg text-xs font-bold text-slate-700 shadow-sm transition-all duration-200 cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-2 border border-border hover:border-secondary hover:bg-slate-50 bg-white rounded-lg text-xs font-bold text-text-primary shadow-sm transition-all duration-200 cursor-pointer"
             >
               <FileDown className="h-3.5 w-3.5" />
               <span>Export Roster</span>
@@ -718,7 +718,7 @@ export default function ProgramManagementPage() {
             {[
               { label: 'Total Programs', val: kpiStats.total, icon: GraduationCap, color: 'bg-blue-50 text-blue-600 border-blue-100', filter: { name: 'status', val: 'all' } },
               { label: 'Active Cohorts', val: kpiStats.active, icon: CheckCircle2, color: 'bg-emerald-50 text-emerald-600 border-emerald-100', filter: { name: 'status', val: 'Active' } },
-              { label: 'Students Enrolled', val: kpiStats.studentsCount, icon: Users, color: 'bg-sky-50 text-sky-600 border-sky-100', filter: { name: 'status', val: 'all' } },
+              { label: 'Students Enrolled', val: kpiStats.studentsCount, icon: Users, color: 'bg-sky-50 text-text-secondary border-border', filter: { name: 'status', val: 'all' } },
               { label: 'Active Mentors', val: kpiStats.activeMentors, icon: Award, color: 'bg-indigo-50 text-indigo-600 border-indigo-100', filter: { name: 'status', val: 'all' } },
               { label: 'Avg Completion Rate', val: `${kpiStats.completionRate}%`, icon: Clock, color: 'bg-purple-50 text-purple-600 border-purple-100', filter: { name: 'status', val: 'Completed' } },
               { label: 'Placement Conversion', val: `${kpiStats.placementRate}%`, icon: TrendingUp, color: 'bg-teal-50 text-teal-600 border-teal-100', filter: { name: 'status', val: 'all' } },
@@ -734,11 +734,11 @@ export default function ProgramManagementPage() {
                   setActiveView('directory');
                   showToast(`Roster filtered by: ${kpi.label}`);
                 }}
-                className="bg-white border border-slate-200 hover:border-blue-500 hover:shadow-md rounded-xl p-4 shadow-sm transition-all duration-200 cursor-pointer flex items-center justify-between group"
+                className="bg-white border border-border hover:border-secondary hover:shadow-md rounded-xl p-4 shadow-sm transition-all duration-200 cursor-pointer flex items-center justify-between group"
               >
                 <div>
-                  <div className="text-2xl font-black text-slate-800 tracking-tight">{kpi.val}</div>
-                  <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-0.5">{kpi.label}</div>
+                  <div className="text-2xl font-black text-text-primary tracking-tight">{kpi.val}</div>
+                  <div className="text-[10px] font-bold text-text-secondary uppercase tracking-wider mt-0.5">{kpi.label}</div>
                 </div>
                 <div className={`h-10 w-10 rounded-lg ${kpi.color} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform`}>
                   <kpi.icon className="h-5 w-5" />
@@ -751,8 +751,8 @@ export default function ProgramManagementPage() {
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             
             {/* Chart 1: Program Category & Enrollments */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-              <h3 className="text-sm font-bold text-slate-900 tracking-tight flex items-center gap-1.5">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
+              <h3 className="text-sm font-bold text-text-primary tracking-tight flex items-center gap-1.5">
                 <Layers className="h-4.5 w-4.5 text-blue-600" />
                 Programs by Category & Duration
               </h3>
@@ -767,7 +767,7 @@ export default function ProgramManagementPage() {
                   const percent = Math.round((item.count / programs.length) * 100) || 0;
                   return (
                     <div key={index} className="space-y-1">
-                      <div className="flex justify-between text-xs font-semibold text-slate-700">
+                      <div className="flex justify-between text-xs font-semibold text-text-primary">
                         <span>{item.type}</span>
                         <span>{item.count} ({percent}%)</span>
                       </div>
@@ -780,22 +780,22 @@ export default function ProgramManagementPage() {
               </div>
 
               {/* Enrollment Metrics */}
-              <div className="border-t border-slate-100 pt-4 space-y-2">
-                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Participant Pipeline Breakdown</div>
-                <div className="grid grid-cols-2 gap-2 text-xs font-bold text-slate-700">
-                  <div className="bg-slate-50 border border-slate-100 rounded-lg p-2.5 flex justify-between">
-                    <span className="text-slate-500">Enrolled Total</span>
-                    <span className="text-slate-900">{kpiStats.studentsCount}</span>
+              <div className="border-t border-border pt-4 space-y-2">
+                <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-2">Participant Pipeline Breakdown</div>
+                <div className="grid grid-cols-2 gap-2 text-xs font-bold text-text-primary">
+                  <div className="bg-slate-50 border border-border rounded-lg p-2.5 flex justify-between">
+                    <span className="text-text-secondary">Enrolled Total</span>
+                    <span className="text-text-primary">{kpiStats.studentsCount}</span>
                   </div>
-                  <div className="bg-slate-50 border border-slate-100 rounded-lg p-2.5 flex justify-between">
+                  <div className="bg-slate-50 border border-border rounded-lg p-2.5 flex justify-between">
                     <span className="text-emerald-600">Active Duty</span>
                     <span className="text-emerald-700">730</span>
                   </div>
-                  <div className="bg-slate-50 border border-slate-100 rounded-lg p-2.5 flex justify-between">
+                  <div className="bg-slate-50 border border-border rounded-lg p-2.5 flex justify-between">
                     <span className="text-blue-600">Completions</span>
                     <span className="text-blue-700">138</span>
                   </div>
-                  <div className="bg-slate-50 border border-slate-100 rounded-lg p-2.5 flex justify-between">
+                  <div className="bg-slate-50 border border-border rounded-lg p-2.5 flex justify-between">
                     <span className="text-rose-500">Dropouts</span>
                     <span className="text-rose-600">12</span>
                   </div>
@@ -804,9 +804,9 @@ export default function ProgramManagementPage() {
             </div>
 
             {/* Chart 2: Top Programs Leaderboard */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="text-sm font-bold text-slate-900 tracking-tight flex items-center gap-1.5">
+                <h3 className="text-sm font-bold text-text-primary tracking-tight flex items-center gap-1.5">
                   <Award className="h-4.5 w-4.5 text-emerald-600" />
                   Top Performing Programs
                 </h3>
@@ -814,7 +814,7 @@ export default function ProgramManagementPage() {
                 <select 
                   value={performanceMetric}
                   onChange={(e) => setPerformanceMetric(e.target.value as any)}
-                  className="text-[10px] font-bold border border-slate-200 rounded p-1 bg-white focus:outline-none"
+                  className="text-[10px] font-bold border border-border rounded p-1 bg-white focus:outline-none"
                 >
                   <option value="completion">Completion Rate</option>
                   <option value="attendance">Attendance Rate</option>
@@ -823,7 +823,7 @@ export default function ProgramManagementPage() {
                 </select>
               </div>
 
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-border">
                 {performanceLeaderboard.map((prog, index) => {
                   let valLabel = '';
                   if (performanceMetric === 'completion') {
@@ -843,13 +843,13 @@ export default function ProgramManagementPage() {
                       className="py-2.5 flex items-center justify-between hover:bg-slate-50 px-2 rounded-lg cursor-pointer transition-colors group"
                     >
                       <div className="flex items-center gap-2.5">
-                        <span className="text-xs font-black text-slate-400 w-4">{index + 1}</span>
+                        <span className="text-xs font-black text-text-secondary w-4">{index + 1}</span>
                         <div className="h-7 w-7 rounded bg-blue-50 text-blue-600 font-extrabold text-[10px] flex items-center justify-center shrink-0">
                           {prog.code.slice(0, 3)}
                         </div>
                         <div className="max-w-[150px] truncate">
-                          <div className="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition-colors truncate">{prog.title}</div>
-                          <div className="text-[10px] text-slate-500 font-semibold">{prog.code}</div>
+                          <div className="text-xs font-bold text-text-primary group-hover:text-blue-600 transition-colors truncate">{prog.title}</div>
+                          <div className="text-[10px] text-text-secondary font-semibold">{prog.code}</div>
                         </div>
                       </div>
                       <span className="text-xs font-extrabold text-blue-600">{valLabel}</span>
@@ -860,19 +860,19 @@ export default function ProgramManagementPage() {
             </div>
 
             {/* Chart 3: Mentor Contribution Scorecard */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-              <h3 className="text-sm font-bold text-slate-900 tracking-tight flex items-center gap-1.5">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
+              <h3 className="text-sm font-bold text-text-primary tracking-tight flex items-center gap-1.5">
                 <UserCheck className="h-4.5 w-4.5 text-indigo-600" />
                 Senior Mentor Contribution
               </h3>
 
               <div className="space-y-3">
                 {mentorContributions.map((mentor, idx) => (
-                  <div key={idx} className="bg-slate-50 border border-slate-100 rounded-lg p-3 space-y-2">
+                  <div key={idx} className="bg-slate-50 border border-border rounded-lg p-3 space-y-2">
                     <div className="flex justify-between items-start">
                       <div>
-                        <div className="text-xs font-extrabold text-slate-900 leading-none">{mentor.name}</div>
-                        <div className="text-[9px] font-bold text-slate-400 mt-1">{mentor.department} Division</div>
+                        <div className="text-xs font-extrabold text-text-primary leading-none">{mentor.name}</div>
+                        <div className="text-[9px] font-bold text-text-secondary mt-1">{mentor.department} Division</div>
                       </div>
                       <span className="bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded text-[8px] font-bold border border-amber-100 flex items-center gap-0.5">
                         <Star className="h-3 w-3 fill-amber-400 text-amber-400 shrink-0" />
@@ -880,18 +880,18 @@ export default function ProgramManagementPage() {
                       </span>
                     </div>
                     
-                    <div className="grid grid-cols-3 gap-1.5 text-center text-[9px] font-bold text-slate-600 border-t border-slate-200/60 pt-1.5">
+                    <div className="grid grid-cols-3 gap-1.5 text-center text-[9px] font-bold text-text-secondary border-t border-border/60 pt-1.5">
                       <div>
-                        <div className="text-slate-900">{mentor.assignedStudents}</div>
-                        <div className="text-[7px] text-slate-400 uppercase">Interns</div>
+                        <div className="text-text-primary">{mentor.assignedStudents}</div>
+                        <div className="text-[7px] text-text-secondary uppercase">Interns</div>
                       </div>
                       <div>
-                        <div className="text-slate-900">{mentor.sessionsConducted}</div>
-                        <div className="text-[7px] text-slate-400 uppercase">Sessions</div>
+                        <div className="text-text-primary">{mentor.sessionsConducted}</div>
+                        <div className="text-[7px] text-text-secondary uppercase">Sessions</div>
                       </div>
                       <div>
                         <div className="text-emerald-600">{mentor.successRate}%</div>
-                        <div className="text-[7px] text-slate-400 uppercase">Success</div>
+                        <div className="text-[7px] text-text-secondary uppercase">Success</div>
                       </div>
                     </div>
                   </div>
@@ -902,13 +902,13 @@ export default function ProgramManagementPage() {
           </div>
 
           {/* Activity Feed */}
-          <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-            <h3 className="text-sm font-bold text-slate-900 tracking-tight flex items-center gap-1.5">
-              <Activity className="h-4.5 w-4.5 text-slate-800" />
+          <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
+            <h3 className="text-sm font-bold text-text-primary tracking-tight flex items-center gap-1.5">
+              <Activity className="h-4.5 w-4.5 text-text-primary" />
               PLMS Program Milestone timeline
             </h3>
 
-            <div className="divide-y divide-slate-100 max-h-[350px] overflow-y-auto pr-1">
+            <div className="divide-y divide-border max-h-[350px] overflow-y-auto pr-1">
               {recentActivities.map((act, index) => (
                 <div 
                   key={index}
@@ -918,18 +918,18 @@ export default function ProgramManagementPage() {
                   }}
                   className="py-3 flex items-start gap-4 hover:bg-slate-50/50 px-2 rounded-lg cursor-pointer transition-colors group"
                 >
-                  <div className="h-8 w-8 rounded bg-slate-100 text-slate-800 font-extrabold text-[10px] flex items-center justify-center shrink-0">
+                  <div className="h-8 w-8 rounded bg-slate-100 text-text-primary font-extrabold text-[10px] flex items-center justify-center shrink-0">
                     {act.progTitle.split(' ').map(n => n[0]).join('').slice(0, 3)}
                   </div>
                   
                   <div className="flex-1 space-y-0.5 text-xs">
-                    <div className="font-extrabold text-slate-900 group-hover:text-blue-600 transition-colors">{act.progTitle}</div>
-                    <div className="text-slate-700 font-semibold leading-relaxed">
-                      {act.event.title} — <span className="text-slate-500 font-normal">{act.event.description}</span>
+                    <div className="font-extrabold text-text-primary group-hover:text-blue-600 transition-colors">{act.progTitle}</div>
+                    <div className="text-text-primary font-semibold leading-relaxed">
+                      {act.event.title} — <span className="text-text-secondary font-normal">{act.event.description}</span>
                     </div>
                   </div>
 
-                  <span className="text-[10px] text-slate-400 font-bold shrink-0">{act.event.date}</span>
+                  <span className="text-[10px] text-text-secondary font-bold shrink-0">{act.event.date}</span>
                 </div>
               ))}
             </div>
@@ -943,18 +943,18 @@ export default function ProgramManagementPage() {
         <div className="space-y-4 animate-fade-in">
           
           {/* Query search and advanced filters */}
-          <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm space-y-3">
+          <div className="bg-white border border-border rounded-xl p-4 shadow-sm space-y-3">
             <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
               
               {/* Search bar */}
               <div className="relative w-full md:w-80">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary" />
                 <input 
                   type="text" 
                   placeholder="Search by name, code, mentor, tech, domain..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  className="w-full pl-9 pr-4 py-2 bg-white border border-border rounded-lg text-xs font-semibold focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                 />
               </div>
 
@@ -981,7 +981,7 @@ export default function ProgramManagementPage() {
                   className={`flex items-center gap-1.5 px-3 py-2 border rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer ${
                     showFilters 
                       ? 'border-blue-600 bg-blue-50/50 text-blue-600' 
-                      : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                      : 'border-border bg-white text-text-secondary hover:bg-slate-50'
                   }`}
                 >
                   <Filter className="h-3.5 w-3.5" />
@@ -993,13 +993,13 @@ export default function ProgramManagementPage() {
 
             {/* Filter expansion grid */}
             {showFilters && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-3 border-t border-slate-100 animate-slide-down">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-3 border-t border-border animate-slide-down">
                 <div>
-                  <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Program Type</label>
+                  <label className="block text-[10px] font-extrabold text-text-secondary uppercase tracking-wider mb-1">Program Type</label>
                   <select 
                     value={filterType} 
                     onChange={(e) => setFilterType(e.target.value)}
-                    className="w-full text-xs font-semibold p-2 border border-slate-200 rounded-lg bg-white focus:outline-none"
+                    className="w-full text-xs font-semibold p-2 border border-border rounded-lg bg-white focus:outline-none"
                   >
                     <option value="all">All Types</option>
                     <option value="Free Internship">Free Internship</option>
@@ -1010,11 +1010,11 @@ export default function ProgramManagementPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Status</label>
+                  <label className="block text-[10px] font-extrabold text-text-secondary uppercase tracking-wider mb-1">Status</label>
                   <select 
                     value={filterStatus} 
                     onChange={(e) => setFilterStatus(e.target.value)}
-                    className="w-full text-xs font-semibold p-2 border border-slate-200 rounded-lg bg-white focus:outline-none"
+                    className="w-full text-xs font-semibold p-2 border border-border rounded-lg bg-white focus:outline-none"
                   >
                     <option value="all">All Statuses</option>
                     <option value="Draft">Draft</option>
@@ -1025,11 +1025,11 @@ export default function ProgramManagementPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Duration weeks</label>
+                  <label className="block text-[10px] font-extrabold text-text-secondary uppercase tracking-wider mb-1">Duration weeks</label>
                   <select 
                     value={filterDuration} 
                     onChange={(e) => setFilterDuration(e.target.value)}
-                    className="w-full text-xs font-semibold p-2 border border-slate-200 rounded-lg bg-white focus:outline-none"
+                    className="w-full text-xs font-semibold p-2 border border-border rounded-lg bg-white focus:outline-none"
                   >
                     <option value="all">All Durations</option>
                     <option value="short">Short (≤ 8 weeks)</option>
@@ -1039,11 +1039,11 @@ export default function ProgramManagementPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Domain</label>
+                  <label className="block text-[10px] font-extrabold text-text-secondary uppercase tracking-wider mb-1">Domain</label>
                   <select 
                     value={filterDomain} 
                     onChange={(e) => setFilterDomain(e.target.value)}
-                    className="w-full text-xs font-semibold p-2 border border-slate-200 rounded-lg bg-white focus:outline-none"
+                    className="w-full text-xs font-semibold p-2 border border-border rounded-lg bg-white focus:outline-none"
                   >
                     <option value="all">All Domains</option>
                     {Array.from(new Set(programs.map(p => p.metadata.domain))).map(dom => (
@@ -1056,33 +1056,33 @@ export default function ProgramManagementPage() {
           </div>
 
           {/* Directory data table grid */}
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+          <div className="bg-white border border-border rounded-xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs whitespace-nowrap">
-                <thead className="bg-slate-50 border-b border-slate-200">
+                <thead className="bg-slate-50 border-b border-border">
                   <tr>
                     <th className="px-4 py-3 w-8">
                       <input 
                         type="checkbox" 
                         checked={filteredPrograms.length > 0 && filteredPrograms.every(p => selectedIds.includes(p.id))}
                         onChange={toggleSelectAll}
-                        className="rounded border-slate-300 h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                        className="rounded border-border h-3.5 w-3.5 text-blue-600 focus:ring-primary cursor-pointer"
                       />
                     </th>
-                    <th className="px-4 py-3 font-bold text-slate-600">Program Name</th>
-                    <th className="px-4 py-3 font-bold text-slate-600">Program Code</th>
-                    <th className="px-4 py-3 font-bold text-slate-600">Program Type</th>
-                    <th className="px-4 py-3 font-bold text-slate-600">Duration</th>
-                    <th className="px-4 py-3 font-bold text-slate-600">Start Date</th>
-                    <th className="px-4 py-3 font-bold text-slate-600">End Date</th>
-                    <th className="px-4 py-3 font-bold text-slate-600">Students Enrolled</th>
-                    <th className="px-4 py-3 font-bold text-slate-600">Mentors Assigned</th>
-                    <th className="px-4 py-3 font-bold text-slate-600">Completion Rate</th>
-                    <th className="px-4 py-3 font-bold text-slate-600">Status</th>
-                    <th className="px-4 py-3 font-bold text-slate-600 text-right">Actions</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary">Program Name</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary">Program Code</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary">Program Type</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary">Duration</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary">Start Date</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary">End Date</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary">Students Enrolled</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary">Mentors Assigned</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary">Completion Rate</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary">Status</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-border">
                   {filteredPrograms.length > 0 ? (
                     filteredPrograms.map((prog) => {
                       const isSelected = selectedIds.includes(prog.id);
@@ -1099,7 +1099,7 @@ export default function ProgramManagementPage() {
                               type="checkbox" 
                               checked={isSelected}
                               onChange={() => toggleSelect(prog.id)}
-                              className="rounded border-slate-300 h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                              className="rounded border-border h-3.5 w-3.5 text-blue-600 focus:ring-primary cursor-pointer"
                             />
                           </td>
                           
@@ -1109,19 +1109,19 @@ export default function ProgramManagementPage() {
                                 {prog.code.slice(0, 3)}
                               </div>
                               <div>
-                                <div className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors">{prog.title}</div>
-                                <div className="text-[10px] text-slate-500">{prog.metadata.category}</div>
+                                <div className="font-bold text-text-primary group-hover:text-blue-600 transition-colors">{prog.title}</div>
+                                <div className="text-[10px] text-text-secondary">{prog.metadata.category}</div>
                               </div>
                             </div>
                           </td>
                           
-                          <td className="px-4 py-3 font-mono font-bold text-slate-500">{prog.code}</td>
-                          <td className="px-4 py-3 text-slate-700 font-bold">{prog.type}</td>
-                          <td className="px-4 py-3 text-slate-600 font-medium">{prog.durationWeeks} Weeks</td>
-                          <td className="px-4 py-3 text-slate-500 font-semibold">{prog.startDate}</td>
-                          <td className="px-4 py-3 text-slate-500 font-semibold">{prog.endDate}</td>
-                          <td className="px-4 py-3 text-slate-800 font-bold">{prog.studentsEnrolled}</td>
-                          <td className="px-4 py-3 text-slate-800 font-bold">{prog.mentorsAssigned}</td>
+                          <td className="px-4 py-3 font-mono font-bold text-text-secondary">{prog.code}</td>
+                          <td className="px-4 py-3 text-text-primary font-bold">{prog.type}</td>
+                          <td className="px-4 py-3 text-text-secondary font-medium">{prog.durationWeeks} Weeks</td>
+                          <td className="px-4 py-3 text-text-secondary font-semibold">{prog.startDate}</td>
+                          <td className="px-4 py-3 text-text-secondary font-semibold">{prog.endDate}</td>
+                          <td className="px-4 py-3 text-text-primary font-bold">{prog.studentsEnrolled}</td>
+                          <td className="px-4 py-3 text-text-primary font-bold">{prog.mentorsAssigned}</td>
                           <td className="px-4 py-3 text-blue-600 font-extrabold">{prog.completionRate}%</td>
                           
                           <td className="px-4 py-3">
@@ -1132,7 +1132,7 @@ export default function ProgramManagementPage() {
                                 ? 'bg-blue-50 text-blue-700 border border-blue-200'
                                 : prog.status === 'Draft'
                                 ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                                : 'bg-slate-100 text-slate-600 border border-slate-200'
+                                : 'bg-slate-100 text-text-secondary border border-border'
                             }`}>
                               {prog.status}
                             </span>
@@ -1142,7 +1142,7 @@ export default function ProgramManagementPage() {
                             <div className="flex justify-end gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
                               <button 
                                 onClick={() => handleOpenProfile(prog)}
-                                className="p-1 hover:bg-slate-100 rounded text-slate-500 hover:text-slate-900 cursor-pointer"
+                                className="p-1 hover:bg-slate-100 rounded text-text-secondary hover:text-text-primary cursor-pointer"
                                 title="Open Profile Program"
                               >
                                 <Eye className="h-3.5 w-3.5" />
@@ -1150,7 +1150,7 @@ export default function ProgramManagementPage() {
                               <PermissionGuard required="program.edit">
                                 <button 
                                   onClick={() => openEditModal(prog)}
-                                  className="p-1 hover:bg-slate-100 rounded text-slate-500 hover:text-slate-900 cursor-pointer"
+                                  className="p-1 hover:bg-slate-100 rounded text-text-secondary hover:text-text-primary cursor-pointer"
                                   title="Edit Program Details"
                                 >
                                   <Edit className="h-3.5 w-3.5" />
@@ -1163,9 +1163,9 @@ export default function ProgramManagementPage() {
                     })
                   ) : (
                     <tr>
-                      <td colSpan={12} className="px-4 py-12 text-center text-slate-500 bg-white">
+                      <td colSpan={12} className="px-4 py-12 text-center text-text-secondary bg-white">
                         <GraduationCap className="h-12 w-12 text-slate-300 mx-auto mb-3" />
-                        <p className="text-sm font-bold text-slate-600">No programs match this selection</p>
+                        <p className="text-sm font-bold text-text-secondary">No programs match this selection</p>
                       </td>
                     </tr>
                   )}
@@ -1179,7 +1179,7 @@ export default function ProgramManagementPage() {
 
       {/* ------------------ BULK ACTIONS PANEL ------------------ */}
       {selectedIds.length > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 border border-slate-800 text-white rounded-xl shadow-2xl px-6 py-4 flex flex-col md:flex-row items-center gap-4 animate-slide-up max-w-4xl w-[90%]">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 border border-border text-white rounded-xl shadow-2xl px-6 py-4 flex flex-col md:flex-row items-center gap-4 animate-slide-up max-w-4xl w-[90%]">
           <div className="flex items-center gap-2">
             <div className="bg-blue-600 text-white h-6 w-6 rounded-full flex items-center justify-center font-extrabold text-xs">
               {selectedIds.length}
@@ -1196,7 +1196,7 @@ export default function ProgramManagementPage() {
                 setStatusInput('Active');
                 setActiveActionModal({ type: 'bulkStatus' });
               }}
-              className="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors"
+              className="bg-slate-800 hover:bg-slate-700 border border-border px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors"
             >
               Bulk Change Status
             </button>
@@ -1205,7 +1205,7 @@ export default function ProgramManagementPage() {
                 setMentorInput('');
                 setActiveActionModal({ type: 'bulkMentor' });
               }}
-              className="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors"
+              className="bg-slate-800 hover:bg-slate-700 border border-border px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors"
             >
               Assign Mentor
             </button>
@@ -1214,7 +1214,7 @@ export default function ProgramManagementPage() {
                 setNotifyMsg('');
                 setActiveActionModal({ type: 'bulkNotify' });
               }}
-              className="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors text-blue-400"
+              className="bg-slate-800 hover:bg-slate-700 border border-border px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors text-blue-400"
             >
               Send notification
             </button>
@@ -1222,7 +1222,7 @@ export default function ProgramManagementPage() {
               onClick={() => {
                 setActiveActionModal({ type: 'bulkCert' });
               }}
-              className="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors text-emerald-400"
+              className="bg-slate-800 hover:bg-slate-700 border border-border px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors text-emerald-400"
             >
               Generate Certificates
             </button>
@@ -1230,7 +1230,7 @@ export default function ProgramManagementPage() {
 
           <button 
             onClick={() => setSelectedIds([])}
-            className="text-xs font-bold text-slate-400 hover:text-white underline shrink-0 cursor-pointer ml-auto"
+            className="text-xs font-bold text-text-secondary hover:text-white underline shrink-0 cursor-pointer ml-auto"
           >
             Cancel Selection
           </button>
@@ -1244,23 +1244,23 @@ export default function ProgramManagementPage() {
         title="Program Command Workspace"
       >
         {activeProfile ? (
-          <div className="flex-1 flex flex-col overflow-hidden bg-slate-50 text-slate-700 select-none">
+          <div className="flex-1 flex flex-col overflow-hidden bg-slate-50 text-text-primary select-none">
             
             {/* STICKY HEADER ACCENTS PANEL */}
-            <div className="bg-slate-900 text-white px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0 shadow-lg border-b border-slate-800">
+            <div className="bg-slate-900 text-white px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0 shadow-lg border-b border-border">
               
               <div className="flex items-center gap-3">
-                <div className="h-12 w-12 rounded bg-slate-800 text-slate-200 border border-slate-700 flex items-center justify-center font-black text-lg shrink-0 shadow-md">
+                <div className="h-12 w-12 rounded bg-slate-800 text-slate-200 border border-border flex items-center justify-center font-black text-lg shrink-0 shadow-md">
                   {activeProfile.code.slice(0, 3)}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="font-extrabold text-sm text-white tracking-tight">{activeProfile.title}</h3>
-                    <span className="text-[9px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-mono font-bold border border-slate-700">
+                    <span className="text-[9px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-mono font-bold border border-border">
                       {activeProfile.code}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-400 leading-none mt-1 font-semibold">
+                  <p className="text-xs text-text-secondary leading-none mt-1 font-semibold">
                     {activeProfile.type} — <span className="text-slate-300 font-bold">{activeProfile.durationWeeks} Weeks</span>
                   </p>
                 </div>
@@ -1271,7 +1271,7 @@ export default function ProgramManagementPage() {
                 <PermissionGuard required="program.edit">
                   <button 
                     onClick={() => openEditModal(activeProfile)}
-                    className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1"
+                    className="bg-slate-800 hover:bg-slate-700 border border-border text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1"
                   >
                     <Edit className="h-3 w-3" />
                     <span>Edit Info</span>
@@ -1282,7 +1282,7 @@ export default function ProgramManagementPage() {
                     setStatusInput('Active');
                     setActiveActionModal({ type: 'status' });
                   }}
-                  className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1"
+                  className="bg-slate-800 hover:bg-slate-700 border border-border text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1"
                 >
                   <RefreshCw className="h-3 w-3 text-emerald-400" />
                   <span>Status</span>
@@ -1292,7 +1292,7 @@ export default function ProgramManagementPage() {
                     setModuleForm({ name: '', topicsString: '', outcomesString: '', assessmentsString: '', assignmentsString: '', projectsString: '' });
                     setActiveActionModal({ type: 'module' });
                   }}
-                  className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1 text-purple-400"
+                  className="bg-slate-800 hover:bg-slate-700 border border-border text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1 text-purple-400"
                 >
                   <PlusCircle className="h-3 w-3" />
                   <span>Add Module</span>
@@ -1302,7 +1302,7 @@ export default function ProgramManagementPage() {
                     setMentorInput('');
                     setActiveActionModal({ type: 'mentor' });
                   }}
-                  className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1 text-sky-400"
+                  className="bg-slate-800 hover:bg-slate-700 border border-border text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1 text-text-secondary"
                 >
                   <UserCheck className="h-3 w-3" />
                   <span>Mentor</span>
@@ -1312,7 +1312,7 @@ export default function ProgramManagementPage() {
                     setNotifyMsg('');
                     setActiveActionModal({ type: 'notify' });
                   }}
-                  className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1 text-blue-400"
+                  className="bg-slate-800 hover:bg-slate-700 border border-border text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1 text-blue-400"
                 >
                   <Send className="h-3 w-3" />
                   <span>Notify</span>
@@ -1321,7 +1321,7 @@ export default function ProgramManagementPage() {
                   onClick={() => {
                     showToast(`Single Program placement audit compiled & exported for ${activeProfile.title}`);
                   }}
-                  className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white p-1.5 rounded cursor-pointer"
+                  className="bg-slate-800 hover:bg-slate-700 border border-border text-slate-300 hover:text-white p-1.5 rounded cursor-pointer"
                   title="Export Data Summary"
                 >
                   <FileDown className="h-4 w-4" />
@@ -1331,7 +1331,7 @@ export default function ProgramManagementPage() {
             </div>
 
             {/* TAB STRIP */}
-            <div className="bg-white border-b border-slate-200 px-6 overflow-x-auto flex shrink-0 scrollbar-none">
+            <div className="bg-white border-b border-border px-6 overflow-x-auto flex shrink-0 scrollbar-none">
               {[
                 { id: 'overview', label: 'Overview' },
                 { id: 'types', label: 'Internship Classifications' },
@@ -1351,7 +1351,7 @@ export default function ProgramManagementPage() {
                     className={`py-3 px-4 font-bold text-xs border-b-2 transition-all shrink-0 cursor-pointer ${
                       isActive 
                         ? 'border-blue-600 text-blue-600' 
-                        : 'border-transparent text-slate-500 hover:text-slate-800'
+                        : 'border-transparent text-text-secondary hover:text-text-primary'
                     }`}
                   >
                     {tab.label}
@@ -1370,13 +1370,13 @@ export default function ProgramManagementPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     
                     {/* General Program Info */}
-                    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-3">
-                      <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-3">
+                      <h4 className="text-xs font-extrabold text-text-secondary uppercase tracking-widest flex items-center gap-1.5">
                         <GraduationCap className="h-3.5 w-3.5 text-blue-600" />
                         Program Information
                       </h4>
                       
-                      <div className="divide-y divide-slate-100 text-xs font-semibold">
+                      <div className="divide-y divide-border text-xs font-semibold">
                         {[
                           { label: 'Title', val: activeProfile.title },
                           { label: 'Program Code', val: activeProfile.code },
@@ -1386,21 +1386,21 @@ export default function ProgramManagementPage() {
                           { label: 'Eligibility', val: activeProfile.eligibility }
                         ].map((row, idx) => (
                           <div key={idx} className="py-2.5 flex justify-between">
-                            <span className="text-slate-500">{row.label}</span>
-                            <span className="text-slate-900 text-right max-w-[60%] leading-relaxed">{row.val}</span>
+                            <span className="text-text-secondary">{row.label}</span>
+                            <span className="text-text-primary text-right max-w-[60%] leading-relaxed">{row.val}</span>
                           </div>
                         ))}
                       </div>
                     </div>
 
                     {/* Operational performance snapshot */}
-                    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-3">
-                      <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-3">
+                      <h4 className="text-xs font-extrabold text-text-secondary uppercase tracking-widest flex items-center gap-1.5">
                         <Activity className="h-3.5 w-3.5 text-emerald-600" />
                         Performance Snapshot
                       </h4>
 
-                      <div className="divide-y divide-slate-100 text-xs font-semibold">
+                      <div className="divide-y divide-border text-xs font-semibold">
                         {[
                           { label: 'Total Enrollments', val: activeProfile.studentsEnrolled },
                           { label: 'Active Students Count', val: activeProfile.enrollments.filter(e => e.status === 'Approved').length },
@@ -1410,8 +1410,8 @@ export default function ProgramManagementPage() {
                           { label: 'Academic Partner', val: activeProfile.organizationData?.name || 'Stanford University' }
                         ].map((row, idx) => (
                           <div key={idx} className="py-2.5 flex justify-between">
-                            <span className="text-slate-500">{row.label}</span>
-                            <span className="text-slate-900 font-extrabold">{row.val}</span>
+                            <span className="text-text-secondary">{row.label}</span>
+                            <span className="text-text-primary font-extrabold">{row.val}</span>
                           </div>
                         ))}
                       </div>
@@ -1426,7 +1426,7 @@ export default function ProgramManagementPage() {
               {profileTab === 'types' && (
                 <div className="space-y-6 animate-fade-in animate-slide-down">
                   
-                  <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest">
+                  <h4 className="text-xs font-extrabold text-text-secondary uppercase tracking-widest">
                     Internship Program Classifications
                   </h4>
 
@@ -1438,16 +1438,16 @@ export default function ProgramManagementPage() {
                       { type: 'Corporate Sponsored', fee: 'Sponsored by Partner', rules: 'Direct matching for corporate placement drives', benefit: 'Custom domain training, pre-placement review opportunities' },
                       { type: 'Research Program', fee: 'Sponsorship Grant', rules: 'Weekly progress reports & blueprint submission', benefit: 'Accreditation certificates, research publication scope' }
                     ].map((row) => (
-                      <div key={row.type} className="bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm space-y-2">
-                        <div className="flex justify-between items-center border-b border-slate-100 pb-2 mb-2">
-                          <h5 className="font-extrabold text-slate-900 text-xs">{row.type}</h5>
+                      <div key={row.type} className="bg-white border border-border rounded-xl p-4.5 shadow-sm space-y-2">
+                        <div className="flex justify-between items-center border-b border-border pb-2 mb-2">
+                          <h5 className="font-extrabold text-text-primary text-xs">{row.type}</h5>
                           <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-[8px] font-black border border-blue-100">
                             {row.fee}
                           </span>
                         </div>
-                        <div className="text-[10px] font-semibold text-slate-500 space-y-1">
-                          <div>Benefits: <span className="text-slate-800 leading-relaxed block mt-0.5 font-medium">{row.benefit}</span></div>
-                          <div className="pt-1.5">Rules: <span className="text-slate-800 leading-relaxed block mt-0.5 font-medium">{row.rules}</span></div>
+                        <div className="text-[10px] font-semibold text-text-secondary space-y-1">
+                          <div>Benefits: <span className="text-text-primary leading-relaxed block mt-0.5 font-medium">{row.benefit}</span></div>
+                          <div className="pt-1.5">Rules: <span className="text-text-primary leading-relaxed block mt-0.5 font-medium">{row.rules}</span></div>
                         </div>
                       </div>
                     ))}
@@ -1461,7 +1461,7 @@ export default function ProgramManagementPage() {
                 <div className="space-y-6 animate-fade-in">
                   
                   <div className="flex justify-between items-center">
-                    <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest">
+                    <h4 className="text-xs font-extrabold text-text-secondary uppercase tracking-widest">
                       Structured Program Curriculum
                     </h4>
                     
@@ -1479,16 +1479,16 @@ export default function ProgramManagementPage() {
 
                   <div className="space-y-4">
                     {activeProfile.curriculum.map((mod, idx) => (
-                      <div key={idx} className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-3">
-                        <h5 className="font-extrabold text-sm text-slate-900 border-b border-slate-100 pb-2">{mod.name}</h5>
+                      <div key={idx} className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-3">
+                        <h5 className="font-extrabold text-sm text-text-primary border-b border-border pb-2">{mod.name}</h5>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-medium text-slate-600">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-medium text-text-secondary">
                           
                           <div className="space-y-1">
-                            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Topics Covered</div>
+                            <div className="text-[9px] font-bold text-text-secondary uppercase tracking-widest">Topics Covered</div>
                             <div className="flex flex-wrap gap-1.5 pt-1">
                               {mod.topics.map((t, tIdx) => (
-                                <span key={tIdx} className="bg-slate-100 text-slate-800 text-[10px] font-bold px-2 py-0.5 rounded">
+                                <span key={tIdx} className="bg-slate-100 text-text-primary text-[10px] font-bold px-2 py-0.5 rounded">
                                   {t}
                                 </span>
                               ))}
@@ -1496,7 +1496,7 @@ export default function ProgramManagementPage() {
                           </div>
 
                           <div className="space-y-1">
-                            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Learning Outcomes</div>
+                            <div className="text-[9px] font-bold text-text-secondary uppercase tracking-widest">Learning Outcomes</div>
                             <ul className="list-disc pl-4 space-y-0.5 pt-1">
                               {mod.learningOutcomes.map((o, oIdx) => (
                                 <li key={oIdx}>{o}</li>
@@ -1506,18 +1506,18 @@ export default function ProgramManagementPage() {
 
                         </div>
 
-                        <div className="border-t border-slate-100 pt-3.5 grid grid-cols-3 gap-4 text-[10px] font-bold">
-                          <div className="bg-slate-50 border border-slate-100 rounded-lg p-2.5">
-                            <div className="text-slate-400 uppercase text-[8px] tracking-wider mb-0.5">Assessments</div>
-                            <div className="text-slate-900">{mod.assessments.join(', ') || 'None'}</div>
+                        <div className="border-t border-border pt-3.5 grid grid-cols-3 gap-4 text-[10px] font-bold">
+                          <div className="bg-slate-50 border border-border rounded-lg p-2.5">
+                            <div className="text-text-secondary uppercase text-[8px] tracking-wider mb-0.5">Assessments</div>
+                            <div className="text-text-primary">{mod.assessments.join(', ') || 'None'}</div>
                           </div>
-                          <div className="bg-slate-50 border border-slate-100 rounded-lg p-2.5">
-                            <div className="text-slate-400 uppercase text-[8px] tracking-wider mb-0.5">Assignments</div>
-                            <div className="text-slate-900">{mod.assignments.join(', ') || 'None'}</div>
+                          <div className="bg-slate-50 border border-border rounded-lg p-2.5">
+                            <div className="text-text-secondary uppercase text-[8px] tracking-wider mb-0.5">Assignments</div>
+                            <div className="text-text-primary">{mod.assignments.join(', ') || 'None'}</div>
                           </div>
-                          <div className="bg-slate-50 border border-slate-100 rounded-lg p-2.5">
-                            <div className="text-slate-400 uppercase text-[8px] tracking-wider mb-0.5">Capstone Projects</div>
-                            <div className="text-slate-900">{mod.projects.join(', ') || 'None'}</div>
+                          <div className="bg-slate-50 border border-border rounded-lg p-2.5">
+                            <div className="text-text-secondary uppercase text-[8px] tracking-wider mb-0.5">Capstone Projects</div>
+                            <div className="text-text-primary">{mod.projects.join(', ') || 'None'}</div>
                           </div>
                         </div>
                       </div>
@@ -1532,42 +1532,42 @@ export default function ProgramManagementPage() {
                 <div className="space-y-6 animate-fade-in">
                   
                   <div className="flex justify-between items-center">
-                    <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest">
+                    <h4 className="text-xs font-extrabold text-text-secondary uppercase tracking-widest">
                       Active Student Roster
                     </h4>
                   </div>
 
                   {/* Enrollments Table */}
-                  <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+                  <div className="bg-white border border-border rounded-xl shadow-sm overflow-hidden">
                     <table className="w-full text-left text-xs whitespace-nowrap">
-                      <thead className="bg-slate-50 border-b border-slate-200">
+                      <thead className="bg-slate-50 border-b border-border">
                         <tr>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Student Name</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">College / Org</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Department</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Enrollment Date</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Attendance</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Performance</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Status</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600 text-right">Actions</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Student Name</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">College / Org</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Department</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Enrollment Date</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Attendance</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Performance</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Status</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary text-right">Actions</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-100">
+                      <tbody className="divide-y divide-border">
                         {activeProfile.enrollments.length > 0 ? (
                           activeProfile.enrollments.map((enr) => (
                             <tr key={enr.id} className="hover:bg-slate-50/50 transition-colors">
                               <td className="px-4 py-3">
-                                <div className="font-extrabold text-slate-950">{enr.name}</div>
-                                <div className="text-[9px] text-slate-400 font-mono">{enr.id}</div>
+                                <div className="font-extrabold text-text-primary">{enr.name}</div>
+                                <div className="text-[9px] text-text-secondary font-mono">{enr.id}</div>
                               </td>
-                              <td className="px-4 py-3 text-slate-500 font-medium">{enr.college}</td>
-                              <td className="px-4 py-3 text-slate-600 font-semibold">{enr.department}</td>
-                              <td className="px-4 py-3 text-slate-500 font-medium">{enr.enrollmentDate}</td>
-                              <td className="px-4 py-3 font-extrabold text-slate-900">{enr.attendance}%</td>
+                              <td className="px-4 py-3 text-text-secondary font-medium">{enr.college}</td>
+                              <td className="px-4 py-3 text-text-secondary font-semibold">{enr.department}</td>
+                              <td className="px-4 py-3 text-text-secondary font-medium">{enr.enrollmentDate}</td>
+                              <td className="px-4 py-3 font-extrabold text-text-primary">{enr.attendance}%</td>
                               <td className="px-4 py-3 font-extrabold text-blue-600">{enr.performance} / 100</td>
                               <td className="px-4 py-3">
                                 <span className={`inline-flex px-1.5 py-0.5 rounded text-[8px] font-bold ${
-                                  enr.status === 'Approved' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'
+                                  enr.status === 'Approved' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-text-secondary'
                                 }`}>
                                   {enr.status}
                                 </span>
@@ -1596,7 +1596,7 @@ export default function ProgramManagementPage() {
                           ))
                         ) : (
                           <tr>
-                            <td colSpan={8} className="px-4 py-6 text-center text-slate-400 bg-white">
+                            <td colSpan={8} className="px-4 py-6 text-center text-text-secondary bg-white">
                               No active enrollments for this program.
                             </td>
                           </tr>
@@ -1613,7 +1613,7 @@ export default function ProgramManagementPage() {
                 <div className="space-y-6 animate-fade-in animate-slide-down">
                   
                   <div className="flex justify-between items-center">
-                    <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest">
+                    <h4 className="text-xs font-extrabold text-text-secondary uppercase tracking-widest">
                       Program Mentors Mapped
                     </h4>
                     
@@ -1631,11 +1631,11 @@ export default function ProgramManagementPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {activeProfile.mentors.map((m, idx) => (
-                      <div key={idx} className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+                      <div key={idx} className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
                         <div className="flex justify-between items-start">
                           <div>
-                            <h5 className="font-extrabold text-slate-950 text-xs leading-none">{m.name}</h5>
-                            <p className="text-[9px] text-slate-400 font-bold mt-1.5 uppercase tracking-wider">{m.department}</p>
+                            <h5 className="font-extrabold text-text-primary text-xs leading-none">{m.name}</h5>
+                            <p className="text-[9px] text-text-secondary font-bold mt-1.5 uppercase tracking-wider">{m.department}</p>
                           </div>
                           
                           <span className="bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded text-[8px] font-bold border border-amber-200 flex items-center gap-0.5">
@@ -1645,17 +1645,17 @@ export default function ProgramManagementPage() {
                         </div>
 
                         <div className="grid grid-cols-3 gap-2 text-center text-[10px] font-bold">
-                          <div className="bg-slate-50 border border-slate-100 rounded-lg p-2">
-                            <div className="text-slate-900">{m.assignedStudents}</div>
-                            <div className="text-[8px] text-slate-400 uppercase mt-0.5">Guided</div>
+                          <div className="bg-slate-50 border border-border rounded-lg p-2">
+                            <div className="text-text-primary">{m.assignedStudents}</div>
+                            <div className="text-[8px] text-text-secondary uppercase mt-0.5">Guided</div>
                           </div>
-                          <div className="bg-slate-50 border border-slate-100 rounded-lg p-2">
-                            <div className="text-slate-900">{m.sessionsConducted}</div>
-                            <div className="text-[8px] text-slate-400 uppercase mt-0.5">Sessions</div>
+                          <div className="bg-slate-50 border border-border rounded-lg p-2">
+                            <div className="text-text-primary">{m.sessionsConducted}</div>
+                            <div className="text-[8px] text-text-secondary uppercase mt-0.5">Sessions</div>
                           </div>
-                          <div className="bg-slate-50 border border-slate-100 rounded-lg p-2">
+                          <div className="bg-slate-50 border border-border rounded-lg p-2">
                             <div className="text-emerald-600">{m.successRate}%</div>
-                            <div className="text-[8px] text-slate-400 uppercase mt-0.5">Completion</div>
+                            <div className="text-[8px] text-text-secondary uppercase mt-0.5">Completion</div>
                           </div>
                         </div>
                       </div>
@@ -1677,13 +1677,13 @@ export default function ProgramManagementPage() {
                       { label: 'Placement Rate', val: `${activeProfile.analytics.placementRate}%`, icon: TrendingUp, color: 'text-emerald-600 bg-emerald-50/40' },
                       { label: 'Satisfaction Rating', val: `${activeProfile.analytics.satisfactionScore} / 5`, icon: Star, color: 'text-amber-600 bg-amber-50/40' }
                     ].map((kpi, idx) => (
-                      <div key={idx} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex items-center gap-3">
+                      <div key={idx} className="bg-white border border-border rounded-xl p-4 shadow-sm flex items-center gap-3">
                         <div className={`h-10 w-10 rounded-lg flex items-center justify-center shrink-0 ${kpi.color}`}>
                           <kpi.icon className="h-5 w-5" />
                         </div>
                         <div className="text-left leading-none">
-                          <div className="text-lg font-black text-slate-900">{kpi.val}</div>
-                          <div className="text-[8px] font-bold text-slate-500 uppercase tracking-wider mt-1">{kpi.label}</div>
+                          <div className="text-lg font-black text-text-primary">{kpi.val}</div>
+                          <div className="text-[8px] font-bold text-text-secondary uppercase tracking-wider mt-1">{kpi.label}</div>
                         </div>
                       </div>
                     ))}
@@ -1693,18 +1693,18 @@ export default function ProgramManagementPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     
                     {/* SVG Line chart for attendance */}
-                    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-                      <h5 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest">Attendance Trend (Weekly)</h5>
+                    <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
+                      <h5 className="text-xs font-extrabold text-text-secondary uppercase tracking-widest">Attendance Trend (Weekly)</h5>
                       
-                      <div className="h-44 w-full bg-slate-50 border border-slate-100 rounded-lg p-4 flex flex-col justify-between">
-                        <div className="flex justify-between text-[10px] text-slate-400 font-bold border-b border-slate-200 pb-1">
+                      <div className="h-44 w-full bg-slate-50 border border-border rounded-lg p-4 flex flex-col justify-between">
+                        <div className="flex justify-between text-[10px] text-text-secondary font-bold border-b border-border pb-1">
                           <span>Attendance Rate (%)</span>
                           <span>Trend Range: 3 Weeks</span>
                         </div>
                         
                         <div className="relative flex-1 flex items-end justify-between px-6 pt-6">
                           <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-50 py-3">
-                            <div className="border-b border-dashed border-slate-200 w-full" />
+                            <div className="border-b border-dashed border-border w-full" />
                           </div>
 
                           <svg className="absolute inset-0 h-full w-full" preserveAspectRatio="none" viewBox="0 0 100 100">
@@ -1722,8 +1722,8 @@ export default function ProgramManagementPage() {
 
                           {activeProfile.analytics.attendanceTrend.map((t, idx) => (
                             <div key={idx} className="z-10 flex flex-col items-center">
-                              <span className="text-[10px] font-black text-slate-900 bg-white border border-slate-200 rounded px-1 shadow-sm mb-1">{t.rate}%</span>
-                              <span className="text-[10px] font-bold text-slate-400">{t.week}</span>
+                              <span className="text-[10px] font-black text-text-primary bg-white border border-border rounded px-1 shadow-sm mb-1">{t.rate}%</span>
+                              <span className="text-[10px] font-bold text-text-secondary">{t.week}</span>
                             </div>
                           ))}
                         </div>
@@ -1731,15 +1731,15 @@ export default function ProgramManagementPage() {
                     </div>
 
                     {/* SVG Quiz performance */}
-                    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-                      <h5 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest">Average Assessment Performance</h5>
+                    <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
+                      <h5 className="text-xs font-extrabold text-text-secondary uppercase tracking-widest">Average Assessment Performance</h5>
                       
                       <div className="space-y-4">
                         {activeProfile.analytics.assessmentPerformance.map((item, idx) => (
                           <div key={idx} className="space-y-1">
-                            <div className="flex justify-between text-xs font-semibold text-slate-700">
+                            <div className="flex justify-between text-xs font-semibold text-text-primary">
                               <span>{item.testName}</span>
-                              <span className="font-extrabold text-slate-900">{item.avgScore}%</span>
+                              <span className="font-extrabold text-text-primary">{item.avgScore}%</span>
                             </div>
                             <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
                               <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${item.avgScore}%` }} />
@@ -1759,47 +1759,47 @@ export default function ProgramManagementPage() {
                 <div className="space-y-6 animate-fade-in animate-slide-down">
                   
                   <div className="grid grid-cols-3 gap-4 text-center">
-                    <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                    <div className="bg-white border border-border rounded-xl p-4 shadow-sm">
                       <div className="text-2xl font-black text-emerald-600">{activeProfile.certifications.issued}</div>
-                      <div className="text-[9px] font-bold text-slate-500 uppercase tracking-wider mt-1">Certificates Issued</div>
+                      <div className="text-[9px] font-bold text-text-secondary uppercase tracking-wider mt-1">Certificates Issued</div>
                     </div>
-                    <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                    <div className="bg-white border border-border rounded-xl p-4 shadow-sm">
                       <div className="text-2xl font-black text-amber-600">{activeProfile.certifications.pending}</div>
-                      <div className="text-[9px] font-bold text-slate-500 uppercase tracking-wider mt-1">Certificates Pending</div>
+                      <div className="text-[9px] font-bold text-text-secondary uppercase tracking-wider mt-1">Certificates Pending</div>
                     </div>
-                    <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-                      <div className="text-2xl font-black text-slate-900">{activeProfile.certifications.generated}</div>
-                      <div className="text-[9px] font-bold text-slate-500 uppercase tracking-wider mt-1">Total Generated</div>
+                    <div className="bg-white border border-border rounded-xl p-4 shadow-sm">
+                      <div className="text-2xl font-black text-text-primary">{activeProfile.certifications.generated}</div>
+                      <div className="text-[9px] font-bold text-text-secondary uppercase tracking-wider mt-1">Total Generated</div>
                     </div>
                   </div>
 
                   {/* Certificates Actions Table */}
-                  <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+                  <div className="bg-white border border-border rounded-xl shadow-sm overflow-hidden">
                     <table className="w-full text-left text-xs whitespace-nowrap">
-                      <thead className="bg-slate-50 border-b border-slate-200">
+                      <thead className="bg-slate-50 border-b border-border">
                         <tr>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Certificate ID</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Student Name</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Date Issued</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Status</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600 text-right">Actions</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Certificate ID</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Student Name</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Date Issued</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Status</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary text-right">Actions</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-100">
+                      <tbody className="divide-y divide-border">
                         {activeProfile.enrollments.map((enr) => {
                           const issuedCert = activeProfile.certifications.list.find(c => c.studentName === enr.name);
                           return (
                             <tr key={enr.id} className="hover:bg-slate-50/50 transition-colors">
-                              <td className="px-4 py-3 font-mono font-bold text-slate-500">
+                              <td className="px-4 py-3 font-mono font-bold text-text-secondary">
                                 {issuedCert ? issuedCert.id : 'N/A'}
                               </td>
-                              <td className="px-4 py-3 font-bold text-slate-950">{enr.name}</td>
-                              <td className="px-4 py-3 text-slate-500 font-medium">
+                              <td className="px-4 py-3 font-bold text-text-primary">{enr.name}</td>
+                              <td className="px-4 py-3 text-text-secondary font-medium">
                                 {issuedCert ? issuedCert.issueDate : 'Not Issued'}
                               </td>
                               <td className="px-4 py-3">
                                 <span className={`inline-flex px-1.5 py-0.5 rounded text-[8px] font-bold ${
-                                  issuedCert?.status === 'Issued' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'
+                                  issuedCert?.status === 'Issued' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-text-secondary'
                                 }`}>
                                   {issuedCert ? issuedCert.status : 'Pending'}
                                 </span>
@@ -1840,33 +1840,33 @@ export default function ProgramManagementPage() {
               {profileTab === 'metadata' && (
                 <div className="space-y-6 animate-fade-in">
                   
-                  <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-                    <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                  <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
+                    <h4 className="text-xs font-extrabold text-text-secondary uppercase tracking-widest flex items-center gap-1.5">
                       <Shield className="h-3.5 w-3.5 text-blue-600" />
                       Domain & Technology Metadata
                     </h4>
 
-                    <div className="divide-y divide-slate-100 text-xs font-semibold">
+                    <div className="divide-y divide-border text-xs font-semibold">
                       <div className="py-3 flex justify-between">
-                        <span className="text-slate-500">Program Category</span>
-                        <span className="text-slate-900 font-extrabold">{activeProfile.metadata.category}</span>
+                        <span className="text-text-secondary">Program Category</span>
+                        <span className="text-text-primary font-extrabold">{activeProfile.metadata.category}</span>
                       </div>
                       <div className="py-3 flex justify-between">
-                        <span className="text-slate-500">Industry Domain Scope</span>
-                        <span className="text-slate-900 font-extrabold">{activeProfile.metadata.domain}</span>
+                        <span className="text-text-secondary">Industry Domain Scope</span>
+                        <span className="text-text-primary font-extrabold">{activeProfile.metadata.domain}</span>
                       </div>
                       <div className="py-3 flex justify-between">
-                        <span className="text-slate-500">Cognitive Level</span>
-                        <span className="text-slate-900 font-extrabold bg-blue-50 text-blue-700 px-2 py-0.5 rounded border border-blue-200">
+                        <span className="text-text-secondary">Cognitive Level</span>
+                        <span className="text-text-primary font-extrabold bg-blue-50 text-blue-700 px-2 py-0.5 rounded border border-blue-200">
                           {activeProfile.metadata.level}
                         </span>
                       </div>
                       
                       <div className="py-3.5 space-y-1.5">
-                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Technology Stack</div>
+                        <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Technology Stack</div>
                         <div className="flex flex-wrap gap-1.5">
                           {activeProfile.metadata.techStack.map((tech, idx) => (
-                            <span key={idx} className="bg-slate-100 text-slate-800 text-[10px] font-bold px-2 py-0.5 rounded">
+                            <span key={idx} className="bg-slate-100 text-text-primary text-[10px] font-bold px-2 py-0.5 rounded">
                               {tech}
                             </span>
                           ))}
@@ -1874,7 +1874,7 @@ export default function ProgramManagementPage() {
                       </div>
 
                       <div className="py-3.5 space-y-1.5">
-                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Core Skills Taught</div>
+                        <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Core Skills Taught</div>
                         <div className="flex flex-wrap gap-1.5">
                           {activeProfile.metadata.skills.map((skill, idx) => (
                             <span key={idx} className="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded border border-emerald-200">
@@ -1885,8 +1885,8 @@ export default function ProgramManagementPage() {
                       </div>
 
                       <div className="py-3 flex justify-between items-center">
-                        <span className="text-slate-500">Certification Template Type</span>
-                        <span className="text-slate-900 font-extrabold">{activeProfile.metadata.certType}</span>
+                        <span className="text-text-secondary">Certification Template Type</span>
+                        <span className="text-text-primary font-extrabold">{activeProfile.metadata.certType}</span>
                       </div>
                     </div>
                   </div>
@@ -1898,11 +1898,11 @@ export default function ProgramManagementPage() {
               {profileTab === 'timeline' && (
                 <div className="space-y-6 animate-fade-in">
                   
-                  <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest">
+                  <h4 className="text-xs font-extrabold text-text-secondary uppercase tracking-widest">
                     Program Milestones Timeline
                   </h4>
 
-                  <div className="relative border-l-2 border-slate-200 pl-6 space-y-6 ml-2 py-2">
+                  <div className="relative border-l-2 border-border pl-6 space-y-6 ml-2 py-2">
                     {activeProfile.timeline.map((evt, idx) => (
                       <div key={idx} className="relative">
                         
@@ -1917,9 +1917,9 @@ export default function ProgramManagementPage() {
                         }`} />
                         
                         <div className="text-xs">
-                          <span className="font-mono font-bold text-slate-400">{evt.date}</span>
-                          <h5 className="font-extrabold text-slate-900 mt-0.5">{evt.title}</h5>
-                          <p className="text-slate-600 mt-0.5 font-medium leading-relaxed">
+                          <span className="font-mono font-bold text-text-secondary">{evt.date}</span>
+                          <h5 className="font-extrabold text-text-primary mt-0.5">{evt.title}</h5>
+                          <p className="text-text-secondary mt-0.5 font-medium leading-relaxed">
                             {evt.description}
                           </p>
                         </div>
@@ -1934,7 +1934,7 @@ export default function ProgramManagementPage() {
 
           </div>
         ) : (
-          <div className="flex-1 flex items-center justify-center text-slate-400">
+          <div className="flex-1 flex items-center justify-center text-text-secondary">
             Select a program cohort from the directory to inspect.
           </div>
         )}
@@ -1950,12 +1950,12 @@ export default function ProgramManagementPage() {
           <div className={`bg-white overflow-hidden transition-all duration-300 ${
             (activeActionModal.type === 'edit' || activeActionModal.type === 'onboard') 
               ? 'max-w-none w-full h-full rounded-none border-none flex flex-col' 
-              : 'border border-slate-200 rounded-xl shadow-2xl max-w-lg w-full animate-bounce-in'
+              : 'border border-border rounded-xl shadow-2xl max-w-lg w-full animate-bounce-in'
           }`}>
             
             {/* Modal Header */}
-            <div className="bg-slate-50 border-b border-slate-100 px-6 py-4 flex justify-between items-center">
-              <h3 className="font-extrabold text-sm text-slate-900 uppercase tracking-wide">
+            <div className="bg-slate-50 border-b border-border px-6 py-4 flex justify-between items-center">
+              <h3 className="font-extrabold text-sm text-text-primary uppercase tracking-wide">
                 {activeActionModal.type === 'status' && 'Transition Program status'}
                 {activeActionModal.type === 'mentor' && 'Assign Advisor / Program Mentor'}
                 {activeActionModal.type === 'module' && 'Create Curriculum Module'}
@@ -1972,7 +1972,7 @@ export default function ProgramManagementPage() {
               
               <button 
                 onClick={() => setActiveActionModal(null)}
-                className="text-xs font-bold text-slate-400 hover:text-slate-800"
+                className="text-xs font-bold text-text-secondary hover:text-text-primary"
               >
                 Cancel
               </button>
@@ -1981,7 +1981,7 @@ export default function ProgramManagementPage() {
             {/* Forms body */}
             <form 
               onSubmit={executeAction} 
-              className={`text-xs font-semibold text-slate-700 flex flex-col min-h-0 ${
+              className={`text-xs font-semibold text-text-primary flex flex-col min-h-0 ${
                 (activeActionModal.type === 'edit' || activeActionModal.type === 'onboard') 
                   ? 'p-8 space-y-6 flex-1 h-full justify-between' 
                   : 'p-6 space-y-4'
@@ -1991,11 +1991,11 @@ export default function ProgramManagementPage() {
               {/* Form 1: Program status */}
               {(activeActionModal.type === 'status' || activeActionModal.type === 'bulkStatus') && (
                 <div className="space-y-3">
-                  <label className="block text-slate-500">Select Program Stage Status</label>
+                  <label className="block text-text-secondary">Select Program Stage Status</label>
                   <select
                     value={statusInput}
                     onChange={(e) => setStatusInput(e.target.value as any)}
-                    className="w-full p-2.5 border border-slate-200 rounded-lg bg-white font-semibold text-xs focus:outline-none"
+                    className="w-full p-2.5 border border-border rounded-lg bg-white font-semibold text-xs focus:outline-none"
                   >
                     <option value="Draft">Draft Stage</option>
                     <option value="Upcoming">Upcoming Program</option>
@@ -2028,11 +2028,11 @@ export default function ProgramManagementPage() {
               {/* Form 2: Program Mentor assignment */}
               {(activeActionModal.type === 'mentor' || activeActionModal.type === 'bulkMentor') && (
                 <div className="space-y-3">
-                  <label className="block text-slate-500">Select Program Mentor</label>
+                  <label className="block text-text-secondary">Select Program Mentor</label>
                   <select
                     value={mentorInput}
                     onChange={(e) => setMentorInput(e.target.value)}
-                    className="w-full p-2.5 border border-slate-200 rounded-lg bg-white font-semibold text-xs focus:outline-none"
+                    className="w-full p-2.5 border border-border rounded-lg bg-white font-semibold text-xs focus:outline-none"
                   >
                     <option value="">Choose Mentor...</option>
                     <option value="emp-1">Charlie Davis (Leadership)</option>
@@ -2062,14 +2062,14 @@ export default function ProgramManagementPage() {
               {/* Form 3: Notification dispatcher */}
               {(activeActionModal.type === 'notify' || activeActionModal.type === 'bulkNotify') && (
                 <div className="space-y-3">
-                  <label className="block text-slate-500">System Notification Content Message</label>
+                  <label className="block text-text-secondary">System Notification Content Message</label>
                   <textarea 
                     required
                     rows={3}
                     placeholder="Dispatches notifications to enrolled student cohort dashboard..."
                     value={notifyMsg}
                     onChange={(e) => setNotifyMsg(e.target.value)}
-                    className="w-full p-2.5 border border-slate-200 rounded-lg bg-white focus:outline-none text-xs font-semibold leading-relaxed"
+                    className="w-full p-2.5 border border-border rounded-lg bg-white focus:outline-none text-xs font-semibold leading-relaxed"
                   />
                   
                   {activeActionModal.type === 'bulkNotify' ? (
@@ -2095,70 +2095,70 @@ export default function ProgramManagementPage() {
               {activeActionModal.type === 'module' && (
                 <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
                   <div className="space-y-1">
-                    <label className="block text-slate-500">Curriculum Module Name</label>
+                    <label className="block text-text-secondary">Curriculum Module Name</label>
                     <input 
                       type="text" 
                       required
                       placeholder="e.g. Module 3: Docker & Cloud Deployment"
                       value={moduleForm.name}
                       onChange={(e) => setModuleForm({ ...moduleForm, name: e.target.value })}
-                      className="w-full p-2 border border-slate-200 rounded focus:outline-none"
+                      className="w-full p-2 border border-border rounded focus:outline-none"
                     />
                   </div>
                   
                   <div className="space-y-1">
-                    <label className="block text-slate-500">Topics Covered (Comma separated)</label>
+                    <label className="block text-text-secondary">Topics Covered (Comma separated)</label>
                     <input 
                       type="text" 
                       required
                       placeholder="Dockerfiles, Kubernetes, ECS, VPC"
                       value={moduleForm.topicsString}
                       onChange={(e) => setModuleForm({ ...moduleForm, topicsString: e.target.value })}
-                      className="w-full p-2 border border-slate-200 rounded focus:outline-none"
+                      className="w-full p-2 border border-border rounded focus:outline-none"
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label className="block text-slate-500">Learning Outcomes (Comma separated)</label>
+                    <label className="block text-text-secondary">Learning Outcomes (Comma separated)</label>
                     <input 
                       type="text" 
                       required
                       placeholder="Deploy containerized apps, Manage subnets"
                       value={moduleForm.outcomesString}
                       onChange={(e) => setModuleForm({ ...moduleForm, outcomesString: e.target.value })}
-                      className="w-full p-2 border border-slate-200 rounded focus:outline-none"
+                      className="w-full p-2 border border-border rounded focus:outline-none"
                     />
                   </div>
 
                   <div className="grid grid-cols-3 gap-2">
                     <div className="space-y-1">
-                      <label className="block text-slate-500">Assessments</label>
+                      <label className="block text-text-secondary">Assessments</label>
                       <input 
                         type="text" 
                         placeholder="Cloud Quiz"
                         value={moduleForm.assessmentsString}
                         onChange={(e) => setModuleForm({ ...moduleForm, assessmentsString: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
+                        className="w-full p-2 border border-border rounded focus:outline-none"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="block text-slate-500">Assignments</label>
+                      <label className="block text-text-secondary">Assignments</label>
                       <input 
                         type="text" 
                         placeholder="Deploy API"
                         value={moduleForm.assignmentsString}
                         onChange={(e) => setModuleForm({ ...moduleForm, assignmentsString: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
+                        className="w-full p-2 border border-border rounded focus:outline-none"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="block text-slate-500">Capstone Project</label>
+                      <label className="block text-text-secondary">Capstone Project</label>
                       <input 
                         type="text" 
                         placeholder="SaaS Deployment"
                         value={moduleForm.projectsString}
                         onChange={(e) => setModuleForm({ ...moduleForm, projectsString: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
+                        className="w-full p-2 border border-border rounded focus:outline-none"
                       />
                     </div>
                   </div>
@@ -2175,7 +2175,7 @@ export default function ProgramManagementPage() {
               {/* Form 5: Bulk Certifications */}
               {activeActionModal.type === 'bulkCert' && (
                 <div className="space-y-3">
-                  <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs leading-relaxed text-slate-600">
+                  <div className="bg-slate-50 border border-border rounded-lg p-3 text-xs leading-relaxed text-text-secondary">
                     You are generating PDF certificates with verified academic sign-offs for all enrollments in the selected **{selectedIds.length}** cohorts.
                   </div>
                   <button 
@@ -2194,37 +2194,37 @@ export default function ProgramManagementPage() {
                   
                   {/* Section 1 */}
                   <div className="space-y-2">
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                    <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest border-b border-border pb-1">
                       Section 1: Program Identity
                     </div>
                     <div className="grid grid-cols-3 gap-3">
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Program Title Name</label>
+                        <label className="block text-text-secondary text-[10px]">Program Title Name</label>
                         <input 
                           type="text" 
                           required
                           value={programForm.title}
                           onChange={(e) => setProgramForm({ ...programForm, title: e.target.value })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Program Code</label>
+                        <label className="block text-text-secondary text-[10px]">Program Code</label>
                         <input 
                           type="text" 
                           required
                           placeholder="e.g. SEI-2026"
                           value={programForm.code}
                           onChange={(e) => setProgramForm({ ...programForm, code: e.target.value })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Program Classification Type</label>
+                        <label className="block text-text-secondary text-[10px]">Program Classification Type</label>
                         <select 
                           value={programForm.type}
                           onChange={(e) => setProgramForm({ ...programForm, type: e.target.value as any })}
-                          className="w-full p-2 border border-slate-200 rounded bg-white text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded bg-white text-xs focus:outline-none"
                         >
                           <option value="Free Internship">Free Internship</option>
                           <option value="Paid Internship">Paid Internship</option>
@@ -2235,11 +2235,11 @@ export default function ProgramManagementPage() {
                         </select>
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Academic Partner College</label>
+                        <label className="block text-text-secondary text-[10px]">Academic Partner College</label>
                         <select 
                           value={programForm.organizationId}
                           onChange={(e) => setProgramForm({ ...programForm, organizationId: e.target.value })}
-                          className="w-full p-2 border border-slate-200 rounded bg-white text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded bg-white text-xs focus:outline-none"
                         >
                           {organizations.map(o => (
                             <option key={o.id} value={o.id}>{o.name}</option>
@@ -2247,46 +2247,46 @@ export default function ProgramManagementPage() {
                         </select>
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Duration (Weeks)</label>
+                        <label className="block text-text-secondary text-[10px]">Duration (Weeks)</label>
                         <input 
                           type="number" 
                           required
                           value={programForm.durationWeeks}
                           onChange={(e) => setProgramForm({ ...programForm, durationWeeks: Number(e.target.value) })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Capacity limit</label>
+                        <label className="block text-text-secondary text-[10px]">Capacity limit</label>
                         <input 
                           type="number" 
                           required
                           value={programForm.capacity}
                           onChange={(e) => setProgramForm({ ...programForm, capacity: Number(e.target.value) })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-3 mt-2">
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Program Description</label>
+                        <label className="block text-text-secondary text-[10px]">Program Description</label>
                         <input 
                           type="text"
                           required
                           value={programForm.description}
                           onChange={(e) => setProgramForm({ ...programForm, description: e.target.value })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Eligibility Criteria</label>
+                        <label className="block text-text-secondary text-[10px]">Eligibility Criteria</label>
                         <input 
                           type="text" 
                           required
                           value={programForm.eligibility}
                           onChange={(e) => setProgramForm({ ...programForm, eligibility: e.target.value })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                     </div>
@@ -2294,27 +2294,27 @@ export default function ProgramManagementPage() {
 
                   {/* Section 2 */}
                   <div className="space-y-2">
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                    <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest border-b border-border pb-1">
                       Section 2: Domain & Technology Settings
                     </div>
                     <div className="grid grid-cols-4 gap-3">
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Program Category</label>
+                        <label className="block text-text-secondary text-[10px]">Program Category</label>
                         <input 
                           type="text" 
                           required
                           placeholder="e.g. Software Engineering"
                           value={programForm.category}
                           onChange={(e) => setProgramForm({ ...programForm, category: e.target.value })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Cognitive Level</label>
+                        <label className="block text-text-secondary text-[10px]">Cognitive Level</label>
                         <select 
                           value={programForm.level}
                           onChange={(e) => setProgramForm({ ...programForm, level: e.target.value as any })}
-                          className="w-full p-2 border border-slate-200 rounded bg-white text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded bg-white text-xs focus:outline-none"
                         >
                           <option value="Beginner">Beginner Level</option>
                           <option value="Intermediate">Intermediate Level</option>
@@ -2322,48 +2322,48 @@ export default function ProgramManagementPage() {
                         </select>
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Industry Domain</label>
+                        <label className="block text-text-secondary text-[10px]">Industry Domain</label>
                         <input 
                           type="text" 
                           required
                           placeholder="e.g. Web Development"
                           value={programForm.domain}
                           onChange={(e) => setProgramForm({ ...programForm, domain: e.target.value })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Certification Type</label>
+                        <label className="block text-text-secondary text-[10px]">Certification Type</label>
                         <input 
                           type="text" 
                           required
                           placeholder="e.g. Institutional Certificate"
                           value={programForm.certType}
                           onChange={(e) => setProgramForm({ ...programForm, certType: e.target.value })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-3 mt-2">
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Technology Stack (Comma separated)</label>
+                        <label className="block text-text-secondary text-[10px]">Technology Stack (Comma separated)</label>
                         <input 
                           type="text" 
                           placeholder="React, NextJS, NestJS"
                           value={programForm.techStackString}
                           onChange={(e) => setProgramForm({ ...programForm, techStackString: e.target.value })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Core Skills Covered (Comma separated)</label>
+                        <label className="block text-text-secondary text-[10px]">Core Skills Covered (Comma separated)</label>
                         <input 
                           type="text" 
                           placeholder="Frontend Architecture, API Design"
                           value={programForm.skillsString}
                           onChange={(e) => setProgramForm({ ...programForm, skillsString: e.target.value })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                     </div>

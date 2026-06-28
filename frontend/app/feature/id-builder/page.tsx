@@ -1617,7 +1617,7 @@ export default function AdvancedDesignerPage() {
 
   if (!hasPermission('idcard.view')) {
     return (
-      <div className="flex h-[70vh] items-center justify-center text-slate-500 font-sans">
+      <div className="flex h-[70vh] items-center justify-center text-text-secondary font-sans">
         <p className="font-semibold">You do not have permission to design ID card templates.</p>
       </div>
     );
@@ -1628,16 +1628,16 @@ export default function AdvancedDesignerPage() {
       
       {/* Toast Alert Box */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 shadow-2xl text-xs font-bold tracking-wide animate-slide-up">
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 rounded-xl bg-slate-800 border border-border shadow-2xl text-xs font-bold tracking-wide animate-slide-up">
           <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
           <span>{toast.message}</span>
         </div>
       )}
 
       {/* Editor Header Bar */}
-      <header className="h-14 border-b border-slate-800 bg-slate-950 flex items-center justify-between px-6 shrink-0 z-40 select-none">
+      <header className="h-14 border-b border-border bg-slate-950 flex items-center justify-between px-6 shrink-0 z-40 select-none">
         <div className="flex items-center gap-3">
-          <Link href="/feature/id-card" className="p-2 rounded-lg hover:bg-slate-850 transition-colors text-slate-400 hover:text-white cursor-pointer">
+          <Link href="/feature/id-card" className="p-2 rounded-lg hover:bg-slate-850 transition-colors text-text-secondary hover:text-white cursor-pointer">
             <ArrowLeft className="w-4.5 h-4.5" />
           </Link>
           <div className="h-4.5 w-[1px] bg-slate-800" />
@@ -1650,20 +1650,20 @@ export default function AdvancedDesignerPage() {
                 type="text" 
                 value={templateName}
                 onChange={(e) => setTemplateName(e.target.value)}
-                className="bg-transparent border border-transparent hover:border-slate-800 focus:border-slate-700 hover:bg-slate-900 focus:bg-slate-900 rounded px-2 py-0.5 text-xs font-black text-white focus:outline-none transition-all w-48"
+                className="bg-transparent border border-transparent hover:border-secondary focus:border-primary hover:bg-slate-900 focus:bg-slate-900 rounded px-2 py-0.5 text-xs font-black text-white focus:outline-none transition-all w-48"
               />
-              <p className="text-[10px] text-slate-500 px-2 mt-0.5">Advanced Visual Builder</p>
+              <p className="text-[10px] text-text-secondary px-2 mt-0.5">Advanced Visual Builder</p>
             </div>
           </div>
         </div>
 
         {/* Global Toolbar Tools */}
         <div className="flex items-center gap-4">
-          <div className="flex items-center bg-slate-900 rounded-lg p-0.5 border border-slate-800">
+          <div className="flex items-center bg-slate-900 rounded-lg p-0.5 border border-border">
             <button 
               onClick={handleUndo} 
               disabled={historyIndex <= 0}
-              className={`p-1.5 rounded-md transition-colors ${historyIndex <= 0 ? 'text-slate-600 cursor-not-allowed' : 'text-slate-300 hover:bg-slate-800 cursor-pointer'}`}
+              className={`p-1.5 rounded-md transition-colors ${historyIndex <= 0 ? 'text-text-secondary cursor-not-allowed' : 'text-slate-300 hover:bg-slate-800 cursor-pointer'}`}
               title="Undo (Ctrl+Z)"
             >
               <Undo2 className="w-4 h-4" />
@@ -1671,21 +1671,21 @@ export default function AdvancedDesignerPage() {
             <button 
               onClick={handleRedo} 
               disabled={historyIndex >= history.length - 1}
-              className={`p-1.5 rounded-md transition-colors ${historyIndex >= history.length - 1 ? 'text-slate-600 cursor-not-allowed' : 'text-slate-300 hover:bg-slate-800 cursor-pointer'}`}
+              className={`p-1.5 rounded-md transition-colors ${historyIndex >= history.length - 1 ? 'text-text-secondary cursor-not-allowed' : 'text-slate-300 hover:bg-slate-800 cursor-pointer'}`}
               title="Redo (Ctrl+Y)"
             >
               <Redo2 className="w-4 h-4" />
             </button>
           </div>
 
-          <div className="flex items-center bg-slate-900 rounded-lg p-0.5 border border-slate-800 text-xs">
+          <div className="flex items-center bg-slate-900 rounded-lg p-0.5 border border-border text-xs">
             <button 
               onClick={() => setZoom(prev => Math.max(0.25, prev - 0.25))}
               className="p-1.5 rounded-md text-slate-300 hover:bg-slate-800 transition-colors cursor-pointer"
             >
               <ZoomOut className="w-3.5 h-3.5" />
             </button>
-            <span className="px-2 font-bold text-slate-400 w-12 text-center">{Math.round(zoom * 100)}%</span>
+            <span className="px-2 font-bold text-text-secondary w-12 text-center">{Math.round(zoom * 100)}%</span>
             <button 
               onClick={() => setZoom(prev => Math.min(2.0, prev + 0.25))}
               className="p-1.5 rounded-md text-slate-300 hover:bg-slate-800 transition-colors cursor-pointer"
@@ -1694,24 +1694,24 @@ export default function AdvancedDesignerPage() {
             </button>
           </div>
 
-          <div className="flex items-center bg-slate-900 rounded-lg p-0.5 border border-slate-800">
+          <div className="flex items-center bg-slate-900 rounded-lg p-0.5 border border-border">
             <button 
               onClick={() => setShowGrid(!showGrid)}
-              className={`p-1.5 rounded-md transition-colors cursor-pointer ${showGrid ? 'text-indigo-400 bg-slate-800' : 'text-slate-400 hover:bg-slate-800'}`}
+              className={`p-1.5 rounded-md transition-colors cursor-pointer ${showGrid ? 'text-indigo-400 bg-slate-800' : 'text-text-secondary hover:bg-slate-800'}`}
               title="Show Grid Lines"
             >
               <Grid className="w-4 h-4" />
             </button>
             <button 
               onClick={() => setSnapToGrid(!snapToGrid)}
-              className={`p-1.5 rounded-md transition-colors cursor-pointer ${snapToGrid ? 'text-indigo-400 bg-slate-800' : 'text-slate-400 hover:bg-slate-800'}`}
+              className={`p-1.5 rounded-md transition-colors cursor-pointer ${snapToGrid ? 'text-indigo-400 bg-slate-800' : 'text-text-secondary hover:bg-slate-800'}`}
               title="Snap to Grid"
             >
               <Sparkles className="w-4 h-4" />
             </button>
             <button 
               onClick={() => setShowSafeAreas(!showSafeAreas)}
-              className={`p-1.5 rounded-md transition-colors cursor-pointer ${showSafeAreas ? 'text-indigo-400 bg-slate-800' : 'text-slate-400 hover:bg-slate-800'}`}
+              className={`p-1.5 rounded-md transition-colors cursor-pointer ${showSafeAreas ? 'text-indigo-400 bg-slate-800' : 'text-text-secondary hover:bg-slate-800'}`}
               title="Show Margins & Safe Area"
             >
               <Maximize2 className="w-4 h-4" />
@@ -1722,7 +1722,7 @@ export default function AdvancedDesignerPage() {
           <div className="flex items-center gap-2">
             <button 
               onClick={handleSaveToLocalStorage}
-              className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-750 border border-slate-700 text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
+              className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-750 border border-border text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
             >
               <Save className="w-3.5 h-3.5" />
               Save Design
@@ -1743,33 +1743,33 @@ export default function AdvancedDesignerPage() {
       <div className="flex flex-1 overflow-hidden select-none">
         
         {/* Left Library Tabbed Sidebar */}
-        <aside className="w-72 border-r border-slate-800 bg-slate-950 flex select-none z-30">
+        <aside className="w-72 border-r border-border bg-slate-950 flex select-none z-30">
           {/* Icons Vertical Ribbon */}
-          <div className="w-16 border-r border-slate-900 flex flex-col items-center py-4 gap-4 bg-slate-950">
+          <div className="w-16 border-r border-border flex flex-col items-center py-4 gap-4 bg-slate-950">
             <button 
               onClick={() => setActiveLeftTab('templates')}
-              className={`p-2.5 rounded-xl transition-all cursor-pointer ${activeLeftTab === 'templates' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/30' : 'text-slate-500 hover:bg-slate-900 hover:text-slate-300'}`}
+              className={`p-2.5 rounded-xl transition-all cursor-pointer ${activeLeftTab === 'templates' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/30' : 'text-text-secondary hover:bg-slate-900 hover:text-slate-300'}`}
               title="Presets Layouts"
             >
               <Layout className="w-5 h-5" />
             </button>
             <button 
               onClick={() => setActiveLeftTab('components')}
-              className={`p-2.5 rounded-xl transition-all cursor-pointer ${activeLeftTab === 'components' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/30' : 'text-slate-500 hover:bg-slate-900 hover:text-slate-300'}`}
+              className={`p-2.5 rounded-xl transition-all cursor-pointer ${activeLeftTab === 'components' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/30' : 'text-text-secondary hover:bg-slate-900 hover:text-slate-300'}`}
               title="Design Components"
             >
               <Plus className="w-5 h-5" />
             </button>
             <button 
               onClick={() => setActiveLeftTab('uploads')}
-              className={`p-2.5 rounded-xl transition-all cursor-pointer ${activeLeftTab === 'uploads' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/30' : 'text-slate-500 hover:bg-slate-900 hover:text-slate-300'}`}
+              className={`p-2.5 rounded-xl transition-all cursor-pointer ${activeLeftTab === 'uploads' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/30' : 'text-text-secondary hover:bg-slate-900 hover:text-slate-300'}`}
               title="Media Uploads"
             >
               <Upload className="w-5 h-5" />
             </button>
             <button 
               onClick={() => setActiveLeftTab('bindings')}
-              className={`p-2.5 rounded-xl transition-all cursor-pointer ${activeLeftTab === 'bindings' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/30' : 'text-slate-500 hover:bg-slate-900 hover:text-slate-300'}`}
+              className={`p-2.5 rounded-xl transition-all cursor-pointer ${activeLeftTab === 'bindings' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/30' : 'text-text-secondary hover:bg-slate-900 hover:text-slate-300'}`}
               title="Dynamic Data Fields"
             >
               <Sliders className="w-5 h-5" />
@@ -1780,32 +1780,32 @@ export default function AdvancedDesignerPage() {
           <div className="flex-1 p-4 overflow-y-auto select-none">
             {activeLeftTab === 'templates' && (
               <div className="space-y-4">
-                <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-450">ID Templates</h3>
-                <p className="text-xxs text-slate-500 mt-1 leading-relaxed">Load pre-built corporate or academic formats to start designing.</p>
+                <h3 className="text-xs font-extrabold uppercase tracking-wider text-text-secondary">ID Templates</h3>
+                <p className="text-xxs text-text-secondary mt-1 leading-relaxed">Load pre-built corporate or academic formats to start designing.</p>
                 <div className="grid grid-cols-1 gap-2.5 pt-2">
                   <button 
                     onClick={() => handleLoadTemplatePreset('corp')}
-                    className="p-3 bg-slate-900 hover:bg-slate-850 rounded-xl text-left border border-slate-800 transition-all cursor-pointer hover:border-indigo-650"
+                    className="p-3 bg-slate-900 hover:bg-slate-850 rounded-xl text-left border border-border transition-all cursor-pointer hover:border-secondary"
                   >
                     <div className="flex justify-between items-center">
                       <span className="text-xs font-bold text-slate-200">Corporate Premium</span>
                       <span className="text-[8px] bg-indigo-900/40 text-indigo-400 px-1.5 py-0.5 rounded">Staff</span>
                     </div>
-                    <div className="w-full h-12 bg-gradient-to-br from-indigo-900/40 to-slate-950 rounded-lg mt-2 flex items-center justify-center border border-slate-800/80">
-                      <IdCard className="w-6 h-6 text-slate-650" />
+                    <div className="w-full h-12 bg-gradient-to-br from-indigo-900/40 to-slate-950 rounded-lg mt-2 flex items-center justify-center border border-border/80">
+                      <IdCard className="w-6 h-6 text-text-secondary" />
                     </div>
                   </button>
 
                   <button 
                     onClick={() => handleLoadTemplatePreset('student')}
-                    className="p-3 bg-slate-900 hover:bg-slate-850 rounded-xl text-left border border-slate-800 transition-all cursor-pointer hover:border-emerald-650"
+                    className="p-3 bg-slate-900 hover:bg-slate-850 rounded-xl text-left border border-border transition-all cursor-pointer hover:border-emerald-650"
                   >
                     <div className="flex justify-between items-center">
                       <span className="text-xs font-bold text-slate-200">Academic Emerald</span>
                       <span className="text-[8px] bg-emerald-900/40 text-emerald-400 px-1.5 py-0.5 rounded">Student</span>
                     </div>
-                    <div className="w-full h-12 bg-gradient-to-br from-emerald-900/40 to-slate-950 rounded-lg mt-2 flex items-center justify-center border border-slate-800/80">
-                      <IdCard className="w-6 h-6 text-slate-650" />
+                    <div className="w-full h-12 bg-gradient-to-br from-emerald-900/40 to-slate-950 rounded-lg mt-2 flex items-center justify-center border border-border/80">
+                      <IdCard className="w-6 h-6 text-text-secondary" />
                     </div>
                   </button>
                 </div>
@@ -1814,24 +1814,24 @@ export default function AdvancedDesignerPage() {
 
             {activeLeftTab === 'components' && (
               <div className="space-y-4">
-                <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-450">Component Panel</h3>
+                <h3 className="text-xs font-extrabold uppercase tracking-wider text-text-secondary">Component Panel</h3>
                 
                 {/* Text Section */}
                 <div className="space-y-2">
-                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Text Types</span>
+                  <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider block">Text Types</span>
                   <div className="grid grid-cols-2 gap-2">
                     <button 
                       onClick={() => handleAddText('heading')}
-                      className="p-2 bg-slate-900 hover:bg-slate-850 rounded-lg border border-slate-800 text-[10px] font-bold text-left flex items-center gap-1.5 cursor-pointer text-slate-300"
+                      className="p-2 bg-slate-900 hover:bg-slate-850 rounded-lg border border-border text-[10px] font-bold text-left flex items-center gap-1.5 cursor-pointer text-slate-300"
                     >
                       <Type className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
                       Heading Text
                     </button>
                     <button 
                       onClick={() => handleAddText('body')}
-                      className="p-2 bg-slate-900 hover:bg-slate-850 rounded-lg border border-slate-800 text-[10px] font-bold text-left flex items-center gap-1.5 cursor-pointer text-slate-300"
+                      className="p-2 bg-slate-900 hover:bg-slate-850 rounded-lg border border-border text-[10px] font-bold text-left flex items-center gap-1.5 cursor-pointer text-slate-300"
                     >
-                      <Type className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                      <Type className="w-3.5 h-3.5 text-text-secondary shrink-0" />
                       Paragraph Body
                     </button>
                   </div>
@@ -1839,25 +1839,25 @@ export default function AdvancedDesignerPage() {
 
                 {/* Shape Section */}
                 <div className="space-y-2 pt-2">
-                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Shapes</span>
+                  <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider block">Shapes</span>
                   <div className="grid grid-cols-3 gap-2">
                     <button 
                       onClick={() => handleAddShape('rect')}
-                      className="p-2.5 bg-slate-900 hover:bg-slate-850 rounded-lg border border-slate-800 flex flex-col items-center justify-center gap-1 cursor-pointer text-slate-300"
+                      className="p-2.5 bg-slate-900 hover:bg-slate-850 rounded-lg border border-border flex flex-col items-center justify-center gap-1 cursor-pointer text-slate-300"
                     >
                       <Square className="w-4 h-4 text-indigo-400" />
                       <span className="text-[8px] font-bold">Square</span>
                     </button>
                     <button 
                       onClick={() => handleAddShape('circle')}
-                      className="p-2.5 bg-slate-900 hover:bg-slate-850 rounded-lg border border-slate-800 flex flex-col items-center justify-center gap-1 cursor-pointer text-slate-300"
+                      className="p-2.5 bg-slate-900 hover:bg-slate-850 rounded-lg border border-border flex flex-col items-center justify-center gap-1 cursor-pointer text-slate-300"
                     >
                       <Circle className="w-4 h-4 text-indigo-400" />
                       <span className="text-[8px] font-bold">Circle</span>
                     </button>
                     <button 
                       onClick={() => handleAddShape('line')}
-                      className="p-2.5 bg-slate-900 hover:bg-slate-850 rounded-lg border border-slate-800 flex flex-col items-center justify-center gap-1 cursor-pointer text-slate-300"
+                      className="p-2.5 bg-slate-900 hover:bg-slate-850 rounded-lg border border-border flex flex-col items-center justify-center gap-1 cursor-pointer text-slate-300"
                     >
                       <div className="w-4 h-[2px] bg-indigo-400 my-1.5" />
                       <span className="text-[8px] font-bold">Divider</span>
@@ -1867,32 +1867,32 @@ export default function AdvancedDesignerPage() {
 
                 {/* Identity Components Section */}
                 <div className="space-y-2 pt-2">
-                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Identity Assets</span>
+                  <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider block">Identity Assets</span>
                   <div className="grid grid-cols-2 gap-2">
                     <button 
                       onClick={() => handleAddIdentityComponent('photo')}
-                      className="p-2 bg-slate-900 hover:bg-slate-850 rounded-lg border border-slate-800 text-[10px] font-bold text-left flex items-center gap-1.5 cursor-pointer text-slate-300"
+                      className="p-2 bg-slate-900 hover:bg-slate-850 rounded-lg border border-border text-[10px] font-bold text-left flex items-center gap-1.5 cursor-pointer text-slate-300"
                     >
                       <ImageIcon className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
                       Employee Photo
                     </button>
                     <button 
                       onClick={() => handleAddIdentityComponent('qr')}
-                      className="p-2 bg-slate-900 hover:bg-slate-850 rounded-lg border border-slate-800 text-[10px] font-bold text-left flex items-center gap-1.5 cursor-pointer text-slate-300"
+                      className="p-2 bg-slate-900 hover:bg-slate-850 rounded-lg border border-border text-[10px] font-bold text-left flex items-center gap-1.5 cursor-pointer text-slate-300"
                     >
                       <QrIcon className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
                       QR Verification
                     </button>
                     <button 
                       onClick={() => handleAddIdentityComponent('barcode')}
-                      className="p-2 bg-slate-900 hover:bg-slate-850 rounded-lg border border-slate-800 text-[10px] font-bold text-left flex items-center gap-1.5 cursor-pointer text-slate-300"
+                      className="p-2 bg-slate-900 hover:bg-slate-850 rounded-lg border border-border text-[10px] font-bold text-left flex items-center gap-1.5 cursor-pointer text-slate-300"
                     >
                       <BarcodeIcon className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
                       Barcode Value
                     </button>
                     <button 
                       onClick={() => handleAddIdentityComponent('sig')}
-                      className="p-2 bg-slate-900 hover:bg-slate-850 rounded-lg border border-slate-800 text-[10px] font-bold text-left flex items-center gap-1.5 cursor-pointer text-slate-300"
+                      className="p-2 bg-slate-900 hover:bg-slate-850 rounded-lg border border-border text-[10px] font-bold text-left flex items-center gap-1.5 cursor-pointer text-slate-300"
                     >
                       <FileText className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
                       Signature Field
@@ -1904,25 +1904,25 @@ export default function AdvancedDesignerPage() {
 
             {activeLeftTab === 'uploads' && (
               <div className="space-y-4">
-                <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-450">Media Library</h3>
+                <h3 className="text-xs font-extrabold uppercase tracking-wider text-text-secondary">Media Library</h3>
                 
                 {/* File Upload zone */}
-                <div className="border-2 border-dashed border-slate-850 rounded-2xl p-4 text-center hover:border-indigo-650 transition-all relative">
+                <div className="border-2 border-dashed border-slate-850 rounded-2xl p-4 text-center hover:border-secondary transition-all relative">
                   <input 
                     type="file" 
                     accept="image/*"
                     onChange={handleLocalImageUpload}
                     className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
                   />
-                  <Upload className="w-8 h-8 mx-auto text-slate-600 mb-2" />
+                  <Upload className="w-8 h-8 mx-auto text-text-secondary mb-2" />
                   <span className="text-[10px] font-bold block text-slate-300">Upload Logo or Image</span>
-                  <span className="text-[8px] text-slate-500 block mt-1">PNG, JPG, SVG, WEBP</span>
+                  <span className="text-[8px] text-text-secondary block mt-1">PNG, JPG, SVG, WEBP</span>
                 </div>
 
                 {/* Uploaded items view */}
                 {uploadedImages.length > 0 && (
                   <div className="space-y-2 pt-2">
-                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Uploaded Items</span>
+                    <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider block">Uploaded Items</span>
                     <div className="grid grid-cols-2 gap-2">
                       {uploadedImages.map((img, idx) => (
                         <div 
@@ -1947,7 +1947,7 @@ export default function AdvancedDesignerPage() {
                             updateActiveElements(prev => [...prev, newImg]);
                             setSelectedId(newImg.id);
                           }}
-                          className="h-20 bg-slate-900 border border-slate-800 rounded-lg overflow-hidden flex items-center justify-center cursor-pointer hover:border-indigo-500"
+                          className="h-20 bg-slate-900 border border-border rounded-lg overflow-hidden flex items-center justify-center cursor-pointer hover:border-secondary"
                         >
                           <img src={img} alt="Uploaded Graphic" className="max-w-full max-h-full object-contain" />
                         </div>
@@ -1960,8 +1960,8 @@ export default function AdvancedDesignerPage() {
 
             {activeLeftTab === 'bindings' && (
               <div className="space-y-4">
-                <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-450">Dynamic Bindings</h3>
-                <p className="text-xxs text-slate-500 leading-relaxed">
+                <h3 className="text-xs font-extrabold uppercase tracking-wider text-text-secondary">Dynamic Bindings</h3>
+                <p className="text-xxs text-text-secondary leading-relaxed">
                   These blocks bind directly to actual employee records when rendering cards in production.
                 </p>
                 <div className="flex flex-col gap-1.5 pt-2">
@@ -1969,7 +1969,7 @@ export default function AdvancedDesignerPage() {
                     <button 
                       key={field.field}
                       onClick={() => handleAddDynamicField(field)}
-                      className="w-full p-2 bg-slate-900 hover:bg-slate-850 rounded-lg border border-slate-800/80 text-[10px] font-bold text-left flex items-center justify-between group cursor-pointer"
+                      className="w-full p-2 bg-slate-900 hover:bg-slate-850 rounded-lg border border-border/80 text-[10px] font-bold text-left flex items-center justify-between group cursor-pointer"
                     >
                       <span className="text-slate-350">{field.label}</span>
                       <span className="text-[8px] font-mono text-indigo-400 group-hover:text-indigo-300">{field.value}</span>
@@ -1991,7 +1991,7 @@ export default function AdvancedDesignerPage() {
                 setActiveSide('front');
                 setSelectedId(null);
               }}
-              className={`px-4 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all ${activeSide === 'front' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white'}`}
+              className={`px-4 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all ${activeSide === 'front' ? 'bg-indigo-600 text-white shadow-md' : 'text-text-secondary hover:text-white'}`}
             >
               <Smartphone className="w-3.5 h-3.5" />
               Front Face Design
@@ -2001,7 +2001,7 @@ export default function AdvancedDesignerPage() {
                 setActiveSide('back');
                 setSelectedId(null);
               }}
-              className={`px-4 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all ${activeSide === 'back' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white'}`}
+              className={`px-4 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all ${activeSide === 'back' ? 'bg-indigo-600 text-white shadow-md' : 'text-text-secondary hover:text-white'}`}
             >
               <Smartphone className="w-3.5 h-3.5" />
               Back Face Design
@@ -2030,7 +2030,7 @@ export default function AdvancedDesignerPage() {
                   return `linear-gradient(${bg.angle}deg, ${bg.color1}, ${bg.color2})`;
                 })()
               }}
-              className="relative shadow-2xl overflow-hidden rounded-2xl select-none transition-all duration-200 border border-slate-800"
+              className="relative shadow-2xl overflow-hidden rounded-2xl select-none transition-all duration-200 border border-border"
             >
               {/* Safe Area Guideline */}
               {showSafeAreas && (
@@ -2129,7 +2129,7 @@ export default function AdvancedDesignerPage() {
 
                     {/* Render Barcode placeholders */}
                     {el.type === 'barcode' && (
-                      <div className="w-full h-full bg-white select-none border border-slate-200 p-1 flex flex-col justify-between items-center text-black">
+                      <div className="w-full h-full bg-white select-none border border-border p-1 flex flex-col justify-between items-center text-black">
                         {/* Simulate Barcode Lines */}
                         <div className="w-full flex-grow flex items-stretch gap-[2px] opacity-80 pt-1 px-1">
                           <div className="w-1 bg-black" /><div className="w-[1px] bg-black" /><div className="w-1 bg-black" /><div className="w-[2px] bg-black" />
@@ -2144,9 +2144,9 @@ export default function AdvancedDesignerPage() {
 
                     {/* Render QR code placeholder */}
                     {el.type === 'qr' && (
-                      <div className="w-full h-full bg-white border border-slate-200 p-1 flex items-center justify-center text-black relative select-none">
+                      <div className="w-full h-full bg-white border border-border p-1 flex items-center justify-center text-black relative select-none">
                         <QrIcon className="w-full h-full text-slate-850 opacity-90" />
-                        <span className="absolute bg-white px-1 text-[6px] font-bold tracking-widest text-slate-500 uppercase bottom-0">VERIFY</span>
+                        <span className="absolute bg-white px-1 text-[6px] font-bold tracking-widest text-text-secondary uppercase bottom-0">VERIFY</span>
                       </div>
                     )}
 
@@ -2190,35 +2190,35 @@ export default function AdvancedDesignerPage() {
           </div>
 
           {/* Quick Info Guides Footer bar */}
-          <div className="h-6 flex items-center justify-between text-[10px] text-slate-500 select-none w-full border-t border-slate-850 pt-3 max-w-lg shrink-0">
+          <div className="h-6 flex items-center justify-between text-[10px] text-text-secondary select-none w-full border-t border-slate-850 pt-3 max-w-lg shrink-0">
             <span className="flex items-center gap-1">
-              <Move className="w-3 h-3 text-slate-600" />
+              <Move className="w-3 h-3 text-text-secondary" />
               Drag elements to position
             </span>
             <span className="flex items-center gap-1">
-              <RefreshCw className="w-3 h-3 text-slate-600" />
+              <RefreshCw className="w-3 h-3 text-text-secondary" />
               Rotate 15° with Shift
             </span>
             <span className="flex items-center gap-1">
-              <HelpIcon className="w-3 h-3 text-slate-600" />
+              <HelpIcon className="w-3 h-3 text-text-secondary" />
               Use Backspace to Delete
             </span>
           </div>
         </main>
 
         {/* Right Configuration & Layers Panel */}
-        <aside className="w-80 border-l border-slate-800 bg-slate-950 flex flex-col select-none z-30">
+        <aside className="w-80 border-l border-border bg-slate-950 flex flex-col select-none z-30">
           {/* Header tabs switcher */}
           <div className="flex border-b border-slate-850 shrink-0">
             <button 
               onClick={() => setActiveRightTab('properties')}
-              className={`flex-1 py-3 text-center text-xs font-bold border-b-2 transition-all cursor-pointer ${activeRightTab === 'properties' ? 'border-indigo-600 text-white' : 'border-transparent text-slate-500 hover:text-slate-300'}`}
+              className={`flex-1 py-3 text-center text-xs font-bold border-b-2 transition-all cursor-pointer ${activeRightTab === 'properties' ? 'border-indigo-600 text-white' : 'border-transparent text-text-secondary hover:text-slate-300'}`}
             >
               Properties
             </button>
             <button 
               onClick={() => setActiveRightTab('layers')}
-              className={`flex-1 py-3 text-center text-xs font-bold border-b-2 transition-all cursor-pointer ${activeRightTab === 'layers' ? 'border-indigo-600 text-white' : 'border-transparent text-slate-500 hover:text-slate-300'}`}
+              className={`flex-1 py-3 text-center text-xs font-bold border-b-2 transition-all cursor-pointer ${activeRightTab === 'layers' ? 'border-indigo-600 text-white' : 'border-transparent text-text-secondary hover:text-slate-300'}`}
             >
               Layers ({activeElements.length})
             </button>
@@ -2229,13 +2229,13 @@ export default function AdvancedDesignerPage() {
             {/* Layers Tab Panel */}
             {activeRightTab === 'layers' && (
               <div className="space-y-4">
-                <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-450 flex items-center gap-2">
+                <h3 className="text-xs font-extrabold uppercase tracking-wider text-text-secondary flex items-center gap-2">
                   <Layers className="w-4 h-4 text-indigo-400" />
                   Visual Layer Hierarchy
                 </h3>
                 
                 {activeElements.length === 0 ? (
-                  <div className="text-center py-8 text-xxs text-slate-500 leading-relaxed border border-dashed border-slate-850 rounded-xl">
+                  <div className="text-center py-8 text-xxs text-text-secondary leading-relaxed border border-dashed border-slate-850 rounded-xl">
                     Canvas is currently empty.<br />Click components to add them.
                   </div>
                 ) : (
@@ -2281,9 +2281,9 @@ export default function AdvancedDesignerPage() {
                                   setSelectedId(el.id);
                                   handleUpdateElementProperty('isVisible', !el.isVisible);
                                 }}
-                                className="p-1 rounded text-slate-500 hover:text-slate-300"
+                                className="p-1 rounded text-text-secondary hover:text-slate-300"
                               >
-                                {el.isVisible ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5 text-slate-700" />}
+                                {el.isVisible ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5 text-text-primary" />}
                               </button>
 
                               <button 
@@ -2292,7 +2292,7 @@ export default function AdvancedDesignerPage() {
                                   setSelectedId(el.id);
                                   handleUpdateElementProperty('isLocked', !el.isLocked);
                                 }}
-                                className="p-1 rounded text-slate-500 hover:text-slate-300"
+                                className="p-1 rounded text-text-secondary hover:text-slate-300"
                               >
                                 {el.isLocked ? <Lock className="w-3.5 h-3.5 text-amber-500" /> : <Unlock className="w-3.5 h-3.5" />}
                               </button>
@@ -2302,14 +2302,14 @@ export default function AdvancedDesignerPage() {
                               {/* Ordering */}
                               <button 
                                 onClick={(e) => { e.stopPropagation(); handleMoveLayer(el.id, 'up'); }}
-                                className="p-1 text-[10px] text-slate-500 hover:text-slate-300 font-bold"
+                                className="p-1 text-[10px] text-text-secondary hover:text-slate-300 font-bold"
                                 title="Bring Forward"
                               >
                                 ▲
                               </button>
                               <button 
                                 onClick={(e) => { e.stopPropagation(); handleMoveLayer(el.id, 'down'); }}
-                                className="p-1 text-[10px] text-slate-500 hover:text-slate-300 font-bold"
+                                className="p-1 text-[10px] text-text-secondary hover:text-slate-300 font-bold"
                                 title="Send Backward"
                               >
                                 ▼
@@ -2317,7 +2317,7 @@ export default function AdvancedDesignerPage() {
 
                               <button 
                                 onClick={(e) => { e.stopPropagation(); handleDeleteElement(el.id); }}
-                                className="p-1 text-slate-500 hover:text-red-400"
+                                className="p-1 text-text-secondary hover:text-red-400"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
                               </button>
@@ -2337,11 +2337,11 @@ export default function AdvancedDesignerPage() {
                 {/* Background Configuration (rendered when nothing is selected) */}
                 {!selectedElement ? (
                   <div className="space-y-4">
-                    <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-450">Canvas Background</h3>
+                    <h3 className="text-xs font-extrabold uppercase tracking-wider text-text-secondary">Canvas Background</h3>
                     
                     {/* Background solid/gradient selection */}
                     <div className="space-y-2">
-                      <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Background Type</span>
+                      <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider block">Background Type</span>
                       <div className="grid grid-cols-2 gap-2">
                         <button 
                           onClick={() => {
@@ -2351,7 +2351,7 @@ export default function AdvancedDesignerPage() {
                           className={`p-2 bg-slate-900 border rounded-lg text-[10px] font-bold text-center cursor-pointer ${
                             (activeSide === 'front' ? frontBg.type : backBg.type) === 'solid' 
                               ? 'border-indigo-650 text-indigo-400' 
-                              : 'border-slate-800 text-slate-450'
+                              : 'border-border text-text-secondary'
                           }`}
                         >
                           Solid Color
@@ -2364,7 +2364,7 @@ export default function AdvancedDesignerPage() {
                           className={`p-2 bg-slate-900 border rounded-lg text-[10px] font-bold text-center cursor-pointer ${
                             (activeSide === 'front' ? frontBg.type : backBg.type) === 'linear' 
                               ? 'border-indigo-650 text-indigo-400' 
-                              : 'border-slate-800 text-slate-450'
+                              : 'border-border text-text-secondary'
                           }`}
                         >
                           Linear Gradient
@@ -2375,7 +2375,7 @@ export default function AdvancedDesignerPage() {
                     {/* Color Inputs */}
                     <div className="space-y-3 pt-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] text-slate-400 font-bold block">Primary Color</span>
+                        <span className="text-[10px] text-text-secondary font-bold block">Primary Color</span>
                         <input 
                           type="color" 
                           value={activeSide === 'front' ? frontBg.color1 : backBg.color1}
@@ -2383,14 +2383,14 @@ export default function AdvancedDesignerPage() {
                             const setter = activeSide === 'front' ? setFrontBg : setBackBg;
                             setter(prev => ({ ...prev, color1: e.target.value }));
                           }}
-                          className="w-8 h-8 rounded border border-slate-700 bg-transparent cursor-pointer"
+                          className="w-8 h-8 rounded border border-border bg-transparent cursor-pointer"
                         />
                       </div>
 
                       {(activeSide === 'front' ? frontBg.type : backBg.type) === 'linear' && (
                         <>
                           <div className="flex items-center justify-between">
-                            <span className="text-[10px] text-slate-400 font-bold block">Secondary Color</span>
+                            <span className="text-[10px] text-text-secondary font-bold block">Secondary Color</span>
                             <input 
                               type="color" 
                               value={activeSide === 'front' ? frontBg.color2 : backBg.color2}
@@ -2398,12 +2398,12 @@ export default function AdvancedDesignerPage() {
                                 const setter = activeSide === 'front' ? setFrontBg : setBackBg;
                                 setter(prev => ({ ...prev, color2: e.target.value }));
                               }}
-                              className="w-8 h-8 rounded border border-slate-700 bg-transparent cursor-pointer"
+                              className="w-8 h-8 rounded border border-border bg-transparent cursor-pointer"
                             />
                           </div>
 
                           <div className="space-y-1">
-                            <div className="flex items-center justify-between text-[10px] text-slate-400 font-bold">
+                            <div className="flex items-center justify-between text-[10px] text-text-secondary font-bold">
                               <span>Gradient Angle</span>
                               <span>{activeSide === 'front' ? frontBg.angle : backBg.angle}°</span>
                             </div>
@@ -2430,20 +2430,20 @@ export default function AdvancedDesignerPage() {
                     <div className="flex justify-between items-center pb-2 border-b border-slate-850">
                       <div>
                         <h4 className="text-xs font-black text-slate-200">{selectedElement.name}</h4>
-                        <span className="text-[9px] text-slate-500 font-bold uppercase">{selectedElement.type} element</span>
+                        <span className="text-[9px] text-text-secondary font-bold uppercase">{selectedElement.type} element</span>
                       </div>
                       
                       <div className="flex gap-1.5">
                         <button 
                           onClick={() => handleDuplicateElement(selectedElement.id)}
-                          className="p-1 rounded bg-slate-900 border border-slate-850 text-slate-400 hover:text-white"
+                          className="p-1 rounded bg-slate-900 border border-slate-850 text-text-secondary hover:text-white"
                           title="Duplicate Element"
                         >
                           <Copy className="w-3.5 h-3.5" />
                         </button>
                         <button 
                           onClick={() => handleDeleteElement(selectedElement.id)}
-                          className="p-1 rounded bg-slate-900 border border-slate-850 text-slate-400 hover:text-red-400"
+                          className="p-1 rounded bg-slate-900 border border-slate-850 text-text-secondary hover:text-red-400"
                           title="Delete Element"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -2453,8 +2453,8 @@ export default function AdvancedDesignerPage() {
 
                     {/* Sizing & Positions */}
                     <div className="space-y-2">
-                      <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Geometry</span>
-                      <div className="grid grid-cols-2 gap-2 text-xxs font-bold text-slate-400">
+                      <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider block">Geometry</span>
+                      <div className="grid grid-cols-2 gap-2 text-xxs font-bold text-text-secondary">
                         <div>
                           <span>Position X (px)</span>
                           <input 
@@ -2507,24 +2507,24 @@ export default function AdvancedDesignerPage() {
 
                     {/* Alignment Tools (Shorthands) */}
                     <div className="space-y-2 pt-2">
-                      <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Alignments</span>
+                      <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider block">Alignments</span>
                       <div className="grid grid-cols-3 gap-1">
-                        <button onClick={() => handleAlign('left')} className="p-1 bg-slate-900 border border-slate-800 rounded text-[9px] font-bold text-slate-400 hover:text-white cursor-pointer">Left</button>
-                        <button onClick={() => handleAlign('center')} className="p-1 bg-slate-900 border border-slate-800 rounded text-[9px] font-bold text-slate-400 hover:text-white cursor-pointer">Center</button>
-                        <button onClick={() => handleAlign('right')} className="p-1 bg-slate-900 border border-slate-800 rounded text-[9px] font-bold text-slate-400 hover:text-white cursor-pointer">Right</button>
-                        <button onClick={() => handleAlign('top')} className="p-1 bg-slate-900 border border-slate-800 rounded text-[9px] font-bold text-slate-400 hover:text-white cursor-pointer">Top</button>
-                        <button onClick={() => handleAlign('middle')} className="p-1 bg-slate-900 border border-slate-800 rounded text-[9px] font-bold text-slate-400 hover:text-white cursor-pointer">Middle</button>
-                        <button onClick={() => handleAlign('bottom')} className="p-1 bg-slate-900 border border-slate-800 rounded text-[9px] font-bold text-slate-400 hover:text-white cursor-pointer">Bottom</button>
+                        <button onClick={() => handleAlign('left')} className="p-1 bg-slate-900 border border-border rounded text-[9px] font-bold text-text-secondary hover:text-white cursor-pointer">Left</button>
+                        <button onClick={() => handleAlign('center')} className="p-1 bg-slate-900 border border-border rounded text-[9px] font-bold text-text-secondary hover:text-white cursor-pointer">Center</button>
+                        <button onClick={() => handleAlign('right')} className="p-1 bg-slate-900 border border-border rounded text-[9px] font-bold text-text-secondary hover:text-white cursor-pointer">Right</button>
+                        <button onClick={() => handleAlign('top')} className="p-1 bg-slate-900 border border-border rounded text-[9px] font-bold text-text-secondary hover:text-white cursor-pointer">Top</button>
+                        <button onClick={() => handleAlign('middle')} className="p-1 bg-slate-900 border border-border rounded text-[9px] font-bold text-text-secondary hover:text-white cursor-pointer">Middle</button>
+                        <button onClick={() => handleAlign('bottom')} className="p-1 bg-slate-900 border border-border rounded text-[9px] font-bold text-text-secondary hover:text-white cursor-pointer">Bottom</button>
                       </div>
                     </div>
 
                     {/* Text Element Properties editor */}
                     {selectedElement.type === 'text' && (
                       <div className="space-y-3 pt-2">
-                        <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Typography</span>
+                        <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider block">Typography</span>
                         
                         <div className="space-y-1.5">
-                          <span className="text-[9px] text-slate-450 font-bold">Edit Text Content</span>
+                          <span className="text-[9px] text-text-secondary font-bold">Edit Text Content</span>
                           <textarea 
                             value={selectedElement.text || ''}
                             onChange={(e) => handleUpdateElementProperty('text', e.target.value)}
@@ -2533,7 +2533,7 @@ export default function AdvancedDesignerPage() {
                           />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-2 text-xxs font-bold text-slate-400">
+                        <div className="grid grid-cols-2 gap-2 text-xxs font-bold text-text-secondary">
                           <div>
                             <span>Font Family</span>
                             <select 
@@ -2562,7 +2562,7 @@ export default function AdvancedDesignerPage() {
                                 type="color" 
                                 value={selectedElement.color || '#000000'}
                                 onChange={(e) => handleUpdateElementProperty('color', e.target.value)}
-                                className="w-8 h-8 rounded border border-slate-700 bg-transparent cursor-pointer shrink-0"
+                                className="w-8 h-8 rounded border border-border bg-transparent cursor-pointer shrink-0"
                               />
                               <input 
                                 type="text"
@@ -2602,13 +2602,13 @@ export default function AdvancedDesignerPage() {
                             <div className="grid grid-cols-2 gap-1 mt-1">
                               <button 
                                 onClick={() => handleUpdateElementProperty('fontStyle', selectedElement.fontStyle === 'italic' ? 'normal' : 'italic')}
-                                className={`p-1 bg-slate-900 border rounded text-[9px] font-bold ${selectedElement.fontStyle === 'italic' ? 'border-indigo-500 text-indigo-400' : 'border-slate-800 text-slate-500'}`}
+                                className={`p-1 bg-slate-900 border rounded text-[9px] font-bold ${selectedElement.fontStyle === 'italic' ? 'border-indigo-500 text-indigo-400' : 'border-border text-text-secondary'}`}
                               >
                                 Italic
                               </button>
                               <button 
                                 onClick={() => handleUpdateElementProperty('textDecoration', selectedElement.textDecoration === 'underline' ? 'none' : 'underline')}
-                                className={`p-1 bg-slate-900 border rounded text-[9px] font-bold ${selectedElement.textDecoration === 'underline' ? 'border-indigo-500 text-indigo-400' : 'border-slate-800 text-slate-500'}`}
+                                className={`p-1 bg-slate-900 border rounded text-[9px] font-bold ${selectedElement.textDecoration === 'underline' ? 'border-indigo-500 text-indigo-400' : 'border-border text-text-secondary'}`}
                               >
                                 Underline
                               </button>
@@ -2621,9 +2621,9 @@ export default function AdvancedDesignerPage() {
                     {/* Shape Element Properties editor */}
                     {selectedElement.type === 'shape' && (
                       <div className="space-y-3 pt-2">
-                        <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Shape Styles</span>
+                        <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider block">Shape Styles</span>
                         
-                        <div className="grid grid-cols-2 gap-2 text-xxs font-bold text-slate-400">
+                        <div className="grid grid-cols-2 gap-2 text-xxs font-bold text-text-secondary">
                           <div>
                             <span>Fill Color</span>
                             <div className="flex gap-1.5 items-center mt-1">
@@ -2631,7 +2631,7 @@ export default function AdvancedDesignerPage() {
                                 type="color" 
                                 value={selectedElement.fill || '#000000'}
                                 onChange={(e) => handleUpdateElementProperty('fill', e.target.value)}
-                                className="w-8 h-8 rounded border border-slate-700 bg-transparent cursor-pointer shrink-0"
+                                className="w-8 h-8 rounded border border-border bg-transparent cursor-pointer shrink-0"
                               />
                               <input 
                                 type="text"
@@ -2655,14 +2655,14 @@ export default function AdvancedDesignerPage() {
                           )}
                         </div>
 
-                        <div className="grid grid-cols-2 gap-2 text-xxs font-bold text-slate-400 pt-2 border-t border-slate-850">
+                        <div className="grid grid-cols-2 gap-2 text-xxs font-bold text-text-secondary pt-2 border-t border-slate-850">
                           <div>
                             <span>Border Color</span>
                             <input 
                               type="color" 
                               value={selectedElement.borderColor || '#000000'}
                               onChange={(e) => handleUpdateElementProperty('borderColor', e.target.value)}
-                              className="w-8 h-8 rounded border border-slate-700 bg-transparent cursor-pointer mt-1"
+                              className="w-8 h-8 rounded border border-border bg-transparent cursor-pointer mt-1"
                             />
                           </div>
                           <div>
@@ -2681,9 +2681,9 @@ export default function AdvancedDesignerPage() {
                     {/* Image Element Properties editor */}
                     {(selectedElement.type === 'image' || selectedElement.type === 'avatar') && (
                       <div className="space-y-3 pt-2">
-                        <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Image Attributes</span>
+                        <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider block">Image Attributes</span>
                         
-                        <div className="space-y-1.5 text-xxs font-bold text-slate-400">
+                        <div className="space-y-1.5 text-xxs font-bold text-text-secondary">
                           <span>Image URL source</span>
                           <input 
                             type="text" 
@@ -2693,7 +2693,7 @@ export default function AdvancedDesignerPage() {
                           />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-2 text-xxs font-bold text-slate-400 pt-1">
+                        <div className="grid grid-cols-2 gap-2 text-xxs font-bold text-text-secondary pt-1">
                           <div>
                             <span>Border Radius (px)</span>
                             <input 

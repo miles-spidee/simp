@@ -1,32 +1,64 @@
-export interface ApplicationProfileCreate {
-  first_name: string;
-  last_name: string;
+export interface ApplicationPersonalInformation {
+  photo?: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  mobile_number: string;
-  date_of_birth: string;
+  mobileNumber: string;
+  dateOfBirth: string;
   gender: string;
   city: string;
   state: string;
-  college_name: string;
+}
+
+export interface ApplicationAcademicInformation {
+  collegeName: string;
   department: string;
   degree: string;
-  current_year: number;
-  cgpa_percentage: number;
-  graduation_year: number;
+  currentYear: string;
+  cgpaPercentage: string;
+  graduationYear: string;
+}
+
+export interface ApplicationProfessionalInformation {
   skills: string;
-  github_url: string;
-  linkedin_url: string;
-  portfolio_url: string;
-  project_experience: string;
-  motivation_statement: string;
+  githubUrl: string;
+  linkedinUrl: string;
+  portfolioUrl: string;
+  projectExperience: string;
+}
+
+export interface ApplicationInternshipSpecificData {
+  paymentMode?: string;
+  transactionId?: string;
+  relevantExperience?: string;
+  preferredTechStack?: string;
+  relevantTechnicalExperience?: string;
+  researchAreaOfInterest?: string;
+  researchInterestStatement?: string;
+  publicationLinks?: string;
+  paymentScreenshot?: string;
+}
+
+export interface ApplicationDocuments {
+  resume?: string;
+  passbook?: string;
+}
+
+export interface ApplicationMotivation {
+  whyInternship: string;
 }
 
 export interface ApplicationCreate {
-  opening_id: string;
-  profile: ApplicationProfileCreate;
+  internshipType: string;
+  personalInformation: ApplicationPersonalInformation;
+  academicInformation: ApplicationAcademicInformation;
+  professionalInformation: ApplicationProfessionalInformation;
+  internshipSpecificData?: ApplicationInternshipSpecificData;
+  documents?: ApplicationDocuments;
+  motivation?: ApplicationMotivation;
 }
 
-export type ApplicationProfileResponse = ApplicationProfileCreate;
+export type ApplicationProfileResponse = any;
 
 export interface ApplicationResponse {
   opening_id: string;

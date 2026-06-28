@@ -405,8 +405,8 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
         return (
           <div className="space-y-4 p-6">
             {!userToEdit && !autofillData && unlinkedEntities.length > 0 && (
-              <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-2">
-                <label className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+              <div className="bg-slate-50 border border-border rounded-lg p-4 space-y-2">
+                <label className="text-sm font-semibold text-label flex items-center gap-2">
                   <Users className="h-4 w-4 text-blue-600" />
                   Link to Registered Entity (Autofill)
                 </label>
@@ -414,7 +414,7 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
                   <select
                     value={selectedEntityId}
                     onChange={e => handleEntitySelect(e.target.value)}
-                    className="flex-1 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="flex-1 rounded-md border border-border bg-white px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                   >
                     <option value="">-- Select an unlinked employee/student/org to autofill --</option>
                     {['Employee', 'Student', 'Organization'].map(t => {
@@ -442,7 +442,7 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
                     </Button>
                   )}
                 </div>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-text-secondary">
                   Select an employee, student, or organization registered in the database to autofill Name, Email, and Phone.
                 </p>
               </div>
@@ -450,19 +450,19 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Full Name *</label>
+                <label className="text-sm font-medium text-label">Full Name *</label>
                 <input 
                   type="text" 
                   value={fullName}
                   onChange={e => setFullName(e.target.value)}
                   disabled={viewMode}
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-slate-50" 
+                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50" 
                   placeholder="John Doe" 
                 />
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <label className="text-sm font-medium text-slate-700">Username *</label>
+                  <label className="text-sm font-medium text-label">Username *</label>
                   {!viewMode && (
                     <button
                       type="button"
@@ -478,35 +478,35 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
                   value={username}
                   onChange={e => setUsername(e.target.value)}
                   disabled={viewMode}
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-slate-50" 
+                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50" 
                   placeholder="johndoe001" 
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Email Address *</label>
+                <label className="text-sm font-medium text-label">Email Address *</label>
                 <input 
                   type="email" 
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   disabled={viewMode}
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-slate-50" 
+                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50" 
                   placeholder="john@example.com" 
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Phone Number</label>
+                <label className="text-sm font-medium text-label">Phone Number</label>
                 <input 
                   type="tel" 
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
                   disabled={viewMode}
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-slate-50" 
+                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50" 
                   placeholder="+1 (555) 000-0000" 
                 />
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <label className="text-sm font-medium text-slate-700">Password *</label>
+                  <label className="text-sm font-medium text-label">Password *</label>
                   {!viewMode && (
                     <button
                       type="button"
@@ -522,23 +522,23 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   disabled={viewMode}
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-slate-50" 
+                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50" 
                   placeholder="••••••••" 
                 />
                 {password && password !== '••••••••' && !viewMode && (
-                  <p className="text-[11px] font-mono text-slate-600 bg-slate-100 px-2 py-1 rounded border border-dashed border-slate-200">
-                    Generated: <span className="font-bold text-slate-800 select-all">{password}</span>
+                  <p className="text-[11px] font-mono text-text-secondary bg-slate-100 px-2 py-1 rounded border border-dashed border-border">
+                    Generated: <span className="font-bold text-text-primary select-all">{password}</span>
                   </p>
                 )}
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Confirm Password *</label>
+                <label className="text-sm font-medium text-label">Confirm Password *</label>
                 <input 
                   type="password" 
                   value={confirmPassword}
                   onChange={e => setConfirmPassword(e.target.value)}
                   disabled={viewMode}
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-slate-50" 
+                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50" 
                   placeholder="••••••••" 
                 />
               </div>
@@ -547,7 +547,7 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
             <div className="pt-4 grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
               {/* Profile Picture Upload */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-705 text-slate-700">Profile Picture</label>
+                <label className="text-sm font-medium text-slate-705 text-label">Profile Picture</label>
                 <input 
                   type="file" 
                   ref={fileInputRef} 
@@ -557,22 +557,22 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
                 />
                 <div 
                   onClick={triggerFileUpload}
-                  className="mt-1 flex justify-center rounded-md border-2 border-dashed border-slate-300 px-4 py-4 hover:bg-slate-50 transition-colors cursor-pointer"
+                  className="mt-1 flex justify-center rounded-md border-2 border-dashed border-border px-4 py-4 hover:bg-slate-50 transition-colors cursor-pointer"
                 >
                   <div className="space-y-1 text-center">
                     {avatar ? (
                       <div className="flex flex-col items-center gap-1">
-                        <img src={avatar} alt="Avatar Preview" className="h-12 w-12 rounded-full object-cover border border-slate-200" />
+                        <img src={avatar} alt="Avatar Preview" className="h-12 w-12 rounded-full object-cover border border-border" />
                         <p className="text-[10px] font-semibold text-emerald-650 truncate max-w-[150px]">Selected: {avatarName || 'User Avatar'}</p>
-                        {!viewMode && <span className="text-[9px] text-slate-400">Click to change</span>}
+                        {!viewMode && <span className="text-[9px] text-text-secondary">Click to change</span>}
                       </div>
                     ) : (
                       <>
-                        <Upload className="mx-auto h-6 w-6 text-slate-400" />
-                        <div className="flex text-xs text-slate-600 justify-center font-medium">
+                        <Upload className="mx-auto h-6 w-6 text-text-secondary" />
+                        <div className="flex text-xs text-text-secondary justify-center font-medium">
                           <span className="text-blue-650 hover:text-blue-500">Upload photo</span>
                         </div>
-                        <p className="text-[9px] text-slate-400">PNG, JPG up to 10MB</p>
+                        <p className="text-[9px] text-text-secondary">PNG, JPG up to 10MB</p>
                       </>
                     )}
                   </div>
@@ -587,9 +587,9 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
                     checked={sendEmail}
                     onChange={e => setSendEmail(e.target.checked)}
                     disabled={viewMode}
-                    className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600 disabled:opacity-50" 
+                    className="h-4 w-4 rounded border-border text-blue-600 focus:ring-primary disabled:opacity-50" 
                   />
-                  <span className="text-sm text-slate-700">Send Credentials By Email</span>
+                  <span className="text-sm text-text-primary">Send Credentials By Email</span>
                 </label>
                 <label className="flex items-center gap-3 cursor-pointer select-none">
                   <input 
@@ -597,18 +597,18 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
                     checked={forcePasswordChange}
                     onChange={e => setForcePasswordChange(e.target.checked)}
                     disabled={viewMode}
-                    className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600 disabled:opacity-50" 
+                    className="h-4 w-4 rounded border-border text-blue-600 focus:ring-primary disabled:opacity-50" 
                   />
-                  <span className="text-sm text-slate-700">Force Password Change on Login</span>
+                  <span className="text-sm text-text-primary">Force Password Change on Login</span>
                 </label>
                 <div className="pt-2">
-                  <label className="text-sm font-medium text-slate-700 block mb-1">Account Validation Period (Days)</label>
+                  <label className="text-sm font-medium text-label block mb-1">Account Validation Period (Days)</label>
                   <input 
                     type="number" 
                     value={accountValidationPeriod}
                     onChange={e => setAccountValidationPeriod(e.target.value)}
                     disabled={viewMode}
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-slate-50" 
+                    className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50" 
                     placeholder="e.g. 365 (Leave empty for unlimited)" 
                     min="1"
                   />
@@ -621,7 +621,7 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
         return (
           <div className="flex h-full p-6 gap-6">
             <div className="flex-1 space-y-4">
-              <h3 className="text-sm font-semibold text-slate-900">Select Role</h3>
+              <h3 className="text-sm font-semibold text-text-primary">Select Role</h3>
               <div className="grid gap-3">
                 {roles.map((role) => (
                   <div 
@@ -632,17 +632,17 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
                     className={`relative rounded-lg border p-4 cursor-pointer transition-all ${
                       selectedRole === role.id 
                         ? 'border-blue-600 bg-blue-50/50 ring-1 ring-blue-600' 
-                        : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50'
+                        : 'border-border hover:border-secondary hover:bg-slate-50'
                     } ${viewMode ? 'pointer-events-none' : ''}`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className={`p-2 rounded-md ${selectedRole === role.id ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-slate-500'}`}>
+                        <div className={`p-2 rounded-md ${selectedRole === role.id ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-text-secondary'}`}>
                           <Shield className="h-5 w-5" />
                         </div>
                         <div>
-                          <p className={`text-sm font-medium ${selectedRole === role.id ? 'text-blue-900' : 'text-slate-900'}`}>{role.name}</p>
-                          <p className="text-xs text-slate-500 mt-0.5">{role.desc}</p>
+                          <p className={`text-sm font-medium ${selectedRole === role.id ? 'text-blue-900' : 'text-text-primary'}`}>{role.name}</p>
+                          <p className="text-xs text-text-secondary mt-0.5">{role.desc}</p>
                         </div>
                       </div>
                       {selectedRole === role.id && (
@@ -655,21 +655,21 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
             </div>
             
             <div className="w-1/3 shrink-0">
-              <div className="sticky top-0 rounded-lg border border-slate-200 bg-slate-50 p-4">
-                <h3 className="text-sm font-semibold text-slate-900 mb-3">Modules Inherited</h3>
+              <div className="sticky top-0 rounded-lg border border-border bg-slate-50 p-4">
+                <h3 className="text-sm font-semibold text-text-primary mb-3">Modules Inherited</h3>
                 {selectedRole ? (
                   <ul className="space-y-2">
                     {assignedModules.map(id => {
                       const mod = modules.find(m => m.id === id);
                       return mod ? (
-                        <li key={id} className="flex items-center gap-2 text-sm text-slate-600">
+                        <li key={id} className="flex items-center gap-2 text-sm text-text-secondary">
                           <CheckCircle2 className="h-4 w-4 text-emerald-500" /> {mod.name}
                         </li>
                       ) : null;
                     })}
                   </ul>
                 ) : (
-                  <p className="text-sm text-slate-500 italic">Select a role to preview modules.</p>
+                  <p className="text-sm text-text-secondary italic">Select a role to preview modules.</p>
                 )}
               </div>
             </div>
@@ -680,16 +680,16 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
           <div className="flex h-full p-6 gap-6">
             <div className="flex-1 space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-slate-900">Available Modules</h3>
+                <h3 className="text-sm font-semibold text-text-primary">Available Modules</h3>
                 <div className="relative">
-                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary" />
                   <input 
                     type="text" 
                     value={moduleSearch}
                     onChange={e => setModuleSearch(e.target.value)}
                     disabled={viewMode}
                     placeholder="Search..." 
-                    className="w-48 rounded-md border border-slate-300 pl-8 pr-3 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-slate-50" 
+                    className="w-48 rounded-md border border-border pl-8 pr-3 py-1.5 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50" 
                   />
                 </div>
               </div>
@@ -702,11 +702,11 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
                       key={module.id}
                       onClick={() => toggleModule(module.id)}
                       className={`flex items-center justify-between rounded-lg border p-3 cursor-pointer transition-all ${
-                        isAssigned ? 'border-blue-200 bg-blue-50/30' : 'border-slate-200 hover:bg-slate-50'
+                        isAssigned ? 'border-blue-200 bg-blue-50/30' : 'border-border hover:bg-slate-50'
                       } ${viewMode ? 'pointer-events-none' : ''}`}
                     >
-                      <span className="text-sm font-medium text-slate-700">{module.name}</span>
-                      <div className={`flex h-5 w-5 items-center justify-center rounded border ${isAssigned ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300 bg-white'}`}>
+                      <span className="text-sm font-medium text-text-primary">{module.name}</span>
+                      <div className={`flex h-5 w-5 items-center justify-center rounded border ${isAssigned ? 'border-blue-600 bg-blue-600 text-white' : 'border-border bg-white'}`}>
                         {isAssigned && <CheckCircle2 className="h-3 w-3 text-white" />}
                       </div>
                     </div>
@@ -716,19 +716,19 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
             </div>
             
             <div className="w-1/3 shrink-0">
-              <div className="sticky top-0 rounded-lg border border-slate-200 bg-slate-50 p-4">
-                <h3 className="text-sm font-semibold text-slate-900 mb-3">Final Access</h3>
+              <div className="sticky top-0 rounded-lg border border-border bg-slate-50 p-4">
+                <h3 className="text-sm font-semibold text-text-primary mb-3">Final Access</h3>
                 <ul className="space-y-2">
                   {assignedModules.map(id => {
                     const mod = modules.find(m => m.id === id);
                     return mod ? (
-                      <li key={id} className="flex items-center gap-2 text-sm text-slate-600">
+                      <li key={id} className="flex items-center gap-2 text-sm text-text-secondary">
                         <CheckCircle2 className="h-4 w-4 text-emerald-500" /> {mod.name}
                       </li>
                     ) : null;
                   })}
                   {assignedModules.length === 0 && (
-                    <p className="text-sm text-slate-500 italic">No modules assigned.</p>
+                    <p className="text-sm text-text-secondary italic">No modules assigned.</p>
                   )}
                 </ul>
               </div>
@@ -739,53 +739,53 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
         return (
           <div className="p-6 space-y-6">
             <Card>
-              <div className="p-4 border-b border-slate-100 bg-slate-50/50">
-                <h3 className="font-semibold text-slate-900">User Summary</h3>
+              <div className="p-4 border-b border-border bg-slate-50/50">
+                <h3 className="font-semibold text-text-primary">User Summary</h3>
               </div>
               <div className="p-4 space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   {avatar && (
                     <div className="col-span-2 flex items-center gap-3">
-                      <img src={avatar} alt="Avatar" className="h-16 w-16 rounded-full object-cover border border-slate-200" />
+                      <img src={avatar} alt="Avatar" className="h-16 w-16 rounded-full object-cover border border-border" />
                       <div>
-                        <p className="text-xs text-slate-500">Avatar Image</p>
-                        <p className="text-sm font-semibold text-slate-900">Custom Profile Picture</p>
+                        <p className="text-xs text-text-secondary">Avatar Image</p>
+                        <p className="text-sm font-semibold text-text-primary">Custom Profile Picture</p>
                       </div>
                     </div>
                   )}
                   <div>
-                    <p className="text-xs text-slate-500">Full Name</p>
-                    <p className="text-sm font-medium text-slate-900">{fullName}</p>
+                    <p className="text-xs text-text-secondary">Full Name</p>
+                    <p className="text-sm font-medium text-text-primary">{fullName}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500">Email</p>
-                    <p className="text-sm font-medium text-slate-900">{email}</p>
+                    <p className="text-xs text-text-secondary">Email</p>
+                    <p className="text-sm font-medium text-text-primary">{email}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500">Username</p>
-                    <p className="text-sm font-medium text-slate-900">{username}</p>
+                    <p className="text-xs text-text-secondary">Username</p>
+                    <p className="text-sm font-medium text-text-primary">{username}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500">Selected Role</p>
-                    <p className="text-sm font-medium text-slate-900">
+                    <p className="text-xs text-text-secondary">Selected Role</p>
+                    <p className="text-sm font-medium text-text-primary">
                       {selectedRole ? roles.find(r => r.id === selectedRole)?.name : 'None'}
                     </p>
                   </div>
                   {!viewMode && (
                     <div>
-                      <p className="text-xs text-slate-500">Credentials</p>
-                      <p className="text-sm font-medium text-slate-900">
+                      <p className="text-xs text-text-secondary">Credentials</p>
+                      <p className="text-sm font-medium text-text-primary">
                         {sendEmail ? 'Send via Email' : 'Do not send'}
                       </p>
                     </div>
                   )}
                   {userToEdit && (
                     <div>
-                      <p className="text-xs text-slate-500">User Status</p>
+                      <p className="text-xs text-text-secondary">User Status</p>
                       <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold mt-1 border ${
                         userToEdit.status === 'Active' 
                           ? 'bg-emerald-100 text-emerald-700 border-emerald-250' 
-                          : 'bg-slate-100 text-slate-700 border-slate-250'
+                          : 'bg-slate-100 text-text-primary border-slate-250'
                       }`}>
                         {userToEdit.status}
                       </span>
@@ -796,8 +796,8 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
             </Card>
 
             <Card>
-              <div className="p-4 border-b border-slate-100 bg-slate-50/50">
-                <h3 className="font-semibold text-slate-900">Assigned Modules</h3>
+              <div className="p-4 border-b border-border bg-slate-50/50">
+                <h3 className="font-semibold text-text-primary">Assigned Modules</h3>
               </div>
               <div className="p-4 flex flex-wrap gap-2">
                 {assignedModules.map(id => {
@@ -809,7 +809,7 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
                   ) : null;
                 })}
                 {assignedModules.length === 0 && (
-                  <span className="text-xs text-slate-400 italic">No modules assigned</span>
+                  <span className="text-xs text-text-secondary italic">No modules assigned</span>
                 )}
               </div>
             </Card>
@@ -829,7 +829,7 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
           {renderStepContent()}
         </div>
         
-        <div className="shrink-0 border-t border-slate-200 p-4 bg-slate-50 flex items-center justify-between">
+        <div className="shrink-0 border-t border-border p-4 bg-slate-50 flex items-center justify-between">
           {viewMode ? (
             <div className="w-full flex justify-end">
               <Button variant="outline" onClick={onClose}>

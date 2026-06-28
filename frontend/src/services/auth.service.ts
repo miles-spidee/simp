@@ -1,5 +1,5 @@
 import { authApi } from '../api/auth.api';
-import { RegisterRequest, RegisterResponse, LoginRequest, LoginResponse, AssignRoleRequest, AssignPermissionRequest } from '../types/api/auth.types';
+import { RegisterRequest, RegisterResponse, LoginRequest, LoginResponse, AssignRoleRequest, AssignPermissionRequest, ForgotPasswordRequest, ForgotPasswordVerify, ForgotPasswordReset } from '../types/api/auth.types';
 
 export const authService = {
   async register(data: RegisterRequest): Promise<RegisterResponse> {
@@ -30,5 +30,17 @@ export const authService = {
 
   async assignPermission(data: AssignPermissionRequest): Promise<void> {
     return authApi.assignPermission(data);
+  },
+
+  async requestPasswordReset(data: ForgotPasswordRequest): Promise<any> {
+    return authApi.requestPasswordReset(data);
+  },
+
+  async verifyResetOtp(data: ForgotPasswordVerify): Promise<any> {
+    return authApi.verifyResetOtp(data);
+  },
+
+  async resetPassword(data: ForgotPasswordReset): Promise<any> {
+    return authApi.resetPassword(data);
   }
 };

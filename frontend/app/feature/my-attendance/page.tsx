@@ -202,7 +202,7 @@ export default function MyAttendancePage() {
   return (
     <div className="space-y-6 animate-slide-in select-none">
       {toastMessage && (
-        <div className="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 bg-slate-900 border border-slate-800 text-white rounded-xl shadow-2xl animate-bounce-in">
+        <div className="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 bg-slate-900 border border-border text-white rounded-xl shadow-2xl animate-bounce-in">
           <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
           <div className="text-xs font-semibold">{toastMessage}</div>
         </div>
@@ -211,13 +211,13 @@ export default function MyAttendancePage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+          <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest flex items-center gap-1.5">
             <span>Student Hub</span>
             <ChevronRight className="h-3 w-3" />
             <span className="text-blue-600 font-extrabold text-[10px]">My Attendance</span>
           </div>
-          <h2 className="text-2xl font-black text-slate-900 mt-2 tracking-tight">My Attendance Portal</h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h2 className="text-2xl font-black text-text-primary mt-2 tracking-tight">My Attendance Portal</h2>
+          <p className="text-xs text-text-secondary mt-0.5">
             Check-in daily, review attendance compliance statistics, and appeal incorrect records.
           </p>
         </div>
@@ -225,41 +225,41 @@ export default function MyAttendancePage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Live checkin card */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between space-y-6">
+        <div className="bg-white border border-border rounded-2xl p-6 shadow-sm flex flex-col justify-between space-y-6">
           <div>
             <span className="text-[9px] font-bold text-blue-650 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-sm uppercase tracking-widest">
               GPS GEOLOCATION GATEWAY
             </span>
             <h3 className="text-base font-black text-slate-850 mt-3.5">Clock-in Roster</h3>
-            <p className="text-xs text-slate-500 leading-relaxed mt-1">
+            <p className="text-xs text-text-secondary leading-relaxed mt-1">
               Record present status for your cohort class today. Ensure active connectivity.
             </p>
           </div>
 
-          <div className="py-4 border-y border-slate-100 space-y-2.5">
+          <div className="py-4 border-y border-border space-y-2.5">
             <div className="flex justify-between text-xs font-semibold">
-              <span className="text-slate-400">Date:</span>
-              <span className="text-slate-800">{new Date().toISOString().split('T')[0]}</span>
+              <span className="text-text-secondary">Date:</span>
+              <span className="text-text-primary">{new Date().toISOString().split('T')[0]}</span>
             </div>
             <div className="flex justify-between text-xs font-semibold">
-              <span className="text-slate-400">Checked-In:</span>
-              <span className="text-slate-800">{clockInTime || 'Not checked in'}</span>
+              <span className="text-text-secondary">Checked-In:</span>
+              <span className="text-text-primary">{clockInTime || 'Not checked in'}</span>
             </div>
             {clockOutTime && (
               <div className="flex justify-between text-xs font-semibold">
-                <span className="text-slate-400">Checked-Out:</span>
-                <span className="text-slate-800">{clockOutTime}</span>
+                <span className="text-text-secondary">Checked-Out:</span>
+                <span className="text-text-primary">{clockOutTime}</span>
               </div>
             )}
             <div className="flex justify-between text-xs font-semibold">
-              <span className="text-slate-400">Status:</span>
+              <span className="text-text-secondary">Status:</span>
               {isCheckedIn ? (
                 <span className="text-emerald-600 font-bold flex items-center gap-1">
                   <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                   <span>Session Active</span>
                 </span>
               ) : (
-                <span className="text-slate-450 font-bold">Checked Out</span>
+                <span className="text-text-secondary font-bold">Checked Out</span>
               )}
             </div>
           </div>
@@ -285,8 +285,8 @@ export default function MyAttendancePage() {
         </div>
 
         {/* Circular Compliance Meter */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between shadow-sm space-y-6">
-          <h3 className="font-bold text-xs text-slate-450 uppercase tracking-widest border-b border-slate-100 pb-3">
+        <div className="bg-white border border-border rounded-2xl p-6 flex flex-col justify-between shadow-sm space-y-6">
+          <h3 className="font-bold text-xs text-text-secondary uppercase tracking-widest border-b border-border pb-3">
             Graduation Compliance Meter
           </h3>
 
@@ -297,48 +297,48 @@ export default function MyAttendancePage() {
                 <circle cx="56" cy="56" r="46" strokeWidth="8" stroke="#2563eb" fill="transparent" strokeDasharray="289" strokeDashoffset={289 * (1 - (complianceRate / 100))} />
               </svg>
               <div className="absolute flex flex-col items-center">
-                <span className="text-xl font-black text-slate-800">{complianceRate}%</span>
-                <span className="text-[8px] text-slate-400 font-bold uppercase">Present Rate</span>
+                <span className="text-xl font-black text-text-primary">{complianceRate}%</span>
+                <span className="text-[8px] text-text-secondary font-bold uppercase">Present Rate</span>
               </div>
             </div>
 
             <div className="space-y-2 text-xs font-semibold">
               <div className="flex items-center gap-2">
                 <span className="h-2.5 w-2.5 bg-blue-600 rounded" />
-                <span className="text-slate-500"><strong className="text-slate-800">{presentDays}</strong> Present Days</span>
+                <span className="text-text-secondary"><strong className="text-text-primary">{presentDays}</strong> Present Days</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="h-2.5 w-2.5 bg-rose-500 rounded" />
-                <span className="text-slate-500"><strong className="text-slate-800">{absentDays}</strong> Absent Days</span>
+                <span className="text-text-secondary"><strong className="text-text-primary">{absentDays}</strong> Absent Days</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="h-2.5 w-2.5 bg-amber-500 rounded" />
-                <span className="text-slate-500"><strong className="text-slate-800">{lateDays}</strong> Late Days</span>
+                <span className="text-text-secondary"><strong className="text-text-primary">{lateDays}</strong> Late Days</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-slate-50 p-3.5 border border-slate-150 rounded-xl text-[10px] text-slate-550 leading-relaxed">
+          <div className="bg-slate-50 p-3.5 border border-slate-150 rounded-xl text-[10px] text-text-secondary leading-relaxed">
             💡 Minimum threshold to complete academic internship programs is <strong>85%</strong>.
           </div>
         </div>
 
         {/* June 2026 Interactive Calendar */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-sm h-fit">
-          <h3 className="font-bold text-xs text-slate-450 uppercase tracking-widest border-b border-slate-100 pb-3">
+        <div className="bg-white border border-border rounded-2xl p-6 space-y-4 shadow-sm h-fit">
+          <h3 className="font-bold text-xs text-text-secondary uppercase tracking-widest border-b border-border pb-3">
             June 2026 Monthly Sheet
           </h3>
           
-          <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
+          <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-2">
             <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
           </div>
 
           <div className="grid grid-cols-7 gap-2">
             {Array.from({ length: 30 }).map((_, i) => {
               const day = i + 1;
-              let bg = 'bg-slate-50 border border-slate-100 rounded text-slate-400';
+              let bg = 'bg-slate-50 border border-border rounded text-text-secondary';
               if (day <= 15) {
-                if (day === 7 || day === 14) bg = 'bg-slate-100/50 border border-slate-200/60 rounded text-slate-400';
+                if (day === 7 || day === 14) bg = 'bg-slate-100/50 border border-border/60 rounded text-text-secondary';
                 else if (day === 8) bg = 'bg-rose-50 text-rose-600 border border-rose-100 rounded font-bold';
                 else if (day === 9) bg = 'bg-amber-50 text-amber-600 border border-amber-100 rounded font-bold';
                 else bg = 'bg-emerald-50 text-emerald-600 border border-emerald-100 rounded font-bold';
@@ -358,8 +358,8 @@ export default function MyAttendancePage() {
       {/* Appeal Form and Appeals Log */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Raise Appeal */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
-          <h3 className="font-bold text-xs text-slate-450 uppercase tracking-widest border-b border-slate-100 pb-3 flex items-center gap-2">
+        <div className="bg-white border border-border rounded-2xl p-6 shadow-sm space-y-4">
+          <h3 className="font-bold text-xs text-text-secondary uppercase tracking-widest border-b border-border pb-3 flex items-center gap-2">
             <ShieldCheck className="h-4.5 w-4.5 text-indigo-500" />
             <span>Raise Attendance Correction Appeal</span>
           </h3>
@@ -367,12 +367,12 @@ export default function MyAttendancePage() {
           <form onSubmit={handleSubmitAppeal} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-[10px] font-bold text-slate-450 uppercase mb-1.5">Select Date</label>
+                <label className="block text-[10px] font-bold text-text-secondary uppercase mb-1.5">Select Date</label>
                 <input 
                   type="date"
                   value={appealDate}
                   onChange={(e) => setAppealDate(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 outline-none"
+                  className="w-full bg-slate-50 border border-border rounded-xl px-3.5 py-2 text-xs text-text-primary outline-none"
                 />
               </div>
               <div>
@@ -380,7 +380,7 @@ export default function MyAttendancePage() {
                 <select 
                   value={appealStatus} 
                   onChange={(e) => setAppealStatus(e.target.value as any)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 outline-none cursor-pointer"
+                  className="w-full bg-slate-50 border border-border rounded-xl px-3.5 py-2 text-xs text-text-primary outline-none cursor-pointer"
                 >
                   <option value="Absent">Absent</option>
                   <option value="Late">Late</option>
@@ -396,7 +396,7 @@ export default function MyAttendancePage() {
                 value={appealReason}
                 onChange={(e) => setAppealReason(e.target.value)}
                 placeholder="Explain the correction context (e.g. ISP failure, medical letter advance notice, etc.)"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none resize-none"
+                className="w-full bg-slate-50 border border-border rounded-xl px-3.5 py-2.5 text-xs text-text-primary outline-none resize-none"
               />
             </div>
 
@@ -404,11 +404,11 @@ export default function MyAttendancePage() {
               <label className="block text-[10px] font-bold text-slate-455 uppercase mb-1.5">Attachment Evidence</label>
               <div 
                 onClick={handleSimulateAttachment}
-                className="border-2 border-dashed border-slate-200 hover:border-blue-400 rounded-xl p-4 bg-slate-50/50 flex flex-col items-center justify-center text-center cursor-pointer transition-colors"
+                className="border-2 border-dashed border-border hover:border-secondary rounded-xl p-4 bg-slate-50/50 flex flex-col items-center justify-center text-center cursor-pointer transition-colors"
               >
-                <FileText className="h-6 w-6 text-slate-400 mb-1" />
-                <span className="text-[10px] font-bold text-slate-600">Simulate Document Attachment</span>
-                <span className="text-[8px] text-slate-400 font-semibold mt-0.5">Click to simulate attaching certificate/letter</span>
+                <FileText className="h-6 w-6 text-text-secondary mb-1" />
+                <span className="text-[10px] font-bold text-text-secondary">Simulate Document Attachment</span>
+                <span className="text-[8px] text-text-secondary font-semibold mt-0.5">Click to simulate attaching certificate/letter</span>
                 {appealFile && (
                   <span className="mt-2 text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 border border-emerald-100 rounded">
                     📎 {appealFile}
@@ -427,16 +427,16 @@ export default function MyAttendancePage() {
         </div>
 
         {/* Appeal History */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
-          <h3 className="font-bold text-xs text-slate-455 uppercase tracking-widest border-b border-slate-100 pb-3">
+        <div className="bg-white border border-border rounded-2xl p-6 shadow-sm space-y-4">
+          <h3 className="font-bold text-xs text-slate-455 uppercase tracking-widest border-b border-border pb-3">
             My Correction Log
           </h3>
 
           <div className="space-y-3 overflow-y-auto max-h-[360px] pr-1 custom-scrollbar">
             {myAppeals.map(a => (
-              <div key={a.id} className="p-4 border border-slate-100 rounded-xl space-y-2 hover:border-slate-300 transition-all bg-slate-50/20">
+              <div key={a.id} className="p-4 border border-border rounded-xl space-y-2 hover:border-secondary transition-all bg-slate-50/20">
                 <div className="flex justify-between items-center text-[10px]">
-                  <span className="font-bold text-slate-400">Date: {a.date}</span>
+                  <span className="font-bold text-text-secondary">Date: {a.date}</span>
                   <span className={`font-extrabold uppercase px-2 py-0.5 rounded border text-[9px] ${
                     a.status === 'Pending' ? 'bg-amber-50 border-amber-100 text-amber-600' :
                     a.status === 'Approved' ? 'bg-emerald-50 border-emerald-100 text-emerald-600' :
@@ -445,17 +445,17 @@ export default function MyAttendancePage() {
                     {a.status}
                   </span>
                 </div>
-                <div className="text-xs font-semibold text-slate-700 leading-snug">
+                <div className="text-xs font-semibold text-text-primary leading-snug">
                   Appeal: <span className="bg-rose-50 border border-rose-100 text-rose-600 font-extrabold px-1 rounded text-[9px]">{a.oldStatus}</span> → <span className="bg-emerald-50 border border-emerald-100 text-emerald-600 font-extrabold px-1 rounded text-[9px]">{a.newStatus}</span>
                 </div>
-                <p className="text-[11px] text-slate-500 leading-snug">"{a.reason}"</p>
-                <div className="text-[9px] font-bold text-slate-400 flex items-center gap-1">
+                <p className="text-[11px] text-text-secondary leading-snug">"{a.reason}"</p>
+                <div className="text-[9px] font-bold text-text-secondary flex items-center gap-1">
                   📎 File: <span className="text-indigo-650">{a.attachment}</span>
                 </div>
               </div>
             ))}
             {myAppeals.length === 0 && (
-              <p className="text-xs text-slate-400 italic text-center py-12">No correction appeals submitted yet.</p>
+              <p className="text-xs text-text-secondary italic text-center py-12">No correction appeals submitted yet.</p>
             )}
           </div>
         </div>
@@ -464,8 +464,8 @@ export default function MyAttendancePage() {
       {/* Leave Application Form and Leave History */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Apply for Leave */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
-          <h3 className="font-bold text-xs text-slate-450 uppercase tracking-widest border-b border-slate-100 pb-3 flex items-center gap-2">
+        <div className="bg-white border border-border rounded-2xl p-6 shadow-sm space-y-4">
+          <h3 className="font-bold text-xs text-text-secondary uppercase tracking-widest border-b border-border pb-3 flex items-center gap-2">
             <CalendarDays className="h-4.5 w-4.5 text-blue-500" />
             <span>Apply for Leave</span>
           </h3>
@@ -473,23 +473,23 @@ export default function MyAttendancePage() {
           <form onSubmit={handleApplyLeave} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-[10px] font-bold text-slate-450 uppercase mb-1.5">Start Date</label>
+                <label className="block text-[10px] font-bold text-text-secondary uppercase mb-1.5">Start Date</label>
                 <input 
                   type="date"
                   required
                   value={leaveStartDate}
                   onChange={(e) => setLeaveStartDate(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 outline-none"
+                  className="w-full bg-slate-50 border border-border rounded-xl px-3.5 py-2 text-xs text-text-primary outline-none"
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-bold text-slate-450 uppercase mb-1.5">End Date</label>
+                <label className="block text-[10px] font-bold text-text-secondary uppercase mb-1.5">End Date</label>
                 <input 
                   type="date"
                   required
                   value={leaveEndDate}
                   onChange={(e) => setLeaveEndDate(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 outline-none"
+                  className="w-full bg-slate-50 border border-border rounded-xl px-3.5 py-2 text-xs text-text-primary outline-none"
                 />
               </div>
             </div>
@@ -499,7 +499,7 @@ export default function MyAttendancePage() {
               <select 
                 value={leaveType} 
                 onChange={(e) => setLeaveType(e.target.value as any)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 outline-none cursor-pointer"
+                className="w-full bg-slate-50 border border-border rounded-xl px-3.5 py-2 text-xs text-text-primary outline-none cursor-pointer"
               >
                 <option value="Casual">Casual Leave</option>
                 <option value="Medical">Medical Leave</option>
@@ -517,7 +517,7 @@ export default function MyAttendancePage() {
                 value={leaveReason}
                 onChange={(e) => setLeaveReason(e.target.value)}
                 placeholder="Explain why you are applying for leave..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none resize-none"
+                className="w-full bg-slate-50 border border-border rounded-xl px-3.5 py-2.5 text-xs text-text-primary outline-none resize-none"
               />
             </div>
 
@@ -531,16 +531,16 @@ export default function MyAttendancePage() {
         </div>
 
         {/* My Leave History */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
-          <h3 className="font-bold text-xs text-slate-455 uppercase tracking-widest border-b border-slate-100 pb-3">
+        <div className="bg-white border border-border rounded-2xl p-6 shadow-sm space-y-4">
+          <h3 className="font-bold text-xs text-slate-455 uppercase tracking-widest border-b border-border pb-3">
             My Leave History
           </h3>
 
           <div className="space-y-3 overflow-y-auto max-h-[360px] pr-1 custom-scrollbar">
             {myLeaves.map(l => (
-              <div key={l.id} className="p-4 border border-slate-100 rounded-xl space-y-2 hover:border-slate-300 transition-all bg-slate-50/20">
+              <div key={l.id} className="p-4 border border-border rounded-xl space-y-2 hover:border-secondary transition-all bg-slate-50/20">
                 <div className="flex justify-between items-center text-[10px]">
-                  <span className="font-bold text-slate-400">Date: {l.startDate.split('T')[0]} to {l.endDate.split('T')[0]}</span>
+                  <span className="font-bold text-text-secondary">Date: {l.startDate.split('T')[0]} to {l.endDate.split('T')[0]}</span>
                   <span className={`font-extrabold uppercase px-2 py-0.5 rounded border text-[9px] ${
                     l.status === 'Pending' ? 'bg-amber-50 border-amber-100 text-amber-600' :
                     l.status === 'Approved' ? 'bg-emerald-50 border-emerald-100 text-emerald-600' :
@@ -549,28 +549,28 @@ export default function MyAttendancePage() {
                     {l.status}
                   </span>
                 </div>
-                <div className="text-xs font-semibold text-slate-700 leading-snug flex items-center justify-between">
+                <div className="text-xs font-semibold text-text-primary leading-snug flex items-center justify-between">
                   <span>Type: <span className="bg-blue-50 border border-blue-100 text-blue-600 font-extrabold px-1 rounded text-[9px]">{l.leaveType}</span></span>
                 </div>
-                <p className="text-[11px] text-slate-500 leading-snug">"{l.reason}"</p>
+                <p className="text-[11px] text-text-secondary leading-snug">"{l.reason}"</p>
               </div>
             ))}
             {myLeaves.length === 0 && (
-              <p className="text-xs text-slate-400 italic text-center py-12">No leaves applied yet.</p>
+              <p className="text-xs text-text-secondary italic text-center py-12">No leaves applied yet.</p>
             )}
           </div>
         </div>
       </div>
 
       {/* Historical logs table */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-sm">
-        <h3 className="font-bold text-xs text-slate-450 uppercase tracking-widest border-b border-slate-100 pb-3">
+      <div className="bg-white border border-border rounded-2xl p-6 space-y-4 shadow-sm">
+        <h3 className="font-bold text-xs text-text-secondary uppercase tracking-widest border-b border-border pb-3">
           Historical Check-In Signatures
         </h3>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-slate-100 text-slate-400 uppercase tracking-widest font-bold">
+              <tr className="border-b border-border text-text-secondary uppercase tracking-widest font-bold">
                 <th className="py-2.5 px-4 font-semibold">Session Date</th>
                 <th className="py-2.5 px-4">Checked In</th>
                 <th className="py-2.5 px-4">Checked Out</th>
@@ -578,10 +578,10 @@ export default function MyAttendancePage() {
                 <th className="py-2.5 px-4 text-right">Register Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50 text-slate-655 select-text">
+            <tbody className="divide-y divide-border text-slate-655 select-text">
               {attendanceLogs.map((log) => (
                 <tr key={log.id} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="py-3 px-4 font-semibold text-slate-800">{log.date}</td>
+                  <td className="py-3 px-4 font-semibold text-text-primary">{log.date}</td>
                   <td className="py-3 px-4">{log.clockIn}</td>
                   <td className="py-3 px-4">{log.clockOut}</td>
                   <td className="py-3 px-4">{log.duration}</td>

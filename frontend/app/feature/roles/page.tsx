@@ -59,8 +59,8 @@ export default function RolesPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Roles</h1>
-          <p className="text-sm text-slate-500 mt-1">Manage system roles, permissions, and module access.</p>
+          <h1 className="text-2xl font-bold tracking-tight text-text-primary">Roles</h1>
+          <p className="text-sm text-text-secondary mt-1">Manage system roles, permissions, and module access.</p>
         </div>
         <Button 
           onClick={() => {
@@ -74,24 +74,24 @@ export default function RolesPage() {
         </Button>
       </div>
 
-      <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+      <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-border shadow-sm">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary" />
           <input 
             type="text" 
             placeholder="Search roles..." 
-            className="w-full rounded-md border border-slate-200 pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+            className="w-full rounded-md border border-border pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           />
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
-          <div className="col-span-full text-center py-12 text-slate-500">
+          <div className="col-span-full text-center py-12 text-text-secondary">
             Loading roles...
           </div>
         ) : roles.length === 0 ? (
-          <div className="col-span-full text-center py-12 text-slate-500">
+          <div className="col-span-full text-center py-12 text-text-secondary">
             No roles found.
           </div>
         ) : (
@@ -105,38 +105,38 @@ export default function RolesPage() {
                   <div className="flex gap-1">
                     <button 
                       onClick={() => handleView(role)} 
-                      className="p-1.5 text-slate-400 hover:text-blue-600 transition-colors rounded-md hover:bg-slate-50"
+                      className="p-1.5 text-text-secondary hover:text-blue-600 transition-colors rounded-md hover:bg-slate-50"
                       title="View"
                     >
                       <Eye className="h-4 w-4" />
                     </button>
                     <button 
                       onClick={() => handleEdit(role)} 
-                      className="p-1.5 text-slate-400 hover:text-blue-600 transition-colors rounded-md hover:bg-slate-50"
+                      className="p-1.5 text-text-secondary hover:text-blue-600 transition-colors rounded-md hover:bg-slate-50"
                       title="Edit"
                     >
                       <Edit className="h-4 w-4" />
                     </button>
                     <button 
                       onClick={() => handleDelete(role)} 
-                      className="p-1.5 text-slate-400 hover:text-red-600 transition-colors rounded-md hover:bg-slate-50"
+                      className="p-1.5 text-text-secondary hover:text-red-600 transition-colors rounded-md hover:bg-slate-50"
                       title="Delete"
                     >
                       <Trash className="h-4 w-4" />
                     </button>
                   </div>
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mt-4">{role.name}</h3>
-                <p className="text-sm text-slate-500 mt-1 line-clamp-2 min-h-[40px]">{role.desc}</p>
+                <h3 className="text-lg font-bold text-text-primary mt-4">{role.name}</h3>
+                <p className="text-sm text-text-secondary mt-1 line-clamp-2 min-h-[40px]">{role.desc}</p>
               </CardHeader>
               <div className="flex-1"></div>
-              <CardFooter className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-sm font-medium text-slate-600">
-                  <Shield className="h-4 w-4 text-slate-400" />
+              <CardFooter className="pt-4 border-t border-border flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-sm font-medium text-text-secondary">
+                  <Shield className="h-4 w-4 text-text-secondary" />
                   {role.modulesCount} Modules
                 </div>
-                <div className="flex items-center gap-1.5 text-sm font-medium text-slate-600">
-                  <Users className="h-4 w-4 text-slate-400" />
+                <div className="flex items-center gap-1.5 text-sm font-medium text-text-secondary">
+                  <Users className="h-4 w-4 text-text-secondary" />
                   {role.usersCount} Users
                 </div>
               </CardFooter>

@@ -231,7 +231,7 @@ export default function MyTasksPage() {
   return (
     <div className="space-y-6 animate-slide-in select-none">
       {toastMessage && (
-        <div className="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 bg-slate-900 border border-slate-800 text-white rounded-xl shadow-2xl animate-bounce-in">
+        <div className="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 bg-slate-900 border border-border text-white rounded-xl shadow-2xl animate-bounce-in">
           <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
           <div className="text-xs font-semibold">{toastMessage}</div>
         </div>
@@ -240,13 +240,13 @@ export default function MyTasksPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+          <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest flex items-center gap-1.5">
             <span>Student Hub</span>
             <ChevronRight className="h-3 w-3" />
             <span className="text-blue-600 font-extrabold text-[10px]">My Tasks</span>
           </div>
-          <h2 className="text-2xl font-black text-slate-900 mt-2 tracking-tight">Assigned Milestones</h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h2 className="text-2xl font-black text-text-primary mt-2 tracking-tight">Assigned Milestones</h2>
+          <p className="text-xs text-text-secondary mt-0.5">
             Submit repositories, download starter boilerplate codes, and view graded mentor reviews.
           </p>
         </div>
@@ -256,7 +256,7 @@ export default function MyTasksPage() {
         
         {/* Left Column: Task list */}
         <div className="space-y-4">
-          <h3 className="font-bold text-[10px] text-slate-400 uppercase tracking-widest">Active Milestones</h3>
+          <h3 className="font-bold text-[10px] text-text-secondary uppercase tracking-widest">Active Milestones</h3>
           
           <div className="space-y-3">
             {tasks.map((task) => {
@@ -269,8 +269,8 @@ export default function MyTasksPage() {
                   onClick={() => setSelectedTaskId(task.id)}
                   className={`p-5 rounded-2xl border transition-all duration-200 cursor-pointer ${
                     isSelected 
-                      ? 'bg-slate-900 border-slate-800 text-white shadow-xl translate-x-1' 
-                      : 'bg-white border-slate-200 text-slate-850 hover:border-slate-350'
+                      ? 'bg-slate-900 border-border text-white shadow-xl translate-x-1' 
+                      : 'bg-white border-border text-slate-850 hover:border-secondary'
                   }`}
                 >
                   <div className="flex justify-between items-start">
@@ -281,19 +281,19 @@ export default function MyTasksPage() {
                     ) : (
                       <span className={`text-[8px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${
                         task.status === 'completed' ? 'bg-emerald-50 border-emerald-100 text-emerald-700' :
-                        task.status === 'review' ? 'bg-blue-50 border-blue-100 text-blue-700' : 'bg-slate-100 border-slate-200 text-slate-600'
+                        task.status === 'review' ? 'bg-blue-50 border-blue-100 text-blue-700' : 'bg-slate-100 border-border text-text-secondary'
                       }`}>
                         {task.status}
                       </span>
                     )}
-                    <span className="text-[10px] text-slate-400 font-semibold">{task.id}</span>
+                    <span className="text-[10px] text-text-secondary font-semibold">{task.id}</span>
                   </div>
 
                   <h4 className="text-sm font-black mt-3 tracking-tight">{task.title}</h4>
                   
-                  <div className="mt-4 pt-4 border-t border-slate-100/10 flex justify-between items-center text-[10px] font-bold">
-                    <span className={isSelected ? 'text-slate-400' : 'text-slate-450'}>Deadline:</span>
-                    <span className={isOverdue ? 'text-rose-550' : isSelected ? 'text-white' : 'text-slate-800'}>
+                  <div className="mt-4 pt-4 border-t border-border/10 flex justify-between items-center text-[10px] font-bold">
+                    <span className={isSelected ? 'text-text-secondary' : 'text-text-secondary'}>Deadline:</span>
+                    <span className={isOverdue ? 'text-rose-550' : isSelected ? 'text-white' : 'text-text-primary'}>
                       {task.dueDate}
                     </span>
                   </div>
@@ -306,10 +306,10 @@ export default function MyTasksPage() {
         {/* Right Column: Task workspace */}
         <div className="lg:col-span-2 space-y-6">
           {selectedTask && (
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
+            <div className="bg-white border border-border rounded-2xl p-6 shadow-sm space-y-6">
               
               {/* Task Details Header */}
-              <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 pb-5 border-b border-slate-100">
+              <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 pb-5 border-b border-border">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 text-[10px]">
                     <span className="font-bold text-indigo-650 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-sm uppercase tracking-widest">
@@ -317,12 +317,12 @@ export default function MyTasksPage() {
                     </span>
                     <span className="text-slate-405 font-semibold">Attempts configured: {selectedTask.attempts}</span>
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900 mt-2">{selectedTask.title}</h3>
-                  <p className="text-xs text-slate-500 leading-relaxed">{selectedTask.description}</p>
+                  <h3 className="text-xl font-bold text-text-primary mt-2">{selectedTask.title}</h3>
+                  <p className="text-xs text-text-secondary leading-relaxed">{selectedTask.description}</p>
                 </div>
 
                 <div className="flex flex-col items-end gap-1 shrink-0">
-                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Due Date</span>
+                  <span className="text-[9px] font-bold text-text-secondary uppercase tracking-widest">Due Date</span>
                   <span className={`text-xs font-extrabold flex items-center gap-1 ${
                     selectedTask.isOverdue ? 'text-rose-600' : 'text-amber-600'
                   }`}>
@@ -334,42 +334,42 @@ export default function MyTasksPage() {
 
               {/* Starter template assets */}
               <div className="space-y-3.5">
-                <h4 className="font-bold text-xs text-slate-450 uppercase tracking-widest">Starter Reference Documents</h4>
+                <h4 className="font-bold text-xs text-text-secondary uppercase tracking-widest">Starter Reference Documents</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-xs hover:bg-slate-100/50 cursor-pointer">
+                  <div className="p-3 bg-slate-50 border border-border rounded-xl flex items-center justify-between text-xs hover:bg-slate-100/50 cursor-pointer">
                     <div className="flex items-center gap-2 truncate">
                       <FileText className="h-4.5 w-4.5 text-indigo-500 shrink-0" />
-                      <span className="font-bold text-slate-700 truncate">{selectedTask.examplePdf}</span>
+                      <span className="font-bold text-text-primary truncate">{selectedTask.examplePdf}</span>
                     </div>
-                    <Download className="h-3.5 w-3.5 text-slate-400 hover:text-indigo-600" />
+                    <Download className="h-3.5 w-3.5 text-text-secondary hover:text-indigo-600" />
                   </div>
-                  <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-xs hover:bg-slate-100/50 cursor-pointer">
+                  <div className="p-3 bg-slate-50 border border-border rounded-xl flex items-center justify-between text-xs hover:bg-slate-100/50 cursor-pointer">
                     <div className="flex items-center gap-2 truncate">
-                      <FileText className="h-4.5 w-4.5 text-slate-450 shrink-0" />
-                      <span className="font-bold text-slate-700 truncate">{selectedTask.referencePdf}</span>
+                      <FileText className="h-4.5 w-4.5 text-text-secondary shrink-0" />
+                      <span className="font-bold text-text-primary truncate">{selectedTask.referencePdf}</span>
                     </div>
-                    <Download className="h-3.5 w-3.5 text-slate-400 hover:text-indigo-600" />
+                    <Download className="h-3.5 w-3.5 text-text-secondary hover:text-indigo-600" />
                   </div>
-                  <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-xs hover:bg-slate-100/50 cursor-pointer">
+                  <div className="p-3 bg-slate-50 border border-border rounded-xl flex items-center justify-between text-xs hover:bg-slate-100/50 cursor-pointer">
                     <div className="flex items-center gap-2 truncate">
                       <File className="h-4.5 w-4.5 text-emerald-500 shrink-0" />
-                      <span className="font-bold text-slate-700 truncate">{selectedTask.starterCode}</span>
+                      <span className="font-bold text-text-primary truncate">{selectedTask.starterCode}</span>
                     </div>
-                    <Download className="h-3.5 w-3.5 text-slate-400 hover:text-indigo-600" />
+                    <Download className="h-3.5 w-3.5 text-text-secondary hover:text-indigo-600" />
                   </div>
                 </div>
               </div>
 
               {/* Deliverable submission card */}
               <div className="space-y-4 pt-2">
-                <h4 className="font-bold text-xs text-slate-455 uppercase tracking-widest border-b border-slate-100 pb-2">Deliverables Workspace</h4>
+                <h4 className="font-bold text-xs text-slate-455 uppercase tracking-widest border-b border-border pb-2">Deliverables Workspace</h4>
 
                 {selectedTask.status === 'completed' ? (
                   <div className="space-y-4">
                     <div className="p-8 border border-emerald-250 bg-emerald-50/20 rounded-2xl flex flex-col items-center justify-center text-center space-y-2">
                       <CheckCircle className="h-10 w-10 text-emerald-500" />
-                      <h5 className="text-sm font-black text-slate-800">Task Graded & Closed</h5>
-                      <p className="text-xs text-slate-500 max-w-sm">
+                      <h5 className="text-sm font-black text-text-primary">Task Graded & Closed</h5>
+                      <p className="text-xs text-text-secondary max-w-sm">
                         This submission has been graded by your mentor. Double submissions are locked.
                       </p>
                     </div>
@@ -377,7 +377,7 @@ export default function MyTasksPage() {
                     {selectedTask.score !== undefined && (
                       <div className="p-5 border border-indigo-150 bg-indigo-50/10 rounded-2xl space-y-3">
                         <div className="flex justify-between items-center text-xs">
-                          <span className="font-bold text-slate-500 uppercase">Assessment Score</span>
+                          <span className="font-bold text-text-secondary uppercase">Assessment Score</span>
                           <span className="text-xl font-black text-indigo-650">{selectedTask.score} / 100</span>
                         </div>
                         {selectedTask.feedback && (
@@ -393,7 +393,7 @@ export default function MyTasksPage() {
                   <div className="p-8 border border-blue-200 bg-blue-50/15 rounded-2xl flex flex-col items-center justify-center text-center space-y-2">
                     <RefreshCw className="h-10 w-10 text-blue-500 animate-spin-slow" />
                     <h5 className="text-sm font-black text-slate-850">Submission Under Mentor Review</h5>
-                    <p className="text-xs text-slate-500 max-w-sm">
+                    <p className="text-xs text-text-secondary max-w-sm">
                       Your solution code has been uploaded. Your mentor will grade and post feedback comments shortly.
                     </p>
                   </div>
@@ -412,7 +412,7 @@ export default function MyTasksPage() {
                             placeholder="https://github.com/ananya/project" 
                             value={githubUrl}
                             onChange={(e) => setGithubUrl(e.target.value)}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:border-indigo-500 focus:bg-white"
+                            className="w-full bg-slate-50 border border-border rounded-xl px-3.5 py-2.5 text-xs text-text-primary outline-none focus:border-primary focus:bg-white"
                           />
                         </div>
                       )}
@@ -429,7 +429,7 @@ export default function MyTasksPage() {
                             placeholder="https://project-demo.vercel.app" 
                             value={deployUrl}
                             onChange={(e) => setDeployUrl(e.target.value)}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:border-indigo-500 focus:bg-white"
+                            className="w-full bg-slate-50 border border-border rounded-xl px-3.5 py-2.5 text-xs text-text-primary outline-none focus:border-primary focus:bg-white"
                           />
                         </div>
                       )}
@@ -448,7 +448,7 @@ export default function MyTasksPage() {
                             placeholder="https://loom.com/share/video-id" 
                             value={videoUrl}
                             onChange={(e) => setVideoUrl(e.target.value)}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:border-indigo-500 focus:bg-white"
+                            className="w-full bg-slate-50 border border-border rounded-xl px-3.5 py-2.5 text-xs text-text-primary outline-none focus:border-primary focus:bg-white"
                           />
                         </div>
                       )}
@@ -458,7 +458,7 @@ export default function MyTasksPage() {
                       {selectedTask.requirements.includes('Screenshots') && (
                         <div 
                           onClick={handleSimulateScreenshot}
-                          className="border-2 border-dashed border-slate-200 hover:border-indigo-400 rounded-2xl p-4 bg-slate-50/50 flex flex-col items-center justify-center text-center cursor-pointer transition-colors"
+                          className="border-2 border-dashed border-border hover:border-secondary rounded-2xl p-4 bg-slate-50/50 flex flex-col items-center justify-center text-center cursor-pointer transition-colors"
                         >
                           <UploadCloud className="h-8 w-8 text-indigo-500 mb-1" />
                           <span className="text-[10px] font-bold text-slate-655">Attach Simulated Screenshot</span>
@@ -473,7 +473,7 @@ export default function MyTasksPage() {
                       {selectedTask.requirements.includes('ZIP Archive') && (
                         <div 
                           onClick={handleSimulateZip}
-                          className="border-2 border-dashed border-slate-200 hover:border-indigo-400 rounded-2xl p-4 bg-slate-50/50 flex flex-col items-center justify-center text-center cursor-pointer transition-colors"
+                          className="border-2 border-dashed border-border hover:border-secondary rounded-2xl p-4 bg-slate-50/50 flex flex-col items-center justify-center text-center cursor-pointer transition-colors"
                         >
                           <UploadCloud className="h-8 w-8 text-indigo-500 mb-1" />
                           <span className="text-[10px] font-bold text-slate-655">Attach Build ZIP Package</span>

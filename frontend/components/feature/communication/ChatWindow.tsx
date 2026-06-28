@@ -103,8 +103,8 @@ export default function ChatWindow({ conversationId }: { conversationId: string 
 
   const getStatusIcon = (status: string) => {
     if (status === 'Read') return <CheckCheck className="h-3.5 w-3.5 text-blue-500" />;
-    if (status === 'Delivered') return <CheckCheck className="h-3.5 w-3.5 text-slate-400" />;
-    return <Check className="h-3.5 w-3.5 text-slate-400" />;
+    if (status === 'Delivered') return <CheckCheck className="h-3.5 w-3.5 text-text-secondary" />;
+    return <Check className="h-3.5 w-3.5 text-text-secondary" />;
   };
 
   // Resolve Header Details
@@ -120,27 +120,27 @@ export default function ChatWindow({ conversationId }: { conversationId: string 
     <div className="flex flex-col h-full relative font-sans">
       
       {/* 1. Header Area */}
-      <div className="h-16 px-6 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
+      <div className="h-16 px-6 border-b border-border flex items-center justify-between bg-white shrink-0">
         <div className="flex items-center gap-3">
           <div className="h-9 w-9 rounded-full bg-gradient-to-br from-indigo-50 to-indigo-100 border border-indigo-200 flex items-center justify-center font-extrabold text-indigo-650 text-sm">
             {conversation?.type === 'Group' ? <Users className="w-4 h-4 text-indigo-600" /> : titleName.charAt(0)}
           </div>
           <div>
-            <h3 className="font-bold text-slate-800 text-sm leading-snug">{titleName}</h3>
-            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{roleLabel} • Active Now</p>
+            <h3 className="font-bold text-text-primary text-sm leading-snug">{titleName}</h3>
+            <p className="text-[10px] text-text-secondary font-bold uppercase tracking-wider">{roleLabel} • Active Now</p>
           </div>
         </div>
-        <div className="flex items-center gap-4 text-slate-400">
+        <div className="flex items-center gap-4 text-text-secondary">
           <button 
             onClick={() => handleStartCall('voice')}
-            className="p-1.5 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-all cursor-pointer"
+            className="p-1.5 hover:text-text-primary hover:bg-slate-50 rounded-lg transition-all cursor-pointer"
             title="Start Call"
           >
             <Phone className="h-4.5 w-4.5" />
           </button>
           <button 
             onClick={() => handleStartCall('video')}
-            className="p-1.5 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-all cursor-pointer"
+            className="p-1.5 hover:text-text-primary hover:bg-slate-50 rounded-lg transition-all cursor-pointer"
             title="Start Video Call"
           >
             <Video className="h-4.5 w-4.5" />
@@ -152,7 +152,7 @@ export default function ChatWindow({ conversationId }: { conversationId: string 
       <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/50">
         {loading && messages.length === 0 ? (
           <div className="flex justify-center items-center py-20">
-            <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+            <Loader2 className="w-6 h-6 animate-spin text-text-secondary" />
           </div>
         ) : (
           messages.map(msg => {
@@ -161,14 +161,14 @@ export default function ChatWindow({ conversationId }: { conversationId: string 
               <div key={msg.id} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} animate-fade-in`}>
                 <div className="flex items-end gap-2 mb-1 max-w-[70%]">
                   {!isMe && (
-                    <div className="h-6 w-6 rounded-full bg-slate-200 shrink-0 flex items-center justify-center text-[9px] font-bold text-slate-600">
+                    <div className="h-6 w-6 rounded-full bg-slate-200 shrink-0 flex items-center justify-center text-[9px] font-bold text-text-secondary">
                       {msg.senderName.charAt(0)}
                     </div>
                   )}
                   <div className={`px-4 py-2.5 rounded-2xl text-xs font-semibold ${
                     isMe 
                       ? 'bg-slate-900 text-white rounded-br-none' 
-                      : 'bg-white border border-slate-100 text-slate-800 rounded-bl-none shadow-sm'
+                      : 'bg-white border border-border text-text-primary rounded-bl-none shadow-sm'
                   }`}>
                     <p className="leading-relaxed whitespace-pre-wrap">{msg.content}</p>
                     {msg.attachments && msg.attachments.length > 0 && (
@@ -179,7 +179,7 @@ export default function ChatWindow({ conversationId }: { conversationId: string 
                             className={`p-2 rounded-xl text-[10px] font-mono font-bold flex items-center gap-1.5 border ${
                               isMe 
                                 ? 'bg-white/10 border-white/10 text-white' 
-                                : 'bg-slate-50 border-slate-200 text-indigo-650'
+                                : 'bg-slate-50 border-border text-indigo-650'
                             }`}
                           >
                             <Paperclip className="h-3 w-3 shrink-0" />
@@ -190,7 +190,7 @@ export default function ChatWindow({ conversationId }: { conversationId: string 
                     )}
                   </div>
                 </div>
-                <div className={`flex items-center gap-1 text-[9px] text-slate-400 mt-0.5 ${isMe ? 'mr-1' : 'ml-8 font-semibold'}`}>
+                <div className={`flex items-center gap-1 text-[9px] text-text-secondary mt-0.5 ${isMe ? 'mr-1' : 'ml-8 font-semibold'}`}>
                   {new Date(msg.createdTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   {isMe && getStatusIcon(msg.status)}
                 </div>
@@ -205,7 +205,7 @@ export default function ChatWindow({ conversationId }: { conversationId: string 
       <div className="bg-white px-4 shrink-0">
         
         {attachedFile && (
-          <div className="py-2.5 border-t border-slate-100 flex items-center justify-between text-[10px] font-bold text-indigo-600 font-mono">
+          <div className="py-2.5 border-t border-border flex items-center justify-between text-[10px] font-bold text-indigo-600 font-mono">
             <span className="flex items-center gap-1.5 bg-indigo-50 border border-indigo-150 px-2.5 py-1 rounded-xl">
               <Paperclip className="w-3 h-3 text-indigo-600" />
               {attachedFile}
@@ -220,7 +220,7 @@ export default function ChatWindow({ conversationId }: { conversationId: string 
         )}
 
         {showEmojis && (
-          <div className="py-3 border-t border-slate-100 flex flex-wrap gap-2 animate-fade-in">
+          <div className="py-3 border-t border-border flex flex-wrap gap-2 animate-fade-in">
             {emojis.map(e => (
               <button 
                 key={e} 
@@ -236,13 +236,13 @@ export default function ChatWindow({ conversationId }: { conversationId: string 
       </div>
 
       {/* 4. Input Area */}
-      <div className="p-4 bg-white border-t border-slate-100 shrink-0">
+      <div className="p-4 bg-white border-t border-border shrink-0">
         <div className="flex items-end gap-3">
-          <div className="flex-1 bg-slate-50 border border-slate-200 rounded-2xl flex items-center px-4 transition-all focus-within:bg-white focus-within:border-indigo-550 focus-within:ring-1 focus-within:ring-indigo-550">
+          <div className="flex-1 bg-slate-50 border border-border rounded-2xl flex items-center px-4 transition-all focus-within:bg-white focus-within:border-indigo-550 focus-within:ring-1 focus-within:ring-indigo-550">
             <button 
               type="button"
               onClick={() => setShowEmojis(!showEmojis)}
-              className={`text-slate-400 hover:text-slate-650 p-2 -ml-2 cursor-pointer ${showEmojis ? 'text-indigo-600' : ''}`}
+              className={`text-text-secondary hover:text-text-secondary p-2 -ml-2 cursor-pointer ${showEmojis ? 'text-indigo-600' : ''}`}
             >
               <Smile className="h-5 w-5" />
             </button>
@@ -252,12 +252,12 @@ export default function ChatWindow({ conversationId }: { conversationId: string 
               onChange={(e) => setInputText(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
               placeholder="Type a message..."
-              className="flex-1 bg-transparent border-none py-3.5 focus:outline-none focus:ring-0 text-xs px-2 font-medium text-slate-800 placeholder-slate-400"
+              className="flex-1 bg-transparent border-none py-3.5 focus:outline-none focus:ring-0 text-xs px-2 font-medium text-text-primary placeholder-slate-400"
             />
             <button 
               type="button"
               onClick={handleAttachMockFile}
-              className="text-slate-400 hover:text-slate-650 p-2 cursor-pointer"
+              className="text-text-secondary hover:text-text-secondary p-2 cursor-pointer"
             >
               <Paperclip className="h-5 w-5" />
             </button>
@@ -283,10 +283,10 @@ export default function ChatWindow({ conversationId }: { conversationId: string 
           </div>
           
           <h2 className="text-xl font-bold text-slate-100">{titleName}</h2>
-          <p className="text-sm font-semibold text-slate-400 mt-1 capitalize">{callType} Call • {callState}</p>
+          <p className="text-sm font-semibold text-text-secondary mt-1 capitalize">{callType} Call • {callState}</p>
 
           {callType === 'video' && callState === 'Connected' && (
-            <div className="w-full max-w-sm aspect-video bg-slate-900 border border-slate-800 rounded-2xl mt-6 overflow-hidden relative shadow-inner flex items-center justify-center text-slate-500 font-mono text-xs">
+            <div className="w-full max-w-sm aspect-video bg-slate-900 border border-border rounded-2xl mt-6 overflow-hidden relative shadow-inner flex items-center justify-center text-text-secondary font-mono text-xs">
               [ Camera Feed Active: Simulated Video Stream ]
             </div>
           )}

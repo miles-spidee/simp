@@ -128,27 +128,27 @@ export default function LMSDashboardPage() {
       
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-black text-slate-900 tracking-tight">LMS Dashboard</h2>
-        <p className="text-sm text-slate-500 mt-1">Audit learning paths progress, view curriculum completion stats, and verify certificates.</p>
+        <h2 className="text-2xl font-black text-text-primary tracking-tight">LMS Dashboard</h2>
+        <p className="text-sm text-text-secondary mt-1">Audit learning paths progress, view curriculum completion stats, and verify certificates.</p>
       </div>
 
       {!selectedBatch ? (
         <>
           {/* Metrics Panel */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Active Courses</span>
-              <h3 className="text-3xl font-black text-slate-900 mt-1">{totalCourses}</h3>
+            <div className="bg-white p-5 rounded-2xl border border-border shadow-sm">
+              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Active Courses</span>
+              <h3 className="text-3xl font-black text-text-primary mt-1">{totalCourses}</h3>
             </div>
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Resources Count</span>
+            <div className="bg-white p-5 rounded-2xl border border-border shadow-sm">
+              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Resources Count</span>
               <h3 className="text-3xl font-black text-emerald-600 mt-1">{totalResources}</h3>
             </div>
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Completion Rate</span>
+            <div className="bg-white p-5 rounded-2xl border border-border shadow-sm">
+              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Completion Rate</span>
               <h3 className="text-3xl font-black text-indigo-650 mt-1">{avgCompletionRate}%</h3>
             </div>
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex items-center justify-between">
               <div>
                 <span className="text-[10px] font-bold text-slate-405 uppercase tracking-widest">Certificates Issued</span>
                 <h3 className="text-3xl font-black text-amber-600 mt-1">42</h3>
@@ -159,26 +159,26 @@ export default function LMSDashboardPage() {
 
           {/* Batch list cards */}
           <div className="space-y-4">
-            <h3 className="font-bold text-xs text-slate-400 uppercase tracking-widest">Curriculum Progress by Batch</h3>
+            <h3 className="font-bold text-xs text-text-secondary uppercase tracking-widest">Curriculum Progress by Batch</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {batches.map(b => (
                 <div 
                   key={b.id}
                   onClick={() => setSelectedBatch(b)}
-                  className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-indigo-500 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-lg flex flex-col justify-between space-y-4"
+                  className="bg-white p-6 rounded-2xl border border-border hover:border-secondary transition-all duration-300 cursor-pointer shadow-sm hover:shadow-lg flex flex-col justify-between space-y-4"
                 >
                   <div className="flex justify-between items-start">
                     <div>
-                      <span className="text-[9px] font-bold text-slate-400 uppercase">COHORT</span>
-                      <h4 className="text-lg font-black text-slate-900 mt-1">{b.name}</h4>
+                      <span className="text-[9px] font-bold text-text-secondary uppercase">COHORT</span>
+                      <h4 className="text-lg font-black text-text-primary mt-1">{b.name}</h4>
                     </div>
                     <span className="bg-indigo-55/15 text-indigo-650 font-black px-3 py-1 rounded-full text-xs">
                       {b.courses.length} Tracks
                     </span>
                   </div>
 
-                  <div className="flex justify-between items-center text-xs font-bold text-slate-500 pt-2 border-t border-slate-50">
-                    <span>Resources Count: <strong className="text-slate-800">{b.resourcesCount}</strong></span>
+                  <div className="flex justify-between items-center text-xs font-bold text-text-secondary pt-2 border-t border-border">
+                    <span>Resources Count: <strong className="text-text-primary">{b.resourcesCount}</strong></span>
                     <span>Completed Rate: <strong className="text-indigo-600">{b.completedRate}%</strong></span>
                   </div>
                 </div>
@@ -188,7 +188,7 @@ export default function LMSDashboardPage() {
         </>
       ) : !selectedCourse ? (
         /* Courses inside Batch */
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
+        <div className="bg-white border border-border rounded-2xl p-6 shadow-sm space-y-6">
           <div className="flex items-center justify-between border-b pb-4">
             <div>
               <button 
@@ -197,7 +197,7 @@ export default function LMSDashboardPage() {
               >
                 ← Back to Cohorts
               </button>
-              <h3 className="text-lg font-black text-slate-900">{selectedBatch.name} Tracks</h3>
+              <h3 className="text-lg font-black text-text-primary">{selectedBatch.name} Tracks</h3>
             </div>
           </div>
 
@@ -206,17 +206,17 @@ export default function LMSDashboardPage() {
               <div 
                 key={crs.id}
                 onClick={() => setSelectedCourse(crs)}
-                className="p-5 border border-slate-200 hover:border-indigo-500 hover:shadow-md rounded-2xl transition-all cursor-pointer bg-slate-50/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                className="p-5 border border-border hover:border-secondary hover:shadow-md rounded-2xl transition-all cursor-pointer bg-slate-50/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
               >
                 <div className="flex items-start gap-4">
                   <img src={crs.thumbnail} alt={crs.title} className="h-16 w-24 rounded-lg object-cover bg-slate-100 border shrink-0" />
                   <div className="space-y-1.5">
-                    <h4 className="text-base font-black text-slate-900">{crs.title}</h4>
-                    <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">{crs.description}</p>
+                    <h4 className="text-base font-black text-text-primary">{crs.title}</h4>
+                    <p className="text-xs text-text-secondary line-clamp-2 leading-relaxed">{crs.description}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-6 shrink-0 text-xs font-bold text-slate-500">
+                <div className="flex items-center gap-6 shrink-0 text-xs font-bold text-text-secondary">
                   <div className="text-right">
                     <span>Completion: <strong className="text-indigo-600">{crs.progressRate}%</strong></span>
                   </div>
@@ -230,7 +230,7 @@ export default function LMSDashboardPage() {
         </div>
       ) : (
         /* Syllabus modules */
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
+        <div className="bg-white border border-border rounded-2xl p-6 shadow-sm space-y-6">
           <div className="flex items-center justify-between border-b pb-5">
             <div>
               <button 
@@ -239,22 +239,22 @@ export default function LMSDashboardPage() {
               >
                 ← Back to Curriculum Tracks
               </button>
-              <h3 className="text-lg font-black text-slate-900">{selectedCourse.title}</h3>
+              <h3 className="text-lg font-black text-text-primary">{selectedCourse.title}</h3>
             </div>
           </div>
 
           <div className="space-y-6 max-w-4xl">
             {selectedCourse.modules.map(mod => (
               <div key={mod.id} className="border border-slate-150 rounded-2xl overflow-hidden shadow-sm bg-slate-50/20">
-                <div className="bg-slate-50 px-5 py-3 border-b flex justify-between items-center text-xs font-bold text-slate-800">
+                <div className="bg-slate-50 px-5 py-3 border-b flex justify-between items-center text-xs font-bold text-text-primary">
                   <span>{mod.title}</span>
-                  <span className="text-[10px] text-slate-400">{mod.submodules.length} Assets</span>
+                  <span className="text-[10px] text-text-secondary">{mod.submodules.length} Assets</span>
                 </div>
                 
-                <div className="divide-y divide-slate-100 bg-white">
+                <div className="divide-y divide-border bg-white">
                   {mod.submodules.map(sub => (
                     <div key={sub.id} className="p-4 flex items-center justify-between text-xs hover:bg-slate-50/40">
-                      <div className="flex items-center gap-3 font-semibold text-slate-700">
+                      <div className="flex items-center gap-3 font-semibold text-text-primary">
                         {sub.type === 'Video' ? (
                           <Play className="h-4.5 w-4.5 text-rose-500" />
                         ) : (

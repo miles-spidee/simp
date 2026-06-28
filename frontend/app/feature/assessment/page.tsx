@@ -216,27 +216,27 @@ export default function AssessmentDashboardPage() {
       
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-black text-slate-900 tracking-tight">Assessment Dashboard</h2>
-        <p className="text-sm text-slate-500 mt-1">Monitor candidate scores, analyze focus warning flags, and audit individual question stats.</p>
+        <h2 className="text-2xl font-black text-text-primary tracking-tight">Assessment Dashboard</h2>
+        <p className="text-sm text-text-secondary mt-1">Monitor candidate scores, analyze focus warning flags, and audit individual question stats.</p>
       </div>
 
       {!selectedBatch ? (
         <>
           {/* Metrics Panel */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Active Exams</span>
-              <h3 className="text-3xl font-black text-slate-900 mt-1">{activeCount}</h3>
+            <div className="bg-white p-5 rounded-2xl border border-border shadow-sm">
+              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Active Exams</span>
+              <h3 className="text-3xl font-black text-text-primary mt-1">{activeCount}</h3>
             </div>
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Attempts Recorded</span>
+            <div className="bg-white p-5 rounded-2xl border border-border shadow-sm">
+              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Attempts Recorded</span>
               <h3 className="text-3xl font-black text-emerald-600 mt-1">{totalSubCount}</h3>
             </div>
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Pass Rate Avg</span>
+            <div className="bg-white p-5 rounded-2xl border border-border shadow-sm">
+              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Pass Rate Avg</span>
               <h3 className="text-3xl font-black text-indigo-650 mt-1">94%</h3>
             </div>
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+            <div className="bg-white p-5 rounded-2xl border border-border shadow-sm">
               <span className="text-[10px] font-bold text-slate-405 uppercase tracking-widest">Class Average</span>
               <h3 className="text-3xl font-black text-amber-600 mt-1">84%</h3>
             </div>
@@ -244,26 +244,26 @@ export default function AssessmentDashboardPage() {
 
           {/* Batch list cards */}
           <div className="space-y-4">
-            <h3 className="font-bold text-xs text-slate-400 uppercase tracking-widest">Roster Compliance</h3>
+            <h3 className="font-bold text-xs text-text-secondary uppercase tracking-widest">Roster Compliance</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {batches.map(b => (
                 <div 
                   key={b.id}
                   onClick={() => setSelectedBatch(b)}
-                  className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-indigo-500 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-lg flex flex-col justify-between space-y-4"
+                  className="bg-white p-6 rounded-2xl border border-border hover:border-secondary transition-all duration-300 cursor-pointer shadow-sm hover:shadow-lg flex flex-col justify-between space-y-4"
                 >
                   <div className="flex justify-between items-start">
                     <div>
-                      <span className="text-[9px] font-bold text-slate-400 uppercase">COHORT</span>
-                      <h4 className="text-lg font-black text-slate-900 mt-1">{b.name}</h4>
+                      <span className="text-[9px] font-bold text-text-secondary uppercase">COHORT</span>
+                      <h4 className="text-lg font-black text-text-primary mt-1">{b.name}</h4>
                     </div>
                     <span className="bg-indigo-55/15 text-indigo-650 font-black px-3 py-1 rounded-full text-xs">
                       {b.assessments.length} Active Tests
                     </span>
                   </div>
 
-                  <div className="flex justify-between items-center text-xs font-bold text-slate-500 pt-2 border-t border-slate-50">
-                    <span>Submissions: <strong className="text-slate-800">{b.completedCount}</strong></span>
+                  <div className="flex justify-between items-center text-xs font-bold text-text-secondary pt-2 border-t border-border">
+                    <span>Submissions: <strong className="text-text-primary">{b.completedCount}</strong></span>
                     <span>Average: <strong className="text-indigo-600">{b.averageScore}%</strong></span>
                   </div>
                 </div>
@@ -273,7 +273,7 @@ export default function AssessmentDashboardPage() {
         </>
       ) : !selectedAsm ? (
         /* Exams under batch */
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
+        <div className="bg-white border border-border rounded-2xl p-6 shadow-sm space-y-6">
           <div className="flex items-center justify-between border-b pb-4">
             <div>
               <button 
@@ -282,7 +282,7 @@ export default function AssessmentDashboardPage() {
               >
                 ← Back to Cohorts
               </button>
-              <h3 className="text-lg font-black text-slate-900">{selectedBatch.name} Exams</h3>
+              <h3 className="text-lg font-black text-text-primary">{selectedBatch.name} Exams</h3>
             </div>
           </div>
 
@@ -291,20 +291,20 @@ export default function AssessmentDashboardPage() {
               <div 
                 key={asm.id}
                 onClick={() => setSelectedAsm(asm)}
-                className="p-5 border border-slate-200 hover:border-indigo-500 hover:shadow-md rounded-2xl transition-all cursor-pointer bg-slate-50/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                className="p-5 border border-border hover:border-secondary hover:shadow-md rounded-2xl transition-all cursor-pointer bg-slate-50/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
               >
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold text-slate-400">{asm.id}</span>
+                    <span className="text-[10px] font-bold text-text-secondary">{asm.id}</span>
                     <span className="h-1.5 w-1.5 rounded-full bg-slate-350" />
                     <span className="text-[10px] font-bold text-indigo-650 bg-indigo-55/15 px-2 py-0.2 rounded">{asm.type}</span>
                   </div>
-                  <h4 className="text-base font-black text-slate-900">{asm.title}</h4>
-                  <p className="text-xs text-slate-500">Passing Threshold: {asm.passingMarks}% • Passing Duration: {asm.duration} mins</p>
+                  <h4 className="text-base font-black text-text-primary">{asm.title}</h4>
+                  <p className="text-xs text-text-secondary">Passing Threshold: {asm.passingMarks}% • Passing Duration: {asm.duration} mins</p>
                 </div>
 
                 <div className="flex items-center gap-6 shrink-0">
-                  <span className="text-xs font-semibold text-slate-500">Attempts recorded: {asm.attempts.length}</span>
+                  <span className="text-xs font-semibold text-text-secondary">Attempts recorded: {asm.attempts.length}</span>
                   <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-750 text-white font-bold text-xs uppercase tracking-wider rounded-xl">
                     View Roster
                   </button>
@@ -317,7 +317,7 @@ export default function AssessmentDashboardPage() {
         /* Candidates list and Question stats reviews */
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Candidates */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
+          <div className="bg-white border border-border rounded-2xl p-5 shadow-sm space-y-4">
             <div className="border-b pb-3">
               <button 
                 onClick={() => { setSelectedAsm(null); setSelectedAttempt(null); }} 
@@ -325,7 +325,7 @@ export default function AssessmentDashboardPage() {
               >
                 ← Back to Exams
               </button>
-              <h4 className="text-sm font-black text-slate-900 mt-1">{selectedAsm.title}</h4>
+              <h4 className="text-sm font-black text-text-primary mt-1">{selectedAsm.title}</h4>
             </div>
 
             <div className="space-y-2">
@@ -336,7 +336,7 @@ export default function AssessmentDashboardPage() {
                   className={`p-3 border rounded-xl cursor-pointer transition-all ${
                     selectedAttempt?.studentId === att.studentId 
                       ? 'bg-slate-900 border-slate-850 text-white shadow' 
-                      : 'bg-slate-50 border-slate-200 hover:border-slate-350 text-slate-700'
+                      : 'bg-slate-50 border-border hover:border-secondary text-text-primary'
                   }`}
                 >
                   <div className="flex justify-between items-center text-xs font-bold">
@@ -354,7 +354,7 @@ export default function AssessmentDashboardPage() {
                 </div>
               ))}
               {selectedAsm.attempts.length === 0 && (
-                <p className="text-xs text-slate-550 italic text-center py-12">No submissions recorded.</p>
+                <p className="text-xs text-text-secondary italic text-center py-12">No submissions recorded.</p>
               )}
             </div>
           </div>
@@ -362,12 +362,12 @@ export default function AssessmentDashboardPage() {
           {/* Report Trace */}
           <div className="lg:col-span-2 space-y-6">
             {selectedAttempt ? (
-              <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
+              <div className="bg-white border border-border rounded-2xl p-6 shadow-sm space-y-6">
                 <div className="border-b pb-4 flex justify-between items-start gap-4">
                   <div>
                     <span className="text-[9px] font-bold text-indigo-650 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-sm uppercase tracking-wider">PAPER COMPLIANCE REPORT</span>
-                    <h3 className="text-lg font-black text-slate-900 mt-2">{selectedAttempt.studentName}</h3>
-                    <p className="text-xs text-slate-500">Grading Score: <strong>{selectedAttempt.score}%</strong></p>
+                    <h3 className="text-lg font-black text-text-primary mt-2">{selectedAttempt.studentName}</h3>
+                    <p className="text-xs text-text-secondary">Grading Score: <strong>{selectedAttempt.score}%</strong></p>
                   </div>
                   
                   <span className={`text-xs font-extrabold px-3 py-1 rounded-xl uppercase ${
@@ -380,19 +380,19 @@ export default function AssessmentDashboardPage() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl text-center">
                     <span className="block text-xl font-black text-emerald-700">{selectedAttempt.questionAnalysis.correctCount}</span>
-                    <span className="text-[10px] text-slate-500 font-bold uppercase">Correct answers</span>
+                    <span className="text-[10px] text-text-secondary font-bold uppercase">Correct answers</span>
                   </div>
                   <div className="p-4 bg-rose-50 border border-rose-100 rounded-2xl text-center">
                     <span className="block text-xl font-black text-rose-700">{selectedAttempt.questionAnalysis.wrongCount}</span>
-                    <span className="text-[10px] text-slate-500 font-bold uppercase">Wrong answers</span>
+                    <span className="text-[10px] text-text-secondary font-bold uppercase">Wrong answers</span>
                   </div>
-                  <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center">
-                    <span className="block text-xl font-black text-slate-700">{selectedAttempt.questionAnalysis.skippedCount}</span>
-                    <span className="text-[10px] text-slate-500 font-bold uppercase">Skipped</span>
+                  <div className="p-4 bg-slate-50 border border-border rounded-2xl text-center">
+                    <span className="block text-xl font-black text-text-primary">{selectedAttempt.questionAnalysis.skippedCount}</span>
+                    <span className="text-[10px] text-text-secondary font-bold uppercase">Skipped</span>
                   </div>
                   <div className="p-4 bg-amber-50 border border-amber-100 rounded-2xl text-center">
                     <span className="block text-xl font-black text-amber-700">-{selectedAttempt.questionAnalysis.negativeMarks}</span>
-                    <span className="text-[10px] text-slate-500 font-bold uppercase">Negative Penalties</span>
+                    <span className="text-[10px] text-text-secondary font-bold uppercase">Negative Penalties</span>
                   </div>
                 </div>
 
@@ -406,12 +406,12 @@ export default function AssessmentDashboardPage() {
                         <div className="flex items-center gap-3 shrink-0">
                           <span className={`font-bold px-2 py-0.5 rounded text-[10px] ${
                             det.correct ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' :
-                            det.skipped ? 'bg-slate-100 text-slate-655 border border-slate-200' :
+                            det.skipped ? 'bg-slate-100 text-slate-655 border border-border' :
                             'bg-rose-50 text-rose-700 border border-rose-150'
                           }`}>
                             {det.correct ? 'Correct' : det.skipped ? 'Skipped' : 'Wrong'}
                           </span>
-                          <span className="font-mono font-bold text-slate-800">
+                          <span className="font-mono font-bold text-text-primary">
                             {det.marksGained > 0 ? `+${det.marksGained}` : det.marksGained} marks
                           </span>
                         </div>
@@ -422,7 +422,7 @@ export default function AssessmentDashboardPage() {
 
               </div>
             ) : (
-              <div className="bg-white border border-slate-200 rounded-2xl p-16 text-center text-slate-400 italic shadow-sm">
+              <div className="bg-white border border-border rounded-2xl p-16 text-center text-text-secondary italic shadow-sm">
                 Select a student attempt card from the left panel to review score details and negative marking audits.
               </div>
             )}

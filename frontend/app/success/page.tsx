@@ -57,7 +57,7 @@ function SuccessPageContent() {
   }, [type]);
 
   return (
-    <div className="w-full max-w-lg rounded-2xl bg-white p-8 sm:p-10 text-center shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-200 animate-slide-in">
+    <div className="w-full max-w-lg rounded-2xl bg-white p-8 sm:p-10 text-center shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-border animate-slide-in">
       {/* Toast Notification */}
       {toastConfig.show && (
         <Toast 
@@ -81,7 +81,7 @@ function SuccessPageContent() {
         {isLogin ? "Authentication: Success" : "Application Status: Applied"}
       </div>
 
-      <h2 className="mb-4 text-3xl font-extrabold text-slate-900 leading-tight tracking-tight">
+      <h2 className="mb-4 text-3xl font-extrabold text-text-primary leading-tight tracking-tight">
         {isLogin ? (
           <>Login Successful<br/>Welcome Back</>
         ) : (
@@ -89,7 +89,7 @@ function SuccessPageContent() {
         )}
       </h2>
       
-      <p className="mb-8 text-sm text-slate-500 leading-relaxed px-4">
+      <p className="mb-8 text-sm text-text-secondary leading-relaxed px-4">
         {isLogin ? (
           <>You have successfully authenticated into the <strong>Pinesphere Portal</strong>. You can now access your candidate workspace, track assignments, and view upcoming schedules.</>
         ) : (
@@ -107,7 +107,7 @@ function SuccessPageContent() {
         </svg>
       </Link>
       
-      <div className="border-t border-slate-100 pt-6 mt-8">
+      <div className="border-t border-border pt-6 mt-8">
         <p className="text-xs text-blue-500 font-semibold leading-relaxed">
           {isLogin ? (
             <>Session is active. If this is a public computer,<br/>please remember to sign out when finished.</>
@@ -122,14 +122,14 @@ function SuccessPageContent() {
 
 export default function SuccessPage() {
   return (
-    <div className="min-h-screen bg-[#f8fafc] font-sans flex flex-col justify-between text-slate-800">
+    <div className="min-h-screen bg-[#f8fafc] font-sans flex flex-col justify-between text-text-primary">
       <div>
         {/* Navigation Header */}
-        <header className="h-16 w-full bg-white flex items-center justify-between px-6 lg:px-16 border-b border-slate-100 sticky top-0 z-40 backdrop-blur-md bg-white/90">
+        <header className="h-16 w-full bg-white flex items-center justify-between px-6 lg:px-16 border-b border-border sticky top-0 z-40 backdrop-blur-md bg-white/90">
           <Link href="/" className="flex items-center">
             <img src="/logo.png" alt="Pinesphere Logo" className="h-13.5 w-auto object-contain transition-transform hover:scale-[1.02]" />
           </Link>
-          <Link href="/" className="text-xs font-bold uppercase tracking-wider text-slate-650 hover:text-blue-600 transition-colors flex items-center gap-1.5">
+          <Link href="/" className="text-xs font-bold uppercase tracking-wider text-text-secondary hover:text-blue-600 transition-colors flex items-center gap-1.5">
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -138,14 +138,14 @@ export default function SuccessPage() {
         </header>
 
         <div className="flex flex-1 items-center justify-center px-4 py-20">
-          <Suspense fallback={<div className="p-4 text-center text-gray-500">Loading details...</div>}>
+          <Suspense fallback={<div className="p-4 text-center text-text-secondary">Loading details...</div>}>
             <SuccessPageContent />
           </Suspense>
         </div>
       </div>
 
       {/* Footer */}
-      <footer className="w-full border-t border-slate-150 bg-white py-6 px-8 lg:px-24 flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-bold tracking-wider text-slate-400">
+      <footer className="w-full border-t border-slate-150 bg-white py-6 px-8 lg:px-24 flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-bold tracking-wider text-text-secondary">
         <div>© 2026 PINESPHERE ENTERPRISE. BUILT FOR SCALE.</div>
         <div className="flex gap-6">
           <Link href="#" className="hover:text-blue-600 transition-colors">PRIVACY POLICY</Link>

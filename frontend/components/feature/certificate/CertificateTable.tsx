@@ -52,7 +52,7 @@ export default function CertificateTable({ certificates, loading, onUpdate }: Ce
 
   const getStatusBadge = (status: string) => {
     const map: Record<string, string> = {
-      'Draft': 'bg-slate-100 text-slate-700 border-slate-205',
+      'Draft': 'bg-slate-100 text-text-primary border-slate-205',
       'Pending Approval': 'bg-amber-50 text-amber-700 border-amber-150',
       'Approved': 'bg-blue-50 text-blue-700 border-blue-150',
       'Issued': 'bg-emerald-50 text-emerald-700 border-emerald-150',
@@ -66,24 +66,24 @@ export default function CertificateTable({ certificates, loading, onUpdate }: Ce
   };
 
   return (
-    <div className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden mt-6 font-sans">
+    <div className="bg-white border border-border rounded-2xl shadow-sm overflow-hidden mt-6 font-sans">
       
       {/* Table filters */}
-      <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 bg-slate-50/50">
-        <h2 className="text-sm font-bold text-slate-800 tracking-tight flex items-center gap-2">
+      <div className="p-4 border-b border-border flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 bg-slate-50/50">
+        <h2 className="text-sm font-bold text-text-primary tracking-tight flex items-center gap-2">
           <Award className="h-5 w-5 text-indigo-650 animate-pulse" /> Certificate Repository
         </h2>
         
         <div className="flex flex-col sm:flex-row gap-3">
           {/* Search bar */}
           <div className="relative">
-            <Search className="h-4 w-4 text-slate-450 absolute left-3 top-3" />
+            <Search className="h-4 w-4 text-text-secondary absolute left-3 top-3" />
             <input 
               type="text" 
               placeholder="Search by ID or student..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-white border border-slate-200 rounded-xl pl-9 pr-4 py-2 text-xs focus:outline-none focus:border-indigo-550 font-medium text-slate-700"
+              className="bg-white border border-border rounded-xl pl-9 pr-4 py-2 text-xs focus:outline-none focus:border-primary font-medium text-text-primary"
             />
           </div>
 
@@ -91,7 +91,7 @@ export default function CertificateTable({ certificates, loading, onUpdate }: Ce
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 focus:outline-none cursor-pointer"
+            className="bg-white border border-border rounded-xl px-3 py-2 text-xs font-bold text-text-primary focus:outline-none cursor-pointer"
           >
             <option value="All">All Statuses</option>
             <option value="Issued">Issued (Active)</option>
@@ -102,8 +102,8 @@ export default function CertificateTable({ certificates, loading, onUpdate }: Ce
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-xs text-slate-650 text-left">
-          <thead className="bg-slate-50 text-[10px] uppercase font-bold tracking-wider text-slate-500 border-b border-slate-100">
+        <table className="w-full text-xs text-text-secondary text-left">
+          <thead className="bg-slate-50 text-[10px] uppercase font-bold tracking-wider text-text-secondary border-b border-border">
             <tr>
               <th className="px-5 py-4 font-bold">Certificate Info</th>
               <th className="px-5 py-4 font-bold">Student Details</th>
@@ -111,10 +111,10 @@ export default function CertificateTable({ certificates, loading, onUpdate }: Ce
               <th className="px-5 py-4 font-bold text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-border">
             {loading ? (
               <tr>
-                <td colSpan={4} className="px-5 py-12 text-center text-slate-400 font-semibold">
+                <td colSpan={4} className="px-5 py-12 text-center text-text-secondary font-semibold">
                   <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
                   Loading certificates...
                 </td>
@@ -123,15 +123,15 @@ export default function CertificateTable({ certificates, loading, onUpdate }: Ce
               <tr key={cert.id} className="hover:bg-slate-50/50 transition-colors">
                 <td className="px-5 py-4">
                   <div className="flex flex-col">
-                    <span className="font-bold text-slate-800 text-sm">{cert.type}</span>
-                    <span className="text-[10px] text-slate-400 font-mono mt-0.5">{cert.certificateNumber}</span>
+                    <span className="font-bold text-text-primary text-sm">{cert.type}</span>
+                    <span className="text-[10px] text-text-secondary font-mono mt-0.5">{cert.certificateNumber}</span>
                     <span className="text-[9px] text-slate-405 font-mono mt-0.5">Created: {new Date(cert.createdTime).toLocaleDateString()}</span>
                   </div>
                 </td>
                 <td className="px-5 py-4">
                   <div className="flex flex-col">
                     <span className="font-bold text-slate-850">{cert.studentName}</span>
-                    <span className="text-[10px] text-slate-500 font-medium">{cert.program}</span>
+                    <span className="text-[10px] text-text-secondary font-medium">{cert.program}</span>
                     <span className="text-[9px] text-indigo-650 font-bold mt-0.5">{cert.batch}</span>
                   </div>
                 </td>
@@ -139,18 +139,18 @@ export default function CertificateTable({ certificates, loading, onUpdate }: Ce
                   <div className="flex flex-col items-start gap-1">
                     {getStatusBadge(cert.status)}
                     {cert.approvedBy && (
-                      <span className="text-[9px] text-slate-400 font-bold flex items-center gap-1 mt-1">
+                      <span className="text-[9px] text-text-secondary font-bold flex items-center gap-1 mt-1">
                         <CheckCircle className="h-3 w-3 text-emerald-500" /> Appr: {cert.approvedBy}
                       </span>
                     )}
                   </div>
                 </td>
                 <td className="px-5 py-4 text-right">
-                  <div className="flex items-center justify-end gap-3 text-slate-400">
+                  <div className="flex items-center justify-end gap-3 text-text-secondary">
                     <button
                       onClick={() => setSelectedCert(cert)}
                       title="Verify Details"
-                      className="p-1.5 hover:text-slate-900 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+                      className="p-1.5 hover:text-text-primary bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
                     >
                       <Eye className="h-4 w-4" />
                     </button>
@@ -190,7 +190,7 @@ export default function CertificateTable({ certificates, loading, onUpdate }: Ce
             ))}
             {filteredCertificates.length === 0 && !loading && (
               <tr>
-                <td colSpan={4} className="px-5 py-8 text-center text-slate-400 font-medium">
+                <td colSpan={4} className="px-5 py-8 text-center text-text-secondary font-medium">
                   No matching certificates found.
                 </td>
               </tr>
@@ -212,67 +212,67 @@ export default function CertificateTable({ certificates, loading, onUpdate }: Ce
             
             {/* Verification status header */}
             <div className="flex flex-col items-center justify-center text-center p-5 bg-slate-50 border border-slate-150 rounded-2xl space-y-2">
-              <QrCode className="w-20 h-20 text-slate-800" />
+              <QrCode className="w-20 h-20 text-text-primary" />
               <div className="pt-2">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Verifiable Hash Number</span>
-                <span className="text-xs font-bold text-slate-800 font-mono">{selectedCert.certificateNumber}</span>
+                <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest block">Verifiable Hash Number</span>
+                <span className="text-xs font-bold text-text-primary font-mono">{selectedCert.certificateNumber}</span>
               </div>
               <div className="pt-1">{getStatusBadge(selectedCert.status)}</div>
             </div>
 
             <div className="space-y-4">
-              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-1 flex items-center gap-1.5">
+              <h4 className="text-xs font-bold text-text-secondary uppercase tracking-wider border-b border-border pb-1 flex items-center gap-1.5">
                 <FileText className="w-4 h-4 text-indigo-600" /> Academic Credentials
               </h4>
               <div className="grid grid-cols-2 gap-4 text-xs font-medium">
                 <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Student Candidate</span>
-                  <span className="text-slate-800 font-bold">{selectedCert.studentName}</span>
+                  <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider block">Student Candidate</span>
+                  <span className="text-text-primary font-bold">{selectedCert.studentName}</span>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Training Program</span>
-                  <span className="text-slate-800 font-bold">{selectedCert.program}</span>
+                  <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider block">Training Program</span>
+                  <span className="text-text-primary font-bold">{selectedCert.program}</span>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Batch Designation</span>
-                  <span className="text-slate-800 font-bold">{selectedCert.batch}</span>
+                  <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider block">Batch Designation</span>
+                  <span className="text-text-primary font-bold">{selectedCert.batch}</span>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Certificate Type</span>
-                  <span className="text-slate-800 font-bold">{selectedCert.type}</span>
+                  <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider block">Certificate Type</span>
+                  <span className="text-text-primary font-bold">{selectedCert.type}</span>
                 </div>
               </div>
             </div>
 
             <div className="space-y-4">
-              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-1 flex items-center gap-1.5">
+              <h4 className="text-xs font-bold text-text-secondary uppercase tracking-wider border-b border-border pb-1 flex items-center gap-1.5">
                 <CheckCircle className="w-4 h-4 text-emerald-600" /> Verification Details
               </h4>
               <div className="grid grid-cols-2 gap-4 text-xs font-medium">
                 <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Approved Signatory</span>
+                  <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider block">Approved Signatory</span>
                   <span className="text-slate-850 font-bold">{selectedCert.approvedBy || 'N/A'}</span>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Digital Signature Hash</span>
-                  <span className="text-slate-800 font-mono text-[10px] truncate block max-w-[150px]">{selectedCert.digitalSignatureId || 'N/A'}</span>
+                  <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider block">Digital Signature Hash</span>
+                  <span className="text-text-primary font-mono text-[10px] truncate block max-w-[150px]">{selectedCert.digitalSignatureId || 'N/A'}</span>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Issue Date</span>
+                  <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider block">Issue Date</span>
                   <span className="text-slate-850 font-bold">{selectedCert.issueDate ? new Date(selectedCert.issueDate).toLocaleDateString() : 'N/A'}</span>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Issuer Authority</span>
-                  <span className="text-slate-800 font-bold">{selectedCert.generatedBy}</span>
+                  <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider block">Issuer Authority</span>
+                  <span className="text-text-primary font-bold">{selectedCert.generatedBy}</span>
                 </div>
               </div>
             </div>
 
-            <div className="flex gap-3 pt-6 border-t border-slate-100 mt-auto">
+            <div className="flex gap-3 pt-6 border-t border-border mt-auto">
               <button
                 type="button"
                 onClick={() => setSelectedCert(null)}
-                className="flex-1 py-3 border border-slate-200 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+                className="flex-1 py-3 border border-border text-text-primary font-bold text-xs rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
               >
                 Close Details
               </button>

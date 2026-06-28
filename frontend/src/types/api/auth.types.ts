@@ -36,3 +36,18 @@ export interface AssignPermissionRequest {
   role_id: string;
   permission_id: string;
 }
+
+export interface ForgotPasswordRequest {
+  username: string;
+}
+
+export interface ForgotPasswordVerify {
+  username: string;
+  otp: string;
+}
+
+export interface ForgotPasswordReset {
+  username: string;
+  otp: string;
+  newPassword: string;
+}

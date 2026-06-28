@@ -218,7 +218,7 @@ export default function TaskManagementPage() {
   return (
     <div className="space-y-6 animate-slide-in select-none">
       {toastMessage && (
-        <div className="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 bg-slate-900 border border-slate-800 text-white rounded-xl shadow-2xl animate-bounce-in">
+        <div className="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 bg-slate-900 border border-border text-white rounded-xl shadow-2xl animate-bounce-in">
           <CheckCircle className="h-5 w-5 text-emerald-400 shrink-0" />
           <div className="text-xs font-semibold">{toastMessage}</div>
         </div>
@@ -226,55 +226,55 @@ export default function TaskManagementPage() {
 
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-black text-slate-900 tracking-tight">Task Management</h2>
-        <p className="text-sm text-slate-500 mt-1">Grade student deliverables, write review comments, and publish new milestone tasks.</p>
+        <h2 className="text-2xl font-black text-text-primary tracking-tight">Task Management</h2>
+        <p className="text-sm text-text-secondary mt-1">Grade student deliverables, write review comments, and publish new milestone tasks.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Left Column: Create Task Form */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-5">
+        <div className="bg-white border border-border rounded-2xl p-6 shadow-sm space-y-5">
           <h3 className="font-bold text-xs text-slate-455 uppercase tracking-widest border-b pb-2">Publish Task</h3>
           
           <form onSubmit={handleCreateTask} className="space-y-4">
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-slate-400 uppercase">Task Title</label>
+              <label className="text-[10px] font-bold text-text-secondary uppercase">Task Title</label>
               <input 
                 type="text" 
                 required
                 value={newTaskTitle}
                 onChange={(e) => setNewTaskTitle(e.target.value)}
                 placeholder="e.g. Build Backend Auth Middleware"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:border-indigo-500 focus:bg-white"
+                className="w-full bg-slate-50 border border-border rounded-xl px-3.5 py-2.5 text-xs text-text-primary outline-none focus:border-primary focus:bg-white"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-slate-400 uppercase">Description</label>
+              <label className="text-[10px] font-bold text-text-secondary uppercase">Description</label>
               <textarea 
                 rows={3} 
                 required
                 value={newTaskDesc}
                 onChange={(e) => setNewTaskDesc(e.target.value)}
                 placeholder="Detail core requirements, routing specs, and testing criteria."
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none resize-none leading-relaxed focus:border-indigo-500 focus:bg-white"
+                className="w-full bg-slate-50 border border-border rounded-xl px-3.5 py-2.5 text-xs text-text-primary outline-none resize-none leading-relaxed focus:border-primary focus:bg-white"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-slate-400 uppercase">Due Date</label>
+              <label className="text-[10px] font-bold text-text-secondary uppercase">Due Date</label>
               <input 
                 type="date" 
                 required
                 value={newDueDate}
                 onChange={(e) => setNewDueDate(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-700 outline-none cursor-pointer"
+                className="w-full bg-slate-50 border border-border rounded-xl px-3.5 py-2 text-xs font-bold text-text-primary outline-none cursor-pointer"
               />
             </div>
 
             {/* Checkboxes for required deliverables */}
             <div className="space-y-2 border-t pt-3">
-              <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide">Required Deliverables</span>
+              <span className="block text-[10px] font-bold text-text-secondary uppercase tracking-wide">Required Deliverables</span>
               {[
                 { label: 'GitHub Repository Link', active: reqGithub, setter: setReqGithub },
                 { label: 'Live Deployment URL', active: reqDeploy, setter: setReqDeploy },
@@ -288,9 +288,9 @@ export default function TaskManagementPage() {
                     id={`req_${idx}`}
                     checked={item.active} 
                     onChange={(e) => item.setter(e.target.checked)}
-                    className="h-3.5 w-3.5 text-indigo-650 rounded border-slate-300 cursor-pointer" 
+                    className="h-3.5 w-3.5 text-indigo-650 rounded border-border cursor-pointer" 
                   />
-                  <label htmlFor={`req_${idx}`} className="font-bold text-slate-700 cursor-pointer select-none">{item.label}</label>
+                  <label htmlFor={`req_${idx}`} className="font-bold text-label cursor-pointer select-none">{item.label}</label>
                 </div>
               ))}
             </div>
@@ -306,7 +306,7 @@ export default function TaskManagementPage() {
 
         {/* Right Columns: Submissions and Grading Panel */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
+          <div className="bg-white border border-border rounded-2xl p-6 shadow-sm space-y-6">
             
             <div className="flex items-center justify-between border-b pb-4">
               <div>
@@ -314,7 +314,7 @@ export default function TaskManagementPage() {
                 <select 
                   value={selectedTaskId}
                   onChange={(e) => { setSelectedTaskId(e.target.value); setSelectedSub(null); }}
-                  className="block mt-2 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-xs font-bold text-slate-700 outline-none cursor-pointer"
+                  className="block mt-2 bg-slate-50 border border-border rounded-xl px-4 py-2 text-xs font-bold text-text-primary outline-none cursor-pointer"
                 >
                   {tasks.map(t => (
                     <option key={t.id} value={t.id}>{t.title} ({t.id})</option>
@@ -327,7 +327,7 @@ export default function TaskManagementPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Submission Roster Cards */}
               <div className="space-y-3">
-                <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Candidate Submissions</span>
+                <span className="block text-[10px] font-bold text-text-secondary uppercase tracking-wider">Candidate Submissions</span>
                 
                 {submissions.map(sub => (
                   <div 
@@ -336,7 +336,7 @@ export default function TaskManagementPage() {
                     className={`p-4 border rounded-2xl cursor-pointer transition-all ${
                       selectedSub?.studentId === sub.studentId 
                         ? 'bg-slate-900 border-slate-850 text-white shadow-xl translate-x-1' 
-                        : 'bg-slate-50 border-slate-150 hover:border-slate-350 text-slate-800'
+                        : 'bg-slate-50 border-slate-150 hover:border-secondary text-text-primary'
                     }`}
                   >
                     <div className="flex justify-between items-start">
@@ -348,7 +348,7 @@ export default function TaskManagementPage() {
                       </span>
                     </div>
 
-                    <div className="flex justify-between items-center text-[10px] opacity-80 mt-3 pt-3 border-t border-slate-200/50">
+                    <div className="flex justify-between items-center text-[10px] opacity-80 mt-3 pt-3 border-t border-border/50">
                       <span>Submitted: {sub.submittedAt.slice(0, 10)}</span>
                       <span>Score: {sub.status === 'Graded' ? `${sub.score}/100` : 'Pending'}</span>
                     </div>
@@ -365,7 +365,7 @@ export default function TaskManagementPage() {
                     </span>
                     
                     <div>
-                      <h4 className="font-bold text-xs text-slate-800">{selectedSub.studentName} Solution</h4>
+                      <h4 className="font-bold text-xs text-text-primary">{selectedSub.studentName} Solution</h4>
                       
                       {/* Code credentials buttons */}
                       <div className="space-y-2 mt-3">
@@ -374,9 +374,9 @@ export default function TaskManagementPage() {
                             href={selectedSub.githubUrl} 
                             target="_blank" 
                             rel="noreferrer" 
-                            className="flex items-center gap-2 p-2 bg-white border border-slate-200 rounded-lg hover:border-indigo-500 transition-colors text-[10px] text-slate-655 font-bold"
+                            className="flex items-center gap-2 p-2 bg-white border border-border rounded-lg hover:border-secondary transition-colors text-[10px] text-slate-655 font-bold"
                           >
-                            <GitBranch className="h-4 w-4 text-slate-700" />
+                            <GitBranch className="h-4 w-4 text-text-primary" />
                             <span className="truncate">Repository: {selectedSub.githubUrl}</span>
                           </a>
                         )}
@@ -385,7 +385,7 @@ export default function TaskManagementPage() {
                             href={selectedSub.videoUrl} 
                             target="_blank" 
                             rel="noreferrer" 
-                            className="flex items-center gap-2 p-2 bg-white border border-slate-200 rounded-lg hover:border-indigo-500 transition-colors text-[10px] text-slate-655 font-bold"
+                            className="flex items-center gap-2 p-2 bg-white border border-border rounded-lg hover:border-secondary transition-colors text-[10px] text-slate-655 font-bold"
                           >
                             <Video className="h-4 w-4 text-rose-500" />
                             <span className="truncate">Walkthrough Video</span>
@@ -396,7 +396,7 @@ export default function TaskManagementPage() {
 
                     <form onSubmit={handlePostGrade} className="space-y-4 pt-3 border-t">
                       <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-slate-400 uppercase">Assessment Score (0-100)</label>
+                        <label className="text-[9px] font-bold text-text-secondary uppercase">Assessment Score (0-100)</label>
                         <input 
                           type="number" 
                           min={0}
@@ -404,19 +404,19 @@ export default function TaskManagementPage() {
                           required
                           value={inputScore}
                           onChange={(e) => setInputScore(parseInt(e.target.value) || 0)}
-                          className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold text-slate-800 outline-none"
+                          className="w-full bg-white border border-border rounded-lg px-3 py-2 text-xs font-bold text-text-primary outline-none"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-slate-400 uppercase">Feedback Comment</label>
+                        <label className="text-[9px] font-bold text-text-secondary uppercase">Feedback Comment</label>
                         <textarea 
                           rows={2} 
                           required
                           value={inputFeedback}
                           onChange={(e) => setInputFeedback(e.target.value)}
                           placeholder="e.g. Beautiful layout styling, clean middleware routers."
-                          className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-800 outline-none resize-none leading-relaxed"
+                          className="w-full bg-white border border-border rounded-lg px-3 py-2 text-xs text-text-primary outline-none resize-none leading-relaxed"
                         />
                       </div>
 
@@ -429,7 +429,7 @@ export default function TaskManagementPage() {
                     </form>
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-400 italic text-center py-16">
+                  <p className="text-xs text-text-secondary italic text-center py-16">
                     Select a student submission card from the left panel to review solution repo links and publish grades.
                   </p>
                 )}

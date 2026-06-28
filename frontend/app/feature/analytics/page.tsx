@@ -48,11 +48,11 @@ function AttendanceTrendChart({ data }: { data: AnalyticsDataPoint[] }) {
   areaPath += ` L ${getX(0)} ${paddingTop + chartHeight} Z`;
 
   return (
-    <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm">
+    <div className="bg-white border border-border rounded-2xl p-6 shadow-sm">
       <div className="flex justify-between items-center mb-5">
         <div>
-          <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">30-Day Attendance Trend</h3>
-          <p className="text-[11px] text-slate-400 mt-0.5 font-medium">Daily average attendance rate across batches</p>
+          <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider">30-Day Attendance Trend</h3>
+          <p className="text-[11px] text-text-secondary mt-0.5 font-medium">Daily average attendance rate across batches</p>
         </div>
         <div className="text-right">
           <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-100 px-3 py-1 rounded-full font-bold">
@@ -189,7 +189,7 @@ export default function AnalyticsDashboardPage() {
 
   if (!hasPermission('analytics.view')) {
     return (
-      <div className="flex h-[50vh] items-center justify-center text-slate-500 font-sans">
+      <div className="flex h-[50vh] items-center justify-center text-text-secondary font-sans">
         <p className="font-semibold">You do not have permission to view analytics.</p>
       </div>
     );
@@ -209,21 +209,21 @@ export default function AnalyticsDashboardPage() {
       {/* Header section */}
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2 tracking-tight">
+          <h1 className="text-2xl font-bold text-text-primary flex items-center gap-2 tracking-tight">
             <LineChart className="w-6 h-6 text-indigo-650" />
             Enterprise Analytics Dashboard
           </h1>
-          <p className="text-slate-500 text-sm mt-0.5">High-level insights into organization performance, academic metrics, and batch attendance.</p>
+          <p className="text-text-secondary text-sm mt-0.5">High-level insights into organization performance, academic metrics, and batch attendance.</p>
         </div>
 
         <div className="flex items-center gap-3">
           {/* Date range filter selector */}
-          <div className="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-200 text-xs">
-            <Calendar className="w-3.5 h-3.5 text-slate-500 ml-1" />
+          <div className="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-border text-xs">
+            <Calendar className="w-3.5 h-3.5 text-text-secondary ml-1" />
             <select
               value={dateFilter}
               onChange={(e) => setDateFilter(e.target.value)}
-              className="bg-transparent font-bold text-slate-700 focus:outline-none cursor-pointer pr-1"
+              className="bg-transparent font-bold text-text-primary focus:outline-none cursor-pointer pr-1"
             >
               <option value="30d">Last 30 Days</option>
               <option value="90d">Last 3 Months</option>
@@ -255,30 +255,30 @@ export default function AnalyticsDashboardPage() {
 
       {/* Numerical Indicator stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between text-slate-500 mb-2">
+        <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between text-text-secondary mb-2">
             <span className="text-xs font-bold uppercase tracking-wider">Total Students</span>
             <Users className="w-4 h-4 text-indigo-500" />
           </div>
           <div>
-            <div className="text-2xl font-extrabold text-slate-800 font-mono tracking-tight">{summary.totalStudents.toLocaleString()}</div>
-            <p className="text-[10px] text-slate-400 font-semibold mt-1.5 uppercase tracking-wide">Registered Accounts</p>
+            <div className="text-2xl font-extrabold text-text-primary font-mono tracking-tight">{summary.totalStudents.toLocaleString()}</div>
+            <p className="text-[10px] text-text-secondary font-semibold mt-1.5 uppercase tracking-wide">Registered Accounts</p>
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between text-slate-500 mb-2">
+        <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between text-text-secondary mb-2">
             <span className="text-xs font-bold uppercase tracking-wider">Active Interns</span>
             <Activity className="w-4 h-4 text-fuchsia-500" />
           </div>
           <div>
-            <div className="text-2xl font-extrabold text-slate-800 font-mono tracking-tight">{summary.activeInterns.toLocaleString()}</div>
-            <p className="text-[10px] text-slate-400 font-semibold mt-1.5 uppercase tracking-wide">In active training</p>
+            <div className="text-2xl font-extrabold text-text-primary font-mono tracking-tight">{summary.activeInterns.toLocaleString()}</div>
+            <p className="text-[10px] text-text-secondary font-semibold mt-1.5 uppercase tracking-wide">In active training</p>
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between text-slate-500 mb-2">
+        <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between text-text-secondary mb-2">
             <span className="text-xs font-bold uppercase tracking-wider">Placement Rate</span>
             <Briefcase className="w-4 h-4 text-emerald-500" />
           </div>
@@ -288,8 +288,8 @@ export default function AnalyticsDashboardPage() {
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between text-slate-500 mb-2">
+        <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between text-text-secondary mb-2">
             <span className="text-xs font-bold uppercase tracking-wider">Completion Rate</span>
             <GraduationCap className="w-4 h-4 text-blue-500" />
           </div>
@@ -316,15 +316,15 @@ export default function AnalyticsDashboardPage() {
           <div>
             <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block">Audit Credentials</span>
             <h2 className="text-base font-bold mb-1 mt-0.5 text-slate-100">Certificates Issued</h2>
-            <p className="text-slate-400 text-[11px] mb-6">Verified digital credentials generated</p>
+            <p className="text-text-secondary text-[11px] mb-6">Verified digital credentials generated</p>
             <div className="text-4xl font-extrabold text-white font-mono tracking-tight">{summary.certificatesIssued.toLocaleString()}</div>
             <p className="text-emerald-400 text-xs font-bold mt-2 flex items-center gap-1">
               <span>+12% growth rate</span>
             </p>
           </div>
           
-          <div className="mt-6 pt-5 border-t border-slate-800">
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Average Course Score</h3>
+          <div className="mt-6 pt-5 border-t border-border">
+            <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-1">Average Course Score</h3>
             <div className="text-2xl font-extrabold text-white font-mono tracking-tight">{summary.averageScore}%</div>
           </div>
         </div>
@@ -332,17 +332,17 @@ export default function AnalyticsDashboardPage() {
 
       {/* Program-specific bar performance */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 lg:col-span-2 space-y-4">
-          <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
-            <BarChart4 className="w-5 h-5 text-slate-400" />
+        <div className="bg-white rounded-2xl border border-border shadow-sm p-6 lg:col-span-2 space-y-4">
+          <h2 className="text-sm font-bold text-text-primary uppercase tracking-wider flex items-center gap-2">
+            <BarChart4 className="w-5 h-5 text-text-secondary" />
             Top Performing Programs
           </h2>
           <div className="space-y-4 pt-1">
             {programs.map(program => (
               <div key={program.id} className="space-y-1.5">
                 <div className="flex justify-between text-xs font-semibold">
-                  <span className="text-slate-700">{program.name}</span>
-                  <span className="text-slate-400 font-mono">{program.value.toLocaleString()} Accounts ({program.percentage}%)</span>
+                  <span className="text-text-primary">{program.name}</span>
+                  <span className="text-text-secondary font-mono">{program.value.toLocaleString()} Accounts ({program.percentage}%)</span>
                 </div>
                 <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
                   <div 
@@ -356,25 +356,25 @@ export default function AnalyticsDashboardPage() {
         </div>
 
         {/* Quick Insights advisories */}
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 flex flex-col justify-between">
+        <div className="bg-white rounded-2xl border border-border shadow-sm p-6 flex flex-col justify-between">
           <div>
-            <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-3">Enterprise Insights</h2>
+            <h2 className="text-sm font-bold text-text-primary uppercase tracking-wider mb-3">Enterprise Insights</h2>
             <div className="space-y-3">
               <div className="flex items-start gap-2.5">
                 <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                <p className="text-xs font-medium text-slate-600 leading-normal">
+                <p className="text-xs font-medium text-text-secondary leading-normal">
                   **Web Development** remains the largest program driving 36% of overall student enrollment.
                 </p>
               </div>
               <div className="flex items-start gap-2.5">
                 <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                <p className="text-xs font-medium text-slate-600 leading-normal">
+                <p className="text-xs font-medium text-text-secondary leading-normal">
                   Placement rate target achieved at **76.8%**, indicating high employer engagement this cycle.
                 </p>
               </div>
             </div>
           </div>
-          <div className="pt-4 mt-4 border-t border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+          <div className="pt-4 mt-4 border-t border-border text-[10px] font-bold text-text-secondary uppercase tracking-wider">
             Verified Audited Stats ✓
           </div>
         </div>

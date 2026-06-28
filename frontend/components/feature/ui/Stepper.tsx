@@ -8,7 +8,7 @@ interface StepperProps {
 
 export function Stepper({ steps, currentStep }: StepperProps) {
   return (
-    <div className="w-full px-16 pt-6 pb-12 mb-2 bg-slate-50/50 border-b border-slate-100">
+    <div className="w-full px-16 pt-6 pb-12 mb-2 bg-slate-50/50 border-b border-border">
       <div className="flex items-center justify-between relative">
         {/* Progress bar background */}
         <div className="absolute left-0 top-1/2 h-0.5 w-full -translate-y-1/2 bg-slate-100 z-0" />
@@ -31,14 +31,14 @@ export function Stepper({ steps, currentStep }: StepperProps) {
                     ? 'border-blue-600 bg-blue-600 text-white' 
                     : isCurrent 
                       ? 'border-blue-600 text-blue-600' 
-                      : 'border-slate-200 text-slate-400'
+                      : 'border-border text-text-secondary'
                 }`}
               >
                 {isCompleted ? <Check className="h-4 w-4" /> : <span className="text-sm font-medium">{index + 1}</span>}
               </div>
               <span 
                 className={`mt-2 text-xs font-medium whitespace-nowrap absolute top-10 transition-colors duration-300 ${
-                  isCurrent ? 'text-blue-600' : isCompleted ? 'text-slate-900' : 'text-slate-400'
+                  isCurrent ? 'text-blue-600' : isCompleted ? 'text-text-primary' : 'text-text-secondary'
                 }`}
               >
                 {step}
