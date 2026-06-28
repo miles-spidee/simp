@@ -1,6 +1,7 @@
-import { MentorProfile, MOCK_MENTOR_PROFILES } from '../data/mock-mentors';
-import { MentorAssignment, MOCK_MENTOR_ASSIGNMENTS } from '../data/mock-mentor-assignments';
-import { MentorBatchMapping, MOCK_MENTOR_BATCH_MAPPINGS } from '../data/mock-mentor-batch-mappings';
+import { MentorProfile, MentorAssignment, MentorBatchMapping } from '../types/api/mentor.types';
+import { MOCK_MENTOR_PROFILES } from '../data/mock-mentors';
+import { MOCK_MENTOR_ASSIGNMENTS } from '../data/mock-mentor-assignments';
+import { MOCK_MENTOR_BATCH_MAPPINGS } from '../data/mock-mentor-batch-mappings';
 import { mentorApi } from '../api/mentor.api';
 
 export const mentorService = {
