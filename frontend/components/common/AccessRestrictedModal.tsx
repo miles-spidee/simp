@@ -37,12 +37,12 @@ export function AccessRestricted({
 
   if (variant === 'page') {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] w-full p-8 text-center bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
+      <div className="flex flex-col items-center justify-center min-h-[400px] w-full p-8 text-center bg-slate-50/50 rounded-2xl border border-dashed border-border">
         <div className="h-16 w-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-4">
           <ShieldAlert className="h-8 w-8" />
         </div>
-        <h2 className="text-xl font-bold text-slate-900 mb-2">Access Restricted</h2>
-        <p className="text-slate-500 max-w-md">{message}</p>
+        <h2 className="text-xl font-bold text-text-primary mb-2">Access Restricted</h2>
+        <p className="text-text-secondary max-w-md">{message}</p>
       </div>
     );
   }
@@ -59,14 +59,14 @@ export function AccessRestricted({
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-100 mb-5">
             <ShieldAlert className="h-7 w-7 text-red-600" />
           </div>
-          <h3 className="text-lg font-bold text-slate-900 mb-2">Access Restricted</h3>
-          <p className="text-sm text-slate-500 leading-relaxed mb-6">
+          <h3 className="text-lg font-bold text-text-primary mb-2">Access Restricted</h3>
+          <p className="text-sm text-text-secondary leading-relaxed mb-6">
             {message}
           </p>
           <div className="flex justify-center">
             <button
               onClick={onClose}
-              className="inline-flex justify-center px-6 py-2.5 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+              className="inline-flex justify-center px-6 py-2.5 text-sm font-semibold text-text-primary bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
             >
               Dismiss
             </button>

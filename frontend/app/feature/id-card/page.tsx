@@ -714,7 +714,7 @@ export default function IDCardPage() {
 
   if (!hasPermission('idcard.view')) {
     return (
-      <div className="flex h-[50vh] items-center justify-center text-slate-500 font-sans">
+      <div className="flex h-[50vh] items-center justify-center text-text-secondary font-sans">
         <p className="font-semibold">You do not have permission to view ID cards.</p>
       </div>
     );
@@ -826,7 +826,7 @@ export default function IDCardPage() {
           {el.type === 'qr' && (
             <div className="w-full h-full bg-white border border-slate-205 p-1 flex items-center justify-center text-black relative select-none">
               <QrCode className="w-full h-full text-slate-850 opacity-90" />
-              <span className="absolute bg-white px-1 text-[6px] font-bold tracking-widest text-slate-500 uppercase bottom-0">VERIFY</span>
+              <span className="absolute bg-white px-1 text-[6px] font-bold tracking-widest text-text-secondary uppercase bottom-0">VERIFY</span>
             </div>
           )}
         </div>
@@ -852,15 +852,15 @@ export default function IDCardPage() {
             <IdCard size={24} />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Digital Identity Center</h1>
-            <p className="text-sm text-slate-500 mt-0.5">Access and manage your official enterprise digital identity card.</p>
+            <h1 className="text-2xl font-bold text-text-primary tracking-tight">Digital Identity Center</h1>
+            <p className="text-sm text-text-secondary mt-0.5">Access and manage your official enterprise digital identity card.</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           {hasPermission('idcard.print') && (
             <button
               onClick={handlePrint}
-              className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2.5 rounded-xl font-medium text-sm transition-all flex items-center gap-2 shadow-sm hover:shadow-md cursor-pointer"
+              className="bg-white border border-border hover:bg-slate-50 text-text-primary px-4 py-2.5 rounded-xl font-medium text-sm transition-all flex items-center gap-2 shadow-sm hover:shadow-md cursor-pointer"
             >
               <Printer className="w-4 h-4" />
               Print Card
@@ -925,8 +925,8 @@ export default function IDCardPage() {
         <div className="lg:col-span-5 flex flex-col items-center">
           <div className="w-full bg-white/80 backdrop-blur-xl border border-white/40 rounded-2xl shadow-lg p-6 flex flex-col items-center">
             <div className="mb-4 text-center">
-              <span className="text-[10px] uppercase tracking-widest font-bold text-slate-400">3D Interactive Preview</span>
-              <p className="text-xs text-slate-400 mt-1">Click the card to flip between front and back</p>
+              <span className="text-[10px] uppercase tracking-widest font-bold text-text-secondary">3D Interactive Preview</span>
+              <p className="text-xs text-helper mt-1">Click the card to flip between front and back</p>
             </div>
 
             {/* Interactive Card Body Container */}
@@ -943,7 +943,7 @@ export default function IDCardPage() {
                   style={{
                     background: resolveBackground(frontBg)
                   }}
-                  className="absolute inset-0 w-full h-full [backface-visibility:hidden] rounded-3xl overflow-hidden shadow-lg border border-slate-200/80"
+                  className="absolute inset-0 w-full h-full [backface-visibility:hidden] rounded-3xl overflow-hidden shadow-lg border border-border/80"
                 >
                   {renderSideElements(frontElements)}
                 </div>
@@ -953,7 +953,7 @@ export default function IDCardPage() {
                   style={{
                     background: resolveBackground(backBg)
                   }}
-                  className="absolute inset-0 w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-3xl overflow-hidden shadow-lg border border-slate-200/80"
+                  className="absolute inset-0 w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-3xl overflow-hidden shadow-lg border border-border/80"
                 >
                   {renderSideElements(backElements)}
                 </div>
@@ -980,7 +980,7 @@ export default function IDCardPage() {
                 <div className="h-9 w-9 mx-auto rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Printer className="w-4 h-4" />
                 </div>
-                <p className="text-xs font-semibold text-slate-700 mt-2">Print Card</p>
+                <p className="text-xs font-semibold text-text-primary mt-2">Print Card</p>
               </button>
             )}
             {hasPermission('idcard.download') && (
@@ -991,7 +991,7 @@ export default function IDCardPage() {
                 <div className="h-9 w-9 mx-auto rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Download className="w-4 h-4" />
                 </div>
-                <p className="text-xs font-semibold text-slate-700 mt-2">Download</p>
+                <p className="text-xs font-semibold text-text-primary mt-2">Download</p>
               </button>
             )}
           </div>
@@ -1007,8 +1007,8 @@ export default function IDCardPage() {
                 {card.studentName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
               </div>
               <div>
-                <h3 className="text-lg font-bold text-slate-900">{card.studentName}</h3>
-                <p className="text-sm text-slate-500">{card.program}</p>
+                <h3 className="text-lg font-bold text-text-primary">{card.studentName}</h3>
+                <p className="text-sm text-text-secondary">{card.program}</p>
                 <span className={`inline-block mt-1 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full ${
                   card.status === 'Active' ? 'bg-emerald-100 text-emerald-700' :
                   card.status === 'Expired' ? 'bg-rose-100 text-rose-700' :
@@ -1026,69 +1026,69 @@ export default function IDCardPage() {
                   <div className="h-5 w-5 rounded-md bg-blue-100 text-blue-600 flex items-center justify-center">
                     <IdCard className="w-3 h-3" />
                   </div>
-                  <p className="text-[10px] font-semibold text-slate-400 uppercase">Card Number</p>
+                  <p className="text-[10px] font-semibold text-text-secondary uppercase">Card Number</p>
                 </div>
-                <p className="text-sm font-bold text-slate-800 font-mono">{card.cardNumber}</p>
+                <p className="text-sm font-bold text-text-primary font-mono">{card.cardNumber}</p>
               </div>
               <div className="bg-slate-50 rounded-xl p-3">
                 <div className="flex items-center gap-1.5 mb-1.5">
                   <div className="h-5 w-5 rounded-md bg-violet-100 text-violet-600 flex items-center justify-center">
                     <QrCode className="w-3 h-3" />
                   </div>
-                  <p className="text-[10px] font-semibold text-slate-400 uppercase">Employee ID</p>
+                  <p className="text-[10px] font-semibold text-text-secondary uppercase">Employee ID</p>
                 </div>
-                <p className="text-sm font-bold text-slate-800 font-mono">{card.studentId}</p>
+                <p className="text-sm font-bold text-text-primary font-mono">{card.studentId}</p>
               </div>
               <div className="bg-slate-50 rounded-xl p-3">
                 <div className="flex items-center gap-1.5 mb-1.5">
                   <div className="h-5 w-5 rounded-md bg-emerald-100 text-emerald-600 flex items-center justify-center">
                     <ShieldCheck className="w-3 h-3" />
                   </div>
-                  <p className="text-[10px] font-semibold text-slate-400 uppercase">Department</p>
+                  <p className="text-[10px] font-semibold text-text-secondary uppercase">Department</p>
                 </div>
-                <p className="text-sm font-bold text-slate-800">{card.department}</p>
+                <p className="text-sm font-bold text-text-primary">{card.department}</p>
               </div>
               <div className="bg-slate-50 rounded-xl p-3">
                 <div className="flex items-center gap-1.5 mb-1.5">
                   <div className="h-5 w-5 rounded-md bg-rose-100 text-rose-600 flex items-center justify-center">
                     <ShieldCheck className="w-3 h-3" />
                   </div>
-                  <p className="text-[10px] font-semibold text-slate-400 uppercase">Blood Group</p>
+                  <p className="text-[10px] font-semibold text-text-secondary uppercase">Blood Group</p>
                 </div>
-                <p className="text-sm font-bold text-slate-800">{card.bloodGroup}</p>
+                <p className="text-sm font-bold text-text-primary">{card.bloodGroup}</p>
               </div>
               <div className="bg-slate-50 rounded-xl p-3">
                 <div className="flex items-center gap-1.5 mb-1.5">
                   <div className="h-5 w-5 rounded-md bg-amber-100 text-amber-600 flex items-center justify-center">
                     <IdCard className="w-3 h-3" />
                   </div>
-                  <p className="text-[10px] font-semibold text-slate-400 uppercase">Batch</p>
+                  <p className="text-[10px] font-semibold text-text-secondary uppercase">Batch</p>
                 </div>
-                <p className="text-sm font-bold text-slate-800">{card.batch}</p>
+                <p className="text-sm font-bold text-text-primary">{card.batch}</p>
               </div>
               <div className="bg-slate-50 rounded-xl p-3">
                 <div className="flex items-center gap-1.5 mb-1.5">
                   <div className="h-5 w-5 rounded-md bg-teal-100 text-teal-600 flex items-center justify-center">
                     <ShieldCheck className="w-3 h-3" />
                   </div>
-                  <p className="text-[10px] font-semibold text-slate-400 uppercase">Emergency</p>
+                  <p className="text-[10px] font-semibold text-text-secondary uppercase">Emergency</p>
                 </div>
-                <p className="text-sm font-bold text-slate-800">{card.emergencyContact}</p>
+                <p className="text-sm font-bold text-text-primary">{card.emergencyContact}</p>
               </div>
             </div>
           </div>
 
           {/* Validity Timeline */}
           <div className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-2xl shadow-lg p-6">
-            <h3 className="text-sm font-bold text-slate-900 mb-4">Card Validity Period</h3>
+            <h3 className="text-sm font-bold text-text-primary mb-4">Card Validity Period</h3>
             <div className="flex items-center justify-between mb-3">
               <div>
-                <p className="text-[10px] font-semibold text-slate-400 uppercase">Issue Date</p>
-                <p className="text-sm font-bold text-slate-800 mt-0.5">{issueDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
+                <p className="text-[10px] font-semibold text-text-secondary uppercase">Issue Date</p>
+                <p className="text-sm font-bold text-text-primary mt-0.5">{issueDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
               </div>
               <div className="text-right">
-                <p className="text-[10px] font-semibold text-slate-400 uppercase">Expiry Date</p>
-                <p className="text-sm font-bold text-slate-800 mt-0.5">{expiryDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
+                <p className="text-[10px] font-semibold text-text-secondary uppercase">Expiry Date</p>
+                <p className="text-sm font-bold text-text-primary mt-0.5">{expiryDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
               </div>
             </div>
             <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
@@ -1100,7 +1100,7 @@ export default function IDCardPage() {
               />
             </div>
             <div className="flex items-center justify-between mt-2">
-              <span className="text-[10px] font-semibold text-slate-400">
+              <span className="text-[10px] font-semibold text-text-secondary">
                 {Math.ceil(elapsed / (1000 * 60 * 60 * 24))} days elapsed
               </span>
               <span className={`text-[10px] font-bold ${isExpired ? 'text-rose-600' : isExpiringSoon ? 'text-amber-600' : 'text-emerald-600'}`}>
@@ -1117,12 +1117,12 @@ export default function IDCardPage() {
               </div>
               <div>
                 <h3 className="text-sm font-bold text-white">Security Advisory</h3>
-                <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                <p className="text-xs text-helper mt-1 leading-relaxed">
                   Your digital ID card serves as official proof of identity within the Pinesphere ecosystem.
                   Keep it secure and do not share the verification QR code publicly. Report any unauthorized
                   access or card misuse to the security desk immediately.
                 </p>
-                <div className="flex gap-4 mt-3 pt-3 border-t border-slate-700 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                <div className="flex gap-4 mt-3 pt-3 border-t border-border text-[10px] font-bold text-text-secondary uppercase tracking-wider">
                   <span>Verified ✓</span>
                   <span>Card ID: {card.cardNumber}</span>
                   <span>Issued: {issueDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>

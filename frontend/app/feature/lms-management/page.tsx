@@ -235,7 +235,7 @@ export default function LMSManagementPage() {
   return (
     <div className="space-y-6 animate-slide-in select-none">
       {toastMessage && (
-        <div className="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 bg-slate-900 border border-slate-800 text-white rounded-xl shadow-2xl animate-bounce-in">
+        <div className="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 bg-slate-900 border border-border text-white rounded-xl shadow-2xl animate-bounce-in">
           <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
           <div className="text-xs font-semibold">{toastMessage}</div>
         </div>
@@ -244,8 +244,8 @@ export default function LMSManagementPage() {
       {/* Header */}
       <div className="flex justify-between items-end">
         <div>
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight">LMS Management</h2>
-          <p className="text-sm text-slate-550 mt-1">Configure pathways, publish course items, and apply player seeking timers.</p>
+          <h2 className="text-2xl font-black text-text-primary tracking-tight">LMS Management</h2>
+          <p className="text-sm text-text-secondary mt-1">Configure pathways, publish course items, and apply player seeking timers.</p>
         </div>
         {viewMode === 'list' && (
           <button 
@@ -261,7 +261,7 @@ export default function LMSManagementPage() {
       {viewMode === 'list' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
           {courses.map((course) => (
-            <div key={course.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+            <div key={course.id} className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
               <div className="h-32 bg-slate-100 relative">
                 {course.thumbnail ? (
                   <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
@@ -270,7 +270,7 @@ export default function LMSManagementPage() {
                     <Image className="h-8 w-8 text-slate-300" />
                   </div>
                 )}
-                <div className="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded text-[10px] font-bold text-slate-700">
+                <div className="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded text-[10px] font-bold text-text-primary">
                   {course.modules.length} Modules
                 </div>
               </div>
@@ -279,10 +279,10 @@ export default function LMSManagementPage() {
                   <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded uppercase tracking-wider">
                     {course.program}
                   </span>
-                  <h3 className="font-bold text-slate-800 mt-2 line-clamp-1">{course.title}</h3>
-                  <p className="text-xs text-slate-500 mt-1 line-clamp-2">{course.description}</p>
+                  <h3 className="font-bold text-text-primary mt-2 line-clamp-1">{course.title}</h3>
+                  <p className="text-xs text-helper mt-1 line-clamp-2">{course.description}</p>
                 </div>
-                <div className="pt-3 border-t border-slate-100 flex justify-between items-center text-xs text-slate-500 font-medium">
+                <div className="pt-3 border-t border-border flex justify-between items-center text-xs text-text-secondary font-medium">
                   <span>{course.studentsCompleted} Completions</span>
                   <span>{course.progressRate}% Avg</span>
                 </div>
@@ -290,18 +290,18 @@ export default function LMSManagementPage() {
             </div>
           ))}
           {courses.length === 0 && (
-            <div className="col-span-full py-12 text-center text-slate-500">
+            <div className="col-span-full py-12 text-center text-text-secondary">
               <FolderOpen className="h-12 w-12 mx-auto text-slate-300 mb-3" />
               <p>No courses published yet.</p>
             </div>
           )}
         </div>
       ) : (
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm max-w-4xl space-y-6">
+      <div className="bg-white border border-border rounded-2xl p-6 shadow-sm max-w-4xl space-y-6">
         <div className="flex items-center gap-2 mb-2">
           <button 
             onClick={() => setViewMode('list')}
-            className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-800"
+            className="flex items-center gap-1 text-xs font-bold text-text-secondary hover:text-text-primary"
           >
             <ChevronLeft className="h-4 w-4" />
             Back to Courses
@@ -315,7 +315,7 @@ export default function LMSManagementPage() {
               <select 
                 value={targetBatchId}
                 onChange={(e) => setTargetBatchId(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 outline-none cursor-pointer font-bold"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-2.5 text-xs text-text-primary outline-none cursor-pointer font-bold"
               >
                 <option value="batch-ai-2026">AI Batch 2026</option>
               </select>
@@ -325,7 +325,7 @@ export default function LMSManagementPage() {
               <select 
                 value={courseProgram}
                 onChange={(e) => setCourseProgram(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 outline-none cursor-pointer font-bold"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-2.5 text-xs text-text-primary outline-none cursor-pointer font-bold"
               >
                 <option value="Software Engineering">Software Engineering</option>
                 <option value="Artificial Intelligence">Artificial Intelligence</option>
@@ -338,7 +338,7 @@ export default function LMSManagementPage() {
                 type="text"
                 value={courseThumbnail}
                 onChange={(e) => setCourseThumbnail(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 outline-none font-bold"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-2.5 text-xs text-text-primary outline-none font-bold"
               />
             </div>
           </div>
@@ -352,7 +352,7 @@ export default function LMSManagementPage() {
                 value={courseName}
                 onChange={(e) => setCourseName(e.target.value)}
                 placeholder="e.g. Master Advanced Neural Architectures"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 outline-none"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-2.5 text-xs text-text-primary outline-none"
               />
             </div>
             <div>
@@ -363,35 +363,35 @@ export default function LMSManagementPage() {
                 value={courseDesc}
                 onChange={(e) => setCourseDesc(e.target.value)}
                 placeholder="Detail the modules stack, language prerequisites, and graduation certificate criteria."
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 outline-none resize-none leading-relaxed"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-2.5 text-xs text-text-primary outline-none resize-none leading-relaxed"
               />
             </div>
           </div>
 
           {/* Module list */}
           <div className="border-t border-slate-150 pt-5 space-y-4">
-            <h4 className="font-bold text-xs text-slate-450 uppercase tracking-widest">Syllabus Outline Builder</h4>
+            <h4 className="font-bold text-xs text-text-secondary uppercase tracking-widest">Syllabus Outline Builder</h4>
             
             <div className="space-y-4">
               {modules.map((mod, mIdx) => (
-                <div key={mod.id} className="p-4 border border-slate-200 rounded-xl bg-slate-50/50 space-y-3">
+                <div key={mod.id} className="p-4 border border-border rounded-xl bg-slate-50/50 space-y-3">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-mono font-bold text-slate-400 bg-slate-200/50 px-2 py-0.5 rounded">Module #{mIdx + 1}</span>
-                      <span className="font-bold text-xs text-slate-800">{mod.title}</span>
+                      <span className="text-[10px] font-mono font-bold text-text-secondary bg-slate-200/50 px-2 py-0.5 rounded">Module #{mIdx + 1}</span>
+                      <span className="font-bold text-xs text-text-primary">{mod.title}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <button type="button" onClick={() => handleMoveModuleUp(mIdx)} className="text-[10px] font-bold text-slate-500 hover:text-indigo-650 bg-white border px-2 py-0.5 rounded">Move Up</button>
+                      <button type="button" onClick={() => handleMoveModuleUp(mIdx)} className="text-[10px] font-bold text-text-secondary hover:text-indigo-650 bg-white border px-2 py-0.5 rounded">Move Up</button>
                       <button type="button" onClick={() => setActiveModIdForSub(mod.id)} className="text-[10px] font-bold text-indigo-650 bg-indigo-50 border border-indigo-100 px-2.5 py-0.5 rounded">Add Submodule</button>
                       <button type="button" onClick={() => handleDeleteModule(mod.id)} className="text-rose-600 hover:text-rose-800 p-1"><Trash2 className="h-4 w-4" /></button>
                     </div>
                   </div>
 
-                  <div className="space-y-1.5 pl-4 border-l-2 border-slate-200">
+                  <div className="space-y-1.5 pl-4 border-l-2 border-border">
                     {mod.submodules.map((sub, sIdx) => (
-                      <div key={sub.id} className="flex justify-between items-center text-[11px] p-2 bg-white rounded border border-slate-100">
-                        <span className="font-semibold text-slate-650">{sIdx + 1}. {sub.title} ({sub.type})</span>
-                        <span className="text-[10px] text-slate-450 font-bold">
+                      <div key={sub.id} className="flex justify-between items-center text-[11px] p-2 bg-white rounded border border-border">
+                        <span className="font-semibold text-text-secondary">{sIdx + 1}. {sub.title} ({sub.type})</span>
+                        <span className="text-[10px] text-text-secondary font-bold">
                           {sub.minReadingTime ? `Timer: ${sub.minReadingTime}s` : ''} {sub.videoDuration ? `Video: ${sub.videoDuration}s` : ''}
                         </span>
                       </div>
@@ -399,29 +399,29 @@ export default function LMSManagementPage() {
                   </div>
 
                   {activeModIdForSub === mod.id && (
-                    <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-4">
+                    <div className="bg-white border border-border rounded-xl p-4 space-y-4">
                       <div className="flex items-center justify-between border-b pb-2">
-                        <span className="text-[10px] font-bold text-slate-450 uppercase">Submodule Parameter Locks</span>
-                        <button type="button" onClick={() => setActiveModIdForSub(null)} className="text-slate-400 hover:text-slate-600">Close</button>
+                        <span className="text-[10px] font-bold text-text-secondary uppercase">Submodule Parameter Locks</span>
+                        <button type="button" onClick={() => setActiveModIdForSub(null)} className="text-text-secondary hover:text-text-secondary">Close</button>
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
-                          <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Title</label>
+                          <label className="block text-[9px] font-bold text-text-secondary uppercase mb-1">Title</label>
                           <input 
                             type="text"
                             value={subTitle}
                             onChange={(e) => setSubTitle(e.target.value)}
                             placeholder="e.g. Master Loops Spec"
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-800 outline-none"
+                            className="w-full bg-slate-50 border border-border rounded-lg px-3 py-1.5 text-xs text-text-primary outline-none"
                           />
                         </div>
                         <div>
-                          <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Type</label>
+                          <label className="block text-[9px] font-bold text-text-secondary uppercase mb-1">Type</label>
                           <select 
                             value={subType}
                             onChange={(e) => setSubType(e.target.value as any)}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-800 outline-none cursor-pointer font-bold"
+                            className="w-full bg-slate-50 border border-border rounded-lg px-3 py-1.5 text-xs text-text-primary outline-none cursor-pointer font-bold"
                           >
                             <option value="PDF">PDF document</option>
                             <option value="Video">Video player</option>
@@ -431,7 +431,7 @@ export default function LMSManagementPage() {
                           </select>
                         </div>
                         <div>
-                          <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Common File OR URL</label>
+                          <label className="block text-[9px] font-bold text-text-secondary uppercase mb-1">Common File OR URL</label>
                           <div className="flex flex-col gap-2">
                             <div className="flex items-center gap-2">
                               <select
@@ -443,7 +443,7 @@ export default function LMSManagementPage() {
                                     setSubUrl(file.storage_url);
                                   }
                                 }}
-                                className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-800 outline-none font-bold"
+                                className="flex-1 bg-slate-50 border border-border rounded-lg px-3 py-1.5 text-xs text-text-primary outline-none font-bold"
                               >
                                 <option value="">-- Select from Common Files --</option>
                                 {MOCK_COMMON_FILES.map(file => (
@@ -466,7 +466,7 @@ export default function LMSManagementPage() {
                               value={subUrl}
                               onChange={(e) => setSubUrl(e.target.value)}
                               placeholder="Or manually enter URL..."
-                              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-800 outline-none"
+                              className="w-full bg-slate-50 border border-border rounded-lg px-3 py-1.5 text-xs text-text-primary outline-none"
                             />
                           </div>
                         </div>
@@ -476,14 +476,14 @@ export default function LMSManagementPage() {
                         <div className="p-3 bg-amber-50/50 border border-amber-100 rounded-xl space-y-1.5">
                           <span className="text-[10px] font-bold text-amber-800 uppercase block">Reading countdown</span>
                           <div className="flex items-center gap-4">
-                            <span className="text-xs text-slate-500 font-semibold">Min Reading time:</span>
+                            <span className="text-xs text-text-secondary font-semibold">Min Reading time:</span>
                             <input 
                               type="number"
                               value={minReadTime}
                               onChange={(e) => setMinReadTime(parseInt(e.target.value) || 30)}
-                              className="w-24 bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-800 outline-none font-bold"
+                              className="w-24 bg-white border border-border rounded px-2 py-1 text-xs text-text-primary outline-none font-bold"
                             />
-                            <span className="text-xs text-slate-450">Seconds</span>
+                            <span className="text-xs text-text-secondary">Seconds</span>
                           </div>
                         </div>
                       )}
@@ -498,7 +498,7 @@ export default function LMSManagementPage() {
                                 type="number"
                                 value={videoDuration}
                                 onChange={(e) => setVideoDuration(parseInt(e.target.value) || 120)}
-                                className="w-24 bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-800 outline-none font-bold"
+                                className="w-24 bg-white border border-border rounded px-2 py-1 text-xs text-text-primary outline-none font-bold"
                               />
                             </div>
                             <div className="flex items-center gap-3">
@@ -507,7 +507,7 @@ export default function LMSManagementPage() {
                                 type="number"
                                 value={idleTime}
                                 onChange={(e) => setIdleTime(parseInt(e.target.value) || 10)}
-                                className="w-24 bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-800 outline-none font-bold"
+                                className="w-24 bg-white border border-border rounded px-2 py-1 text-xs text-text-primary outline-none font-bold"
                               />
                             </div>
                           </div>
@@ -521,7 +521,7 @@ export default function LMSManagementPage() {
                                 onChange={(e) => setEnableCheckpoint(e.target.checked)}
                                 className="h-3.5 w-3.5 text-indigo-655 rounded border-slate-350 cursor-pointer"
                               />
-                              <label htmlFor="checkpointCheck" className="text-xs font-bold text-slate-700 cursor-pointer select-none">
+                              <label htmlFor="checkpointCheck" className="text-xs font-bold text-label cursor-pointer select-none">
                                 Embed MCQ Checkpoint (Pauses playback)
                               </label>
                             </div>
@@ -529,12 +529,12 @@ export default function LMSManagementPage() {
                             {enableCheckpoint && (
                               <div className="pl-6 space-y-3 text-xs">
                                 <div className="flex items-center gap-4">
-                                  <span className="font-semibold text-slate-500">Trigger at:</span>
+                                  <span className="font-semibold text-text-secondary">Trigger at:</span>
                                   <input 
                                     type="number"
                                     value={checkpointTime}
                                     onChange={(e) => setCheckpointTime(parseInt(e.target.value) || 60)}
-                                    className="w-20 bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-800 font-bold"
+                                    className="w-20 bg-white border border-border rounded px-2 py-1 text-xs text-text-primary font-bold"
                                   />
                                   <span>Seconds</span>
                                 </div>
@@ -545,7 +545,7 @@ export default function LMSManagementPage() {
                                     type="text"
                                     value={chkQuestion}
                                     onChange={(e) => setChkQuestion(e.target.value)}
-                                    className="w-full bg-white border border-slate-200 rounded px-3 py-1.5 text-xs text-slate-805"
+                                    className="w-full bg-white border border-border rounded px-3 py-1.5 text-xs text-slate-805"
                                   />
                                 </div>
 
@@ -557,12 +557,12 @@ export default function LMSManagementPage() {
                                     ['D', chkOptD, setChkOptD]
                                   ] as [string, string, React.Dispatch<React.SetStateAction<string>>][]).map((o, idx) => (
                                     <div key={idx} className="flex items-center gap-1.5">
-                                      <span className="font-bold text-slate-400">{o[0]}:</span>
+                                      <span className="font-bold text-text-secondary">{o[0]}:</span>
                                       <input 
                                         type="text"
                                         value={o[1]}
                                         onChange={(e) => o[2](e.target.value)}
-                                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-800"
+                                        className="w-full bg-white border border-border rounded px-2 py-1 text-xs text-text-primary"
                                       />
                                     </div>
                                   ))}
@@ -602,26 +602,26 @@ export default function LMSManagementPage() {
 
             {/* Add Module Box */}
             <div className="p-4 border border-dashed border-slate-305 rounded-xl bg-slate-50/20 space-y-4">
-              <span className="text-xs font-bold text-slate-450 uppercase block">Define New Module Wrapper</span>
+              <span className="text-xs font-bold text-text-secondary uppercase block">Define New Module Wrapper</span>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Module Name</label>
+                  <label className="block text-[9px] font-bold text-text-secondary uppercase mb-1">Module Name</label>
                   <input 
                     type="text"
                     value={newModTitle}
                     onChange={(e) => setNewModTitle(e.target.value)}
                     placeholder="e.g. Module 3: Advanced OOP Patterns"
-                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-800 outline-none"
+                    className="w-full bg-white border border-border rounded-lg px-3 py-2 text-xs text-text-primary outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Description Summary</label>
+                  <label className="block text-[9px] font-bold text-text-secondary uppercase mb-1">Description Summary</label>
                   <input 
                     type="text"
                     value={newModDesc}
                     onChange={(e) => setNewModDesc(e.target.value)}
                     placeholder="e.g. Class definitions, inheritance structures"
-                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-800 outline-none"
+                    className="w-full bg-white border border-border rounded-lg px-3 py-2 text-xs text-text-primary outline-none"
                   />
                 </div>
               </div>

@@ -263,34 +263,34 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
           <div className="space-y-4 p-6">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Role Name *</label>
+                <label className="text-sm font-medium text-label">Role Name *</label>
                 <input 
                   type="text" 
                   value={roleName}
                   onChange={e => setRoleName(e.target.value)}
                   disabled={viewMode}
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-slate-50" 
+                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50" 
                   placeholder="e.g. Student" 
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Role Code *</label>
+                <label className="text-sm font-medium text-label">Role Code *</label>
                 <input 
                   type="text" 
                   value={roleCode}
                   onChange={e => setRoleCode(e.target.value)}
                   disabled={viewMode}
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-slate-50" 
+                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50" 
                   placeholder="e.g. ROLE_STUDENT" 
                 />
               </div>
               <div className="col-span-2 space-y-2">
-                <label className="text-sm font-medium text-slate-700">Description</label>
+                <label className="text-sm font-medium text-label">Description</label>
                 <textarea 
                   value={description}
                   onChange={e => setDescription(e.target.value)}
                   disabled={viewMode}
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-slate-50" 
+                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50" 
                   rows={3} 
                   placeholder="Brief description of this role's responsibilities" 
                 />
@@ -300,7 +300,7 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
             <div className="pt-4 grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
               {/* Role Icon Upload */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">Role Icon</label>
+                <label className="text-sm font-medium text-label">Role Icon</label>
                 <input 
                   type="file" 
                   ref={iconInputRef} 
@@ -310,22 +310,22 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
                 />
                 <div 
                   onClick={triggerIconUpload}
-                  className="mt-1 flex justify-center rounded-md border-2 border-dashed border-slate-300 px-4 py-4 hover:bg-slate-50 transition-colors cursor-pointer"
+                  className="mt-1 flex justify-center rounded-md border-2 border-dashed border-border px-4 py-4 hover:bg-slate-50 transition-colors cursor-pointer"
                 >
                   <div className="space-y-1 text-center">
                     {iconFile ? (
                       <div className="flex flex-col items-center gap-1">
-                        <img src={iconFile} alt="Icon Preview" className="h-10 w-10 object-contain border border-slate-200" />
+                        <img src={iconFile} alt="Icon Preview" className="h-10 w-10 object-contain border border-border" />
                         <p className="text-[10px] font-semibold text-emerald-650 truncate max-w-[150px]">Selected: {iconFileName}</p>
-                        {!viewMode && <span className="text-[9px] text-slate-400">Click to change</span>}
+                        {!viewMode && <span className="text-[9px] text-text-secondary">Click to change</span>}
                       </div>
                     ) : (
                       <>
-                        <Upload className="mx-auto h-6 w-6 text-slate-400" />
-                        <div className="flex text-xs text-slate-600 justify-center font-medium">
+                        <Upload className="mx-auto h-6 w-6 text-text-secondary" />
+                        <div className="flex text-xs text-text-secondary justify-center font-medium">
                           <span className="text-blue-650 hover:text-blue-500">Upload Icon</span>
                         </div>
-                        <p className="text-[9px] text-slate-400">SVG, PNG up to 10MB</p>
+                        <p className="text-[9px] text-text-secondary">SVG, PNG up to 10MB</p>
                       </>
                     )}
                   </div>
@@ -334,7 +334,7 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
 
               {/* Status Radio Buttons */}
               <div className="space-y-3 md:pt-4">
-                <label className="text-sm font-medium text-slate-700">Status</label>
+                <label className="text-sm font-medium text-label">Status</label>
                 <div className="flex gap-6 mt-1">
                   <label className="flex items-center gap-2 cursor-pointer select-none">
                     <input 
@@ -344,9 +344,9 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
                       onChange={() => {
                         if (!viewMode) setRoleStatus('Active');
                       }}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-600" 
+                      className="h-4 w-4 text-blue-600 focus:ring-primary" 
                     />
-                    <span className="text-sm font-medium text-slate-900">Active</span>
+                    <span className="text-sm font-medium text-text-primary">Active</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer select-none">
                     <input 
@@ -356,9 +356,9 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
                       onChange={() => {
                         if (!viewMode) setRoleStatus('Inactive');
                       }}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-600" 
+                      className="h-4 w-4 text-blue-600 focus:ring-primary" 
                     />
-                    <span className="text-sm font-medium text-slate-900">Inactive</span>
+                    <span className="text-sm font-medium text-text-primary">Inactive</span>
                   </label>
                 </div>
               </div>
@@ -370,18 +370,18 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
           <div className="p-6 space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-semibold text-slate-900">Select Modules</h3>
-                <p className="text-xs text-slate-500">Choose the modules this role will have access to.</p>
+                <h3 className="text-sm font-semibold text-text-primary">Select Modules</h3>
+                <p className="text-xs text-text-secondary">Choose the modules this role will have access to.</p>
               </div>
               <div className="relative">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary" />
                 <input 
                   type="text" 
                   value={moduleSearch}
                   onChange={e => setModuleSearch(e.target.value)}
                   disabled={viewMode}
                   placeholder="Search modules..." 
-                  className="w-56 rounded-md border border-slate-300 pl-8 pr-3 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-slate-50" 
+                  className="w-56 rounded-md border border-border pl-8 pr-3 py-1.5 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50" 
                 />
               </div>
             </div>
@@ -396,16 +396,16 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
                     className={`relative rounded-xl border p-4 cursor-pointer transition-all ${
                       isSelected 
                         ? 'border-blue-600 bg-blue-50/50 ring-1 ring-blue-600' 
-                        : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50'
+                        : 'border-border hover:border-secondary hover:bg-slate-50'
                     } ${viewMode ? 'pointer-events-none' : ''}`}
                   >
                     <div className="flex items-start gap-3">
-                      <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border ${isSelected ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300 bg-white'}`}>
+                      <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border ${isSelected ? 'border-blue-600 bg-blue-600 text-white' : 'border-border bg-white'}`}>
                         {isSelected && <CheckCircle2 className="h-3 w-3 text-white" />}
                       </div>
                       <div>
-                        <p className={`text-sm font-semibold ${isSelected ? 'text-blue-900' : 'text-slate-900'}`}>{module.name}</p>
-                        <p className="text-xs text-slate-500 mt-1">{module.desc}</p>
+                        <p className={`text-sm font-semibold ${isSelected ? 'text-blue-900' : 'text-text-primary'}`}>{module.name}</p>
+                        <p className="text-xs text-helper mt-1">{module.desc}</p>
                       </div>
                     </div>
                   </div>
@@ -418,29 +418,29 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
         return (
           <div className="p-6 space-y-6">
             <Card>
-              <div className="p-4 border-b border-slate-100 bg-slate-50/50">
-                <h3 className="font-semibold text-slate-900">Role Summary</h3>
+              <div className="p-4 border-b border-border bg-slate-50/50">
+                <h3 className="font-semibold text-text-primary">Role Summary</h3>
               </div>
               <div className="p-4 space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-xs text-slate-500">Role Name</p>
-                    <p className="text-sm font-medium text-slate-900">{roleName}</p>
+                    <p className="text-xs text-text-secondary">Role Name</p>
+                    <p className="text-sm font-medium text-text-primary">{roleName}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500">Role Code</p>
-                    <p className="text-sm font-medium text-slate-900">{roleCode}</p>
+                    <p className="text-xs text-text-secondary">Role Code</p>
+                    <p className="text-sm font-medium text-text-primary">{roleCode}</p>
                   </div>
                   <div className="col-span-2">
-                    <p className="text-xs text-slate-500">Description</p>
-                    <p className="text-sm font-medium text-slate-900">{description || 'No description provided.'}</p>
+                    <p className="text-xs text-text-secondary">Description</p>
+                    <p className="text-sm font-medium text-text-primary">{description || 'No description provided.'}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500">Status</p>
+                    <p className="text-xs text-text-secondary">Status</p>
                     <span className={`inline-flex items-center rounded-md px-2 py-1 mt-1 text-xs font-medium border ${
                       roleStatus === 'Active' 
                         ? 'bg-emerald-100 text-emerald-700 border-emerald-200' 
-                        : 'bg-slate-100 text-slate-700 border-slate-200'
+                        : 'bg-slate-100 text-text-primary border-border'
                     }`}>
                       {roleStatus}
                     </span>
@@ -450,23 +450,23 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
             </Card>
 
             <Card>
-              <div className="p-4 border-b border-slate-100 bg-slate-50/50">
-                <h3 className="font-semibold text-slate-900">Assigned Modules</h3>
+              <div className="p-4 border-b border-border bg-slate-50/50">
+                <h3 className="font-semibold text-text-primary">Assigned Modules</h3>
               </div>
               <div className="p-4 space-y-2">
                 {assignedModules.map(moduleId => {
                   const module = modules.find(m => m.id === moduleId);
                   if (!module) return null;
                   return (
-                    <div key={moduleId} className="flex flex-col gap-1 py-2 border-b border-slate-100 last:border-0">
+                    <div key={moduleId} className="flex flex-col gap-1 py-2 border-b border-border last:border-0">
                       <div className="flex items-center gap-2">
                         <span className="h-2 w-2 rounded-full bg-blue-600" />
-                        <span className="text-sm font-medium text-slate-800">{module.name}</span>
-                        <span className="text-[10px] font-mono text-slate-400">({module.code})</span>
+                        <span className="text-sm font-medium text-text-primary">{module.name}</span>
+                        <span className="text-[10px] font-mono text-text-secondary">({module.code})</span>
                       </div>
                       <div className="pl-4 flex flex-wrap gap-1 mt-1">
                         {(selectedPermissions[moduleId] || []).map(perm => (
-                          <span key={perm} className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-600">
+                          <span key={perm} className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-text-secondary">
                             {perm}
                           </span>
                         ))}
@@ -475,7 +475,7 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
                   );
                 })}
                 {assignedModules.length === 0 && (
-                  <p className="text-xs text-slate-400 italic">No modules assigned</p>
+                  <p className="text-xs text-text-secondary italic">No modules assigned</p>
                 )}
               </div>
             </Card>
@@ -495,7 +495,7 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
           {renderStepContent()}
         </div>
         
-        <div className="shrink-0 border-t border-slate-200 p-4 bg-slate-50 flex items-center justify-between">
+        <div className="shrink-0 border-t border-border p-4 bg-slate-50 flex items-center justify-between">
           {viewMode ? (
             <div className="w-full flex justify-end">
               <Button variant="outline" onClick={onClose}>

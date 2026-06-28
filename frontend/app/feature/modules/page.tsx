@@ -100,28 +100,28 @@ export default function ModuleRegistryPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+          <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest flex items-center gap-1.5">
             <span>Identity</span>
             <span className="text-slate-300">/</span>
             <span className="text-blue-600 font-extrabold">Module Registry</span>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 mt-2">Module Registry</h1>
-          <p className="text-sm text-slate-500 mt-1">Manage and register system modules and feature directories.</p>
+          <h1 className="text-2xl font-bold tracking-tight text-text-primary mt-2">Module Registry</h1>
+          <p className="text-sm text-text-secondary mt-1">Manage and register system modules and feature directories.</p>
         </div>
         <Button onClick={() => setIsModalOpen(true)} className="w-full sm:w-auto">
           <Plus className="mr-2 h-4 w-4" /> Register Module
         </Button>
       </div>
 
-      <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+      <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-border shadow-sm">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary" />
           <input 
             type="text" 
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             placeholder="Search modules..." 
-            className="w-full rounded-md border border-slate-200 pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+            className="w-full rounded-md border border-border pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           />
         </div>
       </div>
@@ -142,13 +142,13 @@ export default function ModuleRegistryPage() {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-slate-500">
+                  <TableCell colSpan={6} className="text-center py-8 text-text-secondary">
                     Loading modules registry...
                   </TableCell>
                 </TableRow>
               ) : filteredModules.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-slate-500">
+                  <TableCell colSpan={6} className="text-center py-8 text-text-secondary">
                     No modules registered.
                   </TableCell>
                 </TableRow>
@@ -157,23 +157,23 @@ export default function ModuleRegistryPage() {
                   <TableRow key={m.id}>
                     <TableCell>
                       <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded bg-slate-100 flex items-center justify-center font-bold text-slate-700">
+                        <div className="h-8 w-8 rounded bg-slate-100 flex items-center justify-center font-bold text-text-primary">
                           {m.name.slice(0, 2).toUpperCase()}
                         </div>
                         <div>
-                          <span className="font-semibold text-slate-900 block">{m.name}</span>
-                          <span className="text-[11px] text-slate-500 block max-w-[200px] truncate">{m.desc || 'No description provided.'}</span>
+                          <span className="font-semibold text-text-primary block">{m.name}</span>
+                          <span className="text-[11px] text-text-secondary block max-w-[200px] truncate">{m.desc || 'No description provided.'}</span>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className="font-mono text-xs text-slate-700">{m.id}</span>
+                      <span className="font-mono text-xs text-text-primary">{m.id}</span>
                     </TableCell>
                     <TableCell>
                       <Badge variant="secondary">{m.code}</Badge>
                     </TableCell>
                     <TableCell>
-                      <span className="font-mono text-xs text-slate-500">{m.route}</span>
+                      <span className="font-mono text-xs text-text-secondary">{m.route}</span>
                     </TableCell>
                     <TableCell>
                       <Badge variant={m.active ? "success" : "secondary"}>
@@ -183,7 +183,7 @@ export default function ModuleRegistryPage() {
                     <TableCell className="text-right">
                       <button
                         onClick={() => handleToggleStatus(m)}
-                        className={`p-1 transition-colors inline-flex items-center justify-center ${m.active ? 'text-emerald-600 hover:text-red-500' : 'text-slate-400 hover:text-emerald-500'}`}
+                        className={`p-1 transition-colors inline-flex items-center justify-center ${m.active ? 'text-emerald-600 hover:text-red-500' : 'text-text-secondary hover:text-emerald-500'}`}
                         title={m.active ? "Disable Module" : "Enable Module"}
                       >
                         {m.active ? <ToggleRight className="h-6 w-6" /> : <ToggleLeft className="h-6 w-6" />}
@@ -200,74 +200,74 @@ export default function ModuleRegistryPage() {
       {/* Register Module Drawer/Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg border border-slate-200 overflow-hidden animate-slide-in">
-            <div className="px-6 py-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-              <h3 className="font-bold text-slate-900 text-lg flex items-center gap-2">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg border border-border overflow-hidden animate-slide-in">
+            <div className="px-6 py-4 bg-slate-50 border-b border-border flex justify-between items-center">
+              <h3 className="font-bold text-text-primary text-lg flex items-center gap-2">
                 <Settings className="h-5 w-5 text-blue-600 animate-spin" /> Register New Module
               </h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-700 font-bold text-xl">×</button>
+              <button onClick={() => setIsModalOpen(false)} className="text-text-secondary hover:text-text-primary font-bold text-xl">×</button>
             </div>
             
             <form onSubmit={handleCreateModule}>
               <div className="p-6 space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-semibold text-slate-700">Module ID (Unique) *</label>
+                    <label className="text-xs font-semibold text-label">Module ID (Unique) *</label>
                     <input 
                       type="text" 
                       value={modId}
                       onChange={e => setModId(e.target.value)}
-                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" 
+                      className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" 
                       placeholder="e.g. settings"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-semibold text-slate-700">Module Code *</label>
+                    <label className="text-xs font-semibold text-label">Module Code *</label>
                     <input 
                       type="text" 
                       value={modCode}
                       onChange={e => setModCode(e.target.value)}
-                      className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" 
+                      className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" 
                       placeholder="e.g. SETTINGS"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold text-slate-700">Module Name *</label>
+                  <label className="text-xs font-semibold text-label">Module Name *</label>
                   <input 
                     type="text" 
                     value={modName}
                     onChange={e => setModName(e.target.value)}
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" 
+                    className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" 
                     placeholder="e.g. System Settings"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold text-slate-700">Route Path *</label>
+                  <label className="text-xs font-semibold text-label">Route Path *</label>
                   <input 
                     type="text" 
                     value={modRoute}
                     onChange={e => setModRoute(e.target.value)}
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" 
+                    className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" 
                     placeholder="e.g. /feature/settings"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold text-slate-700">Description</label>
+                  <label className="text-xs font-semibold text-label">Description</label>
                   <textarea 
                     value={modDesc}
                     onChange={e => setModDesc(e.target.value)}
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" 
+                    className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" 
                     rows={3}
                     placeholder="Brief description of the module's target scope..."
                   />
                 </div>
               </div>
 
-              <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-2">
+              <div className="px-6 py-4 bg-slate-50 border-t border-border flex justify-end gap-2">
                 <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
                 <Button type="submit">Submit Registration</Button>
               </div>

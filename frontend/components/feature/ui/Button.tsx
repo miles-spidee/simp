@@ -16,13 +16,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         variantStyles = 'bg-red-500 text-white hover:bg-red-600 shadow-sm';
         break;
       case 'outline':
-        variantStyles = 'border border-slate-200 bg-white hover:bg-slate-100 hover:text-slate-900';
+        variantStyles = 'border border-border bg-white hover:bg-slate-100 hover:text-text-primary';
         break;
       case 'secondary':
-        variantStyles = 'bg-slate-100 text-slate-900 hover:bg-slate-200';
+        variantStyles = 'bg-slate-100 text-text-primary hover:bg-slate-200';
         break;
       case 'ghost':
-        variantStyles = 'hover:bg-slate-100 hover:text-slate-900';
+        variantStyles = 'hover:bg-slate-100 hover:text-text-primary';
         break;
       case 'link':
         variantStyles = 'text-blue-600 underline-offset-4 hover:underline';

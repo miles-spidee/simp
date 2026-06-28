@@ -48,7 +48,7 @@ function AttendanceTrendChart({ data }: { data: AnalyticsDataPoint[] }) {
   areaPath += ` L ${getX(0)} ${paddingTop + chartHeight} Z`;
 
   return (
-    <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm">
+    <div className="bg-white border border-border rounded-2xl p-6 shadow-sm">
       <div className="flex justify-between items-center mb-5">
         <div>
           <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider">30-Day Attendance Trend</h3>
@@ -218,7 +218,7 @@ export default function AnalyticsDashboardPage() {
 
         <div className="flex items-center gap-3">
           {/* Date range filter selector */}
-          <div className="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-200 text-xs">
+          <div className="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-border text-xs">
             <Calendar className="w-3.5 h-3.5 text-text-secondary ml-1" />
             <select
               value={dateFilter}
@@ -255,7 +255,7 @@ export default function AnalyticsDashboardPage() {
 
       {/* Numerical Indicator stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+        <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between text-text-secondary mb-2">
             <span className="text-xs font-bold uppercase tracking-wider">Total Students</span>
             <Users className="w-4 h-4 text-indigo-500" />
@@ -266,7 +266,7 @@ export default function AnalyticsDashboardPage() {
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+        <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between text-text-secondary mb-2">
             <span className="text-xs font-bold uppercase tracking-wider">Active Interns</span>
             <Activity className="w-4 h-4 text-fuchsia-500" />
@@ -277,7 +277,7 @@ export default function AnalyticsDashboardPage() {
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+        <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between text-text-secondary mb-2">
             <span className="text-xs font-bold uppercase tracking-wider">Placement Rate</span>
             <Briefcase className="w-4 h-4 text-emerald-500" />
@@ -288,7 +288,7 @@ export default function AnalyticsDashboardPage() {
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+        <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between text-text-secondary mb-2">
             <span className="text-xs font-bold uppercase tracking-wider">Completion Rate</span>
             <GraduationCap className="w-4 h-4 text-blue-500" />
@@ -323,7 +323,7 @@ export default function AnalyticsDashboardPage() {
             </p>
           </div>
           
-          <div className="mt-6 pt-5 border-t border-slate-800">
+          <div className="mt-6 pt-5 border-t border-border">
             <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-1">Average Course Score</h3>
             <div className="text-2xl font-extrabold text-white font-mono tracking-tight">{summary.averageScore}%</div>
           </div>
@@ -332,7 +332,7 @@ export default function AnalyticsDashboardPage() {
 
       {/* Program-specific bar performance */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 lg:col-span-2 space-y-4">
+        <div className="bg-white rounded-2xl border border-border shadow-sm p-6 lg:col-span-2 space-y-4">
           <h2 className="text-sm font-bold text-text-primary uppercase tracking-wider flex items-center gap-2">
             <BarChart4 className="w-5 h-5 text-text-secondary" />
             Top Performing Programs
@@ -356,7 +356,7 @@ export default function AnalyticsDashboardPage() {
         </div>
 
         {/* Quick Insights advisories */}
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 flex flex-col justify-between">
+        <div className="bg-white rounded-2xl border border-border shadow-sm p-6 flex flex-col justify-between">
           <div>
             <h2 className="text-sm font-bold text-text-primary uppercase tracking-wider mb-3">Enterprise Insights</h2>
             <div className="space-y-3">
@@ -374,7 +374,7 @@ export default function AnalyticsDashboardPage() {
               </div>
             </div>
           </div>
-          <div className="pt-4 mt-4 border-t border-slate-100 text-[10px] font-bold text-text-secondary uppercase tracking-wider">
+          <div className="pt-4 mt-4 border-t border-border text-[10px] font-bold text-text-secondary uppercase tracking-wider">
             Verified Audited Stats ✓
           </div>
         </div>

@@ -29,7 +29,7 @@ export function ConfirmModal({
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden animate-slide-up relative">
         <button 
           onClick={onCancel}
-          className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors"
+          className="absolute top-4 right-4 text-text-secondary hover:text-text-secondary transition-colors"
         >
           <X className="h-5 w-5" />
         </button>
@@ -40,18 +40,18 @@ export function ConfirmModal({
               <AlertTriangle className="h-5 w-5" />
             </div>
             <div className="flex-1 mt-1">
-              <h3 className="text-lg font-bold text-slate-900 leading-none">{title}</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+              <h3 className="text-lg font-bold text-text-primary leading-none">{title}</h3>
+              <p className="mt-2 text-sm text-text-secondary leading-relaxed">
                 {message}
               </p>
             </div>
           </div>
         </div>
         
-        <div className="bg-slate-50 border-t border-slate-100 p-4 flex justify-end gap-3">
+        <div className="bg-slate-50 border-t border-border p-4 flex justify-end gap-3">
           <button 
             onClick={onCancel}
-            className="px-4 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg text-sm font-bold transition-colors shadow-sm"
+            className="px-4 py-2 bg-white border border-border text-text-primary hover:bg-slate-50 rounded-lg text-sm font-bold transition-colors shadow-sm"
           >
             {cancelLabel}
           </button>

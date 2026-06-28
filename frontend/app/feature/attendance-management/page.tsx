@@ -163,7 +163,7 @@ export default function AttendanceManagementPage() {
   return (
     <div className="space-y-6 animate-slide-in select-none">
       {toastMessage && (
-        <div className="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 bg-slate-900 border border-slate-800 text-white rounded-xl shadow-2xl animate-bounce-in">
+        <div className="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 bg-slate-900 border border-border text-white rounded-xl shadow-2xl animate-bounce-in">
           <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
           <div className="text-xs font-semibold">{toastMessage}</div>
         </div>
@@ -178,13 +178,13 @@ export default function AttendanceManagementPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Left/Middle: Mark Attendance Grid */}
-        <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+        <div className="lg:col-span-2 bg-white border border-border rounded-2xl p-6 shadow-sm space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
             <div className="flex items-center gap-3">
               <select 
                 value={selectedBatchId} 
                 onChange={(e) => setSelectedBatchId(e.target.value)}
-                className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-xs font-bold text-text-primary outline-none cursor-pointer"
+                className="bg-slate-50 border border-border rounded-xl px-4 py-2 text-xs font-bold text-text-primary outline-none cursor-pointer"
               >
                 <option value="batch-ai-2026">AI Batch 2026</option>
               </select>
@@ -192,7 +192,7 @@ export default function AttendanceManagementPage() {
                 type="date" 
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-xs font-bold text-text-primary outline-none cursor-pointer"
+                className="bg-slate-50 border border-border rounded-xl px-4 py-2 text-xs font-bold text-text-primary outline-none cursor-pointer"
               />
             </div>
 
@@ -214,7 +214,7 @@ export default function AttendanceManagementPage() {
             {students.map((student) => (
               <div 
                 key={student.id} 
-                className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-slate-100 bg-slate-50/20 rounded-xl gap-4"
+                className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-border bg-slate-50/20 rounded-xl gap-4"
               >
                 <div className="flex items-center gap-3">
                   <div className="h-9 w-9 bg-indigo-650 text-white rounded-full flex items-center justify-center font-bold text-xs">
@@ -239,7 +239,7 @@ export default function AttendanceManagementPage() {
                             ? st === 'Present' ? 'bg-emerald-600 border-emerald-500 text-white' :
                               st === 'Absent' ? 'bg-rose-600 border-rose-500 text-white' :
                               'bg-amber-500 border-amber-450 text-white'
-                            : 'bg-white border-slate-200 text-text-secondary hover:border-slate-350'
+                            : 'bg-white border-border text-text-secondary hover:border-secondary'
                         } disabled:opacity-50 disabled:cursor-not-allowed`}
                       >
                         {st}
@@ -253,10 +253,10 @@ export default function AttendanceManagementPage() {
 
           {/* Marking actions */}
           {!isLocked && (
-            <div className="flex justify-end gap-3 pt-3 border-t border-slate-50">
+            <div className="flex justify-end gap-3 pt-3 border-t border-border">
               <button 
                 onClick={handleSaveDraft}
-                className="px-5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-text-primary font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer flex items-center gap-1.5"
+                className="px-5 py-2.5 bg-white border border-border hover:bg-slate-50 text-text-primary font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer flex items-center gap-1.5"
               >
                 <Save className="h-4 w-4" /> Save Draft
               </button>
@@ -271,12 +271,12 @@ export default function AttendanceManagementPage() {
         </div>
 
         {/* Right Panel: Appeals Review Inbox */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
-          <h3 className="font-bold text-xs text-slate-455 uppercase tracking-widest border-b border-slate-100 pb-3">Correction Appeals</h3>
+        <div className="bg-white border border-border rounded-2xl p-5 shadow-sm space-y-4">
+          <h3 className="font-bold text-xs text-slate-455 uppercase tracking-widest border-b border-border pb-3">Correction Appeals</h3>
 
           <div className="space-y-3 max-h-[460px] overflow-y-auto pr-1 custom-scrollbar">
             {appeals.map((app) => (
-              <div key={app.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+              <div key={app.id} className="p-4 bg-slate-50 border border-border rounded-xl space-y-3">
                 <div className="flex justify-between items-start">
                   <div>
                     <span className="block font-bold text-text-primary text-xs">{app.studentName}</span>
@@ -294,7 +294,7 @@ export default function AttendanceManagementPage() {
                 <p className="text-[11px] text-text-secondary leading-relaxed italic">"{app.reason}"</p>
 
                 {app.reviewStatus === 'Pending' && (
-                  <div className="flex gap-2 pt-1 border-t border-slate-200/50">
+                  <div className="flex gap-2 pt-1 border-t border-border/50">
                     <button 
                       onClick={() => handleApproveAppeal(app.id)}
                       className="flex-1 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[9px] uppercase tracking-wider rounded-lg transition-colors cursor-pointer text-center"

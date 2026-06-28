@@ -263,22 +263,22 @@ function UsersPageContent() {
           <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-xs font-semibold text-blue-700">
             {info.row.original.avatar}
           </div>
-          <span className="font-medium text-slate-900">{info.getValue()}</span>
+          <span className="font-medium text-text-primary">{info.getValue()}</span>
         </div>
       ),
     }),
     columnHelper.accessor('username', {
       header: 'Username',
-      cell: info => <span className="text-slate-600">{info.getValue()}</span>,
+      cell: info => <span className="text-text-secondary">{info.getValue()}</span>,
     }),
     columnHelper.accessor('email', {
       header: 'Email',
-      cell: info => <span className="text-slate-600">{info.getValue()}</span>,
+      cell: info => <span className="text-text-secondary">{info.getValue()}</span>,
     }),
     columnHelper.accessor('roleName', {
       header: 'Role',
       cell: info => (
-        <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600">
+        <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-text-secondary">
           {info.getValue()}
         </span>
       ),
@@ -293,7 +293,7 @@ function UsersPageContent() {
     }),
     columnHelper.accessor('date', {
       header: 'Created Date',
-      cell: info => <span className="text-slate-500">{info.getValue()}</span>,
+      cell: info => <span className="text-text-secondary">{info.getValue()}</span>,
     }),
     columnHelper.display({
       id: 'actions',
@@ -302,7 +302,7 @@ function UsersPageContent() {
         const user = info.row.original;
         const isUserActive = user.status === 'Active';
         return (
-          <div className="flex items-center justify-end gap-2 text-slate-400">
+          <div className="flex items-center justify-end gap-2 text-text-secondary">
             <button 
               onClick={() => handleView(user)} 
               className="p-1 hover:text-blue-600 transition-colors" 
@@ -353,8 +353,8 @@ function UsersPageContent() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Users</h1>
-          <p className="text-sm text-slate-500 mt-1">Manage system users, roles, and access.</p>
+          <h1 className="text-2xl font-bold tracking-tight text-text-primary">Users</h1>
+          <p className="text-sm text-text-secondary mt-1">Manage system users, roles, and access.</p>
         </div>
         <Button 
           onClick={() => {
@@ -369,7 +369,7 @@ function UsersPageContent() {
         </Button>
       </div>
 
-      <div className="flex border-b border-slate-200">
+      <div className="flex border-b border-border">
         {[
           { id: 'accounts', label: 'User Accounts', count: data.length },
           { id: 'employees', label: 'Registered Employees', count: employees.length },
@@ -382,14 +382,14 @@ function UsersPageContent() {
             className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-all whitespace-nowrap ${
               activeTab === t.id 
                 ? 'border-blue-600 text-blue-600 font-semibold' 
-                : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700'
+                : 'border-transparent text-text-secondary hover:border-secondary hover:text-text-primary'
             }`}
           >
             <span>{t.label}</span>
             <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
               activeTab === t.id 
                 ? 'bg-blue-100 text-blue-600' 
-                : 'bg-slate-100 text-slate-500'
+                : 'bg-slate-100 text-text-secondary'
             }`}>
               {t.count}
             </span>
@@ -399,15 +399,15 @@ function UsersPageContent() {
 
       {activeTab === 'accounts' && (
         <Card>
-          <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="p-4 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary" />
               <input 
                 type="text" 
                 value={globalFilter ?? ''}
                 onChange={e => setGlobalFilter(e.target.value)}
                 placeholder="Search users..." 
-                className="w-full rounded-md border border-slate-200 pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                className="w-full rounded-md border border-border pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
             <div className="flex items-center gap-2">
@@ -438,13 +438,13 @@ function UsersPageContent() {
               <TableBody>
                 {loading ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8 text-slate-500">
+                    <TableCell colSpan={7} className="text-center py-8 text-text-secondary">
                       Loading users...
                     </TableCell>
                   </TableRow>
                 ) : table.getRowModel().rows.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8 text-slate-500">
+                    <TableCell colSpan={7} className="text-center py-8 text-text-secondary">
                       No users found.
                     </TableCell>
                   </TableRow>
@@ -462,7 +462,7 @@ function UsersPageContent() {
               </TableBody>
             </Table>
             
-            <div className="p-4 border-t border-slate-100 flex items-center justify-between text-sm text-slate-500">
+            <div className="p-4 border-t border-border flex items-center justify-between text-sm text-text-secondary">
               <span>
                 Showing {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to{' '}
                 {Math.min((table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize, table.getFilteredRowModel().rows.length)} of{' '}
@@ -493,9 +493,9 @@ function UsersPageContent() {
 
       {activeTab === 'employees' && (
         <Card>
-          <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="p-4 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary" />
               <input 
                 type="text" 
                 value={employeeSearch}
@@ -504,7 +504,7 @@ function UsersPageContent() {
                   setEmpPage(0);
                 }}
                 placeholder="Search registered employees..." 
-                className="w-full rounded-md border border-slate-200 pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                className="w-full rounded-md border border-border pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
           </div>
@@ -524,7 +524,7 @@ function UsersPageContent() {
               <TableBody>
                 {paginatedEmployees.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-slate-500">
+                    <TableCell colSpan={6} className="text-center py-8 text-text-secondary">
                       No employees found.
                     </TableCell>
                   </TableRow>
@@ -546,20 +546,20 @@ function UsersPageContent() {
                       <TableRow key={emp.id}>
                         <TableCell>
                           <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-semibold text-slate-700">
+                            <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-semibold text-text-primary">
                               {initials}
                             </div>
-                            <span className="font-medium text-slate-900">{emp.name}</span>
+                            <span className="font-medium text-text-primary">{emp.name}</span>
                           </div>
                         </TableCell>
                         <TableCell>
-                          <span className="text-slate-600">{emp.designation || emp.roleName}</span>
+                          <span className="text-text-secondary">{emp.designation || emp.roleName}</span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-slate-600">{emailVal}</span>
+                          <span className="text-text-secondary">{emailVal}</span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-slate-600">{emp.phone || 'N/A'}</span>
+                          <span className="text-text-secondary">{emp.phone || 'N/A'}</span>
                         </TableCell>
                         <TableCell>
                           {isLinked ? (
@@ -598,7 +598,7 @@ function UsersPageContent() {
               </TableBody>
             </Table>
             
-            <div className="p-4 border-t border-slate-100 flex items-center justify-between text-sm text-slate-500">
+            <div className="p-4 border-t border-border flex items-center justify-between text-sm text-text-secondary">
               <span>
                 Showing {filteredEmployees.length === 0 ? 0 : empPage * empPageSize + 1} to{' '}
                 {Math.min((empPage + 1) * empPageSize, filteredEmployees.length)} of{' '}
@@ -629,9 +629,9 @@ function UsersPageContent() {
 
       {activeTab === 'students' && (
         <Card>
-          <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="p-4 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary" />
               <input 
                 type="text" 
                 value={studentSearch}
@@ -640,7 +640,7 @@ function UsersPageContent() {
                   setStuPage(0);
                 }}
                 placeholder="Search registered students..." 
-                className="w-full rounded-md border border-slate-200 pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                className="w-full rounded-md border border-border pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
           </div>
@@ -660,7 +660,7 @@ function UsersPageContent() {
               <TableBody>
                 {paginatedStudents.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-slate-500">
+                    <TableCell colSpan={6} className="text-center py-8 text-text-secondary">
                       No students found.
                     </TableCell>
                   </TableRow>
@@ -686,22 +686,22 @@ function UsersPageContent() {
                       <TableRow key={stu.id}>
                         <TableCell>
                           <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-semibold text-slate-700">
+                            <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-semibold text-text-primary">
                               {initials}
                             </div>
-                            <span className="font-medium text-slate-900">{nameVal}</span>
+                            <span className="font-medium text-text-primary">{nameVal}</span>
                           </div>
                         </TableCell>
                         <TableCell>
-                          <span className="text-slate-600">
+                          <span className="text-text-secondary">
                             {collegeVal} {deptVal ? `(${deptVal})` : ''}
                           </span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-slate-600">{emailVal}</span>
+                          <span className="text-text-secondary">{emailVal}</span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-slate-600">{phoneVal || 'N/A'}</span>
+                          <span className="text-text-secondary">{phoneVal || 'N/A'}</span>
                         </TableCell>
                         <TableCell>
                           {isLinked ? (
@@ -740,7 +740,7 @@ function UsersPageContent() {
               </TableBody>
             </Table>
             
-            <div className="p-4 border-t border-slate-100 flex items-center justify-between text-sm text-slate-500">
+            <div className="p-4 border-t border-border flex items-center justify-between text-sm text-text-secondary">
               <span>
                 Showing {filteredStudents.length === 0 ? 0 : stuPage * empPageSize + 1} to{' '}
                 {Math.min((stuPage + 1) * empPageSize, filteredStudents.length)} of{' '}
@@ -771,9 +771,9 @@ function UsersPageContent() {
 
       {activeTab === 'organizations' && (
         <Card>
-          <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="p-4 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary" />
               <input 
                 type="text" 
                 value={organizationSearch}
@@ -782,7 +782,7 @@ function UsersPageContent() {
                   setOrgPage(0);
                 }}
                 placeholder="Search registered organizations..." 
-                className="w-full rounded-md border border-slate-200 pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                className="w-full rounded-md border border-border pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
           </div>
@@ -802,7 +802,7 @@ function UsersPageContent() {
               <TableBody>
                 {paginatedOrganizations.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-slate-500">
+                    <TableCell colSpan={6} className="text-center py-8 text-text-secondary">
                       No organizations found.
                     </TableCell>
                   </TableRow>
@@ -827,20 +827,20 @@ function UsersPageContent() {
                       <TableRow key={org.id}>
                         <TableCell>
                           <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-semibold text-slate-700">
+                            <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-semibold text-text-primary">
                               {initials}
                             </div>
-                            <span className="font-medium text-slate-900">{nameVal}</span>
+                            <span className="font-medium text-text-primary">{nameVal}</span>
                           </div>
                         </TableCell>
                         <TableCell>
-                          <span className="text-slate-650">{codeVal}</span>
+                          <span className="text-text-secondary">{codeVal}</span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-slate-600">{emailVal || 'N/A'}</span>
+                          <span className="text-text-secondary">{emailVal || 'N/A'}</span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-slate-600">{phoneVal || 'N/A'}</span>
+                          <span className="text-text-secondary">{phoneVal || 'N/A'}</span>
                         </TableCell>
                         <TableCell>
                           {isLinked ? (
@@ -879,7 +879,7 @@ function UsersPageContent() {
               </TableBody>
             </Table>
             
-            <div className="p-4 border-t border-slate-100 flex items-center justify-between text-sm text-slate-500">
+            <div className="p-4 border-t border-border flex items-center justify-between text-sm text-text-secondary">
               <span>
                 Showing {filteredOrganizations.length === 0 ? 0 : orgPage * empPageSize + 1} to{' '}
                 {Math.min((orgPage + 1) * empPageSize, filteredOrganizations.length)} of{' '}
@@ -927,7 +927,7 @@ function UsersPageContent() {
 
 export default function UsersPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center text-xs font-semibold text-slate-500">Loading Users Portal...</div>}>
+    <Suspense fallback={<div className="p-8 text-center text-xs font-semibold text-text-secondary">Loading Users Portal...</div>}>
       <UsersPageContent />
     </Suspense>
   );

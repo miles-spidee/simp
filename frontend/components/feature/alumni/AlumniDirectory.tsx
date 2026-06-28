@@ -99,12 +99,12 @@ export default function AlumniDirectory() {
   });
 
   return (
-    <div className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden mt-6 font-sans">
+    <div className="bg-white border border-border rounded-2xl shadow-sm overflow-hidden mt-6 font-sans">
       
       {/* Header section with search filters and Add Profile button */}
-      <div className="p-5 border-b border-slate-100 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 bg-slate-50/50">
+      <div className="p-5 border-b border-border flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 bg-slate-50/50">
         <div className="flex items-center justify-between">
-          <h2 className="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2">
+          <h2 className="text-base font-bold text-text-primary tracking-tight flex items-center gap-2">
             <GraduationCap className="h-5 w-5 text-indigo-650" /> Global Alumni Network
           </h2>
         </div>
@@ -112,13 +112,13 @@ export default function AlumniDirectory() {
         <div className="flex flex-col sm:flex-row gap-3">
           {/* Search bar */}
           <div className="relative flex-grow sm:w-64">
-            <Search className="h-4 w-4 text-slate-400 absolute left-3 top-3.5" />
+            <Search className="h-4 w-4 text-text-secondary absolute left-3 top-3.5" />
             <input 
               type="text" 
               placeholder="Search alumni..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl pl-9.5 pr-4 py-2.5 text-xs focus:outline-none focus:border-indigo-550 font-medium text-slate-700"
+              className="w-full bg-white border border-border rounded-xl pl-9.5 pr-4 py-2.5 text-xs focus:outline-none focus:border-primary font-medium text-text-primary"
             />
           </div>
 
@@ -126,7 +126,7 @@ export default function AlumniDirectory() {
           <select
             value={mentoringFilter}
             onChange={(e) => setMentoringFilter(e.target.value as any)}
-            className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 focus:outline-none cursor-pointer"
+            className="bg-white border border-border rounded-xl px-3 py-2 text-xs font-bold text-text-primary focus:outline-none cursor-pointer"
           >
             <option value="All">All Mentoring Status</option>
             <option value="Mentoring">Active Mentors Only</option>
@@ -137,7 +137,7 @@ export default function AlumniDirectory() {
           <select
             value={yearFilter}
             onChange={(e) => setYearFilter(e.target.value as any)}
-            className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 focus:outline-none cursor-pointer"
+            className="bg-white border border-border rounded-xl px-3 py-2 text-xs font-bold text-text-primary focus:outline-none cursor-pointer"
           >
             <option value="All">All Class Years</option>
             <option value="2026">Class of 2026</option>
@@ -158,13 +158,13 @@ export default function AlumniDirectory() {
       {/* Alumni Cards Grid */}
       <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
-          <div className="col-span-full py-12 text-center text-slate-400 font-semibold">
+          <div className="col-span-full py-12 text-center text-text-secondary font-semibold">
             <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
             Loading alumni network directory...
           </div>
         ) : (
           filteredAlumni.slice(0, 12).map(al => (
-            <div key={al.id} className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden flex flex-col justify-between min-h-[190px]">
+            <div key={al.id} className="bg-white rounded-2xl border border-border p-5 shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden flex flex-col justify-between min-h-[190px]">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               
               <div>
@@ -173,32 +173,32 @@ export default function AlumniDirectory() {
                     {al.name.charAt(0)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-slate-800 leading-tight truncate group-hover:text-indigo-650 transition-colors">{al.name}</h3>
+                    <h3 className="font-bold text-text-primary leading-tight truncate group-hover:text-indigo-650 transition-colors">{al.name}</h3>
                     <p className="text-[10px] text-indigo-650 font-bold mt-0.5 uppercase tracking-wider">{al.batch} • Class of {al.graduationYear}</p>
                   </div>
                   {al.linkedInUrl && (
-                    <a href={al.linkedInUrl} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-indigo-650 transition-colors">
+                    <a href={al.linkedInUrl} target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-indigo-650 transition-colors">
                       <Link className="h-4.5 w-4.5" />
                     </a>
                   )}
                 </div>
                 
                 <div className="mt-4 space-y-2.5">
-                  <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
-                    <Briefcase className="h-4 w-4 text-slate-400 shrink-0" />
+                  <div className="flex items-center gap-2 text-xs font-semibold text-text-secondary">
+                    <Briefcase className="h-4 w-4 text-text-secondary shrink-0" />
                     <span className="truncate">
-                      {al.currentDesignation} at <span className="font-bold text-slate-800">{al.currentCompany}</span>
+                      {al.currentDesignation} at <span className="font-bold text-text-primary">{al.currentCompany}</span>
                     </span>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-                    <MapPin className="h-4 w-4 text-slate-400 shrink-0" />
+                  <div className="flex items-center gap-2 text-xs text-text-secondary font-medium">
+                    <MapPin className="h-4 w-4 text-text-secondary shrink-0" />
                     <span>{al.careerHistory?.[0]?.location || 'Bangalore'}</span>
                   </div>
                 </div>
               </div>
               
               {al.isMentoring && (
-                <div className="mt-4 pt-3.5 border-t border-slate-100 flex items-center justify-between">
+                <div className="mt-4 pt-3.5 border-t border-border flex items-center justify-between">
                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold uppercase tracking-wider">
                     <CheckCircle className="w-3 h-3 text-emerald-600 shrink-0" />
                     Active Peer Mentor
@@ -210,7 +210,7 @@ export default function AlumniDirectory() {
         )}
 
         {filteredAlumni.length === 0 && !loading && (
-          <div className="col-span-full py-12 text-center text-slate-400 font-medium">
+          <div className="col-span-full py-12 text-center text-text-secondary font-medium">
             No alumni match current search filters.
           </div>
         )}
@@ -226,98 +226,98 @@ export default function AlumniDirectory() {
       >
         <form onSubmit={handleCreateAlumni} className="flex-1 flex flex-col p-6 space-y-5 overflow-y-auto">
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Full Name</label>
+            <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Full Name</label>
             <input
               type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., John Doe"
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800 placeholder-slate-400"
+              className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary placeholder-slate-400"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Batch Name</label>
+              <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Batch Name</label>
               <input
                 type="text"
                 required
                 value={batch}
                 onChange={(e) => setBatch(e.target.value)}
                 placeholder="e.g., Class of 2025"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Graduation Year</label>
+              <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Graduation Year</label>
               <input
                 type="number"
                 required
                 value={graduationYear}
                 onChange={(e) => setGraduationYear(parseInt(e.target.value) || 2025)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-mono font-bold text-slate-800"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-mono font-bold text-text-primary"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Contact Email</label>
+              <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Contact Email</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="e.g., john@example.com"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Phone number</label>
+              <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Phone number</label>
               <input
                 type="text"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="e.g., 9876543210"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Current Company</label>
+              <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Current Company</label>
               <input
                 type="text"
                 required
                 value={currentCompany}
                 onChange={(e) => setCurrentCompany(e.target.value)}
                 placeholder="e.g., Google"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Designation</label>
+              <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Designation</label>
               <input
                 type="text"
                 required
                 value={currentDesignation}
                 onChange={(e) => setCurrentDesignation(e.target.value)}
                 placeholder="e.g., Senior Developer"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary"
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">LinkedIn Profile URL</label>
+            <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">LinkedIn Profile URL</label>
             <input
               type="url"
               value={linkedInUrl}
               onChange={(e) => setLinkedInUrl(e.target.value)}
               placeholder="e.g., https://linkedin.com/in/username"
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800"
+              className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary"
             />
           </div>
 
@@ -327,18 +327,18 @@ export default function AlumniDirectory() {
               id="isMentoring"
               checked={isMentoring}
               onChange={(e) => setIsMentoring(e.target.checked)}
-              className="h-4.5 w-4.5 rounded border-slate-300 text-indigo-650 focus:ring-indigo-500 cursor-pointer"
+              className="h-4.5 w-4.5 rounded border-border text-indigo-650 focus:ring-primary cursor-pointer"
             />
-            <label htmlFor="isMentoring" className="text-xs font-bold text-slate-650 cursor-pointer">
+            <label htmlFor="isMentoring" className="text-xs font-bold text-text-secondary cursor-pointer">
               Available for Student Mentoring
             </label>
           </div>
 
-          <div className="flex gap-3 pt-4 border-t border-slate-100 mt-auto">
+          <div className="flex gap-3 pt-4 border-t border-border mt-auto">
             <button
               type="button"
               onClick={() => setIsAddOpen(false)}
-              className="flex-1 py-3 border border-slate-200 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+              className="flex-1 py-3 border border-border text-text-primary font-bold text-xs rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
             >
               Cancel
             </button>

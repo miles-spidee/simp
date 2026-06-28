@@ -40,7 +40,7 @@ export default function ReferralsPage() {
 
   if (!hasPermission('referral.view')) {
     return (
-      <div className="flex h-[50vh] items-center justify-center text-slate-500">
+      <div className="flex h-[50vh] items-center justify-center text-text-secondary">
         <p>You do not have permission to view referrals.</p>
       </div>
     );
@@ -49,7 +49,7 @@ export default function ReferralsPage() {
   if (loading) {
     return (
       <div className="flex h-[50vh] items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+        <Loader2 className="w-8 h-8 animate-spin text-text-secondary" />
       </div>
     );
   }
@@ -58,11 +58,11 @@ export default function ReferralsPage() {
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-text-primary flex items-center gap-2">
             <Gift className="w-6 h-6 text-rose-500" />
             Referral Management
           </h1>
-          <p className="text-slate-500 text-sm mt-1">Refer candidates and earn reward points.</p>
+          <p className="text-text-secondary text-sm mt-1">Refer candidates and earn reward points.</p>
         </div>
         {hasPermission('referral.create') && (
           <button className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2">
@@ -74,22 +74,22 @@ export default function ReferralsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
-            <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-              <h2 className="font-bold text-slate-800 flex items-center gap-2">
-                <Users className="w-5 h-5 text-slate-400" />
+          <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+            <div className="p-4 border-b border-border flex justify-between items-center bg-slate-50">
+              <h2 className="font-bold text-text-primary flex items-center gap-2">
+                <Users className="w-5 h-5 text-text-secondary" />
                 My Referrals
               </h2>
             </div>
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-border">
               {referrals.map(ref => (
                 <div key={ref.id} className="p-4 hover:bg-slate-50 transition-colors flex items-center justify-between">
                   <div>
-                    <h3 className="font-bold text-slate-900">{ref.candidateName}</h3>
-                    <p className="text-sm text-slate-500">{ref.program}</p>
+                    <h3 className="font-bold text-text-primary">{ref.candidateName}</h3>
+                    <p className="text-sm text-text-secondary">{ref.program}</p>
                     <div className="mt-2 flex items-center gap-2 text-xs">
-                      <span className="text-slate-400">Code:</span>
-                      <code className="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-slate-600 border border-slate-200">
+                      <span className="text-text-secondary">Code:</span>
+                      <code className="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-text-secondary border border-border">
                         {ref.referralCode}
                       </code>
                     </div>
@@ -99,18 +99,18 @@ export default function ReferralsPage() {
                       ref.status === 'Rewarded' ? 'bg-emerald-100 text-emerald-700' :
                       ref.status === 'Joined' || ref.status === 'Completed' ? 'bg-blue-100 text-blue-700' :
                       ref.status === 'Expired' ? 'bg-rose-100 text-rose-700' :
-                      'bg-slate-100 text-slate-700'
+                      'bg-slate-100 text-text-primary'
                     }`}>
                       {ref.status}
                     </span>
-                    <div className="mt-2 font-bold text-slate-700 text-sm">
+                    <div className="mt-2 font-bold text-text-primary text-sm">
                       {ref.status === 'Rewarded' ? `+${ref.rewardPoints} pts` : `${ref.rewardPoints} pts pending`}
                     </div>
                   </div>
                 </div>
               ))}
               {referrals.length === 0 && (
-                <div className="p-8 text-center text-slate-500">
+                <div className="p-8 text-center text-text-secondary">
                   You haven't referred anyone yet.
                 </div>
               )}
@@ -131,19 +131,19 @@ export default function ReferralsPage() {
             </button>
           </div>
 
-          <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5">
-            <h2 className="font-bold text-slate-800 mb-4">Active Campaigns</h2>
+          <div className="bg-white rounded-xl border border-border shadow-sm p-5">
+            <h2 className="font-bold text-text-primary mb-4">Active Campaigns</h2>
             <div className="space-y-4">
               {campaigns.map(camp => (
-                <div key={camp.id} className="border border-slate-100 rounded-lg p-4 bg-slate-50">
+                <div key={camp.id} className="border border-border rounded-lg p-4 bg-slate-50">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-bold text-slate-800 text-sm">{camp.title}</h3>
+                    <h3 className="font-bold text-text-primary text-sm">{camp.title}</h3>
                     <span className="bg-rose-100 text-rose-700 px-2 py-0.5 rounded text-xs font-bold">
                       {camp.rewardMultiplier}x Points
                     </span>
                   </div>
-                  <p className="text-xs text-slate-600 mb-3">{camp.description}</p>
-                  <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">
+                  <p className="text-xs text-text-secondary mb-3">{camp.description}</p>
+                  <div className="text-[10px] text-text-secondary font-medium uppercase tracking-wider">
                     Ends {new Date(camp.endDate).toLocaleDateString()}
                   </div>
                 </div>

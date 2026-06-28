@@ -41,11 +41,11 @@ export function Drawer({ isOpen, onClose, title, children }: DrawerProps) {
       <div 
         className={`fixed inset-y-0 right-0 z-50 w-full lg:w-[calc(100%-18rem)] lg:left-72 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'} flex flex-col`}
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-          <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+          <h2 className="text-lg font-semibold text-text-primary">{title}</h2>
           <button 
             onClick={onClose}
-            className="rounded-full p-2 text-slate-500 hover:bg-slate-100 transition-colors"
+            className="rounded-full p-2 text-text-secondary hover:bg-slate-100 transition-colors"
           >
             <X className="h-5 w-5" />
           </button>

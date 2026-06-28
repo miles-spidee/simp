@@ -555,7 +555,7 @@ export default function AllocationManagementPage() {
   }
 
   return (
-    <div className="h-screen -m-6 flex bg-slate-50 border border-slate-200 rounded-xl overflow-hidden text-text-primary">
+    <div className="h-screen -m-6 flex bg-slate-50 border border-border rounded-xl overflow-hidden text-text-primary">
       
       {/* Toast Alert */}
       {toast && (
@@ -568,8 +568,8 @@ export default function AllocationManagementPage() {
       )}
 
       {/* LEFT PANEL: RELATIONAL sidebar ENTITIES */}
-      <div className="w-60 bg-white border-r border-slate-200 flex flex-col shrink-0">
-        <div className="p-4 border-b border-slate-100 bg-slate-50/50">
+      <div className="w-60 bg-white border-r border-border flex flex-col shrink-0">
+        <div className="p-4 border-b border-border bg-slate-50/50">
           <div className="text-[10px] font-black uppercase text-blue-600 tracking-wider">PineSphere Relational Map</div>
           <h3 className="font-extrabold text-sm text-text-primary mt-1 tracking-tight">Allocation Workspaces</h3>
         </div>
@@ -606,7 +606,7 @@ export default function AllocationManagementPage() {
           ))}
         </div>
 
-        <div className="p-4 border-t border-slate-100 text-[10px] text-text-secondary font-bold">
+        <div className="p-4 border-t border-border text-[10px] text-text-secondary font-bold">
           Rules: {rules.maxStudentsPerMentor} max students/coach
         </div>
       </div>
@@ -615,7 +615,7 @@ export default function AllocationManagementPage() {
       <div className="flex-1 flex flex-col bg-slate-50 overflow-y-auto">
         
         {/* Workspace Header */}
-        <div className="p-5 border-b border-slate-200 bg-white flex flex-col sm:flex-row justify-between sm:items-center gap-4 shrink-0">
+        <div className="p-5 border-b border-border bg-white flex flex-col sm:flex-row justify-between sm:items-center gap-4 shrink-0">
           <div>
             <h2 className="text-xl font-black text-text-primary tracking-tight">
               {activeTab === 'dashboard' && 'Allocation Center Dashboard'}
@@ -694,7 +694,7 @@ export default function AllocationManagementPage() {
                   <div 
                     key={idx}
                     onClick={() => kpi.clickable && setActiveTab(kpi.tabKey as any)}
-                    className={`bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex items-center justify-between transition group ${kpi.clickable ? 'hover:border-blue-500 hover:shadow-md cursor-pointer' : ''}`}
+                    className={`bg-white border border-border rounded-xl p-4 shadow-xs flex items-center justify-between transition group ${kpi.clickable ? 'hover:border-secondary hover:shadow-md cursor-pointer' : ''}`}
                   >
                     <div className="space-y-1">
                       <div className="text-xl font-black text-text-primary group-hover:text-blue-600 transition-colors">{kpi.count}</div>
@@ -711,7 +711,7 @@ export default function AllocationManagementPage() {
               <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
                 
                 {/* Student status */}
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
+                <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4">
                   <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary flex items-center gap-1.5">
                     <Activity className="h-4 w-4 text-blue-600" />
                     Student Allocation status
@@ -735,7 +735,7 @@ export default function AllocationManagementPage() {
                 </div>
 
                 {/* Mentor utilization */}
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
+                <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4">
                   <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary flex items-center gap-1.5">
                     <Shield className="h-4 w-4 text-emerald-600" />
                     Mentor Utilization splits
@@ -760,7 +760,7 @@ export default function AllocationManagementPage() {
                 </div>
 
                 {/* Program allocations */}
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
+                <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4">
                   <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary flex items-center gap-1.5">
                     <Award className="h-4 w-4 text-purple-600" />
                     Program Allocation indices
@@ -787,7 +787,7 @@ export default function AllocationManagementPage() {
               </div>
 
               {/* Relationship workspace: Drag and Drop map simulator */}
-              <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
+              <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4">
                 <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary flex items-center gap-1.5">
                   <ArrowLeftRight className="h-4.5 w-4.5 text-blue-600" />
                   Relational Allocation Workspace (Drag & Drop mapping simulation)
@@ -799,7 +799,7 @@ export default function AllocationManagementPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
                   
                   {/* Unallocated box */}
-                  <div className="border border-slate-200 bg-slate-50 p-4 rounded-xl space-y-3 max-h-[300px] overflow-y-auto">
+                  <div className="border border-border bg-slate-50 p-4 rounded-xl space-y-3 max-h-[300px] overflow-y-auto">
                     <div className="text-[10px] font-black text-text-secondary uppercase tracking-widest flex items-center justify-between">
                       <span>Unallocated Candidates List</span>
                       <span className="bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full">{unallocatedStudents.length} Students</span>
@@ -807,7 +807,7 @@ export default function AllocationManagementPage() {
                     {unallocatedStudents.map(s => (
                       <div 
                         key={s.id}
-                        className="bg-white border border-slate-200 rounded-lg p-2.5 shadow-xs flex items-center justify-between text-xs font-semibold text-text-primary hover:border-blue-500 cursor-grab"
+                        className="bg-white border border-border rounded-lg p-2.5 shadow-xs flex items-center justify-between text-xs font-semibold text-text-primary hover:border-secondary cursor-grab"
                       >
                         <div>
                           <div className="font-extrabold text-text-primary">{s.personalInfo.name}</div>
@@ -826,14 +826,14 @@ export default function AllocationManagementPage() {
                   </div>
 
                   {/* Active Cohorts list */}
-                  <div className="border border-slate-200 bg-slate-50 p-4 rounded-xl space-y-3 max-h-[300px] overflow-y-auto">
+                  <div className="border border-border bg-slate-50 p-4 rounded-xl space-y-3 max-h-[300px] overflow-y-auto">
                     <div className="text-[10px] font-black text-text-secondary uppercase tracking-widest">Target Active Cohorts</div>
                     {batches.map(b => {
                       const utilPct = Math.round((b.students.length / b.capacity) * 100) || 0;
                       return (
                         <div 
                           key={b.id}
-                          className="bg-white border border-slate-200 rounded-lg p-2.5 shadow-xs flex items-center justify-between text-xs font-semibold text-text-primary"
+                          className="bg-white border border-border rounded-lg p-2.5 shadow-xs flex items-center justify-between text-xs font-semibold text-text-primary"
                         >
                           <div>
                             <div className="font-extrabold text-text-primary">{b.name}</div>
@@ -858,10 +858,10 @@ export default function AllocationManagementPage() {
 
           {/* TAB 2: STUDENT ALLOCATION */}
           {activeTab === 'students' && (
-            <div className="bg-white border border-slate-200 rounded-xl shadow-xs overflow-hidden">
+            <div className="bg-white border border-border rounded-xl shadow-xs overflow-hidden">
               
               {/* Toolbar */}
-              <div className="p-4 border-b border-slate-200 bg-slate-50/50 flex flex-col gap-4">
+              <div className="p-4 border-b border-border bg-slate-50/50 flex flex-col gap-4">
                 <div className="flex flex-col sm:flex-row justify-between gap-4">
                   <div className="relative flex-1 max-w-md">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary" />
@@ -870,12 +870,12 @@ export default function AllocationManagementPage() {
                       placeholder="Search students allocations..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                      className="w-full pl-9 pr-4 py-2 bg-white border border-border rounded-lg text-xs font-semibold focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                     />
                   </div>
                   <button 
                     onClick={() => showToast('Allocation report downloaded.', 'success')}
-                    className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 text-text-primary hover:bg-slate-50 rounded-lg text-xs font-bold transition-colors"
+                    className="flex items-center gap-2 px-3 py-2 bg-white border border-border text-text-primary hover:bg-slate-50 rounded-lg text-xs font-bold transition-colors"
                   >
                     <Download className="h-4 w-4" />
                     Export CSV
@@ -885,7 +885,7 @@ export default function AllocationManagementPage() {
                   <select
                     value={filterProgram}
                     onChange={(e) => setFilterProgram(e.target.value)}
-                    className="px-3 py-1.5 bg-white border border-slate-200 rounded-md text-xs text-text-secondary focus:outline-none focus:border-blue-500"
+                    className="px-3 py-1.5 bg-white border border-border rounded-md text-xs text-text-secondary focus:outline-none focus:border-primary"
                   >
                     <option value="all">All Programs</option>
                     {programsList.map(p => <option key={p} value={p}>{p}</option>)}
@@ -893,7 +893,7 @@ export default function AllocationManagementPage() {
                   <select
                     value={filterBatch}
                     onChange={(e) => setFilterBatch(e.target.value)}
-                    className="px-3 py-1.5 bg-white border border-slate-200 rounded-md text-xs text-text-secondary focus:outline-none focus:border-blue-500"
+                    className="px-3 py-1.5 bg-white border border-border rounded-md text-xs text-text-secondary focus:outline-none focus:border-primary"
                   >
                     <option value="all">All Batches</option>
                     {batchesList.map(b => <option key={b} value={b}>{b}</option>)}
@@ -901,7 +901,7 @@ export default function AllocationManagementPage() {
                   <select
                     value={filterMentor}
                     onChange={(e) => setFilterMentor(e.target.value)}
-                    className="px-3 py-1.5 bg-white border border-slate-200 rounded-md text-xs text-text-secondary focus:outline-none focus:border-blue-500"
+                    className="px-3 py-1.5 bg-white border border-border rounded-md text-xs text-text-secondary focus:outline-none focus:border-primary"
                   >
                     <option value="all">All Mentors</option>
                     {mentorsList.map(m => <option key={m} value={m}>{m}</option>)}
@@ -909,7 +909,7 @@ export default function AllocationManagementPage() {
                   <select
                     value={filterCollege}
                     onChange={(e) => setFilterCollege(e.target.value)}
-                    className="px-3 py-1.5 bg-white border border-slate-200 rounded-md text-xs text-text-secondary focus:outline-none focus:border-blue-500"
+                    className="px-3 py-1.5 bg-white border border-border rounded-md text-xs text-text-secondary focus:outline-none focus:border-primary"
                   >
                     <option value="all">All Colleges</option>
                     {collegesList.map(c => <option key={c} value={c}>{c}</option>)}
@@ -917,7 +917,7 @@ export default function AllocationManagementPage() {
                   <select
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
-                    className="px-3 py-1.5 bg-white border border-slate-200 rounded-md text-xs text-text-secondary focus:outline-none focus:border-blue-500"
+                    className="px-3 py-1.5 bg-white border border-border rounded-md text-xs text-text-secondary focus:outline-none focus:border-primary"
                   >
                     <option value="all">All Statuses</option>
                     <option value="Allocated">Allocated</option>
@@ -930,7 +930,7 @@ export default function AllocationManagementPage() {
               {/* Data Grid */}
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs whitespace-nowrap">
-                  <thead className="bg-slate-50 border-b border-slate-200 font-bold uppercase text-text-secondary">
+                  <thead className="bg-slate-50 border-b border-border font-bold uppercase text-text-secondary">
                     <tr>
                       <th className="px-4 py-3">Student Name</th>
                       <th className="px-4 py-3">Intern ID</th>
@@ -943,7 +943,7 @@ export default function AllocationManagementPage() {
                       <th className="px-4 py-3 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 font-medium">
+                  <tbody className="divide-y divide-border font-medium">
                     {filteredAllocations.map(a => (
                       <tr 
                         key={a.id}
@@ -998,7 +998,7 @@ export default function AllocationManagementPage() {
               {batches.map(b => {
                 const utilPct = Math.round((b.students.length / b.capacity) * 100) || 0;
                 return (
-                  <div key={b.id} className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex flex-col justify-between gap-4">
+                  <div key={b.id} className="bg-white border border-border rounded-xl p-5 shadow-xs flex flex-col justify-between gap-4">
                     <div>
                       <div className="flex justify-between items-start">
                         <span className="font-mono text-[9px] font-black text-text-secondary bg-slate-50 px-2 py-0.5 rounded border">{b.code}</span>
@@ -1010,7 +1010,7 @@ export default function AllocationManagementPage() {
                       <h4 className="text-sm font-black text-text-primary mt-3">{b.name}</h4>
                       <p className="text-[11px] text-text-secondary font-semibold truncate mt-0.5">{b.programName}</p>
                       
-                      <div className="mt-4 space-y-2 pt-3 border-t border-slate-50 text-xs font-semibold text-text-secondary">
+                      <div className="mt-4 space-y-2 pt-3 border-t border-border text-xs font-semibold text-text-secondary">
                         <div className="flex justify-between">
                           <span>Max Seating:</span>
                           <span className="text-text-primary font-bold">{b.capacity} Seats</span>
@@ -1026,7 +1026,7 @@ export default function AllocationManagementPage() {
                       </div>
                     </div>
 
-                    <div className="flex gap-2 pt-2 border-t border-slate-50 justify-end">
+                    <div className="flex gap-2 pt-2 border-t border-border justify-end">
                       <button 
                         onClick={() => {
                           setSelectedAllocation(allocations.find(a => a.batchId === b.id) || null);
@@ -1047,7 +1047,7 @@ export default function AllocationManagementPage() {
 
           {/* TAB 4: MENTOR WORKLOADS */}
           {activeTab === 'mentors' && (
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4">
               <h4 className="text-xs font-black uppercase text-text-secondary">Mentor Workloads & Capacity Monitoring</h4>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -1057,7 +1057,7 @@ export default function AllocationManagementPage() {
                   const isOverload = mentor.students > targetLimit;
 
                   return (
-                    <div key={index} className="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-3 flex flex-col justify-between">
+                    <div key={index} className="bg-slate-50 border border-border rounded-lg p-4 space-y-3 flex flex-col justify-between">
                       <div>
                         <div className="flex justify-between items-start">
                           <span className="font-extrabold text-sm text-text-primary">{mentor.name}</span>
@@ -1108,14 +1108,14 @@ export default function AllocationManagementPage() {
 
           {/* TAB 5: PROGRAMS resource matrix */}
           {activeTab === 'programs' && (
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4">
               <h4 className="text-xs font-black uppercase text-text-secondary">Programs Relational Mapping</h4>
               
               <div className="space-y-3">
                 {batches.map(b => {
                   const cohortStudents = allocations.filter(a => a.batchId === b.id && a.status === 'Allocated');
                   return (
-                    <div key={b.id} className="bg-slate-50 border border-slate-200 rounded-lg p-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs font-semibold text-text-primary">
+                    <div key={b.id} className="bg-slate-50 border border-border rounded-lg p-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs font-semibold text-text-primary">
                       <div>
                         <div className="font-extrabold text-text-primary text-sm">{b.programName}</div>
                         <span className="text-[10px] text-text-secondary font-bold">Cohort Mapped: {b.name}</span>
@@ -1144,7 +1144,7 @@ export default function AllocationManagementPage() {
 
           {/* TAB 6: COLLEGES */}
           {activeTab === 'colleges' && (
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4">
               <h4 className="text-xs font-black uppercase text-text-secondary">Academic Partners Allocation index</h4>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1153,22 +1153,22 @@ export default function AllocationManagementPage() {
                   const uniqueProgs = new Set(collegeAllocs.map(a => a.programId)).size;
                   
                   return (
-                    <div key={idx} className="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-3">
+                    <div key={idx} className="bg-slate-50 border border-border rounded-lg p-4 space-y-3">
                       <div className="flex justify-between items-start">
                         <span className="font-extrabold text-text-primary text-sm">{college}</span>
                         <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-[9px] font-black uppercase">Active MoU</span>
                       </div>
 
                       <div className="grid grid-cols-3 gap-2 text-center text-xs font-semibold text-text-primary">
-                        <div className="bg-white border border-slate-100 p-2 rounded">
+                        <div className="bg-white border border-border p-2 rounded">
                           <span className="text-text-secondary text-[8px] uppercase block">Students</span>
                           <span className="text-text-primary font-extrabold text-sm">{collegeAllocs.length}</span>
                         </div>
-                        <div className="bg-white border border-slate-100 p-2 rounded">
+                        <div className="bg-white border border-border p-2 rounded">
                           <span className="text-text-secondary text-[8px] uppercase block">Programs</span>
                           <span className="text-text-primary font-extrabold text-sm">{uniqueProgs}</span>
                         </div>
-                        <div className="bg-white border border-slate-100 p-2 rounded">
+                        <div className="bg-white border border-border p-2 rounded">
                           <span className="text-text-secondary text-[8px] uppercase block">Active Batches</span>
                           <span className="text-text-primary font-extrabold text-sm">{collegeAllocs.map(a => a.batchId).filter(Boolean).length}</span>
                         </div>
@@ -1182,13 +1182,13 @@ export default function AllocationManagementPage() {
 
           {/* TAB 7: CAPACITY PLANNER */}
           {activeTab === 'capacity' && (
-            <div className="space-y-6 bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
+            <div className="space-y-6 bg-white border border-border rounded-xl p-5 shadow-xs">
               <h4 className="text-xs font-black uppercase text-text-secondary">Relational Capacity limits Planner</h4>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-semibold text-text-primary">
                 
                 {/* Students */}
-                <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-2">
+                <div className="bg-slate-50 border border-border rounded-lg p-4 space-y-2">
                   <h5 className="font-black text-text-secondary uppercase text-[9.5px]">Student Roster Capacity</h5>
                   <div className="flex justify-between">
                     <span>Available Students:</span>
@@ -1205,7 +1205,7 @@ export default function AllocationManagementPage() {
                 </div>
 
                 {/* Mentors */}
-                <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-2">
+                <div className="bg-slate-50 border border-border rounded-lg p-4 space-y-2">
                   <h5 className="font-black text-text-secondary uppercase text-[9.5px]">Mentor Capacity limits</h5>
                   <div className="flex justify-between">
                     <span>Active Coaches:</span>
@@ -1218,7 +1218,7 @@ export default function AllocationManagementPage() {
                 </div>
 
                 {/* Batches */}
-                <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-2">
+                <div className="bg-slate-50 border border-border rounded-lg p-4 space-y-2">
                   <h5 className="font-black text-text-secondary uppercase text-[9.5px]">Seating Cohort Capacity</h5>
                   <div className="flex justify-between">
                     <span>Total Seating Size:</span>
@@ -1235,7 +1235,7 @@ export default function AllocationManagementPage() {
                 </div>
 
                 {/* Programs */}
-                <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-2">
+                <div className="bg-slate-50 border border-border rounded-lg p-4 space-y-2">
                   <h5 className="font-black text-text-secondary uppercase text-[9.5px]">Program Enrollment caps</h5>
                   <div className="flex justify-between">
                     <span>Max Target Size:</span>
@@ -1274,13 +1274,13 @@ export default function AllocationManagementPage() {
               </div>
 
               {/* Conflicts table */}
-              <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
+              <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4">
                 <h4 className="text-xs font-black uppercase text-text-secondary">Detected Relational Conflicts list</h4>
                 
                 {detectedConflicts.length > 0 ? (
                   <div className="space-y-3">
                     {detectedConflicts.map(c => (
-                      <div key={c.id} className="bg-slate-50 border border-slate-200 p-3 rounded-lg flex items-center justify-between text-xs font-semibold text-text-primary gap-4">
+                      <div key={c.id} className="bg-slate-50 border border-border p-3 rounded-lg flex items-center justify-between text-xs font-semibold text-text-primary gap-4">
                         <div>
                           <div className="flex items-center gap-2">
                             <span className={`px-1.5 py-0.5 rounded text-[8.5px] font-black uppercase ${c.severity === 'High' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
@@ -1303,7 +1303,7 @@ export default function AllocationManagementPage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-10 border border-dashed border-slate-200 rounded-lg text-xs text-emerald-600 font-bold bg-emerald-50/50">
+                  <div className="text-center py-10 border border-dashed border-border rounded-lg text-xs text-emerald-600 font-bold bg-emerald-50/50">
                     Excellent! All system relationships match load balancing rules perfectly. No conflicts detected.
                   </div>
                 )}
@@ -1314,7 +1314,7 @@ export default function AllocationManagementPage() {
 
           {/* TAB 9: RULES CONFIGURATION */}
           {activeTab === 'rules' && (
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-6">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-6">
               <h4 className="text-xs font-black uppercase text-text-secondary">relational allocation rule configurations</h4>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-semibold text-text-primary">
@@ -1324,7 +1324,7 @@ export default function AllocationManagementPage() {
                     type="number"
                     value={rules.maxStudentsPerMentor}
                     onChange={e => setRules({ ...rules, maxStudentsPerMentor: Number(e.target.value) })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-bold text-text-primary"
+                    className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-bold text-text-primary"
                   />
                 </div>
                 <div className="space-y-1">
@@ -1333,7 +1333,7 @@ export default function AllocationManagementPage() {
                     type="number"
                     value={rules.maxBatchCapacity}
                     onChange={e => setRules({ ...rules, maxBatchCapacity: Number(e.target.value) })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-bold text-text-primary"
+                    className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-bold text-text-primary"
                   />
                 </div>
                 <div className="space-y-1">
@@ -1342,7 +1342,7 @@ export default function AllocationManagementPage() {
                     type="text"
                     value={rules.eligibilityRule}
                     onChange={e => setRules({ ...rules, eligibilityRule: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-bold text-text-primary"
+                    className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-bold text-text-primary"
                   />
                 </div>
                 <div className="space-y-1">
@@ -1351,12 +1351,12 @@ export default function AllocationManagementPage() {
                     type="text"
                     value={rules.collegeRestrictions}
                     onChange={e => setRules({ ...rules, collegeRestrictions: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-bold text-text-primary"
+                    className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-bold text-text-primary"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-between border-t border-slate-100 pt-4 text-xs font-semibold text-text-primary">
+              <div className="flex items-center justify-between border-t border-border pt-4 text-xs font-semibold text-text-primary">
                 <div>
                   <div>Automated Allocation Engine</div>
                   <span className="text-[10px] text-text-secondary block mt-0.5">Let PineSphere AI balance workloads and allocate waitlisted students automatically.</span>
@@ -1378,10 +1378,10 @@ export default function AllocationManagementPage() {
 
           {/* TAB 10: TIMELINE */}
           {activeTab === 'timeline' && (
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4">
               <h4 className="text-xs font-black uppercase text-text-secondary">Change logs Timeline</h4>
               
-              <div className="relative border-l border-slate-200 ml-2 space-y-4.5 pl-4 pt-1 max-h-[450px] overflow-y-auto">
+              <div className="relative border-l border-border ml-2 space-y-4.5 pl-4 pt-1 max-h-[450px] overflow-y-auto">
                 {allocations.flatMap(a => a.timeline.map(t => ({ studentName: a.studentName, ...t }))).map((evt, idx) => (
                   <div key={idx} className="relative text-xs">
                     <div className="absolute -left-[21px] top-1.5 h-2 w-2 rounded-full bg-slate-400 border border-white" />
@@ -1401,10 +1401,10 @@ export default function AllocationManagementPage() {
 
       {/* RIGHT PANEL: ALLOCATION DETAILS SIDEBAR (Persist Right) */}
       {selectedAllocation && (
-        <div className="w-80 bg-white border-l border-slate-200 flex flex-col shrink-0">
-          <div className="p-4 border-b border-slate-100 bg-slate-900 text-white flex justify-between items-center">
+        <div className="w-80 bg-white border-l border-border flex flex-col shrink-0">
+          <div className="p-4 border-b border-border bg-slate-900 text-white flex justify-between items-center">
             <h4 className="font-extrabold text-xs uppercase tracking-wider text-text-secondary">Relational Detail Panel</h4>
-            <span className="text-[10px] bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-blue-400 font-bold">{selectedAllocation.internId}</span>
+            <span className="text-[10px] bg-slate-800 border border-border px-2 py-0.5 rounded text-blue-400 font-bold">{selectedAllocation.internId}</span>
           </div>
 
           <div className="p-5 flex-1 overflow-y-auto space-y-6 text-xs font-semibold text-text-primary">
@@ -1424,7 +1424,7 @@ export default function AllocationManagementPage() {
             </div>
 
             {/* Relationship Path Node */}
-            <div className="space-y-4 border-t border-slate-100 pt-4">
+            <div className="space-y-4 border-t border-border pt-4">
               <div className="text-[10px] font-black uppercase text-text-secondary">Allocations Nodes Map</div>
               
               <div className="relative border-l border-blue-500 ml-2 pl-4 space-y-4 py-1">
@@ -1461,7 +1461,7 @@ export default function AllocationManagementPage() {
             </div>
 
             {/* Quick configuration actions */}
-            <div className="space-y-2 border-t border-slate-100 pt-4">
+            <div className="space-y-2 border-t border-border pt-4">
               <div className="text-[10px] font-black uppercase text-text-secondary">Map Reassignment</div>
               
               <button
@@ -1469,7 +1469,7 @@ export default function AllocationManagementPage() {
                   setBulkVal(selectedAllocation.programId);
                   setActiveActionModal({ type: 'assignProgram' });
                 }}
-                className="w-full text-left bg-slate-50 border border-slate-200 rounded p-2 text-xs font-extrabold text-text-primary hover:border-blue-500 transition-colors"
+                className="w-full text-left bg-slate-50 border border-border rounded p-2 text-xs font-extrabold text-text-primary hover:border-secondary transition-colors"
               >
                 Change Program Assignment
               </button>
@@ -1479,7 +1479,7 @@ export default function AllocationManagementPage() {
                   setBulkVal(selectedAllocation.batchId);
                   setActiveActionModal({ type: 'assignBatch' });
                 }}
-                className="w-full text-left bg-slate-50 border border-slate-200 rounded p-2 text-xs font-extrabold text-text-primary hover:border-blue-500 transition-colors"
+                className="w-full text-left bg-slate-50 border border-border rounded p-2 text-xs font-extrabold text-text-primary hover:border-secondary transition-colors"
               >
                 Change Cohort Batch
               </button>
@@ -1489,7 +1489,7 @@ export default function AllocationManagementPage() {
                   setBulkVal(selectedAllocation.mentorId);
                   setActiveActionModal({ type: 'assignMentor' });
                 }}
-                className="w-full text-left bg-slate-50 border border-slate-200 rounded p-2 text-xs font-extrabold text-text-primary hover:border-blue-500 transition-colors"
+                className="w-full text-left bg-slate-50 border border-border rounded p-2 text-xs font-extrabold text-text-primary hover:border-secondary transition-colors"
               >
                 Change Facilitating Coach
               </button>
@@ -1497,9 +1497,9 @@ export default function AllocationManagementPage() {
             </div>
 
             {/* Selection Timeline */}
-            <div className="space-y-3.5 border-t border-slate-100 pt-4">
+            <div className="space-y-3.5 border-t border-border pt-4">
               <div className="text-[10px] font-black uppercase text-text-secondary">Allocation Logs</div>
-              <div className="relative border-l border-slate-200 ml-2 space-y-3 pl-3.5">
+              <div className="relative border-l border-border ml-2 space-y-3 pl-3.5">
                 {selectedAllocation.timeline.map((evt, idx) => (
                   <div key={idx} className="relative text-[10.5px]">
                     <div className="absolute -left-[18.5px] top-1 h-1.5 w-1.5 rounded-full bg-slate-400 border border-white" />
@@ -1517,10 +1517,10 @@ export default function AllocationManagementPage() {
       {/* POPUP ACTION FORM MODALS */}
       {activeActionModal && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden animate-zoom-in">
+          <div className="bg-white rounded-xl shadow-2xl border border-border w-full max-w-md overflow-hidden animate-zoom-in">
             
             {/* Header */}
-            <div className="bg-slate-50 px-5 py-4 border-b border-slate-100 flex justify-between items-center text-sm font-black text-text-primary">
+            <div className="bg-slate-50 px-5 py-4 border-b border-border flex justify-between items-center text-sm font-black text-text-primary">
               <h3>
                 {activeActionModal.type === 'create' && 'Enroll Student Relational Assignment'}
                 {activeActionModal.type === 'edit' && 'Shift Lifecycle Status'}
@@ -1554,7 +1554,7 @@ export default function AllocationManagementPage() {
                     <select
                       value={allocForm.studentId}
                       onChange={e => setAllocForm({ ...allocForm, studentId: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     >
                       <option value="">-- Choose Candidate --</option>
                       {students.map(s => <option key={s.id} value={s.id}>{s.personalInfo.name} ({s.internId} | CGPA: {s.academicInfo.cgpa})</option>)}
@@ -1566,7 +1566,7 @@ export default function AllocationManagementPage() {
                     <select
                       value={allocForm.batchId}
                       onChange={e => setAllocForm({ ...allocForm, batchId: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     >
                       <option value="">-- Choose Batch --</option>
                       {batches.map(b => <option key={b.id} value={b.id}>{b.name} (Code: {b.code} | Coach: {b.mentor.name || 'Unassigned'})</option>)}
@@ -1583,7 +1583,7 @@ export default function AllocationManagementPage() {
                     <select
                       value={allocForm.status}
                       onChange={e => setAllocForm({ ...allocForm, status: e.target.value as any })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     >
                       <option value="Allocated">Allocated</option>
                       <option value="Pending">Pending</option>
@@ -1603,7 +1603,7 @@ export default function AllocationManagementPage() {
                     <select
                       value={bulkVal}
                       onChange={e => setBulkVal(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     >
                       <option value="prog-1">Summer Software Engineering Internship</option>
                       <option value="prog-2">Data Science Boot Camp</option>
@@ -1621,7 +1621,7 @@ export default function AllocationManagementPage() {
                     <select
                       value={bulkVal}
                       onChange={e => setBulkVal(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     >
                       <option value="">-- Choose Cohort --</option>
                       {batches.map(b => <option key={b.id} value={b.id}>{b.name} ({b.code})</option>)}
@@ -1638,7 +1638,7 @@ export default function AllocationManagementPage() {
                     <select
                       value={bulkVal}
                       onChange={e => setBulkVal(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     >
                       <option value="emp-2">Bob Johnson (Technical Engineering)</option>
                       <option value="emp-3">Diana Prince (Data Operations)</option>
@@ -1649,11 +1649,11 @@ export default function AllocationManagementPage() {
               )}
 
               {/* Buttons */}
-              <div className="flex gap-2 justify-end pt-4 border-t border-slate-100">
+              <div className="flex gap-2 justify-end pt-4 border-t border-border">
                 <button
                   type="button"
                   onClick={() => setActiveActionModal(null)}
-                  className="px-4 py-2 border border-slate-200 text-text-primary bg-white hover:bg-slate-50 rounded-lg text-xs font-bold transition"
+                  className="px-4 py-2 border border-border text-text-primary bg-white hover:bg-slate-50 rounded-lg text-xs font-bold transition"
                 >
                   Cancel
                 </button>

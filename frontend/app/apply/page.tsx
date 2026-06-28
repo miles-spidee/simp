@@ -769,8 +769,8 @@ function ApplicationFormContent() {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start font-[family-name:var(--font-work-sans)] text-[var(--foreground)]" ref={topRef}>
       
       {/* LEFT COLUMN: Sticky Step List (checking validation states natively) */}
-      <aside className="hidden lg:block lg:col-span-4 sticky top-24 bg-white border border-sky-200/80 rounded-2xl p-6 shadow-sm">
-        <div className="flex items-center justify-between mb-6 pb-4 border-b border-sky-100">
+      <aside className="hidden lg:block lg:col-span-4 sticky top-24 bg-white border border-border/80 rounded-2xl p-6 shadow-sm">
+        <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
           <h2 className="text-sm font-bold text-text-primary tracking-wide uppercase font-[family-name:var(--font-outfit)]">Application Sections</h2>
           <div className="flex items-center gap-1.5 text-[11px] font-medium text-text-secondary bg-slate-50 px-2.5 py-1 rounded-full">
             <span className={`w-2 h-2 rounded-full ${isSaved ? "bg-emerald-500 animate-pulse" : "bg-slate-300"}`}></span>
@@ -795,8 +795,8 @@ function ApplicationFormContent() {
                       isActive 
                         ? "bg-orange-500 text-white border-orange-500 shadow-md shadow-orange-500/20 scale-105" 
                         : isDone 
-                          ? "bg-sky-50 text-text-secondary border-sky-200" 
-                          : "bg-slate-50 text-text-secondary border-slate-200 group-hover:bg-slate-100"
+                          ? "bg-sky-50 text-text-secondary border-border" 
+                          : "bg-slate-50 text-text-secondary border-border group-hover:bg-slate-100"
                     }`}>
                       {isDone ? (
                         <SuccessCheckIcon className="h-4 w-4" />
@@ -823,10 +823,10 @@ function ApplicationFormContent() {
       </aside>
 
       {/* RIGHT COLUMN: Interactive Form Content */}
-      <div className="lg:col-span-8 bg-white border border-slate-200 rounded-2xl p-6 sm:p-10 shadow-sm relative overflow-hidden">
+      <div className="lg:col-span-8 bg-white border border-border rounded-2xl p-6 sm:p-10 shadow-sm relative overflow-hidden">
         
         {/* Mobile progress Indicator header */}
-        <div className="lg:hidden flex items-center justify-between mb-8 pb-4 border-b border-slate-100">
+        <div className="lg:hidden flex items-center justify-between mb-8 pb-4 border-b border-border">
           <div>
             <span className="text-xs font-bold text-blue-600 uppercase tracking-widest">Step {currentStep + 1} of {steps.length}</span>
             <h2 className="text-lg font-bold text-text-primary">{steps[currentStep].label}</h2>
@@ -874,8 +874,8 @@ function ApplicationFormContent() {
                     value={formState.personalInformation.firstName}
                     onBlur={() => handleBlur("firstName")}
                     onChange={(e) => handleInputChange("personalInformation", "firstName", e.target.value)}
-                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-text-primary transition-all ${
-                      errors.firstName && touched.firstName ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-text-primary transition-all ${
+                      errors.firstName && touched.firstName ? "border-rose-500 bg-rose-50/20" : "border-border"
                     }`}
                   />
                   {errors.firstName && touched.firstName && (
@@ -897,8 +897,8 @@ function ApplicationFormContent() {
                     value={formState.personalInformation.lastName}
                     onBlur={() => handleBlur("lastName")}
                     onChange={(e) => handleInputChange("personalInformation", "lastName", e.target.value)}
-                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-text-primary transition-all ${
-                      errors.lastName && touched.lastName ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-text-primary transition-all ${
+                      errors.lastName && touched.lastName ? "border-rose-500 bg-rose-50/20" : "border-border"
                     }`}
                   />
                   {errors.lastName && touched.lastName && (
@@ -920,8 +920,8 @@ function ApplicationFormContent() {
                     value={formState.personalInformation.email}
                     onBlur={() => handleBlur("email")}
                     onChange={(e) => handleInputChange("personalInformation", "email", e.target.value)}
-                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-text-primary transition-all ${
-                      errors.email && touched.email ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-text-primary transition-all ${
+                      errors.email && touched.email ? "border-rose-500 bg-rose-50/20" : "border-border"
                     }`}
                   />
                   {errors.email && touched.email && (
@@ -943,8 +943,8 @@ function ApplicationFormContent() {
                     value={formState.personalInformation.mobileNumber}
                     onBlur={() => handleBlur("mobileNumber")}
                     onChange={(e) => handleInputChange("personalInformation", "mobileNumber", e.target.value)}
-                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-text-primary transition-all ${
-                      errors.mobileNumber && touched.mobileNumber ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-text-primary transition-all ${
+                      errors.mobileNumber && touched.mobileNumber ? "border-rose-500 bg-rose-50/20" : "border-border"
                     }`}
                   />
                   {errors.mobileNumber && touched.mobileNumber && (
@@ -963,7 +963,7 @@ function ApplicationFormContent() {
                     name="dateOfBirth"
                     value={formState.personalInformation.dateOfBirth}
                     onChange={(e) => handleInputChange("personalInformation", "dateOfBirth", e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white text-text-primary transition-all"
+                    className="w-full rounded-xl border border-border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white text-text-primary transition-all"
                   />
                 </div>
 
@@ -974,7 +974,7 @@ function ApplicationFormContent() {
                     name="gender"
                     value={formState.personalInformation.gender}
                     onChange={(e) => handleInputChange("personalInformation", "gender", e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white text-text-primary transition-all"
+                    className="w-full rounded-xl border border-border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white text-text-primary transition-all"
                   >
                     <option value="">Select Gender</option>
                     <option value="Male">Male</option>
@@ -995,8 +995,8 @@ function ApplicationFormContent() {
                     value={formState.personalInformation.city}
                     onBlur={() => handleBlur("city")}
                     onChange={(e) => handleInputChange("personalInformation", "city", e.target.value)}
-                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-text-primary transition-all ${
-                      errors.city && touched.city ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-text-primary transition-all ${
+                      errors.city && touched.city ? "border-rose-500 bg-rose-50/20" : "border-border"
                     }`}
                   />
                   {errors.city && touched.city && (
@@ -1018,8 +1018,8 @@ function ApplicationFormContent() {
                     value={formState.personalInformation.state}
                     onBlur={() => handleBlur("state")}
                     onChange={(e) => handleInputChange("personalInformation", "state", e.target.value)}
-                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-text-primary transition-all ${
-                      errors.state && touched.state ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-text-primary transition-all ${
+                      errors.state && touched.state ? "border-rose-500 bg-rose-50/20" : "border-border"
                     }`}
                   />
                   {errors.state && touched.state && (
@@ -1051,7 +1051,7 @@ function ApplicationFormContent() {
                         const file = e.dataTransfer.files?.[0];
                         if (file) processFile(file, "photo");
                       }}
-                      className={`border-2 border-dashed border-slate-300 rounded-2xl p-12 text-center cursor-pointer hover:bg-slate-50/50 hover:border-blue-400 transition-all ${
+                      className={`border-2 border-dashed border-border rounded-2xl p-12 text-center cursor-pointer hover:bg-slate-50/50 hover:border-secondary transition-all ${
                         errors.photo ? "border-rose-450 bg-rose-50/10" : ""
                       }`}
                     >
@@ -1070,10 +1070,10 @@ function ApplicationFormContent() {
                         <UploadIcon className="h-7 w-7 text-blue-600" />
                       </div>
                       <p className="text-sm font-bold text-text-primary">Drag & Drop or click to upload your Passport Size Photo</p>
-                      <p className="text-xs text-text-secondary mt-1">Accepts JPEG, PNG, WEBP (Max 5MB)</p>
+                      <p className="text-xs text-helper mt-1">Accepts JPEG, PNG, WEBP (Max 5MB)</p>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-4 bg-slate-50 border border-slate-200 rounded-xl p-5 shadow-sm">
+                    <div className="flex items-center gap-4 bg-slate-50 border border-border rounded-xl p-5 shadow-sm">
                       <div className="h-16 w-16 bg-blue-50 border border-blue-100 rounded-xl flex items-center justify-center text-blue-600 overflow-hidden shrink-0">
                         {formState.personalInformation.photo.base64 ? (
                           <img src={formState.personalInformation.photo.base64} alt="Photo" className="w-full h-full object-cover" />
@@ -1124,8 +1124,8 @@ function ApplicationFormContent() {
                     value={formState.academicInformation.collegeName}
                     onBlur={() => handleBlur("collegeName")}
                     onChange={(e) => handleInputChange("academicInformation", "collegeName", e.target.value)}
-                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-text-primary transition-all ${
-                      errors.collegeName && touched.collegeName ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-text-primary transition-all ${
+                      errors.collegeName && touched.collegeName ? "border-rose-500 bg-rose-50/20" : "border-border"
                     }`}
                   />
                   {errors.collegeName && touched.collegeName && (
@@ -1147,8 +1147,8 @@ function ApplicationFormContent() {
                     value={formState.academicInformation.department}
                     onBlur={() => handleBlur("department")}
                     onChange={(e) => handleInputChange("academicInformation", "department", e.target.value)}
-                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-text-primary transition-all ${
-                      errors.department && touched.department ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-text-primary transition-all ${
+                      errors.department && touched.department ? "border-rose-500 bg-rose-50/20" : "border-border"
                     }`}
                   />
                   {errors.department && touched.department && (
@@ -1170,8 +1170,8 @@ function ApplicationFormContent() {
                     value={formState.academicInformation.degree}
                     onBlur={() => handleBlur("degree")}
                     onChange={(e) => handleInputChange("academicInformation", "degree", e.target.value)}
-                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-text-primary transition-all ${
-                      errors.degree && touched.degree ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-text-primary transition-all ${
+                      errors.degree && touched.degree ? "border-rose-500 bg-rose-50/20" : "border-border"
                     }`}
                   />
                   {errors.degree && touched.degree && (
@@ -1191,8 +1191,8 @@ function ApplicationFormContent() {
                     value={formState.academicInformation.currentYear}
                     onBlur={() => handleBlur("currentYear")}
                     onChange={(e) => handleInputChange("academicInformation", "currentYear", e.target.value)}
-                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white text-text-primary transition-all ${
-                      errors.currentYear && touched.currentYear ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white text-text-primary transition-all ${
+                      errors.currentYear && touched.currentYear ? "border-rose-500 bg-rose-50/20" : "border-border"
                     }`}
                   >
                     <option value="">Select current year</option>
@@ -1222,8 +1222,8 @@ function ApplicationFormContent() {
                     value={formState.academicInformation.cgpaPercentage}
                     onBlur={() => handleBlur("cgpaPercentage")}
                     onChange={(e) => handleInputChange("academicInformation", "cgpaPercentage", e.target.value)}
-                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-text-primary transition-all ${
-                      errors.cgpaPercentage && touched.cgpaPercentage ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-text-primary transition-all ${
+                      errors.cgpaPercentage && touched.cgpaPercentage ? "border-rose-500 bg-rose-50/20" : "border-border"
                     }`}
                   />
                   {errors.cgpaPercentage && touched.cgpaPercentage && (
@@ -1245,8 +1245,8 @@ function ApplicationFormContent() {
                     value={formState.academicInformation.graduationYear}
                     onBlur={() => handleBlur("graduationYear")}
                     onChange={(e) => handleInputChange("academicInformation", "graduationYear", e.target.value)}
-                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-text-primary transition-all ${
-                      errors.graduationYear && touched.graduationYear ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-text-primary transition-all ${
+                      errors.graduationYear && touched.graduationYear ? "border-rose-500 bg-rose-50/20" : "border-border"
                     }`}
                   />
                   {errors.graduationYear && touched.graduationYear && (
@@ -1280,8 +1280,8 @@ function ApplicationFormContent() {
                     value={formState.professionalInformation.skills}
                     onBlur={() => handleBlur("skills")}
                     onChange={(e) => handleInputChange("professionalInformation", "skills", e.target.value)}
-                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-slate-850 transition-all ${
-                      errors.skills && touched.skills ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-slate-850 transition-all ${
+                      errors.skills && touched.skills ? "border-rose-500 bg-rose-50/20" : "border-border"
                     }`}
                   />
                   {errors.skills && touched.skills && (
@@ -1302,8 +1302,8 @@ function ApplicationFormContent() {
                     value={formState.professionalInformation.githubUrl}
                     onBlur={() => handleBlur("githubUrl")}
                     onChange={(e) => handleInputChange("professionalInformation", "githubUrl", e.target.value)}
-                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-slate-850 transition-all ${
-                      errors.githubUrl && touched.githubUrl ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-slate-850 transition-all ${
+                      errors.githubUrl && touched.githubUrl ? "border-rose-500 bg-rose-50/20" : "border-border"
                     }`}
                   />
                   {errors.githubUrl && touched.githubUrl && (
@@ -1324,8 +1324,8 @@ function ApplicationFormContent() {
                     value={formState.professionalInformation.linkedinUrl}
                     onBlur={() => handleBlur("linkedinUrl")}
                     onChange={(e) => handleInputChange("professionalInformation", "linkedinUrl", e.target.value)}
-                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-slate-855 transition-all ${
-                      errors.linkedinUrl && touched.linkedinUrl ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-slate-855 transition-all ${
+                      errors.linkedinUrl && touched.linkedinUrl ? "border-rose-500 bg-rose-50/20" : "border-border"
                     }`}
                   />
                   {errors.linkedinUrl && touched.linkedinUrl && (
@@ -1346,8 +1346,8 @@ function ApplicationFormContent() {
                     value={formState.professionalInformation.portfolioUrl}
                     onBlur={() => handleBlur("portfolioUrl")}
                     onChange={(e) => handleInputChange("professionalInformation", "portfolioUrl", e.target.value)}
-                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-slate-850 transition-all ${
-                      errors.portfolioUrl && touched.portfolioUrl ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-slate-850 transition-all ${
+                      errors.portfolioUrl && touched.portfolioUrl ? "border-rose-500 bg-rose-50/20" : "border-border"
                     }`}
                   />
                   {errors.portfolioUrl && touched.portfolioUrl && (
@@ -1367,7 +1367,7 @@ function ApplicationFormContent() {
                     placeholder="Describe some key projects you've built, the tech stacks used, and details of your contributions."
                     value={formState.professionalInformation.projectExperience}
                     onChange={(e) => handleInputChange("professionalInformation", "projectExperience", e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-text-primary transition-all"
+                    className="w-full rounded-xl border border-border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-text-primary transition-all"
                   ></textarea>
                 </div>
               </div>
@@ -1384,14 +1384,14 @@ function ApplicationFormContent() {
 
               {/* FREE INTERNSHIP */}
               {internshipType === "free" && (
-                <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 text-center text-sm font-semibold text-text-secondary flex items-center justify-center gap-2">
+                <div className="bg-slate-50 border border-border rounded-xl p-6 text-center text-sm font-semibold text-text-secondary flex items-center justify-center gap-2">
                   <SpecificIcon className="h-5 w-5 text-blue-600" /> Free Internship requires no additional information.
                 </div>
               )}
 
               {/* CORPORATE SPONSORED INTERNSHIP */}
               {internshipType === "corporate" && (
-                <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 text-center text-sm font-semibold text-text-secondary flex items-center justify-center gap-2">
+                <div className="bg-slate-50 border border-border rounded-xl p-6 text-center text-sm font-semibold text-text-secondary flex items-center justify-center gap-2">
                   <CorporateIcon className="h-5 w-5 text-blue-600" /> Corporate Sponsored Internship requires no additional information.
                 </div>
               )}
@@ -1416,7 +1416,7 @@ function ApplicationFormContent() {
                       name="feeAcceptance"
                       checked={formState.internshipSpecificData.feeAcceptance}
                       onChange={(e) => handleInputChange("internshipSpecificData", "feeAcceptance", e.target.checked)}
-                      className="h-5 w-5 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-blue-600 accent-blue-600 mt-0.5"
+                      className="h-5 w-5 shrink-0 rounded border-border text-blue-600 focus:ring-primary accent-blue-600 mt-0.5"
                     />
                     <div>
                       <label htmlFor="feeAcceptance" className="text-xs font-bold text-slate-750 uppercase tracking-wide">I accept the fee guidelines and confirm payments have been completed. *</label>
@@ -1429,7 +1429,7 @@ function ApplicationFormContent() {
                     </div>
                   </div>
 
-                  <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-6">
+                  <div className="bg-white border border-border/80 rounded-2xl p-6 shadow-sm space-y-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <div>
                         <label htmlFor="paymentMode" className="block text-xs font-bold text-text-secondary mb-2 uppercase tracking-wide">Payment Mode *</label>
@@ -1473,8 +1473,8 @@ function ApplicationFormContent() {
                               return next;
                             });
                           }}
-                          className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white text-text-primary transition-all ${
-                            errors.paymentMode && touched.paymentMode ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                          className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white text-text-primary transition-all ${
+                            errors.paymentMode && touched.paymentMode ? "border-rose-500 bg-rose-50/20" : "border-border"
                           }`}
                         >
                           <option value="">Select Mode</option>
@@ -1492,7 +1492,7 @@ function ApplicationFormContent() {
                       </div>
 
                       {/* Display Amount Due */}
-                      <div className="flex flex-col justify-center bg-slate-50 border border-slate-100 rounded-xl px-5 py-3">
+                      <div className="flex flex-col justify-center bg-slate-50 border border-border rounded-xl px-5 py-3">
                         <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Amount Due</span>
                         <span className="text-2xl font-black text-text-primary">₹1,500<span className="text-xs font-semibold text-text-secondary">.00 INR</span></span>
                       </div>
@@ -1500,7 +1500,7 @@ function ApplicationFormContent() {
 
                     {/* UPI DETAILS */}
                     {formState.internshipSpecificData.paymentMode === "UPI" && (
-                      <div className="bg-slate-50/50 border border-slate-200/60 rounded-xl p-5 space-y-4 animate-slide-in">
+                      <div className="bg-slate-50/50 border border-border/60 rounded-xl p-5 space-y-4 animate-slide-in">
                         <div className="max-w-md">
                           <label htmlFor="upiApp" className="block text-xs font-bold text-text-secondary mb-2 uppercase tracking-wide">Select UPI App *</label>
                           <select
@@ -1508,7 +1508,7 @@ function ApplicationFormContent() {
                             name="upiApp"
                             value={formState.internshipSpecificData.upiApp}
                             onChange={(e) => handleInputChange("internshipSpecificData", "upiApp", e.target.value)}
-                            className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-blue-600 focus:outline-none bg-white text-text-primary"
+                            className="w-full rounded-xl border border-border px-4 py-3 text-sm focus:border-primary focus:outline-none bg-white text-text-primary"
                           >
                             <option value="">Choose App</option>
                             <option value="Google Pay">Google Pay</option>
@@ -1569,7 +1569,7 @@ function ApplicationFormContent() {
 
                     {/* BANK TRANSFER DETAILS */}
                     {formState.internshipSpecificData.paymentMode === "Bank Transfer" && (
-                      <div className="bg-slate-50/50 border border-slate-200/60 rounded-xl p-5 space-y-4 animate-slide-in">
+                      <div className="bg-slate-50/50 border border-border/60 rounded-xl p-5 space-y-4 animate-slide-in">
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                           <div>
                             <label htmlFor="bankName" className="block text-xs font-bold text-text-secondary mb-2 uppercase tracking-wide">Bank Name *</label>
@@ -1580,7 +1580,7 @@ function ApplicationFormContent() {
                               placeholder="E.g. State Bank of India"
                               value={formState.internshipSpecificData.bankName}
                               onChange={(e) => handleInputChange("internshipSpecificData", "bankName", e.target.value)}
-                              className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-blue-600 focus:outline-none bg-white text-text-primary"
+                              className="w-full rounded-xl border border-border px-4 py-3 text-sm focus:border-primary focus:outline-none bg-white text-text-primary"
                             />
                             {errors.bankName && (
                               <p className="text-xs text-rose-500 font-semibold mt-1 flex items-center gap-1">
@@ -1603,7 +1603,7 @@ function ApplicationFormContent() {
                                 handleInputChange("internshipSpecificData", "utrNumber", val);
                                 handleInputChange("internshipSpecificData", "transactionId", val);
                               }}
-                              className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-blue-600 focus:outline-none bg-white text-text-primary"
+                              className="w-full rounded-xl border border-border px-4 py-3 text-sm focus:border-primary focus:outline-none bg-white text-text-primary"
                             />
                             {errors.utrNumber && (
                               <p className="text-xs text-rose-500 font-semibold mt-1 flex items-center gap-1">
@@ -1621,7 +1621,7 @@ function ApplicationFormContent() {
                               name="transferDate"
                               value={formState.internshipSpecificData.transferDate}
                               onChange={(e) => handleInputChange("internshipSpecificData", "transferDate", e.target.value)}
-                              className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-blue-600 focus:outline-none bg-white text-text-primary"
+                              className="w-full rounded-xl border border-border px-4 py-3 text-sm focus:border-primary focus:outline-none bg-white text-text-primary"
                             />
                             {errors.transferDate && (
                               <p className="text-xs text-rose-500 font-semibold mt-1 flex items-center gap-1">
@@ -1636,7 +1636,7 @@ function ApplicationFormContent() {
 
                     {/* CARD DETAILS */}
                     {(formState.internshipSpecificData.paymentMode === "Credit Card" || formState.internshipSpecificData.paymentMode === "Debit Card") && (
-                      <div className="bg-slate-50/50 border border-slate-200/60 rounded-xl p-5 space-y-4 animate-slide-in">
+                      <div className="bg-slate-50/50 border border-border/60 rounded-xl p-5 space-y-4 animate-slide-in">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div>
                             <label htmlFor="cardType" className="block text-xs font-bold text-text-secondary mb-2 uppercase tracking-wide">Card Network *</label>
@@ -1645,7 +1645,7 @@ function ApplicationFormContent() {
                               name="cardType"
                               value={formState.internshipSpecificData.cardType}
                               onChange={(e) => handleInputChange("internshipSpecificData", "cardType", e.target.value)}
-                              className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-blue-600 focus:outline-none bg-white text-text-primary"
+                              className="w-full rounded-xl border border-border px-4 py-3 text-sm focus:border-primary focus:outline-none bg-white text-text-primary"
                             >
                               <option value="">Select Network</option>
                               <option value="Visa">Visa</option>
@@ -1676,7 +1676,7 @@ function ApplicationFormContent() {
                                 const val = e.target.value.replace(/\D/g, "").slice(0, 4);
                                 handleInputChange("internshipSpecificData", "last4Digits", val);
                               }}
-                              className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-blue-600 focus:outline-none bg-white text-text-primary"
+                              className="w-full rounded-xl border border-border px-4 py-3 text-sm focus:border-primary focus:outline-none bg-white text-text-primary"
                             />
                             {errors.last4Digits && (
                               <p className="text-xs text-rose-500 font-semibold mt-1 flex items-center gap-1">
@@ -1754,7 +1754,7 @@ function ApplicationFormContent() {
                           const file = e.dataTransfer.files?.[0];
                           if (file) processFile(file, "screenshot");
                         }}
-                        className={`border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center cursor-pointer hover:bg-slate-50/50 hover:border-blue-400 transition-all ${
+                        className={`border-2 border-dashed border-border rounded-2xl p-8 text-center cursor-pointer hover:bg-slate-50/50 hover:border-secondary transition-all ${
                           errors.paymentScreenshot ? "border-rose-450 bg-rose-50/10" : ""
                         }`}
                       >
@@ -1773,10 +1773,10 @@ function ApplicationFormContent() {
                           <DocumentIcon className="h-6 w-6 text-blue-600" />
                         </div>
                         <p className="text-sm font-bold text-text-primary">Drag & Drop or Click to upload receipt</p>
-                        <p className="text-xs text-text-secondary mt-1">Accepts images & PDF (Max 5MB)</p>
+                        <p className="text-xs text-helper mt-1">Accepts images & PDF (Max 5MB)</p>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-4 bg-slate-50 border border-slate-200 rounded-xl p-4">
+                      <div className="flex items-center gap-4 bg-slate-50 border border-border rounded-xl p-4">
                         <div className="h-12 w-12 bg-white border border-slate-150 rounded-lg flex items-center justify-center text-blue-600 font-bold shrink-0">
                           {formState.internshipSpecificData.paymentScreenshot.type.includes("pdf") ? "PDF" : "IMG"}
                         </div>
@@ -1818,8 +1818,8 @@ function ApplicationFormContent() {
                       value={formState.internshipSpecificData.relevantExperience}
                       onBlur={() => handleBlur("relevantExperience")}
                       onChange={(e) => handleInputChange("internshipSpecificData", "relevantExperience", e.target.value)}
-                      className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-text-primary transition-all ${
-                        errors.relevantExperience && touched.relevantExperience ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                      className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-text-primary transition-all ${
+                        errors.relevantExperience && touched.relevantExperience ? "border-rose-500 bg-rose-50/20" : "border-border"
                       }`}
                     ></textarea>
                     {errors.relevantExperience && touched.relevantExperience && (
@@ -1846,8 +1846,8 @@ function ApplicationFormContent() {
                       value={formState.internshipSpecificData.preferredTechStack}
                       onBlur={() => handleBlur("preferredTechStack")}
                       onChange={(e) => handleInputChange("internshipSpecificData", "preferredTechStack", e.target.value)}
-                      className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-text-primary transition-all ${
-                        errors.preferredTechStack && touched.preferredTechStack ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                      className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-text-primary transition-all ${
+                        errors.preferredTechStack && touched.preferredTechStack ? "border-rose-500 bg-rose-50/20" : "border-border"
                       }`}
                     ></textarea>
                     {errors.preferredTechStack && touched.preferredTechStack && (
@@ -1869,8 +1869,8 @@ function ApplicationFormContent() {
                       value={formState.internshipSpecificData.relevantTechnicalExperience}
                       onBlur={() => handleBlur("relevantTechnicalExperience")}
                       onChange={(e) => handleInputChange("internshipSpecificData", "relevantTechnicalExperience", e.target.value)}
-                      className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-text-primary transition-all ${
-                        errors.relevantTechnicalExperience && touched.relevantTechnicalExperience ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                      className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-text-primary transition-all ${
+                        errors.relevantTechnicalExperience && touched.relevantTechnicalExperience ? "border-rose-500 bg-rose-50/20" : "border-border"
                       }`}
                     ></textarea>
                     {errors.relevantTechnicalExperience && touched.relevantTechnicalExperience && (
@@ -1897,8 +1897,8 @@ function ApplicationFormContent() {
                       value={formState.internshipSpecificData.researchAreaOfInterest}
                       onBlur={() => handleBlur("researchAreaOfInterest")}
                       onChange={(e) => handleInputChange("internshipSpecificData", "researchAreaOfInterest", e.target.value)}
-                      className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-text-primary transition-all ${
-                        errors.researchAreaOfInterest && touched.researchAreaOfInterest ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                      className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-text-primary transition-all ${
+                        errors.researchAreaOfInterest && touched.researchAreaOfInterest ? "border-rose-500 bg-rose-50/20" : "border-border"
                       }`}
                     />
                     {errors.researchAreaOfInterest && touched.researchAreaOfInterest && (
@@ -1920,8 +1920,8 @@ function ApplicationFormContent() {
                       value={formState.internshipSpecificData.researchInterestStatement}
                       onBlur={() => handleBlur("researchInterestStatement")}
                       onChange={(e) => handleInputChange("internshipSpecificData", "researchInterestStatement", e.target.value)}
-                      className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-text-primary transition-all ${
-                        errors.researchInterestStatement && touched.researchInterestStatement ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                      className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-text-primary transition-all ${
+                        errors.researchInterestStatement && touched.researchInterestStatement ? "border-rose-500 bg-rose-50/20" : "border-border"
                       }`}
                     ></textarea>
                     {errors.researchInterestStatement && touched.researchInterestStatement && (
@@ -1939,7 +1939,7 @@ function ApplicationFormContent() {
                       name="publicationsAvailable"
                       value={formState.internshipSpecificData.publicationsAvailable}
                       onChange={(e) => handleInputChange("internshipSpecificData", "publicationsAvailable", e.target.value as "Yes" | "No")}
-                      className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white text-text-primary transition-all"
+                      className="w-full rounded-xl border border-border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white text-text-primary transition-all"
                     >
                       <option value="No">No</option>
                       <option value="Yes">Yes</option>
@@ -1958,8 +1958,8 @@ function ApplicationFormContent() {
                         value={formState.internshipSpecificData.publicationLinks}
                         onBlur={() => handleBlur("publicationLinks")}
                         onChange={(e) => handleInputChange("internshipSpecificData", "publicationLinks", e.target.value)}
-                        className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-slate-850 transition-all ${
-                          errors.publicationLinks && touched.publicationLinks ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                        className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-slate-850 transition-all ${
+                          errors.publicationLinks && touched.publicationLinks ? "border-rose-500 bg-rose-50/20" : "border-border"
                         }`}
                       ></textarea>
                       {errors.publicationLinks && touched.publicationLinks && (
@@ -2004,7 +2004,7 @@ function ApplicationFormContent() {
                       const file = e.dataTransfer.files?.[0];
                       if (file) processFile(file, "resume");
                     }}
-                    className={`border-2 border-dashed border-slate-300 rounded-2xl p-12 text-center cursor-pointer hover:bg-slate-50/50 hover:border-blue-400 transition-all ${
+                    className={`border-2 border-dashed border-border rounded-2xl p-12 text-center cursor-pointer hover:bg-slate-50/50 hover:border-secondary transition-all ${
                       errors.resume ? "border-rose-450 bg-rose-50/10" : ""
                     }`}
                   >
@@ -2023,10 +2023,10 @@ function ApplicationFormContent() {
                       <DocumentIcon className="h-7 w-7 text-blue-600" />
                     </div>
                     <p className="text-sm font-bold text-text-primary">Drag & Drop or click to upload your Resume</p>
-                    <p className="text-xs text-text-secondary mt-1">Accepts PDF format only (Max 10MB)</p>
+                    <p className="text-xs text-helper mt-1">Accepts PDF format only (Max 10MB)</p>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-4 bg-slate-50 border border-slate-200 rounded-xl p-5 shadow-sm">
+                  <div className="flex items-center gap-4 bg-slate-50 border border-border rounded-xl p-5 shadow-sm">
                     <div className="h-12 w-12 bg-rose-50 border border-rose-100 rounded-xl flex items-center justify-center text-rose-600 font-extrabold text-sm shrink-0">
                       PDF
                     </div>
@@ -2054,7 +2054,7 @@ function ApplicationFormContent() {
                   {!formState.documents.passbook ? (
                     <div
                       className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all ${
-                        errors.passbook ? "border-rose-300 bg-rose-50/50" : "border-slate-300 hover:border-blue-400 hover:bg-blue-50/50 bg-slate-50"
+                        errors.passbook ? "border-rose-300 bg-rose-50/50" : "border-border hover:border-secondary hover:bg-blue-50/50 bg-slate-50"
                       }`}
                     >
                       <input
@@ -2127,8 +2127,8 @@ function ApplicationFormContent() {
                   value={formState.motivation.whyInternship}
                   onBlur={() => handleBlur("whyInternship")}
                   onChange={(e) => handleInputChange("motivation", "whyInternship", e.target.value)}
-                  className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white placeholder-slate-400 text-text-primary transition-all ${
-                    errors.whyInternship && touched.whyInternship ? "border-rose-500 bg-rose-50/20" : "border-slate-300"
+                  className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder-slate-400 text-text-primary transition-all ${
+                    errors.whyInternship && touched.whyInternship ? "border-rose-500 bg-rose-50/20" : "border-border"
                   }`}
                 ></textarea>
                 
@@ -2167,7 +2167,7 @@ function ApplicationFormContent() {
               <div className="space-y-6">
                 
                 {/* Personal Information */}
-                <div className="border border-slate-200 rounded-2xl p-5 relative">
+                <div className="border border-border rounded-2xl p-5 relative">
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="text-sm font-bold text-text-primary uppercase tracking-wider flex items-center gap-2">
                       <UserIcon className="h-5 w-5 text-blue-600" /> Personal Information
@@ -2191,7 +2191,7 @@ function ApplicationFormContent() {
                 </div>
 
                 {/* Academic Information */}
-                <div className="border border-slate-200 rounded-2xl p-5 relative">
+                <div className="border border-border rounded-2xl p-5 relative">
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="text-sm font-bold text-text-primary uppercase tracking-wider flex items-center gap-2">
                       <AcademicIcon className="h-5 w-5 text-blue-600" /> Academic Profile
@@ -2215,7 +2215,7 @@ function ApplicationFormContent() {
                 </div>
 
                 {/* Professional Information */}
-                <div className="border border-slate-200 rounded-2xl p-5 relative">
+                <div className="border border-border rounded-2xl p-5 relative">
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="text-sm font-bold text-text-primary uppercase tracking-wider flex items-center gap-2">
                       <ProfessionalIcon className="h-5 w-5 text-blue-600" /> Professional Details
@@ -2238,7 +2238,7 @@ function ApplicationFormContent() {
                 </div>
 
                 {/* Internship Specific Information */}
-                <div className="border border-slate-200 rounded-2xl p-5 relative">
+                <div className="border border-border rounded-2xl p-5 relative">
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="text-sm font-bold text-text-primary uppercase tracking-wider flex items-center gap-2">
                       <SpecificIcon className="h-5 w-5 text-blue-600" /> Internship Specifics
@@ -2316,7 +2316,7 @@ function ApplicationFormContent() {
                 </div>
 
                 {/* Documents */}
-                <div className="border border-slate-200 rounded-2xl p-5 relative">
+                <div className="border border-border rounded-2xl p-5 relative">
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="text-sm font-bold text-text-primary uppercase tracking-wider flex items-center gap-2">
                       <DocumentIcon className="h-5 w-5 text-blue-600" /> Documents Attached
@@ -2338,7 +2338,7 @@ function ApplicationFormContent() {
                 </div>
 
                 {/* Motivation */}
-                <div className="border border-slate-200 rounded-2xl p-5 relative">
+                <div className="border border-border rounded-2xl p-5 relative">
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="text-sm font-bold text-text-primary uppercase tracking-wider flex items-center gap-2">
                       <MotivationIcon className="h-5 w-5 text-blue-600" /> Motivation Statement
@@ -2361,12 +2361,12 @@ function ApplicationFormContent() {
           )}
 
           {/* Form Action Buttons Footer */}
-          <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-6 mt-8">
+          <div className="flex items-center justify-between gap-4 border-t border-border pt-6 mt-8">
             <button
               type="button"
               onClick={handlePrev}
               disabled={currentStep === 0}
-              className={`rounded-xl border border-slate-300 px-6 py-3 text-sm font-semibold text-text-secondary hover:bg-slate-55 transition-all ${
+              className={`rounded-xl border border-border px-6 py-3 text-sm font-semibold text-text-secondary hover:bg-slate-55 transition-all ${
                 currentStep === 0 ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
               }`}
             >
@@ -2414,7 +2414,7 @@ export default function ApplicationPage() {
     <div className="min-h-screen bg-[#f8fafc] font-sans flex flex-col justify-between text-text-primary">
       <div>
         {/* Navigation Header */}
-        <header className="h-16 w-full bg-white flex items-center justify-between px-6 lg:px-16 border-b border-slate-100 sticky top-0 z-40 backdrop-blur-md bg-white/90">
+        <header className="h-16 w-full bg-white flex items-center justify-between px-6 lg:px-16 border-b border-border sticky top-0 z-40 backdrop-blur-md bg-white/90">
           <Link href="/" className="flex items-center">
             <img src="/logo.png" alt="Pinesphere Logo" className="h-13.5 w-auto object-contain transition-transform hover:scale-[1.02]" />
           </Link>
@@ -2430,7 +2430,7 @@ export default function ApplicationPage() {
             <p className="text-sm text-text-secondary">Submit your customized application to begin your internship journey with Pinesphere.</p>
           </div>
 
-          <Suspense fallback={<div className="p-8 text-center text-text-secondary bg-white border border-slate-200 rounded-2xl">Loading application portal details...</div>}>
+          <Suspense fallback={<div className="p-8 text-center text-text-secondary bg-white border border-border rounded-2xl">Loading application portal details...</div>}>
             <ApplicationFormContent />
           </Suspense>
         </div>

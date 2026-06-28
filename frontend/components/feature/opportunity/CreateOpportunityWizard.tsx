@@ -164,7 +164,7 @@ export function CreateOpportunityWizard({
         return (
           <div className="space-y-6 p-6">
             <div className="space-y-2">
-              <label className="text-sm font-bold text-slate-700">Opportunity Title *</label>
+              <label className="text-sm font-bold text-label">Opportunity Title *</label>
               <input
                 type="text"
                 value={title}
@@ -175,7 +175,7 @@ export function CreateOpportunityWizard({
                 className={`w-full rounded-lg border px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 transition-all ${
                   errors.title 
                     ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                    : 'border-slate-200 focus:border-blue-500 focus:ring-blue-100'
+                    : 'border-border focus:border-primary focus:ring-primary'
                 }`}
                 placeholder="e.g. Software Engineering Intern"
               />
@@ -184,7 +184,7 @@ export function CreateOpportunityWizard({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700">Type (Tech/Design/etc) *</label>
+                <label className="text-sm font-bold text-label">Type (Tech/Design/etc) *</label>
                 <input
                   type="text"
                   value={type}
@@ -195,7 +195,7 @@ export function CreateOpportunityWizard({
                   className={`w-full rounded-lg border px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 transition-all ${
                     errors.type 
                       ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                      : 'border-slate-200 focus:border-blue-500 focus:ring-blue-100'
+                      : 'border-border focus:border-primary focus:ring-primary'
                   }`}
                   placeholder="e.g. Tech"
                 />
@@ -203,11 +203,11 @@ export function CreateOpportunityWizard({
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700">Value Category *</label>
+                <label className="text-sm font-bold text-label">Value Category *</label>
                 <select
                   value={value}
                   onChange={e => setValue(e.target.value as any)}
-                  className="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all bg-white"
+                  className="w-full rounded-lg border border-border px-3.5 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary transition-all bg-white"
                 >
                   <option value="free">Free</option>
                   <option value="paid">Paid</option>
@@ -221,7 +221,7 @@ export function CreateOpportunityWizard({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700">Mode (Remote/Hybrid) *</label>
+                <label className="text-sm font-bold text-label">Mode (Remote/Hybrid) *</label>
                 <input
                   type="text"
                   value={mode}
@@ -232,7 +232,7 @@ export function CreateOpportunityWizard({
                   className={`w-full rounded-lg border px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 transition-all ${
                     errors.mode 
                       ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                      : 'border-slate-200 focus:border-blue-500 focus:ring-blue-100'
+                      : 'border-border focus:border-primary focus:ring-primary'
                   }`}
                   placeholder="e.g. Remote"
                 />
@@ -240,7 +240,7 @@ export function CreateOpportunityWizard({
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700">Seats/Openings *</label>
+                <label className="text-sm font-bold text-label">Seats/Openings *</label>
                 <input
                   type="text"
                   value={seats}
@@ -251,7 +251,7 @@ export function CreateOpportunityWizard({
                   className={`w-full rounded-lg border px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 transition-all ${
                     errors.seats 
                       ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                      : 'border-slate-200 focus:border-blue-500 focus:ring-blue-100'
+                      : 'border-border focus:border-primary focus:ring-primary'
                   }`}
                   placeholder="e.g. 5 Openings"
                 />
@@ -261,13 +261,13 @@ export function CreateOpportunityWizard({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700">Internship Type</label>
+                <label className="text-sm font-bold text-label">Internship Type</label>
                 <select
                   value={internshipType}
                   onChange={e => {
                     setInternshipType(e.target.value as any);
                   }}
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-xs focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-100 transition-all bg-white"
+                  className="w-full rounded-lg border border-border px-3 py-2 text-xs focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all bg-white"
                 >
                   <option value="free">Free</option>
                   <option value="paid">Paid</option>
@@ -279,14 +279,14 @@ export function CreateOpportunityWizard({
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700">Amount Type</label>
+                <label className="text-sm font-bold text-label">Amount Type</label>
                 <select
                   value={amountType}
                   onChange={e => {
                     setAmountType(e.target.value);
                     if (errors.amount) setErrors(prev => ({ ...prev, amount: '' }));
                   }}
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-xs focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-100 transition-all bg-white"
+                  className="w-full rounded-lg border border-border px-3 py-2 text-xs focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all bg-white"
                 >
                   <option value="free">Free / Unpaid</option>
                   <option value="stipend">Stipend</option>
@@ -297,9 +297,9 @@ export function CreateOpportunityWizard({
 
               {amountType !== 'free' && (
                 <div className="space-y-2 animate-slide-in">
-                  <label className="text-sm font-bold text-slate-700">Amount *</label>
+                  <label className="text-sm font-bold text-label">Amount *</label>
                   <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary" />
                     <input
                       type="text"
                       value={amount}
@@ -310,7 +310,7 @@ export function CreateOpportunityWizard({
                       className={`w-full rounded-lg border pl-9 pr-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 transition-all ${
                         errors.amount 
                           ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                          : 'border-slate-200 focus:border-blue-500 focus:ring-blue-100'
+                          : 'border-border focus:border-primary focus:ring-primary'
                       }`}
                       placeholder={amountType === 'stipend' ? 'e.g. $500/Month' : 'e.g. $25/Hour'}
                     />
@@ -322,7 +322,7 @@ export function CreateOpportunityWizard({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700">Duration *</label>
+                <label className="text-sm font-bold text-label">Duration *</label>
                 <input
                   type="text"
                   value={duration}
@@ -333,7 +333,7 @@ export function CreateOpportunityWizard({
                   className={`w-full rounded-lg border px-3 py-2 text-xs focus:outline-none focus:ring-1 transition-all ${
                     errors.duration 
                       ? 'border-red-300 focus:border-red-500 focus:ring-red-100' 
-                      : 'border-slate-200 focus:border-blue-500 focus:ring-blue-100'
+                      : 'border-border focus:border-primary focus:ring-primary'
                   }`}
                   placeholder="e.g. 6 Months"
                 />
@@ -341,7 +341,7 @@ export function CreateOpportunityWizard({
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700">Start Date *</label>
+                <label className="text-xs font-bold text-label">Start Date *</label>
                 <input
                   type="text"
                   value={startDate}
@@ -352,7 +352,7 @@ export function CreateOpportunityWizard({
                   className={`w-full rounded-lg border px-3 py-2 text-xs focus:outline-none focus:ring-1 transition-all ${
                     errors.startDate 
                       ? 'border-red-300 focus:border-red-500 focus:ring-red-100' 
-                      : 'border-slate-200 focus:border-blue-500 focus:ring-blue-100'
+                      : 'border-border focus:border-primary focus:ring-primary'
                   }`}
                   placeholder="e.g. Starts Jan 2024"
                 />
@@ -360,7 +360,7 @@ export function CreateOpportunityWizard({
               </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-bold text-slate-700">Eligibility Criteria *</label>
+              <label className="text-sm font-bold text-label">Eligibility Criteria *</label>
               <input
                 type="text"
                 value={eligibility}
@@ -371,7 +371,7 @@ export function CreateOpportunityWizard({
                 className={`w-full rounded-lg border px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 transition-all ${
                   errors.eligibility 
                     ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                    : 'border-slate-200 focus:border-blue-500 focus:ring-blue-100'
+                    : 'border-border focus:border-primary focus:ring-primary'
                 }`}
                 placeholder="e.g. B.Tech CS/IT (3rd or 4th Year)"
               />
@@ -379,11 +379,11 @@ export function CreateOpportunityWizard({
             </div>
             
             <div className="space-y-2">
-              <label className="text-sm font-bold text-slate-700">Card Color Theme *</label>
+              <label className="text-sm font-bold text-label">Card Color Theme *</label>
               <select
                 value={color}
                 onChange={e => setColor(e.target.value)}
-                className="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all bg-white"
+                className="w-full rounded-lg border border-border px-3.5 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary transition-all bg-white"
               >
                 {COLOR_THEMES.map(theme => (
                   <option key={theme.value} value={theme.value}>
@@ -395,7 +395,7 @@ export function CreateOpportunityWizard({
 
               {/* Row 4: Job Description (spans all columns) */}
               <div className="space-y-1.5 md:col-span-3 xl:col-span-4">
-                <label className="text-xs font-bold text-slate-700">Job Description *</label>
+                <label className="text-xs font-bold text-label">Job Description *</label>
                 <textarea
                   value={description}
                   onChange={e => {
@@ -406,7 +406,7 @@ export function CreateOpportunityWizard({
                   className={`w-full rounded-lg border px-3 py-2 text-xs focus:outline-none focus:ring-1 transition-all ${
                     errors.description 
                       ? 'border-red-300 focus:border-red-500 focus:ring-red-100' 
-                      : 'border-slate-200 focus:border-blue-500 focus:ring-blue-100'
+                      : 'border-border focus:border-primary focus:ring-primary'
                   }`}
                   placeholder="Describe roles, responsibilities, and team context..."
                 />
@@ -420,71 +420,71 @@ export function CreateOpportunityWizard({
         return (
           <div className="p-6 space-y-6">
             <Card>
-              <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+              <div className="p-4 border-b border-border bg-slate-50/50 flex items-center gap-2">
                 <Briefcase className="h-5 w-5 text-blue-600" />
-                <h3 className="font-bold text-slate-900 text-sm uppercase tracking-wider">Opportunity Overview</h3>
+                <h3 className="font-bold text-text-primary text-sm uppercase tracking-wider">Opportunity Overview</h3>
               </div>
               <div className="p-5 space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">Opportunity Title</p>
-                    <p className="text-sm font-semibold text-slate-900 mt-1">{title}</p>
+                    <p className="text-xs font-bold text-text-secondary uppercase tracking-wide">Opportunity Title</p>
+                    <p className="text-sm font-semibold text-text-primary mt-1">{title}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">Type</p>
-                    <p className="text-sm font-semibold text-slate-900 mt-1">{type}</p>
+                    <p className="text-xs font-bold text-text-secondary uppercase tracking-wide">Type</p>
+                    <p className="text-sm font-semibold text-text-primary mt-1">{type}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">Value Category</p>
-                    <p className="text-sm font-semibold text-slate-900 mt-1 capitalize">{value}</p>
+                    <p className="text-xs font-bold text-text-secondary uppercase tracking-wide">Value Category</p>
+                    <p className="text-sm font-semibold text-text-primary mt-1 capitalize">{value}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wide flex items-center gap-1">
-                      <Users className="h-3.5 w-3.5 text-slate-400" /> Seats / Openings
+                    <p className="text-xs font-bold text-text-secondary uppercase tracking-wide flex items-center gap-1">
+                      <Users className="h-3.5 w-3.5 text-text-secondary" /> Seats / Openings
                     </p>
-                    <p className="text-sm font-semibold text-slate-900 mt-1">{seats}</p>
+                    <p className="text-sm font-semibold text-text-primary mt-1">{seats}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wide flex items-center gap-1">
-                      <MapPin className="h-3.5 w-3.5 text-slate-400" /> Mode
+                    <p className="text-xs font-bold text-text-secondary uppercase tracking-wide flex items-center gap-1">
+                      <MapPin className="h-3.5 w-3.5 text-text-secondary" /> Mode
                     </p>
-                    <p className="text-sm font-semibold text-slate-900 mt-1">{mode}</p>
+                    <p className="text-sm font-semibold text-text-primary mt-1">{mode}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">Internship Type</p>
-                    <p className="text-sm font-semibold text-slate-900 mt-1 capitalize">{internshipType}</p>
+                    <p className="text-xs font-bold text-text-secondary uppercase tracking-wide">Internship Type</p>
+                    <p className="text-sm font-semibold text-text-primary mt-1 capitalize">{internshipType}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">Amount Type</p>
-                    <p className="text-sm font-semibold text-slate-900 mt-1 capitalize">{amountType}</p>
+                    <p className="text-xs font-bold text-text-secondary uppercase tracking-wide">Amount Type</p>
+                    <p className="text-sm font-semibold text-text-primary mt-1 capitalize">{amountType}</p>
                   </div>
                   {amountType !== 'free' && (
                     <div>
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">Amount</p>
-                      <p className="text-sm font-semibold text-slate-900 mt-1">{amount}</p>
+                      <p className="text-xs font-bold text-text-secondary uppercase tracking-wide">Amount</p>
+                      <p className="text-sm font-semibold text-text-primary mt-1">{amount}</p>
                     </div>
                   )}
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">Duration</p>
-                    <p className="text-sm font-semibold text-slate-900 mt-1">{duration}</p>
+                    <p className="text-xs font-bold text-text-secondary uppercase tracking-wide">Duration</p>
+                    <p className="text-sm font-semibold text-text-primary mt-1">{duration}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">Start Date</p>
-                    <p className="text-sm font-semibold text-slate-900 mt-1">{startDate}</p>
+                    <p className="text-xs font-bold text-text-secondary uppercase tracking-wide">Start Date</p>
+                    <p className="text-sm font-semibold text-text-primary mt-1">{startDate}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">Eligibility</p>
-                    <p className="text-sm font-semibold text-slate-900 mt-1">{eligibility}</p>
+                    <p className="text-xs font-bold text-text-secondary uppercase tracking-wide">Eligibility</p>
+                    <p className="text-sm font-semibold text-text-primary mt-1">{eligibility}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">Theme Color</p>
-                    <p className="text-xs font-semibold mt-1 text-slate-650 truncate max-w-xs">{COLOR_THEMES.find(t => t.value === color)?.name || 'Custom'}</p>
+                    <p className="text-xs font-bold text-text-secondary uppercase tracking-wide">Theme Color</p>
+                    <p className="text-xs font-semibold mt-1 text-text-secondary truncate max-w-xs">{COLOR_THEMES.find(t => t.value === color)?.name || 'Custom'}</p>
                   </div>
                 </div>
 
-                <div className="border-t border-slate-100 pt-4 mt-2">
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">Description</p>
-                  <p className="text-sm text-slate-700 mt-1.5 whitespace-pre-line leading-relaxed">{description}</p>
+                <div className="border-t border-border pt-4 mt-2">
+                  <p className="text-xs font-bold text-text-secondary uppercase tracking-wide">Description</p>
+                  <p className="text-sm text-text-primary mt-1.5 whitespace-pre-line leading-relaxed">{description}</p>
                 </div>
               </div>
             </Card>
@@ -504,7 +504,7 @@ export function CreateOpportunityWizard({
           {renderStepContent()}
         </div>
         
-        <div className="shrink-0 border-t border-slate-200 p-4 bg-slate-50 flex items-center justify-between">
+        <div className="shrink-0 border-t border-border p-4 bg-slate-50 flex items-center justify-between">
           {viewMode ? (
             <div className="w-full flex justify-end">
               <Button variant="outline" onClick={onClose}>

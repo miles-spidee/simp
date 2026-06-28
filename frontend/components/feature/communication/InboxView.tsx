@@ -97,7 +97,7 @@ export default function InboxView() {
     switch(type) {
       case 'Group': return <Users className="h-5 w-5 text-indigo-650" />;
       case 'Broadcast': return <Hash className="h-5 w-5 text-amber-600 animate-pulse" />;
-      default: return <User className="h-5 w-5 text-slate-400" />;
+      default: return <User className="h-5 w-5 text-text-secondary" />;
     }
   };
 
@@ -110,12 +110,12 @@ export default function InboxView() {
   });
 
   return (
-    <div className="bg-white border border-slate-100 rounded-2xl shadow-sm flex h-[75vh] overflow-hidden font-sans">
+    <div className="bg-white border border-border rounded-2xl shadow-sm flex h-[75vh] overflow-hidden font-sans">
       
       {/* Sidebar: Conversation List */}
-      <div className="w-1/3 border-r border-slate-100 flex flex-col bg-slate-50/50">
-        <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-white">
-          <h2 className="text-base font-bold text-slate-800 tracking-tight flex items-center gap-2">
+      <div className="w-1/3 border-r border-border flex flex-col bg-slate-50/50">
+        <div className="p-4 border-b border-border flex justify-between items-center bg-white">
+          <h2 className="text-base font-bold text-text-primary tracking-tight flex items-center gap-2">
             <MessageSquare className="h-5 w-5 text-indigo-650 animate-pulse" /> Inbox Channels
           </h2>
           <button 
@@ -123,31 +123,31 @@ export default function InboxView() {
             className="h-8.5 w-8.5 rounded-xl bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors cursor-pointer"
             title="Start Conversation"
           >
-            <Edit className="h-4.5 w-4.5 text-slate-600" />
+            <Edit className="h-4.5 w-4.5 text-text-secondary" />
           </button>
         </div>
         
-        <div className="p-3 border-b border-slate-100 bg-white">
+        <div className="p-3 border-b border-border bg-white">
           <div className="relative">
-            <Search className="h-4 w-4 text-slate-400 absolute left-3 top-3" />
+            <Search className="h-4 w-4 text-text-secondary absolute left-3 top-3" />
             <input 
               type="text" 
               placeholder="Search conversations..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2.5 text-xs focus:outline-none focus:border-indigo-550 font-medium text-slate-700 transition-all placeholder-slate-400"
+              className="w-full bg-slate-50 border border-border rounded-xl pl-9 pr-4 py-2.5 text-xs focus:outline-none focus:border-primary font-medium text-text-primary transition-all placeholder-slate-400"
             />
           </div>
         </div>
 
         <div className="flex-1 overflow-y-auto">
           {loading && conversations.length === 0 ? (
-            <div className="p-8 text-center text-slate-400 text-xs font-semibold">
+            <div className="p-8 text-center text-text-secondary text-xs font-semibold">
               <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
               Loading chats...
             </div>
           ) : (
-            <div className="divide-y divide-slate-100 bg-white">
+            <div className="divide-y divide-border bg-white">
               {filteredConversations.map(conv => {
                 const titleName = conv.type === 'One-to-One' 
                   ? conv.participants.find(p => p.id !== 'u1')?.name 
@@ -162,20 +162,20 @@ export default function InboxView() {
                       selectedConvId === conv.id ? 'bg-indigo-50/40 border-l-3 border-indigo-600' : ''
                     }`}
                   >
-                    <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center shrink-0 border border-slate-200">
+                    <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center shrink-0 border border-border">
                       {getIcon(conv.type)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-baseline mb-1">
-                        <span className="font-bold text-slate-800 truncate text-xs">
+                        <span className="font-bold text-text-primary truncate text-xs">
                           {titleName}
                         </span>
-                        <span className="text-[9px] text-slate-400 font-mono whitespace-nowrap ml-2">
+                        <span className="text-[9px] text-text-secondary font-mono whitespace-nowrap ml-2">
                           {new Date(conv.updatedTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
                       <div className="flex justify-between items-center gap-2">
-                        <span className="text-[11px] text-slate-500 font-medium truncate">
+                        <span className="text-[11px] text-text-secondary font-medium truncate">
                           {lastMsgText}
                         </span>
                         {conv.unreadCount > 0 && (
@@ -189,7 +189,7 @@ export default function InboxView() {
                 );
               })}
               {filteredConversations.length === 0 && (
-                <div className="p-8 text-center text-slate-400 text-xs font-semibold">
+                <div className="p-8 text-center text-text-secondary text-xs font-semibold">
                   No conversations match search.
                 </div>
               )}
@@ -203,9 +203,9 @@ export default function InboxView() {
         {selectedConvId ? (
           <ChatWindow conversationId={selectedConvId} />
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-slate-400">
+          <div className="flex-1 flex flex-col items-center justify-center text-text-secondary">
             <MessageSquare className="h-12 w-12 mb-4 text-slate-200 animate-pulse" />
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Select a channel conversation</p>
+            <p className="text-xs font-bold text-text-secondary uppercase tracking-widest">Select a channel conversation</p>
           </div>
         )}
       </div>
@@ -220,7 +220,7 @@ export default function InboxView() {
       >
         <form onSubmit={handleStartChat} className="flex-1 flex flex-col p-6 space-y-5 overflow-y-auto">
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Conversation Type</label>
+            <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Conversation Type</label>
             <div className="flex gap-3">
               <button
                 type="button"
@@ -228,7 +228,7 @@ export default function InboxView() {
                 className={`flex-1 py-3 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
                   chatType === 'One-to-One' 
                     ? 'bg-indigo-50 border-indigo-200 text-indigo-700' 
-                    : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+                    : 'bg-slate-50 border-border text-text-secondary hover:bg-slate-100'
                 }`}
               >
                 One-to-One Direct Chat
@@ -239,7 +239,7 @@ export default function InboxView() {
                 className={`flex-1 py-3 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
                   chatType === 'Group' 
                     ? 'bg-indigo-50 border-indigo-200 text-indigo-700' 
-                    : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+                    : 'bg-slate-50 border-border text-text-secondary hover:bg-slate-100'
                 }`}
               >
                 Group Discussion Room
@@ -249,23 +249,23 @@ export default function InboxView() {
 
           {chatType === 'Group' ? (
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Group Name</label>
+              <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Group Name</label>
               <input
                 type="text"
                 required
                 value={groupName}
                 onChange={(e) => setGroupName(e.target.value)}
                 placeholder="e.g., FSD Placement Batch 1"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary"
               />
             </div>
           ) : (
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Select Recipient</label>
+              <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Select Recipient</label>
               <select
                 value={selectedUserId}
                 onChange={(e) => setSelectedUserId(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800 cursor-pointer"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary cursor-pointer"
               >
                 {mockUsers.map(u => (
                   <option key={u.id} value={u.id}>{u.name}</option>
@@ -275,21 +275,21 @@ export default function InboxView() {
           )}
 
           <div className="space-y-1.5 flex-1 flex flex-col min-h-[150px]">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Initial Message</label>
+            <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Initial Message</label>
             <textarea
               required
               value={initialMessage}
               onChange={(e) => setInitialMessage(e.target.value)}
               placeholder="Type your initial welcoming message here..."
-              className="w-full flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800 resize-none"
+              className="w-full flex-1 bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary resize-none"
             />
           </div>
 
-          <div className="flex gap-3 pt-4 border-t border-slate-100 mt-auto shrink-0">
+          <div className="flex gap-3 pt-4 border-t border-border mt-auto shrink-0">
             <button
               type="button"
               onClick={() => setIsStartChatOpen(false)}
-              className="flex-1 py-3 border border-slate-200 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+              className="flex-1 py-3 border border-border text-text-primary font-bold text-xs rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
             >
               Cancel
             </button>

@@ -189,8 +189,8 @@ export default function AttendanceDashboardPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight">Attendance Dashboard</h2>
-          <p className="text-sm text-slate-500 mt-1">Track compliance analytics, view daily check-in lists, and audit student calendar timeline logs.</p>
+          <h2 className="text-2xl font-black text-text-primary tracking-tight">Attendance Dashboard</h2>
+          <p className="text-sm text-text-secondary mt-1">Track compliance analytics, view daily check-in lists, and audit student calendar timeline logs.</p>
         </div>
       </div>
 
@@ -198,45 +198,45 @@ export default function AttendanceDashboardPage() {
         <>
           {/* Metrics Panel */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Attendance %</span>
+            <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex flex-col justify-between">
+              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Total Attendance %</span>
               <h3 className="text-3xl font-black text-indigo-650 mt-1">{averageRate}%</h3>
             </div>
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Today's Attendance</span>
+            <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex flex-col justify-between">
+              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Today's Attendance</span>
               <h3 className="text-3xl font-black text-emerald-600 mt-1">{totalStudentsMarked} / {totalStudentsMarked}</h3>
             </div>
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Absent Candidates</span>
+            <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex flex-col justify-between">
+              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Absent Candidates</span>
               <h3 className="text-3xl font-black text-rose-600 mt-1">{totalAbsentCount}</h3>
             </div>
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Late Arrivals</span>
+            <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex flex-col justify-between">
+              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Late Arrivals</span>
               <h3 className="text-3xl font-black text-amber-600 mt-1">{totalLateCount}</h3>
             </div>
           </div>
 
           {/* Batch View Cards */}
           <div className="space-y-4">
-            <h3 className="font-bold text-xs text-slate-400 uppercase tracking-widest">Cohort Compliance</h3>
+            <h3 className="font-bold text-xs text-text-secondary uppercase tracking-widest">Cohort Compliance</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {batches.map(b => (
                 <div 
                   key={b.id} 
                   onClick={() => setSelectedBatch(b)}
-                  className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-indigo-500 hover:shadow-lg transition-all duration-300 cursor-pointer shadow-sm flex flex-col justify-between space-y-4"
+                  className="bg-white p-6 rounded-2xl border border-border hover:border-secondary hover:shadow-lg transition-all duration-300 cursor-pointer shadow-sm flex flex-col justify-between space-y-4"
                 >
                   <div className="flex justify-between items-start">
                     <div>
-                      <span className="text-[9px] font-bold text-slate-400 uppercase">COHORT</span>
-                      <h4 className="text-lg font-black text-slate-900 mt-1">{b.name}</h4>
+                      <span className="text-[9px] font-bold text-text-secondary uppercase">COHORT</span>
+                      <h4 className="text-lg font-black text-text-primary mt-1">{b.name}</h4>
                     </div>
                     <span className="bg-indigo-50 border border-indigo-100 text-indigo-650 font-black px-3 py-1 rounded-full text-xs">
                       {b.rate}% Rate
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100 text-[10px] font-bold text-slate-500">
+                  <div className="grid grid-cols-3 gap-2 pt-2 border-t border-border text-[10px] font-bold text-text-secondary">
                     <span className="text-emerald-650">Present: {b.presentCount}</span>
                     <span className="text-rose-650">Absent: {b.absentCount}</span>
                     <span className="text-amber-650">Late: {b.lateCount}</span>
@@ -251,7 +251,7 @@ export default function AttendanceDashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
           {/* Left/Middle Column: Students list under this batch */}
-          <div className="lg:col-span-1 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
+          <div className="lg:col-span-1 bg-white border border-border rounded-2xl p-5 shadow-sm space-y-4">
             <div className="border-b pb-3">
               <button 
                 onClick={() => { setSelectedBatch(null); setSelectedStudent(null); }}
@@ -259,7 +259,7 @@ export default function AttendanceDashboardPage() {
               >
                 ← Back to Batches
               </button>
-              <h3 className="text-sm font-black text-slate-900 mt-1">{selectedBatch.name} Candidate Roster</h3>
+              <h3 className="text-sm font-black text-text-primary mt-1">{selectedBatch.name} Candidate Roster</h3>
             </div>
 
             <div className="space-y-2">
@@ -270,7 +270,7 @@ export default function AttendanceDashboardPage() {
                   className={`p-3.5 border rounded-xl cursor-pointer transition-all flex items-center justify-between gap-3 ${
                     selectedStudent?.id === s.id 
                       ? 'bg-slate-900 border-slate-850 text-white shadow-md' 
-                      : 'bg-slate-50 border-slate-150 hover:border-slate-350 text-slate-700'
+                      : 'bg-slate-50 border-slate-150 hover:border-secondary text-text-primary'
                   }`}
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
@@ -296,7 +296,7 @@ export default function AttendanceDashboardPage() {
           {/* Right Column: Individual Student Timeline Sheet */}
           <div className="lg:col-span-2 space-y-6">
             {selectedStudent ? (
-              <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
+              <div className="bg-white border border-border rounded-2xl p-6 shadow-sm space-y-6">
                 
                 {/* Profile detail */}
                 <div className="border-b pb-4 flex justify-between items-start gap-4">
@@ -304,28 +304,28 @@ export default function AttendanceDashboardPage() {
                     <span className="text-[10px] font-bold text-indigo-650 bg-indigo-50 border border-indigo-100 px-2.5 py-0.5 rounded uppercase tracking-wide">
                       CANDIDATE LOG SHEET
                     </span>
-                    <h3 className="text-lg font-black text-slate-900 mt-2">{selectedStudent.name}</h3>
-                    <p className="text-xs text-slate-550">Graduation compliance status: <strong className="text-emerald-650">{selectedStudent.attendanceRate}% Attendance Rate</strong></p>
+                    <h3 className="text-lg font-black text-text-primary mt-2">{selectedStudent.name}</h3>
+                    <p className="text-xs text-text-secondary">Graduation compliance status: <strong className="text-emerald-650">{selectedStudent.attendanceRate}% Attendance Rate</strong></p>
                   </div>
                 </div>
 
                 {/* Statistics Box */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div className="p-3 bg-slate-50 border border-slate-150 rounded-xl text-center">
-                    <span className="block text-sm font-black text-slate-800">{selectedStudent.checkIn}</span>
-                    <span className="text-[9px] font-bold text-slate-400 uppercase">Check-In</span>
+                    <span className="block text-sm font-black text-text-primary">{selectedStudent.checkIn}</span>
+                    <span className="text-[9px] font-bold text-text-secondary uppercase">Check-In</span>
                   </div>
                   <div className="p-3 bg-slate-50 border border-slate-150 rounded-xl text-center">
-                    <span className="block text-sm font-black text-slate-800">{selectedStudent.checkOut}</span>
-                    <span className="text-[9px] font-bold text-slate-400 uppercase">Check-Out</span>
+                    <span className="block text-sm font-black text-text-primary">{selectedStudent.checkOut}</span>
+                    <span className="text-[9px] font-bold text-text-secondary uppercase">Check-Out</span>
                   </div>
                   <div className="p-3 bg-slate-50 border border-slate-150 rounded-xl text-center">
-                    <span className="block text-sm font-black text-slate-800">{selectedStudent.duration}</span>
-                    <span className="text-[9px] font-bold text-slate-400 uppercase">Avg Duration</span>
+                    <span className="block text-sm font-black text-text-primary">{selectedStudent.duration}</span>
+                    <span className="text-[9px] font-bold text-text-secondary uppercase">Avg Duration</span>
                   </div>
                   <div className="p-3 bg-slate-50 border border-slate-150 rounded-xl text-center">
-                    <span className="block text-sm font-black text-slate-800">{selectedStudent.presentDays} Days</span>
-                    <span className="text-[9px] font-bold text-slate-400 uppercase">Present</span>
+                    <span className="block text-sm font-black text-text-primary">{selectedStudent.presentDays} Days</span>
+                    <span className="text-[9px] font-bold text-text-secondary uppercase">Present</span>
                   </div>
                 </div>
 
@@ -344,7 +344,7 @@ export default function AttendanceDashboardPage() {
                             log === 'Present' ? 'bg-emerald-50 border-emerald-150 text-emerald-850' :
                             log === 'Absent' ? 'bg-rose-50 border-rose-150 text-rose-850' :
                             log === 'Late' ? 'bg-amber-50 border-amber-150 text-amber-850' :
-                            'bg-slate-50 border-slate-150 text-slate-400'
+                            'bg-slate-50 border-slate-150 text-text-secondary'
                           }`}
                         >
                           <span className="text-[9px] font-extrabold">{day}</span>
@@ -359,7 +359,7 @@ export default function AttendanceDashboardPage() {
 
               </div>
             ) : (
-              <div className="bg-white border border-slate-200 rounded-2xl p-16 text-center text-slate-400 italic shadow-sm">
+              <div className="bg-white border border-border rounded-2xl p-16 text-center text-text-secondary italic shadow-sm">
                 Select a candidate profile from the left list to review detailed check-in timestamps and calendar compliance histories.
               </div>
             )}

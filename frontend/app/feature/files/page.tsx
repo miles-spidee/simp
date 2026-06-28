@@ -49,21 +49,21 @@ export default function CommonFilePage() {
       </div>
 
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shrink-0">
+      <div className="bg-white border-b border-border px-6 py-4 flex items-center justify-between shrink-0">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Common File Module</h1>
-          <p className="text-sm text-slate-500 mt-1">Centralized File Storage & References</p>
+          <h1 className="text-xl font-bold text-text-primary">Common File Module</h1>
+          <p className="text-sm text-text-secondary mt-1">Centralized File Storage & References</p>
         </div>
-        <div className="flex gap-2 bg-slate-100 p-1 rounded-lg border border-slate-200">
+        <div className="flex gap-2 bg-slate-100 p-1 rounded-lg border border-border">
           <button 
             onClick={() => setActiveView('dashboard')}
-            className={`px-4 py-2 text-sm font-semibold rounded-md transition-all ${activeView === 'dashboard' ? 'bg-white text-slate-800 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-700'}`}
+            className={`px-4 py-2 text-sm font-semibold rounded-md transition-all ${activeView === 'dashboard' ? 'bg-white text-text-primary shadow-sm border border-border/50' : 'text-text-secondary hover:text-text-primary'}`}
           >
             Dashboard
           </button>
           <button 
             onClick={() => setActiveView('directory')}
-            className={`px-4 py-2 text-sm font-semibold rounded-md transition-all ${activeView === 'directory' ? 'bg-white text-slate-800 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-700'}`}
+            className={`px-4 py-2 text-sm font-semibold rounded-md transition-all ${activeView === 'directory' ? 'bg-white text-text-primary shadow-sm border border-border/50' : 'text-text-secondary hover:text-text-primary'}`}
           >
             Repository
           </button>
@@ -75,53 +75,53 @@ export default function CommonFilePage() {
           <div className="space-y-6 max-w-7xl mx-auto">
             {/* KPIs */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+              <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><HardDrive className="h-5 w-5" /></div>
-                  <h3 className="font-semibold text-slate-700">Storage Usage</h3>
+                  <h3 className="font-semibold text-text-primary">Storage Usage</h3>
                 </div>
-                <div className="text-3xl font-black text-slate-900">{totalSizeMB} MB</div>
-                <p className="text-sm text-slate-500 mt-1">Total allocated space used</p>
+                <div className="text-3xl font-black text-text-primary">{totalSizeMB} MB</div>
+                <p className="text-sm text-text-secondary mt-1">Total allocated space used</p>
               </div>
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+              <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><File className="h-5 w-5" /></div>
-                  <h3 className="font-semibold text-slate-700">File Count</h3>
+                  <h3 className="font-semibold text-text-primary">File Count</h3>
                 </div>
-                <div className="text-3xl font-black text-slate-900">{files.length}</div>
-                <p className="text-sm text-slate-500 mt-1">Total referenced files</p>
+                <div className="text-3xl font-black text-text-primary">{files.length}</div>
+                <p className="text-sm text-text-secondary mt-1">Total referenced files</p>
               </div>
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+              <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="p-2 bg-amber-50 text-amber-600 rounded-lg"><Clock className="h-5 w-5" /></div>
-                  <h3 className="font-semibold text-slate-700">Recent Uploads</h3>
+                  <h3 className="font-semibold text-text-primary">Recent Uploads</h3>
                 </div>
-                <div className="text-3xl font-black text-slate-900">{files.length > 0 ? 3 : 0}</div>
-                <p className="text-sm text-slate-500 mt-1">In the last 24 hours</p>
+                <div className="text-3xl font-black text-text-primary">{files.length > 0 ? 3 : 0}</div>
+                <p className="text-sm text-text-secondary mt-1">In the last 24 hours</p>
               </div>
             </div>
             
             {/* Recent Uploads List */}
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-                <h2 className="font-bold text-slate-800">Recent Uploads</h2>
+            <div className="bg-white border border-border rounded-xl shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-slate-50">
+                <h2 className="font-bold text-text-primary">Recent Uploads</h2>
                 <button onClick={() => setActiveView('directory')} className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1">
                   View Repository <ArrowRight className="h-4 w-4" />
                 </button>
               </div>
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-border">
                 {files.slice(0, 5).map(f => (
                   <div key={f.file_id} className="p-4 px-6 hover:bg-slate-50 flex items-center justify-between cursor-pointer" onClick={() => handleFileClick(f)}>
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-slate-100 text-slate-500 rounded-lg"><File className="h-4 w-4" /></div>
+                      <div className="p-2 bg-slate-100 text-text-secondary rounded-lg"><File className="h-4 w-4" /></div>
                       <div>
-                        <div className="font-medium text-slate-900">{f.file_name}</div>
-                        <div className="text-xs text-slate-500 flex items-center gap-2">
+                        <div className="font-medium text-text-primary">{f.file_name}</div>
+                        <div className="text-xs text-text-secondary flex items-center gap-2">
                           <span>{f.file_type}</span> • <span>{(f.file_size / 1024 / 1024).toFixed(2)} MB</span> • <span>{new Date(f.uploaded_at).toLocaleDateString()}</span>
                         </div>
                       </div>
                     </div>
-                    <Eye className="h-4 w-4 text-slate-400" />
+                    <Eye className="h-4 w-4 text-text-secondary" />
                   </div>
                 ))}
               </div>
@@ -130,20 +130,20 @@ export default function CommonFilePage() {
         )}
 
         {activeView === 'directory' && (
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm max-w-7xl mx-auto flex flex-col h-[calc(100vh-12rem)]">
-            <div className="p-4 border-b border-slate-100 flex items-center justify-between gap-4 bg-slate-50/50">
+          <div className="bg-white border border-border rounded-xl shadow-sm max-w-7xl mx-auto flex flex-col h-[calc(100vh-12rem)]">
+            <div className="p-4 border-b border-border flex items-center justify-between gap-4 bg-slate-50/50">
               <div className="flex items-center gap-2 flex-1 max-w-md">
                 <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary" />
                   <input 
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search files..."
-                    className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                    className="w-full pl-9 pr-4 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   />
                 </div>
-                <button className="p-2 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50">
+                <button className="p-2 border border-border text-text-secondary rounded-lg hover:bg-slate-50">
                   <Filter className="h-4 w-4" />
                 </button>
               </div>
@@ -155,7 +155,7 @@ export default function CommonFilePage() {
             </div>
             <div className="flex-1 overflow-auto">
               <table className="w-full text-left text-sm whitespace-nowrap">
-                <thead className="bg-slate-50 sticky top-0 z-10 border-b border-slate-200 text-slate-500 font-medium">
+                <thead className="bg-slate-50 sticky top-0 z-10 border-b border-border text-text-secondary font-medium">
                   <tr>
                     <th className="px-6 py-3">File Name</th>
                     <th className="px-6 py-3">Type</th>
@@ -165,23 +165,23 @@ export default function CommonFilePage() {
                     <th className="px-6 py-3"></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-border">
                   {filteredFiles.map(f => (
                     <tr key={f.file_id} className="hover:bg-blue-50/50 cursor-pointer transition-colors" onClick={() => handleFileClick(f)}>
-                      <td className="px-6 py-4 font-medium text-slate-900 flex items-center gap-2">
-                        <File className="h-4 w-4 text-slate-400" />
+                      <td className="px-6 py-4 font-medium text-text-primary flex items-center gap-2">
+                        <File className="h-4 w-4 text-text-secondary" />
                         {f.file_name}
                       </td>
                       <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-slate-100 text-slate-700">
+                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-slate-100 text-text-primary">
                           {f.file_type}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-slate-600">{(f.file_size / 1024 / 1024).toFixed(2)} MB</td>
-                      <td className="px-6 py-4 text-slate-600">{f.uploaded_by}</td>
-                      <td className="px-6 py-4 text-slate-600">{new Date(f.uploaded_at).toLocaleDateString()}</td>
+                      <td className="px-6 py-4 text-text-secondary">{(f.file_size / 1024 / 1024).toFixed(2)} MB</td>
+                      <td className="px-6 py-4 text-text-secondary">{f.uploaded_by}</td>
+                      <td className="px-6 py-4 text-text-secondary">{new Date(f.uploaded_at).toLocaleDateString()}</td>
                       <td className="px-6 py-4 text-right">
-                        <button className="p-1 text-slate-400 hover:text-blue-600 transition-colors">
+                        <button className="p-1 text-text-secondary hover:text-blue-600 transition-colors">
                           <Eye className="h-4 w-4" />
                         </button>
                       </td>
@@ -197,49 +197,49 @@ export default function CommonFilePage() {
       <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} title="File Details" size="md">
         {selectedFile && (
           <div className="flex flex-col h-full bg-slate-50">
-            <div className="p-6 bg-white border-b border-slate-200">
+            <div className="p-6 bg-white border-b border-border">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <div className="h-12 w-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                     <File className="h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-slate-900">{selectedFile.file_name}</h3>
-                    <p className="text-sm text-slate-500">ID: {selectedFile.file_id} • v{selectedFile.version}</p>
+                    <h3 className="text-lg font-bold text-text-primary">{selectedFile.file_name}</h3>
+                    <p className="text-sm text-text-secondary">ID: {selectedFile.file_id} • v{selectedFile.version}</p>
                   </div>
                 </div>
               </div>
             </div>
             <div className="flex-1 p-6 overflow-auto">
               <div className="space-y-6">
-                <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
-                  <h4 className="text-sm font-semibold text-slate-900 border-b border-slate-100 pb-2">File Information</h4>
+                <div className="bg-white p-5 rounded-xl border border-border shadow-sm space-y-4">
+                  <h4 className="text-sm font-semibold text-text-primary border-b border-border pb-2">File Information</h4>
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Type</span>
-                      <span className="font-medium text-slate-800">{selectedFile.file_type}</span>
+                      <span className="block text-xs font-bold text-text-secondary uppercase tracking-wider mb-1">Type</span>
+                      <span className="font-medium text-text-primary">{selectedFile.file_type}</span>
                     </div>
                     <div>
-                      <span className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">MIME</span>
-                      <span className="font-medium text-slate-800">{selectedFile.mime_type}</span>
+                      <span className="block text-xs font-bold text-text-secondary uppercase tracking-wider mb-1">MIME</span>
+                      <span className="font-medium text-text-primary">{selectedFile.mime_type}</span>
                     </div>
                     <div>
-                      <span className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Size</span>
-                      <span className="font-medium text-slate-800">{(selectedFile.file_size / 1024 / 1024).toFixed(2)} MB</span>
+                      <span className="block text-xs font-bold text-text-secondary uppercase tracking-wider mb-1">Size</span>
+                      <span className="font-medium text-text-primary">{(selectedFile.file_size / 1024 / 1024).toFixed(2)} MB</span>
                     </div>
                     <div>
-                      <span className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Uploaded By</span>
-                      <span className="font-medium text-slate-800">{selectedFile.uploaded_by}</span>
+                      <span className="block text-xs font-bold text-text-secondary uppercase tracking-wider mb-1">Uploaded By</span>
+                      <span className="font-medium text-text-primary">{selectedFile.uploaded_by}</span>
                     </div>
                     <div className="col-span-2">
-                      <span className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Upload Date</span>
-                      <span className="font-medium text-slate-800">{new Date(selectedFile.uploaded_at).toLocaleString()}</span>
+                      <span className="block text-xs font-bold text-text-secondary uppercase tracking-wider mb-1">Upload Date</span>
+                      <span className="font-medium text-text-primary">{new Date(selectedFile.uploaded_at).toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex gap-3">
-                  <button className="flex-1 bg-white border border-slate-200 text-slate-700 font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors shadow-sm">
+                  <button className="flex-1 bg-white border border-border text-text-primary font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors shadow-sm">
                     <Download className="h-4 w-4" /> Download File
                   </button>
                   <button className="flex-1 bg-blue-600 border border-blue-600 text-white font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-sm">
@@ -247,7 +247,7 @@ export default function CommonFilePage() {
                   </button>
                 </div>
                 
-                <div className="border-t border-slate-200 pt-4 mt-6">
+                <div className="border-t border-border pt-4 mt-6">
                   <PermissionGuard required="common_file.delete">
                     <button onClick={() => handleDelete(selectedFile.file_id)} className="w-full bg-white border border-red-200 text-red-600 font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 hover:bg-red-50 transition-colors">
                       <Trash className="h-4 w-4" /> Delete File

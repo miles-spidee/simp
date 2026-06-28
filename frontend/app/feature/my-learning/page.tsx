@@ -308,7 +308,7 @@ export default function MyLearningPage() {
       onClick={handleUserActivity}
     >
       {toastMessage && (
-        <div className="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 bg-slate-900 border border-slate-800 text-white rounded-xl shadow-2xl animate-bounce-in">
+        <div className="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 bg-slate-900 border border-border text-white rounded-xl shadow-2xl animate-bounce-in">
           <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
           <div className="text-xs font-semibold">{toastMessage}</div>
         </div>
@@ -317,13 +317,13 @@ export default function MyLearningPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+          <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest flex items-center gap-1.5">
             <span>Student Hub</span>
             <ChevronRight className="h-3 w-3" />
             <span className="text-blue-600 font-extrabold text-[10px]">My Learning</span>
           </div>
-          <h2 className="text-2xl font-black text-slate-900 mt-2 tracking-tight font-display-premium">Learning Pathways</h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h2 className="text-2xl font-black text-text-primary mt-2 tracking-tight font-display-premium">Learning Pathways</h2>
+          <p className="text-xs text-text-secondary mt-0.5">
             Watch lectures with interactivity checkpoints and download course certifications.
           </p>
         </div>
@@ -337,7 +337,7 @@ export default function MyLearningPage() {
             return (
               <div 
                 key={crs.id} 
-                className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col md:flex-row hover:border-indigo-400 transition-all duration-300"
+                className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden flex flex-col md:flex-row hover:border-secondary transition-all duration-300"
               >
                 <div className="md:w-56 h-44 md:h-auto shrink-0 relative bg-slate-100">
                   <img src={crs.thumbnail} alt={crs.title} className="w-full h-full object-cover" />
@@ -350,12 +350,12 @@ export default function MyLearningPage() {
 
                 <div className="p-5 flex-1 flex flex-col justify-between">
                   <div>
-                    <h3 className="text-base font-black text-slate-900 leading-tight">{crs.title}</h3>
-                    <p className="text-[11px] text-slate-500 line-clamp-2 mt-1 leading-snug">{crs.description}</p>
+                    <h3 className="text-base font-black text-text-primary leading-tight">{crs.title}</h3>
+                    <p className="text-[11px] text-text-secondary line-clamp-2 mt-1 leading-snug">{crs.description}</p>
                   </div>
 
-                  <div className="space-y-4 pt-3 border-t border-slate-50 mt-4">
-                    <div className="flex justify-between items-center text-xs font-bold text-slate-700">
+                  <div className="space-y-4 pt-3 border-t border-border mt-4">
+                    <div className="flex justify-between items-center text-xs font-bold text-text-primary">
                       <span>Track Progress</span>
                       <span className="text-indigo-650">{crs.progressRate}%</span>
                     </div>
@@ -400,14 +400,14 @@ export default function MyLearningPage() {
               ← Back to Tracks
             </button>
 
-            <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm space-y-4">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest border-b pb-2">Course syllabus</h3>
+            <div className="bg-white border border-border rounded-2xl p-4 shadow-sm space-y-4">
+              <h3 className="text-xs font-bold text-text-secondary uppercase tracking-widest border-b pb-2">Course syllabus</h3>
               
               <div className="space-y-4 max-h-[480px] overflow-y-auto pr-1 custom-scrollbar">
                 {selectedCourse.modules.map((mod, mIdx) => (
                   <div key={mod.id} className="space-y-2">
-                    <h4 className="text-xs font-bold text-slate-800 leading-tight">{mod.title}</h4>
-                    <div className="space-y-1.5 pl-2 border-l border-slate-200">
+                    <h4 className="text-xs font-bold text-text-primary leading-tight">{mod.title}</h4>
+                    <div className="space-y-1.5 pl-2 border-l border-border">
                       {mod.submodules.map(sub => {
                         const isDone = completedSubmodules[sub.id];
                         const isPlaying = activeSub?.id === sub.id;
@@ -421,7 +421,7 @@ export default function MyLearningPage() {
                                 ? 'bg-indigo-600 border-indigo-500 text-white shadow-sm font-bold' 
                                 : isDone 
                                 ? 'bg-emerald-50/50 border-emerald-100 text-slate-655 hover:border-emerald-250' 
-                                : 'bg-slate-50 border-slate-150 text-slate-700 hover:border-slate-350'
+                                : 'bg-slate-50 border-slate-150 text-text-primary hover:border-secondary'
                             }`}
                           >
                             <span className="truncate mr-2">{sub.title}</span>
@@ -445,7 +445,7 @@ export default function MyLearningPage() {
           {/* Right panel: Active learning player space */}
           <div className="lg:col-span-3">
             {activeSub ? (
-              <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-6 min-h-[460px] flex flex-col justify-between relative overflow-hidden">
+              <div className="bg-white border border-border rounded-3xl p-6 shadow-sm space-y-6 min-h-[460px] flex flex-col justify-between relative overflow-hidden">
                 
                 {/* Module title/info */}
                 <div className="border-b pb-4 flex justify-between items-start gap-4">
@@ -453,7 +453,7 @@ export default function MyLearningPage() {
                     <span className="text-[9px] font-bold text-indigo-650 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-sm uppercase tracking-wide">
                       {activeSub.type} COMPONENT
                     </span>
-                    <h3 className="text-lg font-black text-slate-900 mt-2">{activeSub.title}</h3>
+                    <h3 className="text-lg font-black text-text-primary mt-2">{activeSub.title}</h3>
                   </div>
                   {completedSubmodules[activeSub.id] && (
                     <span className="bg-emerald-50 border border-emerald-250 text-emerald-600 font-extrabold text-[10px] px-2.5 py-1 rounded-xl uppercase flex items-center gap-1">
@@ -467,12 +467,12 @@ export default function MyLearningPage() {
                   <div className="flex-1 flex flex-col justify-between py-6 relative">
                     
                     {/* Simulated Player Box */}
-                    <div className="bg-slate-950 border border-slate-800 rounded-2xl h-64 flex flex-col items-center justify-center text-center p-6 relative overflow-hidden text-white shadow-2xl">
+                    <div className="bg-slate-950 border border-border rounded-2xl h-64 flex flex-col items-center justify-center text-center p-6 relative overflow-hidden text-white shadow-2xl">
                       {showIdleWarning && (
                         <div className="absolute inset-0 bg-slate-950/90 flex flex-col items-center justify-center p-6 z-20 space-y-3">
                           <AlertCircle className="h-10 w-10 text-amber-500 animate-bounce" />
                           <h4 className="font-black text-sm text-white">Are you still watching?</h4>
-                          <p className="text-xs text-slate-400">Please acknowledge within {idleWarningCountdown}s to prevent video reset.</p>
+                          <p className="text-xs text-text-secondary">Please acknowledge within {idleWarningCountdown}s to prevent video reset.</p>
                           <button 
                             type="button"
                             onClick={handleIdleAcknowledge}
@@ -485,7 +485,7 @@ export default function MyLearningPage() {
 
                       {showCheckpointMcq && activeSub.checkpointMcq && (
                         <div className="absolute inset-0 bg-slate-950/90 flex flex-col items-center justify-center p-6 z-20 space-y-4 text-left select-none">
-                          <div className="w-full max-w-md bg-[#1e293b] p-5 rounded-2xl border border-slate-700/60 space-y-3">
+                          <div className="w-full max-w-md bg-[#1e293b] p-5 rounded-2xl border border-border/60 space-y-3">
                             <span className="text-[9px] font-bold text-indigo-400 uppercase tracking-widest">Learning Checkpoint MCQ</span>
                             <h4 className="text-xs font-bold text-white leading-normal">{activeSub.checkpointMcq.question}</h4>
                             
@@ -500,7 +500,7 @@ export default function MyLearningPage() {
                                     className={`p-2 border rounded-lg text-left transition-all ${
                                       selectedCheckpointAns === optChar 
                                         ? 'border-indigo-500 bg-indigo-650 text-white font-bold' 
-                                        : 'border-slate-700 bg-[#151c2c] text-slate-300 hover:border-slate-500'
+                                        : 'border-border bg-[#151c2c] text-slate-300 hover:border-secondary'
                                     }`}
                                   >
                                     {optChar}. {opt}
@@ -521,14 +521,14 @@ export default function MyLearningPage() {
                       )}
 
                       {/* Fake Player Content */}
-                      <Play className="h-12 w-12 text-slate-500 mb-2 animate-pulse" />
-                      <span className="text-xs text-slate-400">LMS Video Player • Seek Restrictions Enabled</span>
-                      <span className="text-[10px] text-slate-500 font-mono mt-1">Watching: {formatTimer(videoCurrentTime)} / {formatTimer(activeSub.videoDuration || 600)}</span>
+                      <Play className="h-12 w-12 text-text-secondary mb-2 animate-pulse" />
+                      <span className="text-xs text-text-secondary">LMS Video Player • Seek Restrictions Enabled</span>
+                      <span className="text-[10px] text-text-secondary font-mono mt-1">Watching: {formatTimer(videoCurrentTime)} / {formatTimer(activeSub.videoDuration || 600)}</span>
                     </div>
 
                     {/* Restricted Timeline Control */}
                     <div className="mt-4 space-y-2.5">
-                      <div className="flex justify-between items-center text-xs font-bold text-slate-500">
+                      <div className="flex justify-between items-center text-xs font-bold text-text-secondary">
                         <span>Video Watch Progress</span>
                         <span>{videoProgress}% Watched</span>
                       </div>
@@ -547,7 +547,7 @@ export default function MyLearningPage() {
                       </div>
                       
                       {/* Fake seeks handler */}
-                      <div className="flex justify-between text-[10px] text-slate-400 font-bold">
+                      <div className="flex justify-between text-[10px] text-text-secondary font-bold">
                         <span>0:00</span>
                         <div className="flex gap-2">
                           <button 
@@ -575,9 +575,9 @@ export default function MyLearningPage() {
                 {/* PDF/Reading Timer restriction console */}
                 {(activeSub.type === 'PDF' || activeSub.type === 'Reading') && (
                   <div className="flex-1 flex flex-col justify-between py-6">
-                    <div className="bg-slate-50 border border-slate-200 rounded-2xl p-8 text-center space-y-4 h-64 flex flex-col items-center justify-center">
-                      <FileText className="h-12 w-12 text-slate-400 mb-1" />
-                      <h4 className="text-sm font-black text-slate-800">Reviewing Curriculum PDF Spec</h4>
+                    <div className="bg-slate-50 border border-border rounded-2xl p-8 text-center space-y-4 h-64 flex flex-col items-center justify-center">
+                      <FileText className="h-12 w-12 text-text-secondary mb-1" />
+                      <h4 className="text-sm font-black text-text-primary">Reviewing Curriculum PDF Spec</h4>
                       
                       {pdfTimer > 0 ? (
                         <div className="flex items-center gap-2 px-4 py-2 bg-amber-50 border border-amber-200 text-amber-800 font-bold rounded-xl text-xs">
@@ -607,7 +607,7 @@ export default function MyLearningPage() {
 
               </div>
             ) : (
-              <div className="bg-white border border-slate-200 rounded-3xl p-16 text-center text-slate-400 italic shadow-sm min-h-[460px] flex flex-col items-center justify-center">
+              <div className="bg-white border border-border rounded-3xl p-16 text-center text-text-secondary italic shadow-sm min-h-[460px] flex flex-col items-center justify-center">
                 <BookOpen className="h-12 w-12 text-slate-300 mb-3" />
                 Select an active lecture submodule from the syllabus on the left to begin learning.
               </div>

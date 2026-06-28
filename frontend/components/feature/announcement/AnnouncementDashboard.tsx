@@ -28,8 +28,8 @@ export default function AnnouncementDashboard() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Announcement Management</h1>
-          <p className="text-sm text-gray-500 mt-1">Publish campus-wide alerts, holidays, and academic updates.</p>
+          <h1 className="text-2xl font-bold text-text-primary tracking-tight">Announcement Management</h1>
+          <p className="text-sm text-text-secondary mt-1">Publish campus-wide alerts, holidays, and academic updates.</p>
         </div>
         <div className="flex gap-3">
           <button 
@@ -42,30 +42,30 @@ export default function AnnouncementDashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white/70 backdrop-blur-xl p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between group hover:border-gray-300 transition-all">
+        <div className="bg-white/70 backdrop-blur-xl p-5 rounded-2xl border border-border shadow-sm flex items-center justify-between group hover:border-secondary transition-all">
           <div>
-            <p className="text-sm font-medium text-gray-500">Total Announcements</p>
-            <p className="text-2xl font-bold text-gray-900 mt-1">{stats.total}</p>
+            <p className="text-sm font-medium text-text-secondary">Total Announcements</p>
+            <p className="text-2xl font-bold text-text-primary mt-1">{stats.total}</p>
           </div>
           <div className="h-12 w-12 rounded-full bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
             <FileText className="h-6 w-6 text-blue-600" />
           </div>
         </div>
 
-        <div className="bg-white/70 backdrop-blur-xl p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between group hover:border-gray-300 transition-all">
+        <div className="bg-white/70 backdrop-blur-xl p-5 rounded-2xl border border-border shadow-sm flex items-center justify-between group hover:border-secondary transition-all">
           <div>
-            <p className="text-sm font-medium text-gray-500">Active (Published)</p>
-            <p className="text-2xl font-bold text-gray-900 mt-1">{stats.active}</p>
+            <p className="text-sm font-medium text-text-secondary">Active (Published)</p>
+            <p className="text-2xl font-bold text-text-primary mt-1">{stats.active}</p>
           </div>
           <div className="h-12 w-12 rounded-full bg-emerald-50 flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
             <Eye className="h-6 w-6 text-emerald-600" />
           </div>
         </div>
 
-        <div className="bg-white/70 backdrop-blur-xl p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between group hover:border-gray-300 transition-all">
+        <div className="bg-white/70 backdrop-blur-xl p-5 rounded-2xl border border-border shadow-sm flex items-center justify-between group hover:border-secondary transition-all">
           <div>
-            <p className="text-sm font-medium text-gray-500">Draft (Pending)</p>
-            <p className="text-2xl font-bold text-gray-900 mt-1">{stats.pending}</p>
+            <p className="text-sm font-medium text-text-secondary">Draft (Pending)</p>
+            <p className="text-2xl font-bold text-text-primary mt-1">{stats.pending}</p>
           </div>
           <div className="h-12 w-12 rounded-full bg-amber-50 flex items-center justify-center group-hover:bg-amber-100 transition-colors">
             <Edit3 className="h-6 w-6 text-amber-600" />

@@ -9,7 +9,7 @@ export function Table({ className = '', ...props }: React.TableHTMLAttributes<HT
 }
 
 export function TableHeader({ className = '', ...props }: React.HTMLAttributes<HTMLTableSectionElement>) {
-  return <thead className={`[&_tr]:border-b border-slate-200 bg-slate-50 ${className}`} {...props} />;
+  return <thead className={`[&_tr]:border-b border-border bg-slate-50 ${className}`} {...props} />;
 }
 
 export function TableBody({ className = '', ...props }: React.HTMLAttributes<HTMLTableSectionElement>) {
@@ -19,7 +19,7 @@ export function TableBody({ className = '', ...props }: React.HTMLAttributes<HTM
 export function TableRow({ className = '', ...props }: React.HTMLAttributes<HTMLTableRowElement>) {
   return (
     <tr
-      className={`border-b border-slate-200 transition-colors hover:bg-slate-50/50 data-[state=selected]:bg-slate-50 ${className}`}
+      className={`border-b border-border transition-colors hover:bg-slate-50/50 data-[state=selected]:bg-slate-50 ${className}`}
       {...props}
     />
   );
@@ -28,7 +28,7 @@ export function TableRow({ className = '', ...props }: React.HTMLAttributes<HTML
 export function TableHead({ className = '', ...props }: React.ThHTMLAttributes<HTMLTableCellElement>) {
   return (
     <th
-      className={`h-12 px-4 text-left align-middle font-medium text-slate-500 [&:has([role=checkbox])]:pr-0 ${className}`}
+      className={`h-12 px-4 text-left align-middle font-medium text-text-secondary [&:has([role=checkbox])]:pr-0 ${className}`}
       {...props}
     />
   );

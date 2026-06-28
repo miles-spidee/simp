@@ -26,7 +26,7 @@ function SkeletonTable() {
   return (
     <div className="animate-pulse">
       {Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className="flex gap-4 px-5 py-4 border-b border-slate-100">
+        <div key={i} className="flex gap-4 px-5 py-4 border-b border-border">
           <div className="h-8 w-8 bg-slate-200 rounded-full" />
           <div className="h-4 w-28 bg-slate-200 rounded" />
           <div className="h-4 w-16 bg-slate-200 rounded" />
@@ -41,7 +41,7 @@ function SkeletonTable() {
 
 const leaveTypeColors: Record<string, string> = {
   Medical: 'bg-rose-100 text-rose-700',
-  Casual: 'bg-sky-100 text-sky-700',
+  Casual: 'bg-sky-100 text-text-primary',
   Emergency: 'bg-amber-100 text-amber-700',
   OD: 'bg-violet-100 text-violet-700',
   WFH: 'bg-teal-100 text-teal-700',
@@ -140,8 +140,8 @@ export default function LeaveDashboard() {
             <CalendarDays size={24} />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Leave Management</h1>
-            <p className="text-sm text-slate-500 mt-0.5">Track and manage all leave requests.</p>
+            <h1 className="text-2xl font-bold text-text-primary tracking-tight">Leave Management</h1>
+            <p className="text-sm text-text-secondary mt-0.5">Track and manage all leave requests.</p>
           </div>
         </div>
         <button className="bg-slate-900 hover:bg-black text-white px-4 py-2.5 rounded-xl font-medium text-sm transition-all flex items-center gap-2 shadow-lg shadow-slate-900/10 hover:shadow-xl hover:shadow-slate-900/20">
@@ -167,29 +167,29 @@ export default function LeaveDashboard() {
                   <c.icon size={22} />
                 </div>
               </div>
-              <p className="text-sm text-slate-500 font-medium mb-1">{c.title}</p>
-              <h3 className="text-2xl font-bold text-slate-900">{c.value}</h3>
+              <p className="text-sm text-text-secondary font-medium mb-1">{c.title}</p>
+              <h3 className="text-2xl font-bold text-text-primary">{c.value}</h3>
             </div>
           ))
         )}
       </div>
 
       {/* Data Table */}
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
         {/* Filter Bar */}
-        <div className="p-4 border-b border-slate-100 space-y-3">
+        <div className="p-4 border-b border-border space-y-3">
           <div className="flex flex-wrap items-center gap-3">
             <div className="relative flex-1 min-w-[220px]">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" />
               <input
                 type="text"
                 placeholder="Search by name or reason..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2.5 text-sm border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 transition-all outline-none"
+                className="w-full pl-9 pr-4 py-2.5 text-sm border border-border rounded-xl bg-slate-50 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none"
               />
               {search && (
-                <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-secondary">
                   <X className="w-3.5 h-3.5" />
                 </button>
               )}
@@ -206,7 +206,7 @@ export default function LeaveDashboard() {
           <div className="flex flex-wrap gap-3">
             {/* Status pills */}
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-semibold uppercase text-slate-400 mr-1">Status</span>
+              <span className="text-[10px] font-semibold uppercase text-text-secondary mr-1">Status</span>
               {statusOptions.map(opt => (
                 <button
                   key={opt}
@@ -214,7 +214,7 @@ export default function LeaveDashboard() {
                   className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                     statusFilter === opt
                       ? opt === 'Pending' ? 'bg-amber-100 text-amber-700' : opt === 'Approved' ? 'bg-emerald-100 text-emerald-700' : opt === 'Rejected' ? 'bg-rose-100 text-rose-700' : 'bg-slate-900 text-white'
-                      : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                      : 'bg-slate-100 text-text-secondary hover:bg-slate-200'
                   }`}
                 >
                   {opt}
@@ -223,7 +223,7 @@ export default function LeaveDashboard() {
             </div>
             {/* Type pills */}
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-semibold uppercase text-slate-400 mr-1">Type</span>
+              <span className="text-[10px] font-semibold uppercase text-text-secondary mr-1">Type</span>
               {typeOptions.map(opt => (
                 <button
                   key={opt}
@@ -231,7 +231,7 @@ export default function LeaveDashboard() {
                   className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                     typeFilter === opt
                       ? opt === 'All' ? 'bg-slate-900 text-white' : leaveTypeColors[opt] || 'bg-slate-900 text-white'
-                      : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                      : 'bg-slate-100 text-text-secondary hover:bg-slate-200'
                   }`}
                 >
                   {opt}
@@ -240,7 +240,7 @@ export default function LeaveDashboard() {
             </div>
             {/* Role pills */}
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-semibold uppercase text-slate-400 mr-1">Role</span>
+              <span className="text-[10px] font-semibold uppercase text-text-secondary mr-1">Role</span>
               {roleOptions.map(opt => (
                 <button
                   key={opt}
@@ -248,7 +248,7 @@ export default function LeaveDashboard() {
                   className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                     roleFilter === opt
                       ? 'bg-slate-900 text-white'
-                      : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                      : 'bg-slate-100 text-text-secondary hover:bg-slate-200'
                   }`}
                 >
                   {opt}
@@ -262,15 +262,15 @@ export default function LeaveDashboard() {
         {loading ? (
           <SkeletonTable />
         ) : filteredLeaves.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-slate-400">
+          <div className="flex flex-col items-center justify-center py-16 text-text-secondary">
             <Calendar className="w-12 h-12 mb-3 opacity-40" />
-            <p className="font-medium text-slate-500">No leave requests found</p>
+            <p className="font-medium text-text-secondary">No leave requests found</p>
             <p className="text-sm mt-1">Try adjusting your search or filter criteria.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50/80 text-xs uppercase text-slate-500 tracking-wider">
+              <thead className="bg-slate-50/80 text-xs uppercase text-text-secondary tracking-wider">
                 <tr>
                   <th className="px-5 py-3.5 font-semibold">Employee</th>
                   <th className="px-5 py-3.5 font-semibold">Role</th>
@@ -281,7 +281,7 @@ export default function LeaveDashboard() {
                   <th className="px-5 py-3.5 font-semibold text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-600">
+              <tbody className="divide-y divide-border text-text-secondary">
                 {filteredLeaves.map(l => (
                   <tr key={l.id} className="hover:bg-slate-50/80 transition-colors cursor-pointer" onClick={() => handleView(l)}>
                     <td className="px-5 py-3.5">
@@ -289,24 +289,24 @@ export default function LeaveDashboard() {
                         <div className="h-8 w-8 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white text-xs font-bold">
                           {getInitials(l.userName)}
                         </div>
-                        <span className="font-semibold text-slate-900">{l.userName}</span>
+                        <span className="font-semibold text-text-primary">{l.userName}</span>
                       </div>
                     </td>
                     <td className="px-5 py-3.5">
-                      <span className="px-2 py-1 rounded-md bg-slate-100 text-slate-600 text-xs font-medium">{l.role}</span>
+                      <span className="px-2 py-1 rounded-md bg-slate-100 text-text-secondary text-xs font-medium">{l.role}</span>
                     </td>
                     <td className="px-5 py-3.5">
-                      <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full ${leaveTypeColors[l.leaveType] || 'bg-slate-100 text-slate-600'}`}>
+                      <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full ${leaveTypeColors[l.leaveType] || 'bg-slate-100 text-text-secondary'}`}>
                         {l.leaveType}
                       </span>
                     </td>
                     <td className="px-5 py-3.5">
                       <div>
-                        <p className="text-slate-700 font-medium">{formatDateRange(l.startDate, l.endDate)}</p>
-                        <p className="text-[11px] text-slate-400">{getDayCount(l.startDate, l.endDate)} day(s)</p>
+                        <p className="text-text-primary font-medium">{formatDateRange(l.startDate, l.endDate)}</p>
+                        <p className="text-[11px] text-text-secondary">{getDayCount(l.startDate, l.endDate)} day(s)</p>
                       </div>
                     </td>
-                    <td className="px-5 py-3.5 text-slate-500">
+                    <td className="px-5 py-3.5 text-text-secondary">
                       {new Date(l.appliedOn).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
                     </td>
                     <td className="px-5 py-3.5">
@@ -351,7 +351,7 @@ export default function LeaveDashboard() {
 
         {/* Results count */}
         {!loading && filteredLeaves.length > 0 && (
-          <div className="px-5 py-3 border-t border-slate-100 text-xs text-slate-400 flex items-center justify-between">
+          <div className="px-5 py-3 border-t border-border text-xs text-text-secondary flex items-center justify-between">
             <span>Showing {filteredLeaves.length} of {leaves.length} requests</span>
           </div>
         )}
@@ -367,8 +367,8 @@ export default function LeaveDashboard() {
                 {getInitials(selectedLeave.userName)}
               </div>
               <div>
-                <h3 className="text-xl font-bold text-slate-900">{selectedLeave.userName}</h3>
-                <p className="text-sm text-slate-500">{selectedLeave.role} · ID: {selectedLeave.userId}</p>
+                <h3 className="text-xl font-bold text-text-primary">{selectedLeave.userName}</h3>
+                <p className="text-sm text-text-secondary">{selectedLeave.role} · ID: {selectedLeave.userId}</p>
                 <span className={`inline-block mt-1 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full ${statusColors[selectedLeave.status]}`}>
                   {selectedLeave.status}
                 </span>
@@ -381,9 +381,9 @@ export default function LeaveDashboard() {
                 <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full ${leaveTypeColors[selectedLeave.leaveType]}`}>
                   {selectedLeave.leaveType} Leave
                 </span>
-                <span className="text-sm font-bold text-slate-900">{getDayCount(selectedLeave.startDate, selectedLeave.endDate)} day(s)</span>
+                <span className="text-sm font-bold text-text-primary">{getDayCount(selectedLeave.startDate, selectedLeave.endDate)} day(s)</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-slate-700">
+              <div className="flex items-center gap-2 text-sm text-text-primary">
                 <Calendar className="w-4 h-4 text-emerald-600" />
                 <span className="font-medium">{formatDateRange(selectedLeave.startDate, selectedLeave.endDate)}</span>
               </div>
@@ -392,29 +392,29 @@ export default function LeaveDashboard() {
             {/* Details Grid */}
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-slate-50 rounded-xl p-3">
-                <p className="text-xs text-slate-400">Applied On</p>
-                <p className="text-sm font-medium text-slate-700 mt-0.5">{new Date(selectedLeave.appliedOn).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
+                <p className="text-xs text-text-secondary">Applied On</p>
+                <p className="text-sm font-medium text-text-primary mt-0.5">{new Date(selectedLeave.appliedOn).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
               </div>
               <div className="bg-slate-50 rounded-xl p-3">
-                <p className="text-xs text-slate-400">Approved By</p>
-                <p className="text-sm font-medium text-slate-700 mt-0.5">{selectedLeave.approvedBy || '—'}</p>
+                <p className="text-xs text-text-secondary">Approved By</p>
+                <p className="text-sm font-medium text-text-primary mt-0.5">{selectedLeave.approvedBy || '—'}</p>
               </div>
             </div>
 
             {/* Reason */}
             <div className="space-y-2">
-              <h4 className="text-sm font-semibold text-slate-900">Reason</h4>
+              <h4 className="text-sm font-semibold text-text-primary">Reason</h4>
               <div className="bg-slate-50 rounded-xl p-4">
-                <p className="text-sm text-slate-600 leading-relaxed">{selectedLeave.reason}</p>
+                <p className="text-sm text-text-secondary leading-relaxed">{selectedLeave.reason}</p>
               </div>
             </div>
 
             {/* Approval Remarks */}
             {selectedLeave.approvalRemarks && (
               <div className="space-y-2">
-                <h4 className="text-sm font-semibold text-slate-900">Approval Remarks</h4>
+                <h4 className="text-sm font-semibold text-text-primary">Approval Remarks</h4>
                 <div className="bg-slate-50 rounded-xl p-4">
-                  <p className="text-sm text-slate-600 leading-relaxed">{selectedLeave.approvalRemarks}</p>
+                  <p className="text-sm text-text-secondary leading-relaxed">{selectedLeave.approvalRemarks}</p>
                 </div>
               </div>
             )}
@@ -422,7 +422,7 @@ export default function LeaveDashboard() {
             {/* Supporting Document */}
             {selectedLeave.supportingDocument && (
               <div className="space-y-2">
-                <h4 className="text-sm font-semibold text-slate-900">Supporting Document</h4>
+                <h4 className="text-sm font-semibold text-text-primary">Supporting Document</h4>
                 <div className="bg-blue-50 rounded-xl p-4 flex items-center gap-3">
                   <FileText className="w-5 h-5 text-blue-600" />
                   <span className="text-sm font-medium text-blue-700">{selectedLeave.supportingDocument}</span>

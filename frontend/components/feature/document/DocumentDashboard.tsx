@@ -79,16 +79,16 @@ export default function DocumentDashboard() {
       {/* Header section */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-text-primary tracking-tight flex items-center gap-2">
             <FileText className="h-6 w-6 text-indigo-650" />
             Document Generation
           </h1>
-          <p className="text-sm text-slate-500 mt-0.5">Generate dynamic PDFs from templates for offers, reports, and certificates.</p>
+          <p className="text-sm text-text-secondary mt-0.5">Generate dynamic PDFs from templates for offers, reports, and certificates.</p>
         </div>
         <div className="flex gap-3">
           <button 
             onClick={() => setIsTemplatesOpen(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 transition-all font-bold text-sm cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-border text-text-primary rounded-xl hover:bg-slate-50 transition-all font-bold text-sm cursor-pointer"
           >
             <Copy className="h-4 w-4" /> Templates
           </button>
@@ -103,30 +103,30 @@ export default function DocumentDashboard() {
 
       {/* Stats row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
+        <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex items-center justify-between">
           <div>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Generated Docs</p>
-            <p className="text-3xl font-extrabold text-slate-800 mt-1 font-mono">{documents.length}</p>
+            <p className="text-xs font-bold text-text-secondary uppercase tracking-wider">Total Generated Docs</p>
+            <p className="text-3xl font-extrabold text-text-primary mt-1 font-mono">{documents.length}</p>
           </div>
           <div className="h-12 w-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
             <FileText className="h-6 w-6" />
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
+        <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex items-center justify-between">
           <div>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Active Offer Letters</p>
-            <p className="text-3xl font-extrabold text-slate-800 mt-1 font-mono">{offerLettersCount}</p>
+            <p className="text-xs font-bold text-text-secondary uppercase tracking-wider">Active Offer Letters</p>
+            <p className="text-3xl font-extrabold text-text-primary mt-1 font-mono">{offerLettersCount}</p>
           </div>
           <div className="h-12 w-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
             <Copy className="h-6 w-6" />
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
+        <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex items-center justify-between">
           <div>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Templates Available</p>
-            <p className="text-3xl font-extrabold text-slate-800 mt-1 font-mono">{templates.length}</p>
+            <p className="text-xs font-bold text-text-secondary uppercase tracking-wider">Templates Available</p>
+            <p className="text-3xl font-extrabold text-text-primary mt-1 font-mono">{templates.length}</p>
           </div>
           <div className="h-12 w-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
             <FilePlus className="h-6 w-6" />
@@ -157,15 +157,15 @@ export default function DocumentDashboard() {
                   <h4 className="font-bold text-slate-850">{tpl.name}</h4>
                   <span className="text-[10px] font-bold text-indigo-650 uppercase tracking-wide bg-indigo-50 px-2 py-0.5 rounded mt-1.5 inline-block">{tpl.type}</span>
                 </div>
-                <span className="text-xs font-bold text-slate-400 bg-white border border-slate-200 px-2.5 py-0.5 rounded-lg">{tpl.version}</span>
+                <span className="text-xs font-bold text-text-secondary bg-white border border-border px-2.5 py-0.5 rounded-lg">{tpl.version}</span>
               </div>
-              <p className="text-xs text-slate-500 font-medium leading-relaxed">{tpl.description}</p>
+              <p className="text-xs text-text-secondary font-medium leading-relaxed">{tpl.description}</p>
               
               <div className="pt-2">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Dynamic Variables:</span>
+                <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Dynamic Variables:</span>
                 <div className="flex flex-wrap gap-1.5 mt-1.5">
                   {tpl.variables.map(v => (
-                    <code key={v} className="bg-white border border-slate-200 px-2 py-0.5 rounded text-[10px] text-slate-700 font-mono">{v}</code>
+                    <code key={v} className="bg-white border border-border px-2 py-0.5 rounded text-[10px] text-text-primary font-mono">{v}</code>
                   ))}
                 </div>
               </div>
@@ -182,23 +182,23 @@ export default function DocumentDashboard() {
       >
         <form onSubmit={handleGenerateDocument} className="flex-1 flex flex-col p-6 space-y-5 overflow-y-auto">
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Student Name</label>
+            <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Student Name</label>
             <input
               type="text"
               required
               value={studentName}
               onChange={(e) => setStudentName(e.target.value)}
               placeholder="e.g., Harin Nair"
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800 placeholder-slate-400"
+              className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary placeholder-slate-400"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Document Type / Template</label>
+            <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Document Type / Template</label>
             <select
               value={docType}
               onChange={(e) => setDocType(e.target.value as any)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800 cursor-pointer"
+              className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary cursor-pointer"
             >
               <option value="Offer Letter">Offer Letter</option>
               <option value="Joining Letter">Joining Letter</option>
@@ -209,33 +209,33 @@ export default function DocumentDashboard() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Training Program</label>
+            <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Training Program</label>
             <input
               type="text"
               required
               value={program}
               onChange={(e) => setProgram(e.target.value)}
               placeholder="e.g., Full Stack Web Development"
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800"
+              className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Stipend Amount (per month)</label>
+            <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Stipend Amount (per month)</label>
             <input
               type="text"
               value={stipend}
               onChange={(e) => setStipend(e.target.value)}
               placeholder="e.g., 15000"
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-mono font-bold text-slate-800"
+              className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-mono font-bold text-text-primary"
             />
           </div>
 
-          <div className="flex gap-3 pt-4 border-t border-slate-100 mt-auto">
+          <div className="flex gap-3 pt-4 border-t border-border mt-auto">
             <button
               type="button"
               onClick={() => setIsGenerateOpen(false)}
-              className="flex-1 py-3 border border-slate-200 text-slate-700 font-bold text-sm rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+              className="flex-1 py-3 border border-border text-text-primary font-bold text-sm rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
             >
               Cancel
             </button>

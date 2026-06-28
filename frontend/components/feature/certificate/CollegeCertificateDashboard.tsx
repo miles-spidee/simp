@@ -126,11 +126,11 @@ export default function CollegeCertificateDashboard() {
       {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5">
+          <h1 className="text-2xl font-bold text-text-primary tracking-tight flex items-center gap-2.5">
             <Building className="h-6 w-6 text-violet-600" />
             College Certificate Dashboard
           </h1>
-          <p className="text-sm text-slate-600 mt-1">
+          <p className="text-sm text-text-secondary mt-1">
             View student certificates by college. Verify authenticity using unique verification codes.
           </p>
         </div>
@@ -152,10 +152,10 @@ export default function CollegeCertificateDashboard() {
               { label: 'Unique Students', value: uniqueStudents, icon: Users, iconBg: 'bg-blue-50', iconColor: 'text-blue-600' },
               { label: 'Verification Status', value: 'Secure', icon: ShieldCheck, iconBg: 'bg-violet-50', iconColor: 'text-violet-600' },
             ].map(kpi => (
-              <div key={kpi.label} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div key={kpi.label} className="bg-white p-5 rounded-2xl border border-border shadow-sm flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">{kpi.label}</p>
-                  <p className={`text-3xl font-extrabold mt-1 font-mono ${kpi.label === 'Verification Status' ? 'text-emerald-600' : 'text-slate-900'}`}>
+                  <p className="text-xs font-bold text-text-secondary uppercase tracking-wider">{kpi.label}</p>
+                  <p className={`text-3xl font-extrabold mt-1 font-mono ${kpi.label === 'Verification Status' ? 'text-emerald-600' : 'text-text-primary'}`}>
                     {kpi.value}
                   </p>
                 </div>
@@ -168,26 +168,26 @@ export default function CollegeCertificateDashboard() {
 
           {/* Search */}
           <div className="relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-4 h-4 text-text-secondary absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               placeholder="Search by student name, certificate number, type, or program..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 transition-all duration-200 font-medium text-slate-800 shadow-sm placeholder:text-slate-400"
+              className="w-full bg-white border border-border rounded-xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all duration-200 font-medium text-text-primary shadow-sm placeholder:text-placeholder"
             />
           </div>
 
           {/* Student List with Certificates */}
           {loading ? (
             <div className="py-16 flex justify-center">
-              <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+              <Loader2 className="w-8 h-8 animate-spin text-text-secondary" />
             </div>
           ) : Object.keys(studentGroups).length === 0 ? (
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-16 text-center">
+            <div className="bg-white rounded-2xl border border-border shadow-sm p-16 text-center">
               <Lock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-              <h3 className="font-bold text-slate-800 text-lg">No Issued Certificates Found</h3>
-              <p className="text-sm text-slate-600 mt-2">
+              <h3 className="font-bold text-text-primary text-lg">No Issued Certificates Found</h3>
+              <p className="text-sm text-text-secondary mt-2">
                 No certificates have been issued for students from {selectedCollege} yet.
               </p>
             </div>
@@ -196,7 +196,7 @@ export default function CollegeCertificateDashboard() {
               {Object.entries(studentGroups).map(([studentName, certs]) => {
                 const isExpanded = expandedStudent === studentName;
                 return (
-                  <div key={studentName} className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                  <div key={studentName} className="bg-white border border-border rounded-2xl shadow-sm overflow-hidden">
                     {/* Student Row */}
                     <button
                       onClick={() => setExpandedStudent(isExpanded ? null : studentName)}
@@ -204,11 +204,11 @@ export default function CollegeCertificateDashboard() {
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center shrink-0">
-                          <User className="w-5 h-5 text-slate-500" />
+                          <User className="w-5 h-5 text-text-secondary" />
                         </div>
                         <div className="text-left">
-                          <p className="font-bold text-slate-900 text-sm">{studentName}</p>
-                          <p className="text-xs text-slate-500 mt-0.5">
+                          <p className="font-bold text-text-primary text-sm">{studentName}</p>
+                          <p className="text-xs text-text-secondary mt-0.5">
                             {certs.length} certificate{certs.length > 1 ? 's' : ''} issued
                           </p>
                         </div>
@@ -218,30 +218,30 @@ export default function CollegeCertificateDashboard() {
                           <BadgeCheck className="w-3 h-3" /> Verified
                         </span>
                         {isExpanded
-                          ? <ChevronUp className="w-4 h-4 text-slate-400" />
-                          : <ChevronDown className="w-4 h-4 text-slate-400" />}
+                          ? <ChevronUp className="w-4 h-4 text-text-secondary" />
+                          : <ChevronDown className="w-4 h-4 text-text-secondary" />}
                       </div>
                     </button>
 
                     {/* Expanded Certificate Rows */}
                     {isExpanded && (
-                      <div className="border-t border-slate-100 bg-slate-50/50 divide-y divide-slate-100">
+                      <div className="border-t border-border bg-slate-50/50 divide-y divide-border">
                         {certs.map(cert => {
                           const vHash = generateVerificationHash(cert);
                           return (
                             <div key={cert.id} className="px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-white transition-colors duration-200">
                               <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 bg-white border border-slate-200 rounded-lg flex items-center justify-center shadow-sm shrink-0">
+                                <div className="w-9 h-9 bg-white border border-border rounded-lg flex items-center justify-center shadow-sm shrink-0">
                                   <Award className="w-4 h-4 text-violet-500" />
                                 </div>
                                 <div className="min-w-0">
-                                  <p className="font-bold text-slate-900 text-sm">{cert.type}</p>
+                                  <p className="font-bold text-text-primary text-sm">{cert.type}</p>
                                   <div className="flex flex-wrap items-center gap-2 mt-1">
-                                    <span className="text-[10px] font-mono bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">
+                                    <span className="text-[10px] font-mono bg-slate-100 text-text-secondary px-1.5 py-0.5 rounded">
                                       {cert.certificateNumber}
                                     </span>
-                                    <span className="text-[10px] text-slate-500">{cert.program}</span>
-                                    <span className="text-[10px] text-slate-500">
+                                    <span className="text-[10px] text-text-secondary">{cert.program}</span>
+                                    <span className="text-[10px] text-text-secondary">
                                       {cert.issueDate ? new Date(cert.issueDate).toLocaleDateString() : ''}
                                     </span>
                                   </div>
@@ -265,10 +265,10 @@ export default function CollegeCertificateDashboard() {
                                 {/* View Detail */}
                                 <button
                                   onClick={(e) => { e.stopPropagation(); setSelectedCert(cert); setDetailDrawerOpen(true); }}
-                                  className="p-2 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-colors duration-200 cursor-pointer shadow-sm"
+                                  className="p-2 bg-white border border-border rounded-lg hover:bg-slate-50 hover:border-secondary transition-colors duration-200 cursor-pointer shadow-sm"
                                   title="View certificate details"
                                 >
-                                  <Eye className="w-4 h-4 text-slate-600" />
+                                  <Eye className="w-4 h-4 text-text-secondary" />
                                 </button>
                                 {/* Verify */}
                                 <button
@@ -309,7 +309,7 @@ export default function CollegeCertificateDashboard() {
             <div className="absolute bottom-0 left-0 -mb-8 -ml-8 h-32 w-32 bg-violet-900 rounded-full opacity-40 blur-3xl" />
             <Fingerprint className="h-12 w-12 text-emerald-400 mx-auto mb-3 relative z-10" />
             <h3 className="text-lg font-bold text-white relative z-10">Verify Authenticity</h3>
-            <p className="text-xs text-slate-400 mt-1 relative z-10 max-w-xs mx-auto">
+            <p className="text-xs text-helper mt-1 relative z-10 max-w-xs mx-auto">
               Enter the certificate number printed on the document to verify it on the Pinesphere network.
             </p>
           </div>
@@ -317,15 +317,15 @@ export default function CollegeCertificateDashboard() {
           {/* Form */}
           <form onSubmit={handleVerify} className="space-y-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Certificate Number</label>
+              <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Certificate Number</label>
               <div className="relative">
-                <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Search className="w-4 h-4 text-text-secondary absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
                   value={verifyCode}
                   onChange={(e) => setVerifyCode(e.target.value)}
                   placeholder="e.g. PS-CERT-2026-00001"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-4 py-3.5 text-sm font-mono tracking-wider focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 transition-all duration-200 text-slate-800"
+                  className="w-full bg-slate-50 border border-border rounded-xl pl-11 pr-4 py-3.5 text-sm font-mono tracking-wider focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all duration-200 text-text-primary"
                   required
                 />
               </div>
@@ -355,33 +355,33 @@ export default function CollegeCertificateDashboard() {
                   </div>
                   <div className="bg-white rounded-xl p-4 border border-emerald-100 space-y-3">
                     <div className="flex items-center gap-2.5">
-                      <User className="h-4 w-4 text-slate-400 shrink-0" />
+                      <User className="h-4 w-4 text-text-secondary shrink-0" />
                       <div>
-                        <p className="text-[10px] text-slate-500 uppercase font-bold">Student</p>
-                        <p className="font-bold text-slate-900 text-sm">{verificationResult.studentName}</p>
+                        <p className="text-[10px] text-text-secondary uppercase font-bold">Student</p>
+                        <p className="font-bold text-text-primary text-sm">{verificationResult.studentName}</p>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="flex items-center gap-2.5">
-                        <FileText className="h-4 w-4 text-slate-400 shrink-0" />
+                        <FileText className="h-4 w-4 text-text-secondary shrink-0" />
                         <div>
-                          <p className="text-[10px] text-slate-500 uppercase font-bold">Type</p>
-                          <p className="font-medium text-slate-800 text-xs">{verificationResult.certificateType}</p>
+                          <p className="text-[10px] text-text-secondary uppercase font-bold">Type</p>
+                          <p className="font-medium text-text-primary text-xs">{verificationResult.certificateType}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2.5">
-                        <Calendar className="h-4 w-4 text-slate-400 shrink-0" />
+                        <Calendar className="h-4 w-4 text-text-secondary shrink-0" />
                         <div>
-                          <p className="text-[10px] text-slate-500 uppercase font-bold">Issued</p>
-                          <p className="font-medium text-slate-800 text-xs">{verificationResult.issueDate ? new Date(verificationResult.issueDate).toLocaleDateString() : 'N/A'}</p>
+                          <p className="text-[10px] text-text-secondary uppercase font-bold">Issued</p>
+                          <p className="font-medium text-text-primary text-xs">{verificationResult.issueDate ? new Date(verificationResult.issueDate).toLocaleDateString() : 'N/A'}</p>
                         </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2.5">
-                      <Building className="h-4 w-4 text-slate-400 shrink-0" />
+                      <Building className="h-4 w-4 text-text-secondary shrink-0" />
                       <div>
-                        <p className="text-[10px] text-slate-500 uppercase font-bold">Program</p>
-                        <p className="font-medium text-slate-800 text-xs">{verificationResult.program}</p>
+                        <p className="text-[10px] text-text-secondary uppercase font-bold">Program</p>
+                        <p className="font-medium text-text-primary text-xs">{verificationResult.program}</p>
                       </div>
                     </div>
                   </div>
@@ -393,10 +393,10 @@ export default function CollegeCertificateDashboard() {
                   <p className="text-sm text-rose-700 mt-1">{verificationResult?.message}</p>
                 </div>
               ) : (
-                <div className="bg-slate-50 border-2 border-slate-200 rounded-2xl p-5 text-center">
-                  <XCircle className="h-10 w-10 text-slate-400 mx-auto mb-2" />
-                  <h4 className="text-base font-bold text-slate-900">Invalid Certificate</h4>
-                  <p className="text-sm text-slate-600 mt-1">{verificationResult?.message}</p>
+                <div className="bg-slate-50 border-2 border-border rounded-2xl p-5 text-center">
+                  <XCircle className="h-10 w-10 text-text-secondary mx-auto mb-2" />
+                  <h4 className="text-base font-bold text-text-primary">Invalid Certificate</h4>
+                  <p className="text-sm text-text-secondary mt-1">{verificationResult?.message}</p>
                 </div>
               )}
             </div>
@@ -418,7 +418,7 @@ export default function CollegeCertificateDashboard() {
               <div className="absolute bottom-0 left-0 -mb-10 -ml-10 h-40 w-40 bg-emerald-800/20 rounded-full blur-3xl" />
               <Award className="w-12 h-12 text-amber-400 mx-auto mb-3 relative z-10" />
               <h3 className="text-xl font-bold text-white relative z-10">{selectedCert.type}</h3>
-              <p className="text-sm text-slate-400 mt-1 relative z-10 font-mono">{selectedCert.certificateNumber}</p>
+              <p className="text-sm text-text-secondary mt-1 relative z-10 font-mono">{selectedCert.certificateNumber}</p>
               <div className="mt-4 inline-flex items-center gap-1.5 bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full text-xs font-bold relative z-10">
                 <BadgeCheck className="w-3.5 h-3.5" /> Digitally Verified
               </div>
@@ -435,18 +435,18 @@ export default function CollegeCertificateDashboard() {
                 { icon: Hash, label: 'Verification Hash', value: generateVerificationHash(selectedCert) },
                 { icon: Fingerprint, label: 'Digital Signature ID', value: selectedCert.digitalSignatureId || 'N/A' },
               ].map(({ icon: Icon, label, value }) => (
-                <div key={label} className="flex items-start gap-3 bg-slate-50 rounded-xl p-3.5 border border-slate-100">
-                  <Icon className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
+                <div key={label} className="flex items-start gap-3 bg-slate-50 rounded-xl p-3.5 border border-border">
+                  <Icon className="w-4 h-4 text-text-secondary mt-0.5 shrink-0" />
                   <div className="min-w-0">
-                    <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">{label}</p>
-                    <p className="font-bold text-slate-900 text-sm mt-0.5 break-all">{value}</p>
+                    <p className="text-[10px] text-text-secondary uppercase font-bold tracking-wider">{label}</p>
+                    <p className="font-bold text-text-primary text-sm mt-0.5 break-all">{value}</p>
                   </div>
                 </div>
               ))}
             </div>
 
             {/* Actions */}
-            <div className="flex gap-3 pt-4 border-t border-slate-100 mt-auto">
+            <div className="flex gap-3 pt-4 border-t border-border mt-auto">
               <button
                 onClick={() => {
                   setVerifyCode(selectedCert.certificateNumber);

@@ -120,7 +120,7 @@ export default function EmailDashboard() {
   const getStatusBadge = (status: string) => {
     const map: Record<string, string> = {
       'Active': 'bg-emerald-50 text-emerald-700 border-emerald-150',
-      'Draft': 'bg-slate-100 text-slate-700 border-slate-200',
+      'Draft': 'bg-slate-100 text-text-primary border-border',
       'Archived': 'bg-rose-50 text-rose-700 border-rose-150'
     };
     return (
@@ -136,11 +136,11 @@ export default function EmailDashboard() {
       {/* Header section */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-text-primary tracking-tight flex items-center gap-2">
             <Mail className="h-6 w-6 text-indigo-650" />
             Email & Templates
           </h1>
-          <p className="text-sm text-slate-500 mt-0.5">Manage automated email templates, test integrations, and monitor delivery logs.</p>
+          <p className="text-sm text-text-secondary mt-0.5">Manage automated email templates, test integrations, and monitor delivery logs.</p>
         </div>
         <div className="flex gap-3">
           <button 
@@ -154,19 +154,19 @@ export default function EmailDashboard() {
 
       {/* Stats Cards Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
+        <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex items-center justify-between">
           <div>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Delivered</p>
-            <p className="text-3xl font-extrabold text-slate-800 mt-1 font-mono">{stats.delivered}</p>
+            <p className="text-xs font-bold text-text-secondary uppercase tracking-wider">Total Delivered</p>
+            <p className="text-3xl font-extrabold text-text-primary mt-1 font-mono">{stats.delivered}</p>
           </div>
           <div className="h-12 w-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
             <CheckCircle className="h-6 w-6" />
           </div>
         </div>
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
+        <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex items-center justify-between">
           <div>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Bounced / Failed</p>
-            <p className="text-3xl font-extrabold text-slate-800 mt-1 font-mono">{stats.bounced}</p>
+            <p className="text-xs font-bold text-text-secondary uppercase tracking-wider">Bounced / Failed</p>
+            <p className="text-3xl font-extrabold text-text-primary mt-1 font-mono">{stats.bounced}</p>
           </div>
           <div className="h-12 w-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center">
             <XCircle className="h-6 w-6" />
@@ -175,13 +175,13 @@ export default function EmailDashboard() {
       </div>
 
       {/* Tabs Selector */}
-      <div className="flex border-b border-slate-100">
+      <div className="flex border-b border-border">
         <button
           onClick={() => setActiveTab('templates')}
           className={`pb-3 text-sm font-bold border-b-2 px-4 transition-all cursor-pointer ${
             activeTab === 'templates' 
               ? 'border-indigo-650 text-indigo-650' 
-              : 'border-transparent text-slate-400 hover:text-slate-650'
+              : 'border-transparent text-text-secondary hover:text-text-secondary'
           }`}
         >
           Email Templates
@@ -191,7 +191,7 @@ export default function EmailDashboard() {
           className={`pb-3 text-sm font-bold border-b-2 px-4 transition-all cursor-pointer ${
             activeTab === 'history' 
               ? 'border-indigo-650 text-indigo-650' 
-              : 'border-transparent text-slate-400 hover:text-slate-650'
+              : 'border-transparent text-text-secondary hover:text-text-secondary'
           }`}
         >
           Delivery History Logs
@@ -201,26 +201,26 @@ export default function EmailDashboard() {
       {/* --- TAB VIEWS --- */}
 
       {activeTab === 'templates' ? (
-        <div className="bg-white border border-slate-100 rounded-2xl shadow-sm p-6 space-y-5">
+        <div className="bg-white border border-border rounded-2xl shadow-sm p-6 space-y-5">
           {/* Filters */}
           <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
             <div className="relative flex-grow max-w-md">
-              <Search className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
+              <Search className="absolute left-3.5 top-3.5 h-4 w-4 text-text-secondary" />
               <input
                 type="text"
                 placeholder="Search templates..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9.5 pr-4 py-2.5 text-xs focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-700 placeholder-slate-400"
+                className="w-full bg-slate-50 border border-border rounded-xl pl-9.5 pr-4 py-2.5 text-xs focus:outline-none focus:border-primary transition-all font-medium text-text-primary placeholder-slate-400"
               />
             </div>
             
             <div className="flex items-center gap-2 text-xs">
-              <span className="font-bold text-slate-400 uppercase tracking-wider">Category</span>
+              <span className="font-bold text-text-secondary uppercase tracking-wider">Category</span>
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold text-slate-700 focus:outline-none cursor-pointer"
+                className="bg-slate-50 border border-border rounded-xl px-3 py-2 font-bold text-text-primary focus:outline-none cursor-pointer"
               >
                 <option value="All">All Categories</option>
                 <option value="Registration">Registration</option>
@@ -234,8 +234,8 @@ export default function EmailDashboard() {
 
           {/* Templates list table */}
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-600">
-              <thead className="bg-slate-50 text-[10px] uppercase font-bold tracking-wider text-slate-500 border-b border-slate-100">
+            <table className="w-full text-left text-xs text-text-secondary">
+              <thead className="bg-slate-50 text-[10px] uppercase font-bold tracking-wider text-text-secondary border-b border-border">
                 <tr>
                   <th className="px-5 py-4">Template Name</th>
                   <th className="px-5 py-4">Category</th>
@@ -244,10 +244,10 @@ export default function EmailDashboard() {
                   <th className="px-5 py-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-border">
                 {loading ? (
                   <tr>
-                    <td colSpan={5} className="px-5 py-12 text-center text-slate-400">
+                    <td colSpan={5} className="px-5 py-12 text-center text-text-secondary">
                       <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
                       Loading templates...
                     </td>
@@ -255,20 +255,20 @@ export default function EmailDashboard() {
                 ) : filteredTemplates.map(tpl => (
                   <tr key={tpl.id} className="hover:bg-slate-50/50 transition-colors">
                     <td className="px-5 py-4">
-                      <div className="font-bold text-slate-800 text-sm">{tpl.name}</div>
-                      <div className="text-[10px] text-slate-400 mt-0.5 truncate max-w-sm">{tpl.subject}</div>
+                      <div className="font-bold text-text-primary text-sm">{tpl.name}</div>
+                      <div className="text-[10px] text-text-secondary mt-0.5 truncate max-w-sm">{tpl.subject}</div>
                     </td>
-                    <td className="px-5 py-4 font-semibold text-slate-500">{tpl.category}</td>
+                    <td className="px-5 py-4 font-semibold text-text-secondary">{tpl.category}</td>
                     <td className="px-5 py-4">{getStatusBadge(tpl.status)}</td>
                     <td className="px-5 py-4 font-mono font-medium text-slate-405">
                       {new Date(tpl.lastUpdated).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
                     </td>
                     <td className="px-5 py-4 text-right">
-                      <div className="flex items-center justify-end gap-3 text-slate-400">
+                      <div className="flex items-center justify-end gap-3 text-text-secondary">
                         <button 
                           onClick={() => handleOpenEdit(tpl)}
                           title="Edit Template"
-                          className="p-1.5 hover:text-slate-900 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+                          className="p-1.5 hover:text-text-primary bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
                         >
                           <Edit className="h-4 w-4" />
                         </button>
@@ -285,7 +285,7 @@ export default function EmailDashboard() {
                 ))}
                 {filteredTemplates.length === 0 && !loading && (
                   <tr>
-                    <td colSpan={5} className="px-5 py-10 text-center text-slate-400 font-medium">
+                    <td colSpan={5} className="px-5 py-10 text-center text-text-secondary font-medium">
                       No templates found.
                     </td>
                   </tr>
@@ -295,14 +295,14 @@ export default function EmailDashboard() {
           </div>
         </div>
       ) : (
-        <div className="bg-white border border-slate-100 rounded-2xl shadow-sm p-6 space-y-4">
-          <h2 className="text-sm font-bold text-slate-800 tracking-tight flex items-center gap-1.5 uppercase tracking-wider">
-            <Calendar className="w-4 h-4 text-slate-400" /> Delivery Audit Logs
+        <div className="bg-white border border-border rounded-2xl shadow-sm p-6 space-y-4">
+          <h2 className="text-sm font-bold text-text-primary tracking-tight flex items-center gap-1.5 uppercase tracking-wider">
+            <Calendar className="w-4 h-4 text-text-secondary" /> Delivery Audit Logs
           </h2>
           
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-650">
-              <thead className="bg-slate-50 text-[10px] uppercase font-bold tracking-wider text-slate-500 border-b border-slate-100">
+            <table className="w-full text-left text-xs text-text-secondary">
+              <thead className="bg-slate-50 text-[10px] uppercase font-bold tracking-wider text-text-secondary border-b border-border">
                 <tr>
                   <th className="px-5 py-4">Recipient Email</th>
                   <th className="px-5 py-4">Template ID</th>
@@ -310,11 +310,11 @@ export default function EmailDashboard() {
                   <th className="px-5 py-4">Sent Timestamp</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-border">
                 {history.slice(0, 30).map(item => (
                   <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-5 py-4 font-bold text-slate-800">{item.recipientEmail}</td>
-                    <td className="px-5 py-4 font-mono font-medium text-slate-400">{item.templateId}</td>
+                    <td className="px-5 py-4 font-bold text-text-primary">{item.recipientEmail}</td>
+                    <td className="px-5 py-4 font-mono font-medium text-text-secondary">{item.templateId}</td>
                     <td className="px-5 py-4">
                       <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
                         item.status === 'Delivered' || item.status === 'Opened' || item.status === 'Clicked'
@@ -324,7 +324,7 @@ export default function EmailDashboard() {
                         {item.status}
                       </span>
                     </td>
-                    <td className="px-5 py-4 font-mono font-medium text-slate-400">
+                    <td className="px-5 py-4 font-mono font-medium text-text-secondary">
                       {new Date(item.sentAt).toLocaleString()}
                     </td>
                   </tr>
@@ -345,24 +345,24 @@ export default function EmailDashboard() {
       >
         <form onSubmit={handleSaveTemplate} className="flex-1 flex flex-col p-6 space-y-5 overflow-y-auto">
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Template Title Name</label>
+            <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Template Title Name</label>
             <input
               type="text"
               required
               value={formName}
               onChange={(e) => setFormName(e.target.value)}
               placeholder="e.g., Student Welcome Onboarding"
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800"
+              className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Category</label>
+              <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Category</label>
               <select
                 value={formCategory}
                 onChange={(e) => setFormCategory(e.target.value as any)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800 cursor-pointer"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary cursor-pointer"
               >
                 <option value="Registration">Registration</option>
                 <option value="Offer Letter">Offer Letter</option>
@@ -373,11 +373,11 @@ export default function EmailDashboard() {
               </select>
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Initial Status</label>
+              <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Initial Status</label>
               <select
                 value={formStatus}
                 onChange={(e) => setFormStatus(e.target.value as any)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800 cursor-pointer"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary cursor-pointer"
               >
                 <option value="Active">Active (Ready to Send)</option>
                 <option value="Draft">Draft</option>
@@ -387,33 +387,33 @@ export default function EmailDashboard() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Email Subject Line</label>
+            <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Email Subject Line</label>
             <input
               type="text"
               required
               value={formSubject}
               onChange={(e) => setFormSubject(e.target.value)}
               placeholder="e.g., Welcome to Pinesphere Internship Program!"
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800"
+              className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary"
             />
           </div>
 
           <div className="space-y-1.5 flex-1 flex flex-col min-h-[200px]">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">HTML Body Content</label>
+            <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">HTML Body Content</label>
             <textarea
               required
               value={formBody}
               onChange={(e) => setFormBody(e.target.value)}
               placeholder="Write template message body..."
-              className="w-full flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800 resize-none font-mono text-xs"
+              className="w-full flex-1 bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary resize-none font-mono text-xs"
             />
           </div>
 
-          <div className="flex gap-3 pt-4 border-t border-slate-100 mt-auto shrink-0">
+          <div className="flex gap-3 pt-4 border-t border-border mt-auto shrink-0">
             <button
               type="button"
               onClick={() => setIsFormOpen(false)}
-              className="flex-1 py-3 border border-slate-200 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+              className="flex-1 py-3 border border-border text-text-primary font-bold text-xs rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
             >
               Cancel
             </button>
@@ -444,27 +444,27 @@ export default function EmailDashboard() {
         {testTemplate && (
           <form onSubmit={handleSendTest} className="flex-1 flex flex-col p-6 space-y-5 overflow-y-auto">
             <div className="bg-slate-50 border border-slate-150 p-4 rounded-xl space-y-1">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Subject</span>
-              <p className="text-xs font-bold text-slate-800">{testTemplate.subject}</p>
+              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider block">Subject</span>
+              <p className="text-xs font-bold text-text-primary">{testTemplate.subject}</p>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Test Recipient Email</label>
+              <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Test Recipient Email</label>
               <input
                 type="email"
                 required
                 value={testEmail}
                 onChange={(e) => setTestEmail(e.target.value)}
                 placeholder="e.g., test-recipient@example.com"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800 placeholder-slate-405"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary placeholder-slate-405"
               />
             </div>
 
-            <div className="flex gap-3 pt-4 border-t border-slate-100 mt-auto">
+            <div className="flex gap-3 pt-4 border-t border-border mt-auto">
               <button
                 type="button"
                 onClick={() => setTestTemplate(null)}
-                className="flex-1 py-3 border border-slate-200 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+                className="flex-1 py-3 border border-border text-text-primary font-bold text-xs rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
               >
                 Cancel
               </button>

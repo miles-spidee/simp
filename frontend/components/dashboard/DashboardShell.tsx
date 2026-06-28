@@ -20,7 +20,7 @@ const SystemHealthWidget = () => (
   <Card className="border-emerald-200 bg-emerald-50 h-full">
     <div className="p-4 border-b border-emerald-100 flex items-center gap-2">
       <ShieldCheck className="h-5 w-5 text-emerald-600" />
-      <h3 className="font-bold text-slate-800">System Health</h3>
+      <h3 className="font-bold text-text-primary">System Health</h3>
     </div>
     <CardContent className="p-4">
       <div className="space-y-3 text-sm">
@@ -32,117 +32,117 @@ const SystemHealthWidget = () => (
 );
 
 const RecentActivityWidget = () => (
-  <Card className="border-slate-200 bg-white h-full">
-    <div className="p-4 border-b border-slate-100 flex items-center gap-2">
+  <Card className="border-border bg-white h-full">
+    <div className="p-4 border-b border-border flex items-center gap-2">
       <Activity className="h-5 w-5 text-blue-500" />
-      <h3 className="font-bold text-slate-800">Recent Platform Activity</h3>
+      <h3 className="font-bold text-text-primary">Recent Platform Activity</h3>
     </div>
     <CardContent className="p-4">
-      <p className="text-sm text-slate-500">System-wide activity log mock data...</p>
+      <p className="text-sm text-text-secondary">System-wide activity log mock data...</p>
     </CardContent>
   </Card>
 );
 
 const EmployeeKPIWidget = () => (
-  <Card className="border-slate-200 bg-white h-full">
-    <div className="p-4 border-b border-slate-100 flex items-center gap-2">
+  <Card className="border-border bg-white h-full">
+    <div className="p-4 border-b border-border flex items-center gap-2">
       <Users className="h-5 w-5 text-indigo-500" />
-      <h3 className="font-bold text-slate-800">Employee KPI</h3>
+      <h3 className="font-bold text-text-primary">Employee KPI</h3>
     </div>
     <CardContent className="p-4">
-      <div className="text-2xl font-black text-slate-900">1,240</div>
-      <p className="text-xs text-slate-500">Total Active Employees</p>
+      <div className="text-2xl font-black text-text-primary">1,240</div>
+      <p className="text-xs text-text-secondary">Total Active Employees</p>
     </CardContent>
   </Card>
 );
 
 const ApplicationsKPIWidget = () => (
-  <Card className="border-slate-200 bg-white h-full">
-    <div className="p-4 border-b border-slate-100 flex items-center gap-2">
+  <Card className="border-border bg-white h-full">
+    <div className="p-4 border-b border-border flex items-center gap-2">
       <FileText className="h-5 w-5 text-amber-500" />
-      <h3 className="font-bold text-slate-800">Applications KPI</h3>
+      <h3 className="font-bold text-text-primary">Applications KPI</h3>
     </div>
     <CardContent className="p-4">
-      <div className="text-2xl font-black text-slate-900">84</div>
-      <p className="text-xs text-slate-500">Pending Reviews</p>
+      <div className="text-2xl font-black text-text-primary">84</div>
+      <p className="text-xs text-text-secondary">Pending Reviews</p>
     </CardContent>
   </Card>
 );
 
 const ProgramStatsWidget = () => (
-  <Card className="border-slate-200 bg-white h-full">
-    <div className="p-4 border-b border-slate-100 flex items-center gap-2">
+  <Card className="border-border bg-white h-full">
+    <div className="p-4 border-b border-border flex items-center gap-2">
       <GraduationCap className="h-5 w-5 text-blue-500" />
-      <h3 className="font-bold text-slate-800">Program Stats</h3>
+      <h3 className="font-bold text-text-primary">Program Stats</h3>
     </div>
     <CardContent className="p-4">
-      <div className="text-2xl font-black text-slate-900">12</div>
-      <p className="text-xs text-slate-500">Active Programs</p>
+      <div className="text-2xl font-black text-text-primary">12</div>
+      <p className="text-xs text-text-secondary">Active Programs</p>
     </CardContent>
   </Card>
 );
 
 const AssignedStudentsWidget = () => (
-  <Card className="border-slate-200 bg-white h-full">
-    <div className="p-4 border-b border-slate-100 flex items-center gap-2">
+  <Card className="border-border bg-white h-full">
+    <div className="p-4 border-b border-border flex items-center gap-2">
       <Award className="h-5 w-5 text-purple-500" />
-      <h3 className="font-bold text-slate-800">Assigned Students</h3>
+      <h3 className="font-bold text-text-primary">Assigned Students</h3>
     </div>
     <CardContent className="p-4">
-      <div className="text-2xl font-black text-slate-900">45</div>
-      <p className="text-xs text-slate-500">Students across 2 batches</p>
+      <div className="text-2xl font-black text-text-primary">45</div>
+      <p className="text-xs text-text-secondary">Students across 2 batches</p>
     </CardContent>
   </Card>
 );
 
 const PendingReviewsWidget = () => (
-  <Card className="border-slate-200 bg-white h-full">
-    <div className="p-4 border-b border-slate-100 flex items-center gap-2">
+  <Card className="border-border bg-white h-full">
+    <div className="p-4 border-b border-border flex items-center gap-2">
       <Clock className="h-5 w-5 text-rose-500" />
-      <h3 className="font-bold text-slate-800">Pending Reviews</h3>
+      <h3 className="font-bold text-text-primary">Pending Reviews</h3>
     </div>
     <CardContent className="p-4">
-      <div className="text-2xl font-black text-slate-900">8</div>
-      <p className="text-xs text-slate-500">Submissions awaiting review</p>
+      <div className="text-2xl font-black text-text-primary">8</div>
+      <p className="text-xs text-text-secondary">Submissions awaiting review</p>
     </CardContent>
   </Card>
 );
 
 const AttendanceSummaryWidget = () => (
-  <Card className="border-slate-200 bg-white h-full">
-    <div className="p-4 border-b border-slate-100 flex items-center gap-2">
+  <Card className="border-border bg-white h-full">
+    <div className="p-4 border-b border-border flex items-center gap-2">
       <Calendar className="h-5 w-5 text-emerald-500" />
-      <h3 className="font-bold text-slate-800">Attendance Summary</h3>
+      <h3 className="font-bold text-text-primary">Attendance Summary</h3>
     </div>
     <CardContent className="p-4">
-      <div className="text-2xl font-black text-slate-900">92%</div>
-      <p className="text-xs text-slate-500">Current Month</p>
+      <div className="text-2xl font-black text-text-primary">92%</div>
+      <p className="text-xs text-text-secondary">Current Month</p>
     </CardContent>
   </Card>
 );
 
 const LearningProgressWidget = () => (
-  <Card className="border-slate-200 bg-white h-full">
-    <div className="p-4 border-b border-slate-100 flex items-center gap-2">
+  <Card className="border-border bg-white h-full">
+    <div className="p-4 border-b border-border flex items-center gap-2">
       <BookOpen className="h-5 w-5 text-blue-500" />
-      <h3 className="font-bold text-slate-800">Learning Progress</h3>
+      <h3 className="font-bold text-text-primary">Learning Progress</h3>
     </div>
     <CardContent className="p-4">
-      <div className="text-2xl font-black text-slate-900">65%</div>
-      <p className="text-xs text-slate-500">Frontend Track Completion</p>
+      <div className="text-2xl font-black text-text-primary">65%</div>
+      <p className="text-xs text-text-secondary">Frontend Track Completion</p>
     </CardContent>
   </Card>
 );
 
 const UpcomingTasksWidget = () => (
-  <Card className="border-slate-200 bg-white h-full">
-    <div className="p-4 border-b border-slate-100 flex items-center gap-2">
+  <Card className="border-border bg-white h-full">
+    <div className="p-4 border-b border-border flex items-center gap-2">
       <CheckSquare className="h-5 w-5 text-amber-500" />
-      <h3 className="font-bold text-slate-800">Upcoming Tasks</h3>
+      <h3 className="font-bold text-text-primary">Upcoming Tasks</h3>
     </div>
     <CardContent className="p-4">
-      <div className="text-2xl font-black text-slate-900">3</div>
-      <p className="text-xs text-slate-500">Tasks due this week</p>
+      <div className="text-2xl font-black text-text-primary">3</div>
+      <p className="text-xs text-text-secondary">Tasks due this week</p>
     </CardContent>
   </Card>
 );
@@ -195,7 +195,7 @@ const GenericWidget = ({ widget }: { widget: WidgetDefinition }) => {
   let valueStr = "";
   let trendStr = "";
   let Icon = WIDGET_ICONS[widget.widgetId] || Activity;
-  let iconColor = "text-slate-400";
+  let iconColor = "text-text-secondary";
   
   const nameLower = widget.name.toLowerCase();
   
@@ -223,18 +223,18 @@ const GenericWidget = ({ widget }: { widget: WidgetDefinition }) => {
     const val = (seed * 11 % 300) + 10;
     valueStr = val.toString();
     trendStr = 'Recent active items';
-    iconColor = "text-slate-500";
+    iconColor = "text-text-secondary";
   }
 
   return (
-    <Card className="border-slate-200 bg-white h-full flex flex-col">
-      <div className="p-4 border-b border-slate-100 flex items-center gap-2">
+    <Card className="border-border bg-white h-full flex flex-col">
+      <div className="p-4 border-b border-border flex items-center gap-2">
         <Icon className={`h-5 w-5 ${iconColor}`} />
-        <h3 className="font-bold text-slate-800">{widget.name}</h3>
+        <h3 className="font-bold text-text-primary">{widget.name}</h3>
       </div>
       <CardContent className="p-4 flex-1 flex flex-col justify-center">
-        <div className="text-2xl font-black text-slate-900">{valueStr}</div>
-        <p className="text-xs text-slate-500 mt-1">{trendStr}</p>
+        <div className="text-2xl font-black text-text-primary">{valueStr}</div>
+        <p className="text-xs text-helper mt-1">{trendStr}</p>
       </CardContent>
     </Card>
   );
@@ -293,10 +293,10 @@ export default function DashboardShell() {
         {/* Welcome Header Banner */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+            <h1 className="text-2xl font-bold tracking-tight text-text-primary">
               Welcome back, {user.name.split(' ')[0]}
             </h1>
-            <p className="text-sm text-slate-500 mt-1">
+            <p className="text-sm text-text-secondary mt-1">
               {isSuperAdmin
                 ? 'Full enterprise administration access. All systems operational.'
                 : `Logged in as ${user.roleName}. Showing dynamic workspace widgets.`}
@@ -325,7 +325,7 @@ export default function DashboardShell() {
         </div>
 
         {authorizedWidgets.length === 0 && (
-          <div className="p-12 text-center text-slate-500 bg-white border border-slate-200 rounded-xl">
+          <div className="p-12 text-center text-text-secondary bg-white border border-border rounded-xl">
             No widgets available for your current role and permissions.
           </div>
         )}

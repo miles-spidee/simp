@@ -32,7 +32,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   }, []);
 
   return (
-    <div className="flex h-screen bg-slate-50 font-sans overflow-hidden">
+    <div className="flex h-screen bg-[var(--background)] font-[family-name:var(--font-work-sans)] text-[var(--foreground)] overflow-hidden">
       {/* Unified Sidebar Navigation */}
       <Sidebar 
         isMobileOpen={sidebarOpen} 
@@ -47,7 +47,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         <TopNav setMobileOpen={setSidebarOpen} />
         
         {/* Scrollable Main Area */}
-        <main className="flex-1 overflow-y-auto bg-slate-50 flex flex-col justify-between">
+        <main className="flex-1 overflow-y-auto bg-[var(--background)] flex flex-col justify-between">
           <div className="p-4 sm:p-6 lg:p-8 flex-grow">
             <div className="mx-auto max-w-7xl">
               {children}

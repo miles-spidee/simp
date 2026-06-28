@@ -156,7 +156,7 @@ export default function HelpdeskPage() {
 
   if (!hasPermission('helpdesk.view')) {
     return (
-      <div className="flex h-[50vh] items-center justify-center text-slate-500 font-sans">
+      <div className="flex h-[50vh] items-center justify-center text-text-secondary font-sans">
         <p className="font-semibold">You do not have permission to view the helpdesk.</p>
       </div>
     );
@@ -165,7 +165,7 @@ export default function HelpdeskPage() {
   if (loading) {
     return (
       <div className="flex h-[50vh] items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+        <Loader2 className="w-8 h-8 animate-spin text-text-secondary" />
       </div>
     );
   }
@@ -174,11 +174,11 @@ export default function HelpdeskPage() {
     <div className="p-6 max-w-7xl mx-auto space-y-6 font-sans">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2 tracking-tight">
+          <h1 className="text-2xl font-bold text-text-primary flex items-center gap-2 tracking-tight">
             <LifeBuoy className="w-6 h-6 text-indigo-650" />
             Help Desk
           </h1>
-          <p className="text-slate-500 text-sm mt-0.5">Manage and track your support tickets and requests.</p>
+          <p className="text-text-secondary text-sm mt-0.5">Manage and track your support tickets and requests.</p>
         </div>
         {hasPermission('helpdesk.create') && (
           <button 
@@ -192,10 +192,10 @@ export default function HelpdeskPage() {
       </div>
 
       {/* Tickets List Card */}
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-slate-600">
-            <thead className="bg-slate-50 text-[10px] uppercase font-bold tracking-wider text-slate-500">
+          <table className="w-full text-left text-sm text-text-secondary">
+            <thead className="bg-slate-50 text-[10px] uppercase font-bold tracking-wider text-text-secondary">
               <tr>
                 <th className="px-5 py-4 font-bold">Ticket ID</th>
                 <th className="px-5 py-4 font-bold">Title</th>
@@ -205,24 +205,24 @@ export default function HelpdeskPage() {
                 <th className="px-5 py-4 font-bold text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-border">
               {tickets.map((ticket) => (
                 <tr 
                   key={ticket.id} 
                   onClick={() => handleOpenTicket(ticket)}
                   className="hover:bg-slate-50/80 cursor-pointer transition-colors group"
                 >
-                  <td className="px-5 py-4 font-semibold text-slate-900 font-mono text-xs">{ticket.ticketNumber}</td>
+                  <td className="px-5 py-4 font-semibold text-text-primary font-mono text-xs">{ticket.ticketNumber}</td>
                   <td className="px-5 py-4">
-                    <div className="font-bold text-slate-800 group-hover:text-indigo-650 transition-colors">{ticket.title}</div>
-                    <div className="text-[11px] text-slate-500 mt-0.5">{ticket.category}</div>
+                    <div className="font-bold text-text-primary group-hover:text-indigo-650 transition-colors">{ticket.title}</div>
+                    <div className="text-[11px] text-text-secondary mt-0.5">{ticket.category}</div>
                   </td>
                   <td className="px-5 py-4">
                     <span className={`inline-block px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                       ticket.status === 'Resolved' || ticket.status === 'Closed' ? 'bg-emerald-100 text-emerald-700' :
                       ticket.status === 'In Progress' ? 'bg-blue-100 text-blue-700' :
                       ticket.status === 'Waiting' ? 'bg-amber-100 text-amber-700' :
-                      'bg-slate-100 text-slate-700'
+                      'bg-slate-100 text-text-primary'
                     }`}>
                       {ticket.status}
                     </span>
@@ -232,14 +232,14 @@ export default function HelpdeskPage() {
                       ticket.priority === 'Critical' ? 'text-rose-600' :
                       ticket.priority === 'High' ? 'text-orange-500' :
                       ticket.priority === 'Medium' ? 'text-blue-500' :
-                      'text-slate-500'
+                      'text-text-secondary'
                     }`}>
                       {ticket.priority === 'Critical' && <AlertCircle className="w-3.5 h-3.5" />}
                       {ticket.priority}
                     </span>
                   </td>
                   <td className="px-5 py-4">
-                    <div className="flex items-center gap-1.5 text-slate-500">
+                    <div className="flex items-center gap-1.5 text-text-secondary">
                       <Clock className="w-3.5 h-3.5" />
                       <span>{new Date(ticket.updatedAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}</span>
                     </div>
@@ -257,7 +257,7 @@ export default function HelpdeskPage() {
               ))}
               {tickets.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-5 py-12 text-center text-slate-500">
+                  <td colSpan={6} className="px-5 py-12 text-center text-text-secondary">
                     <LifeBuoy className="w-8 h-8 text-slate-300 mx-auto mb-2" />
                     <p className="font-semibold text-sm">No tickets found.</p>
                   </td>
@@ -278,24 +278,24 @@ export default function HelpdeskPage() {
       >
         <form onSubmit={handleCreateTicket} className="flex-1 flex flex-col p-6 space-y-5 overflow-y-auto">
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Ticket Title</label>
+            <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Ticket Title</label>
             <input
               type="text"
               required
               value={newTicketTitle}
               onChange={(e) => setNewTicketTitle(e.target.value)}
               placeholder="e.g., Unable to submit attendance sheet"
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800 placeholder-slate-400"
+              className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary placeholder-slate-400"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Category</label>
+              <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Category</label>
               <select
                 value={newTicketCategory}
                 onChange={(e) => setNewTicketCategory(e.target.value as TicketCategory)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800 cursor-pointer"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary cursor-pointer"
               >
                 <option value="Technical Issue">Technical Issue</option>
                 <option value="Attendance">Attendance</option>
@@ -310,11 +310,11 @@ export default function HelpdeskPage() {
               </select>
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Priority</label>
+              <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Priority</label>
               <select
                 value={newTicketPriority}
                 onChange={(e) => setNewTicketPriority(e.target.value as TicketPriority)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800 cursor-pointer"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary cursor-pointer"
               >
                 <option value="Low">Low</option>
                 <option value="Medium">Medium</option>
@@ -325,21 +325,21 @@ export default function HelpdeskPage() {
           </div>
 
           <div className="space-y-1.5 flex-1 flex flex-col">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Description of the Issue</label>
+            <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Description of the Issue</label>
             <textarea
               required
               value={newTicketDescription}
               onChange={(e) => setNewTicketDescription(e.target.value)}
               placeholder="Describe your issue or request in detail. Include error codes if any..."
-              className="w-full flex-grow min-h-[160px] bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-550 transition-all font-medium text-slate-800 placeholder-slate-400 resize-none"
+              className="w-full flex-grow min-h-[160px] bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary placeholder-slate-400 resize-none"
             />
           </div>
 
-          <div className="flex gap-3 pt-4 border-t border-slate-100">
+          <div className="flex gap-3 pt-4 border-t border-border">
             <button
               type="button"
               onClick={() => setIsNewTicketOpen(false)}
-              className="flex-1 py-3 border border-slate-200 text-slate-700 font-bold text-sm rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+              className="flex-1 py-3 border border-border text-text-primary font-bold text-sm rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
             >
               Cancel
             </button>
@@ -372,13 +372,13 @@ export default function HelpdeskPage() {
             <div className="flex-grow overflow-y-auto p-6 space-y-6">
               {/* Ticket Headline Info */}
               <div>
-                <h3 className="text-xl font-bold text-slate-900 leading-snug">{selectedTicket.title}</h3>
+                <h3 className="text-xl font-bold text-text-primary leading-snug">{selectedTicket.title}</h3>
                 <div className="flex flex-wrap items-center gap-2.5 mt-3">
                   <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                     selectedTicket.status === 'Resolved' || selectedTicket.status === 'Closed' ? 'bg-emerald-100 text-emerald-700' :
                     selectedTicket.status === 'In Progress' ? 'bg-blue-100 text-blue-700' :
                     selectedTicket.status === 'Waiting' ? 'bg-amber-100 text-amber-700' :
-                    'bg-slate-100 text-slate-700'
+                    'bg-slate-100 text-text-primary'
                   }`}>
                     {selectedTicket.status}
                   </span>
@@ -386,25 +386,25 @@ export default function HelpdeskPage() {
                     selectedTicket.priority === 'Critical' ? 'bg-rose-100 text-rose-700 animate-pulse' :
                     selectedTicket.priority === 'High' ? 'bg-orange-100 text-orange-700' :
                     selectedTicket.priority === 'Medium' ? 'bg-blue-100 text-blue-700' :
-                    'bg-slate-100 text-slate-700'
+                    'bg-slate-100 text-text-primary'
                   }`}>
                     {selectedTicket.priority} Priority
                   </span>
-                  <span className="text-xs text-slate-400 font-semibold">•</span>
-                  <span className="text-xs text-slate-500 font-bold">{selectedTicket.category}</span>
+                  <span className="text-xs text-text-secondary font-semibold">•</span>
+                  <span className="text-xs text-text-secondary font-bold">{selectedTicket.category}</span>
                 </div>
               </div>
 
               {/* Description Body */}
-              <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100">
-                <div className="flex items-center gap-2 mb-3 text-slate-400">
+              <div className="bg-slate-50 rounded-2xl p-5 border border-border">
+                <div className="flex items-center gap-2 mb-3 text-text-secondary">
                   <User className="w-4 h-4" />
                   <span className="text-xs font-bold uppercase tracking-wider">{selectedTicket.creatorName}</span>
                   <span className="text-xs">•</span>
                   <Calendar className="w-3.5 h-3.5" />
                   <span className="text-xs font-medium">{new Date(selectedTicket.createdAt).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
                 </div>
-                <p className="text-sm font-medium text-slate-700 leading-relaxed whitespace-pre-wrap">{selectedTicket.description}</p>
+                <p className="text-sm font-medium text-text-primary leading-relaxed whitespace-pre-wrap">{selectedTicket.description}</p>
               </div>
 
               {/* Support Agent Admin actions (Visible if user is support/admin) */}
@@ -417,11 +417,11 @@ export default function HelpdeskPage() {
                   
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-400 uppercase">Set Status</label>
+                      <label className="text-[10px] font-bold text-text-secondary uppercase">Set Status</label>
                       <select
                         value={mgmtStatus}
                         onChange={(e) => setMgmtStatus(e.target.value as TicketStatus)}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 cursor-pointer"
+                        className="w-full bg-white border border-border rounded-xl px-3 py-2 text-xs font-bold text-text-primary cursor-pointer"
                       >
                         <option value="Open">Open</option>
                         <option value="Assigned">Assigned</option>
@@ -433,11 +433,11 @@ export default function HelpdeskPage() {
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-400 uppercase">Assignee</label>
+                      <label className="text-[10px] font-bold text-text-secondary uppercase">Assignee</label>
                       <select
                         value={mgmtAssigneeId}
                         onChange={(e) => setMgmtAssigneeId(e.target.value)}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 cursor-pointer"
+                        className="w-full bg-white border border-border rounded-xl px-3 py-2 text-xs font-bold text-text-primary cursor-pointer"
                       >
                         <option value="">Unassigned</option>
                         <option value="self">Assign to Me</option>
@@ -464,34 +464,34 @@ export default function HelpdeskPage() {
 
               {/* Replies History */}
               <div className="space-y-4">
-                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Replies & Updates ({selectedTicket.comments?.length || 0})</h4>
+                <h4 className="text-xs font-bold text-text-secondary uppercase tracking-wider">Replies & Updates ({selectedTicket.comments?.length || 0})</h4>
                 
                 <div className="space-y-3.5">
                   {selectedTicket.comments?.map((comment) => (
                     <div key={comment.id} className="flex gap-3">
-                      <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 text-xs font-bold shrink-0">
+                      <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-text-secondary text-xs font-bold shrink-0">
                         {comment.authorName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
                       </div>
-                      <div className="flex-1 bg-slate-50/50 rounded-2xl px-4 py-3 border border-slate-100">
+                      <div className="flex-1 bg-slate-50/50 rounded-2xl px-4 py-3 border border-border">
                         <div className="flex items-center justify-between gap-2 mb-1.5">
-                          <span className="text-xs font-bold text-slate-800">{comment.authorName}</span>
-                          <span className="text-[10px] text-slate-400">
+                          <span className="text-xs font-bold text-text-primary">{comment.authorName}</span>
+                          <span className="text-[10px] text-text-secondary">
                             {new Date(comment.timestamp).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </div>
-                        <p className="text-xs font-medium text-slate-600 leading-relaxed whitespace-pre-wrap">{comment.content}</p>
+                        <p className="text-xs font-medium text-text-secondary leading-relaxed whitespace-pre-wrap">{comment.content}</p>
                       </div>
                     </div>
                   ))}
                   {(!selectedTicket.comments || selectedTicket.comments.length === 0) && (
-                    <p className="text-xs text-slate-400 font-medium italic text-center py-2">No replies yet. Post a message below to start the conversation.</p>
+                    <p className="text-xs text-text-secondary font-medium italic text-center py-2">No replies yet. Post a message below to start the conversation.</p>
                   )}
                 </div>
               </div>
             </div>
 
             {/* Comment Post Footer Box */}
-            <div className="p-4 border-t border-slate-100 bg-white">
+            <div className="p-4 border-t border-border bg-white">
               <form onSubmit={handleAddComment} className="flex gap-2">
                 <input
                   type="text"
@@ -499,7 +499,7 @@ export default function HelpdeskPage() {
                   value={newCommentText}
                   onChange={(e) => setNewCommentText(e.target.value)}
                   placeholder="Type your message / update..."
-                  className="flex-grow bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-indigo-550 font-medium text-slate-800 placeholder-slate-400"
+                  className="flex-grow bg-slate-50 border border-border rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-primary font-medium text-text-primary placeholder-slate-400"
                 />
                 <button
                   type="submit"

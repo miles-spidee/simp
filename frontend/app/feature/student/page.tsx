@@ -757,14 +757,14 @@ export default function StudentLifecycleManagementPage() {
       <div className="flex h-screen items-center justify-center bg-slate-50">
         <div className="flex flex-col items-center gap-3">
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600"></div>
-          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Loading Student CRM Workspace...</p>
+          <p className="text-xs font-bold text-text-secondary uppercase tracking-widest">Loading Student CRM Workspace...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`space-y-6 select-none text-slate-800 ${
+    <div className={`space-y-6 select-none text-text-primary ${
       (activeActionModal?.type === 'edit' || activeActionModal?.type === 'onboard') 
         ? 'h-[calc(100vh-80px)] overflow-hidden relative' 
         : 'pb-12 animate-fade-in relative min-h-screen'
@@ -776,37 +776,37 @@ export default function StudentLifecycleManagementPage() {
           {toast.type === 'success' && <CheckCircle2 className="h-4.5 w-4.5 text-emerald-600 shrink-0" />}
           {toast.type === 'error' && <XCircle className="h-4.5 w-4.5 text-red-600 shrink-0" />}
           {toast.type === 'info' && <AlertCircle className="h-4.5 w-4.5 text-blue-600 shrink-0" />}
-          <span className="text-slate-700">{toast.message}</span>
+          <span className="text-text-primary">{toast.message}</span>
         </div>
       )}
 
       {/* Header Sticky Container */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-5">
         <div>
-          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+          <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest flex items-center gap-1.5">
             <span>PineSphere Operations</span>
             <ChevronRight className="h-3 w-3" />
             <span className="text-blue-600 font-black">Student Lifecycle CRM</span>
           </div>
-          <h2 className="text-2xl font-black text-slate-900 mt-1 tracking-tight">Student Workspace (SLMS)</h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h2 className="text-2xl font-black text-text-primary mt-1 tracking-tight">Student Workspace (SLMS)</h2>
+          <p className="text-xs text-text-secondary mt-0.5">
             Oversee credentials, batch shifts, mentor pipelines, document verification, and hiring analytics.
           </p>
         </div>
 
         {/* Global Tab Toggle and Quick actions */}
         <div className="flex flex-wrap items-center gap-3">
-          <div className="bg-slate-100 p-0.5 rounded-lg flex border border-slate-200 shadow-sm shrink-0">
+          <div className="bg-slate-100 p-0.5 rounded-lg flex border border-border shadow-sm shrink-0">
             <button
               onClick={() => setActiveView('dashboard')}
-              className={`px-3 py-1.5 text-xs font-bold rounded-md flex items-center gap-1.5 transition-all duration-200 ${activeView === 'dashboard' ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
+              className={`px-3 py-1.5 text-xs font-bold rounded-md flex items-center gap-1.5 transition-all duration-200 ${activeView === 'dashboard' ? 'bg-white text-blue-600 shadow-xs' : 'text-text-secondary hover:text-text-primary'}`}
             >
               <LayoutGrid className="h-3.5 w-3.5" />
               <span>Overview Dashboard</span>
             </button>
             <button
               onClick={() => setActiveView('directory')}
-              className={`px-3 py-1.5 text-xs font-bold rounded-md flex items-center gap-1.5 transition-all duration-200 ${activeView === 'directory' ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
+              className={`px-3 py-1.5 text-xs font-bold rounded-md flex items-center gap-1.5 transition-all duration-200 ${activeView === 'directory' ? 'bg-white text-blue-600 shadow-xs' : 'text-text-secondary hover:text-text-primary'}`}
             >
               <Users className="h-3.5 w-3.5" />
               <span>Student Directory</span>
@@ -816,7 +816,7 @@ export default function StudentLifecycleManagementPage() {
           <PermissionGuard required="student.export">
             <button 
               onClick={handleExportRoster}
-              className="flex items-center gap-1.5 px-3.5 py-2 border border-slate-200 hover:border-blue-600 hover:text-blue-600 bg-white rounded-lg text-xs font-bold text-slate-700 shadow-sm transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-2 border border-border hover:border-secondary hover:text-blue-600 bg-white rounded-lg text-xs font-bold text-text-primary shadow-sm transition-all cursor-pointer"
             >
               <FileDown className="h-3.5 w-3.5" />
               <span>Export CSV</span>
@@ -869,11 +869,11 @@ export default function StudentLifecycleManagementPage() {
                     showToast(`Filtering directory by ${kpi.label}`);
                   }
                 }}
-                className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex items-center justify-between group hover:border-blue-500 hover:shadow-md transition-all cursor-pointer"
+                className="bg-white border border-border rounded-xl p-4 shadow-xs flex items-center justify-between group hover:border-secondary hover:shadow-md transition-all cursor-pointer"
               >
                 <div className="space-y-1">
-                  <div className="text-2xl font-black text-slate-900 group-hover:text-blue-600 transition-colors">{kpi.count}</div>
-                  <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{kpi.label}</div>
+                  <div className="text-2xl font-black text-text-primary group-hover:text-blue-600 transition-colors">{kpi.count}</div>
+                  <div className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">{kpi.label}</div>
                 </div>
                 <div className={`h-9 w-9 rounded-lg ${kpi.color} flex items-center justify-center shrink-0`}>
                   <kpi.icon className="h-4.5 w-4.5" />
@@ -886,8 +886,8 @@ export default function StudentLifecycleManagementPage() {
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             
             {/* Status Splits */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
-              <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4">
+              <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary flex items-center gap-1.5">
                 <Activity className="h-4 w-4 text-blue-600" />
                 Status Distribution
               </h3>
@@ -896,7 +896,7 @@ export default function StudentLifecycleManagementPage() {
                   const pct = Math.round((count / students.length) * 100) || 0;
                   return (
                     <div key={index} className="space-y-1">
-                      <div className="flex justify-between text-xs font-semibold text-slate-700">
+                      <div className="flex justify-between text-xs font-semibold text-text-primary">
                         <span>{status}</span>
                         <span>{count} ({pct}%)</span>
                       </div>
@@ -913,8 +913,8 @@ export default function StudentLifecycleManagementPage() {
             </div>
 
             {/* Department Splits */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
-              <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4">
+              <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary flex items-center gap-1.5">
                 <Building className="h-4 w-4 text-emerald-600" />
                 Enrollments by Department
               </h3>
@@ -923,7 +923,7 @@ export default function StudentLifecycleManagementPage() {
                   const pct = Math.round((count / students.length) * 100) || 0;
                   return (
                     <div key={index} className="space-y-1">
-                      <div className="flex justify-between text-xs font-semibold text-slate-700">
+                      <div className="flex justify-between text-xs font-semibold text-text-primary">
                         <span>{dept}</span>
                         <span>{count} ({pct}%)</span>
                       </div>
@@ -940,8 +940,8 @@ export default function StudentLifecycleManagementPage() {
             </div>
 
             {/* Program Type Splits */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
-              <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4">
+              <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary flex items-center gap-1.5">
                 <Award className="h-4 w-4 text-purple-600" />
                 Internship Type Mapping
               </h3>
@@ -950,7 +950,7 @@ export default function StudentLifecycleManagementPage() {
                   const pct = Math.round((count / students.length) * 100) || 0;
                   return (
                     <div key={index} className="space-y-1">
-                      <div className="flex justify-between text-xs font-semibold text-slate-700">
+                      <div className="flex justify-between text-xs font-semibold text-text-primary">
                         <span>{type}</span>
                         <span>{count} ({pct}%)</span>
                       </div>
@@ -972,8 +972,8 @@ export default function StudentLifecycleManagementPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
             {/* Top Performers */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4 lg:col-span-1">
-              <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4 lg:col-span-1">
+              <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary flex items-center gap-1.5">
                 <TrendingUp className="h-4 w-4 text-emerald-600" />
                 Academic Top Performers (90%+)
               </h3>
@@ -982,15 +982,15 @@ export default function StudentLifecycleManagementPage() {
                   <div 
                     key={s.id} 
                     onClick={() => handleOpenProfile(s)}
-                    className="flex items-center justify-between border-b border-slate-100 pb-2 cursor-pointer hover:bg-slate-50/50 p-1.5 rounded-lg transition"
+                    className="flex items-center justify-between border-b border-border pb-2 cursor-pointer hover:bg-slate-50/50 p-1.5 rounded-lg transition"
                   >
                     <div className="flex items-center gap-2">
                       <div className="h-8 w-8 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-xs">
                         {s.personalInfo.avatar}
                       </div>
                       <div>
-                        <div className="text-xs font-bold text-slate-900">{s.personalInfo.name}</div>
-                        <div className="text-[10px] text-slate-500">{s.academicInfo.college} | {s.academicInfo.department}</div>
+                        <div className="text-xs font-bold text-text-primary">{s.personalInfo.name}</div>
+                        <div className="text-[10px] text-text-secondary">{s.academicInfo.college} | {s.academicInfo.department}</div>
                       </div>
                     </div>
                     <span className="text-xs font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
@@ -1002,8 +1002,8 @@ export default function StudentLifecycleManagementPage() {
             </div>
 
             {/* Low Performers or At Risk */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4 lg:col-span-1">
-              <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4 lg:col-span-1">
+              <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary flex items-center gap-1.5">
                 <AlertCircle className="h-4 w-4 text-rose-600" />
                 At-Risk Cohort (Below 75%)
               </h3>
@@ -1013,15 +1013,15 @@ export default function StudentLifecycleManagementPage() {
                     <div 
                       key={s.id} 
                       onClick={() => handleOpenProfile(s)}
-                      className="flex items-center justify-between border-b border-slate-100 pb-2 cursor-pointer hover:bg-slate-50/50 p-1.5 rounded-lg transition"
+                      className="flex items-center justify-between border-b border-border pb-2 cursor-pointer hover:bg-slate-50/50 p-1.5 rounded-lg transition"
                     >
                       <div className="flex items-center gap-2">
                         <div className="h-8 w-8 rounded-full bg-rose-50 text-rose-700 flex items-center justify-center font-bold text-xs">
                           {s.personalInfo.avatar}
                         </div>
                         <div>
-                          <div className="text-xs font-bold text-slate-900">{s.personalInfo.name}</div>
-                          <div className="text-[10px] text-slate-500">{s.academicInfo.college} | {s.academicInfo.department}</div>
+                          <div className="text-xs font-bold text-text-primary">{s.personalInfo.name}</div>
+                          <div className="text-[10px] text-text-secondary">{s.academicInfo.college} | {s.academicInfo.department}</div>
                         </div>
                       </div>
                       <span className="text-xs font-black text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-100">
@@ -1030,26 +1030,26 @@ export default function StudentLifecycleManagementPage() {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-6 text-xs text-slate-500">No students are currently marked below 75% threshold.</div>
+                  <div className="text-center py-6 text-xs text-text-secondary">No students are currently marked below 75% threshold.</div>
                 )}
               </div>
             </div>
 
             {/* Recent Timeline Feed */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4 lg:col-span-1">
-              <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4 lg:col-span-1">
+              <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary flex items-center gap-1.5">
                 <Activity className="h-4 w-4 text-blue-600" />
                 Recent SLMS Activity Feed
               </h3>
-              <div className="relative border-l-2 border-slate-100 ml-2 space-y-4.5 pl-4 max-h-[300px] overflow-y-auto">
+              <div className="relative border-l-2 border-border ml-2 space-y-4.5 pl-4 max-h-[300px] overflow-y-auto">
                 {activityFeed.map((act, index) => (
                   <div key={index} className="relative">
                     <div className="absolute -left-[23px] top-0.5 bg-blue-100 text-blue-700 h-4 w-4 rounded-full flex items-center justify-center text-[8px] font-bold border border-white">
                       {act.avatar[0]}
                     </div>
-                    <div className="text-[10px] text-slate-500 font-bold">{act.date}</div>
-                    <div className="text-xs font-extrabold text-slate-800 mt-0.5">{act.title}</div>
-                    <p className="text-[10.5px] text-slate-600 leading-tight mt-0.5">
+                    <div className="text-[10px] text-text-secondary font-bold">{act.date}</div>
+                    <div className="text-xs font-extrabold text-text-primary mt-0.5">{act.title}</div>
+                    <p className="text-[10.5px] text-text-secondary leading-tight mt-0.5">
                       <span className="font-bold text-blue-700">{act.studentName}</span>: {act.desc}
                     </p>
                   </div>
@@ -1063,22 +1063,22 @@ export default function StudentLifecycleManagementPage() {
 
       {/* VIEW 2: STUDENT DIRECTORY */}
       {activeView === 'directory' && (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-xs overflow-hidden">
+        <div className="bg-white border border-border rounded-xl shadow-xs overflow-hidden">
           
           {/* Filters & Search Toolbar */}
-          <div className="p-4 border-b border-slate-200 bg-slate-50/50 space-y-4">
+          <div className="p-4 border-b border-border bg-slate-50/50 space-y-4">
             <div className="flex flex-col md:flex-row justify-between gap-4">
               
               {/* Query Input */}
               <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary" />
                 <input 
                   type="text" 
                   ref={searchInputRef}
                   placeholder="Search students (Name, ID, Email, Phone, College)... [Ctrl+F]"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  className="w-full pl-9 pr-4 py-2 bg-white border border-border rounded-lg text-xs font-semibold focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                 />
               </div>
 
@@ -1086,7 +1086,7 @@ export default function StudentLifecycleManagementPage() {
               <div className="flex items-center gap-2">
                 <button 
                   onClick={() => setShowFilters(!showFilters)}
-                  className={`flex items-center gap-1.5 px-3.5 py-2 border rounded-lg text-xs font-bold shadow-xs transition-all ${showFilters ? 'bg-blue-50 text-blue-700 border-blue-300' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'}`}
+                  className={`flex items-center gap-1.5 px-3.5 py-2 border rounded-lg text-xs font-bold shadow-xs transition-all ${showFilters ? 'bg-blue-50 text-blue-700 border-blue-300' : 'bg-white border-border text-text-primary hover:bg-slate-50'}`}
                 >
                   <ListFilter className="h-3.5 w-3.5" />
                   <span>{showFilters ? 'Hide Filters' : 'Advanced Filters'}</span>
@@ -1116,15 +1116,15 @@ export default function StudentLifecycleManagementPage() {
 
             {/* Dynamic Multi-Filter Panels */}
             {showFilters && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-white border border-slate-100 p-4 rounded-lg shadow-sm">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-white border border-border p-4 rounded-lg shadow-sm">
                 
                 {/* Program filter */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-slate-400">Internship Program</label>
+                  <label className="text-[10px] font-black uppercase text-text-secondary">Internship Program</label>
                   <select 
                     value={filterProgram}
                     onChange={(e) => setFilterProgram(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700"
+                    className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary"
                   >
                     <option value="all">All Programs</option>
                     {programsList.map((p, idx) => <option key={idx} value={p}>{p}</option>)}
@@ -1133,11 +1133,11 @@ export default function StudentLifecycleManagementPage() {
 
                 {/* Status filter */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-slate-400">Lifecycle Status</label>
+                  <label className="text-[10px] font-black uppercase text-text-secondary">Lifecycle Status</label>
                   <select 
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700"
+                    className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary"
                   >
                     <option value="all">All Statuses</option>
                     <option value="Applied">Applied</option>
@@ -1155,11 +1155,11 @@ export default function StudentLifecycleManagementPage() {
 
                 {/* College filter */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-slate-400">Institution College</label>
+                  <label className="text-[10px] font-black uppercase text-text-secondary">Institution College</label>
                   <select 
                     value={filterCollege}
                     onChange={(e) => setFilterCollege(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700"
+                    className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary"
                   >
                     <option value="all">All Colleges</option>
                     {collegesList.map((c, idx) => <option key={idx} value={c}>{c}</option>)}
@@ -1168,11 +1168,11 @@ export default function StudentLifecycleManagementPage() {
 
                 {/* Department filter */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-slate-400">Department</label>
+                  <label className="text-[10px] font-black uppercase text-text-secondary">Department</label>
                   <select 
                     value={filterDept}
                     onChange={(e) => setFilterDept(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700"
+                    className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary"
                   >
                     <option value="all">All Departments</option>
                     <option value="CSE">CSE</option>
@@ -1188,11 +1188,11 @@ export default function StudentLifecycleManagementPage() {
 
                 {/* Batch filter */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-slate-400">Batch Cohort</label>
+                  <label className="text-[10px] font-black uppercase text-text-secondary">Batch Cohort</label>
                   <select 
                     value={filterBatch}
                     onChange={(e) => setFilterBatch(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700"
+                    className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary"
                   >
                     <option value="all">All Batches</option>
                     {batchesList.map((b, idx) => <option key={idx} value={b}>{b}</option>)}
@@ -1201,11 +1201,11 @@ export default function StudentLifecycleManagementPage() {
 
                 {/* Mentor filter */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-slate-400">Mentor Assigned</label>
+                  <label className="text-[10px] font-black uppercase text-text-secondary">Mentor Assigned</label>
                   <select 
                     value={filterMentor}
                     onChange={(e) => setFilterMentor(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700"
+                    className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary"
                   >
                     <option value="all">All Mentors</option>
                     {mentorsList.map((m, idx) => <option key={idx} value={m}>{m}</option>)}
@@ -1214,11 +1214,11 @@ export default function StudentLifecycleManagementPage() {
 
                 {/* Placement Stage filter */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-slate-400">Placement Stage</label>
+                  <label className="text-[10px] font-black uppercase text-text-secondary">Placement Stage</label>
                   <select 
                     value={filterPlacement}
                     onChange={(e) => setFilterPlacement(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700"
+                    className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary"
                   >
                     <option value="all">All Placement Stages</option>
                     <option value="Not Eligible">Not Eligible</option>
@@ -1232,11 +1232,11 @@ export default function StudentLifecycleManagementPage() {
 
                 {/* Performance level filter */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-slate-400">Overall Performance</label>
+                  <label className="text-[10px] font-black uppercase text-text-secondary">Overall Performance</label>
                   <select 
                     value={filterPerformance}
                     onChange={(e) => setFilterPerformance(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700"
+                    className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary"
                   >
                     <option value="all">All Ranges</option>
                     <option value="high">High Performers (90%+)</option>
@@ -1253,14 +1253,14 @@ export default function StudentLifecycleManagementPage() {
           {/* High Density React Data Grid */}
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs whitespace-nowrap">
-              <thead className="bg-slate-50 border-b border-slate-200 font-bold uppercase text-slate-500">
+              <thead className="bg-slate-50 border-b border-border font-bold uppercase text-text-secondary">
                 <tr>
                   <th className="px-4 py-3 text-center w-10">
                     <input 
                       type="checkbox"
                       checked={filteredStudents.length > 0 && selectedIds.length === filteredStudents.length}
                       onChange={handleToggleSelectAll}
-                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                      className="rounded border-border text-blue-600 focus:ring-primary"
                     />
                   </th>
                   <th className="px-4 py-3">Intern ID</th>
@@ -1276,7 +1276,7 @@ export default function StudentLifecycleManagementPage() {
                   <th className="px-4 py-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 font-medium">
+              <tbody className="divide-y divide-border font-medium">
                 {filteredStudents.length > 0 ? (
                   filteredStudents.map((s) => {
                     const isSelected = selectedIds.includes(s.id);
@@ -1290,10 +1290,10 @@ export default function StudentLifecycleManagementPage() {
                             type="checkbox"
                             checked={isSelected}
                             onChange={() => handleToggleSelectRow(s.id)}
-                            className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                            className="rounded border-border text-blue-600 focus:ring-primary"
                           />
                         </td>
-                        <td className="px-4 py-3 font-mono text-slate-500 font-semibold">{s.internId}</td>
+                        <td className="px-4 py-3 font-mono text-text-secondary font-semibold">{s.internId}</td>
                         <td className="px-4 py-3">
                           <div 
                             onClick={() => handleOpenProfile(s)}
@@ -1303,19 +1303,19 @@ export default function StudentLifecycleManagementPage() {
                               {s.personalInfo.avatar}
                             </div>
                             <div>
-                              <div className="font-extrabold text-slate-900 group-hover:text-blue-600 transition-colors">{s.personalInfo.name}</div>
-                              <div className="text-[10px] text-slate-400 font-bold">{s.personalInfo.email}</div>
+                              <div className="font-extrabold text-text-primary group-hover:text-blue-600 transition-colors">{s.personalInfo.name}</div>
+                              <div className="text-[10px] text-text-secondary font-bold">{s.personalInfo.email}</div>
                             </div>
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-slate-600">{s.academicInfo.college}</td>
-                        <td className="px-4 py-3 text-slate-600">{s.academicInfo.department}</td>
-                        <td className="px-4 py-3 text-slate-500">{s.internshipInfo.batchName || <span className="italic text-slate-300">TBA</span>}</td>
-                        <td className="px-4 py-3 text-slate-600 truncate max-w-[150px]">{s.internshipInfo.program}</td>
+                        <td className="px-4 py-3 text-text-secondary">{s.academicInfo.college}</td>
+                        <td className="px-4 py-3 text-text-secondary">{s.academicInfo.department}</td>
+                        <td className="px-4 py-3 text-text-secondary">{s.internshipInfo.batchName || <span className="italic text-slate-300">TBA</span>}</td>
+                        <td className="px-4 py-3 text-text-secondary truncate max-w-[150px]">{s.internshipInfo.program}</td>
                         <td className="px-4 py-3">
                           {s.internshipInfo.mentorName ? (
-                            <span className="text-slate-700 font-semibold flex items-center gap-1">
-                              <Shield className="h-3 w-3 text-slate-400" />
+                            <span className="text-text-primary font-semibold flex items-center gap-1">
+                              <Shield className="h-3 w-3 text-text-secondary" />
                               {s.internshipInfo.mentorName}
                             </span>
                           ) : (
@@ -1335,7 +1335,7 @@ export default function StudentLifecycleManagementPage() {
                             s.placement.status === 'Placed' ? 'bg-teal-50 text-teal-700 border border-teal-200' :
                             s.placement.status === 'Offer Received' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
                             s.placement.status === 'Interview Scheduled' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                            s.placement.status === 'Placement Ready' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 'bg-slate-100 text-slate-500'
+                            s.placement.status === 'Placement Ready' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 'bg-slate-100 text-text-secondary'
                           }`}>
                             {s.placement.status}
                           </span>
@@ -1354,7 +1354,7 @@ export default function StudentLifecycleManagementPage() {
                           <div className="flex items-center justify-end gap-1.5">
                             <button 
                               onClick={() => handleOpenProfile(s)}
-                              className="p-1 hover:text-blue-600 hover:bg-slate-100 rounded text-slate-400 transition-colors"
+                              className="p-1 hover:text-blue-600 hover:bg-slate-100 rounded text-text-secondary transition-colors"
                               title="View Profile Workspace"
                             >
                               <Eye className="h-4 w-4" />
@@ -1362,7 +1362,7 @@ export default function StudentLifecycleManagementPage() {
                             <PermissionGuard required="student.edit">
                               <button 
                                 onClick={() => openEditModal(s)}
-                                className="p-1 hover:text-amber-600 hover:bg-slate-100 rounded text-slate-400 transition-colors"
+                                className="p-1 hover:text-amber-600 hover:bg-slate-100 rounded text-text-secondary transition-colors"
                                 title="Edit Personal/Academic Info"
                               >
                                 <PlusCircle className="h-4 w-4" />
@@ -1370,7 +1370,7 @@ export default function StudentLifecycleManagementPage() {
                             </PermissionGuard>
                             <button 
                               onClick={() => handleGenerateCertificate(s.id)}
-                              className="p-1 hover:text-emerald-600 hover:bg-slate-100 rounded text-slate-400 transition-colors"
+                              className="p-1 hover:text-emerald-600 hover:bg-slate-100 rounded text-text-secondary transition-colors"
                               title="Generate Certificates"
                             >
                               <Award className="h-4 w-4" />
@@ -1382,10 +1382,10 @@ export default function StudentLifecycleManagementPage() {
                   })
                 ) : (
                   <tr>
-                    <td colSpan={12} className="px-4 py-12 text-center text-slate-500">
+                    <td colSpan={12} className="px-4 py-12 text-center text-text-secondary">
                       <Users className="h-12 w-12 text-slate-200 mx-auto mb-3" />
-                      <p className="text-sm font-extrabold text-slate-600">No student records found</p>
-                      <p className="text-xs text-slate-400 mt-0.5">Adjust filter conditions or search query keywords.</p>
+                      <p className="text-sm font-extrabold text-text-secondary">No student records found</p>
+                      <p className="text-xs text-text-secondary mt-0.5">Adjust filter conditions or search query keywords.</p>
                     </td>
                   </tr>
                 )}
@@ -1394,7 +1394,7 @@ export default function StudentLifecycleManagementPage() {
           </div>
 
           {/* Roster Table Pagination Summary */}
-          <div className="p-4 border-t border-slate-100 bg-slate-50/50 flex justify-between items-center text-xs font-bold text-slate-500">
+          <div className="p-4 border-t border-border bg-slate-50/50 flex justify-between items-center text-xs font-bold text-text-secondary">
             <div>
               Showing {filteredStudents.length} of {students.length} students
             </div>
@@ -1411,7 +1411,7 @@ export default function StudentLifecycleManagementPage() {
 
       {/* FLOAT-UP BULK ACTION TOOLBAR (linear style) */}
       {selectedIds.length > 0 && activeView === 'directory' && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-900 text-white rounded-xl shadow-2xl px-5 py-3.5 border border-slate-800 flex items-center justify-between gap-6 max-w-3xl w-[90%] animate-slide-up">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-900 text-white rounded-xl shadow-2xl px-5 py-3.5 border border-border flex items-center justify-between gap-6 max-w-3xl w-[90%] animate-slide-up">
           <div className="flex items-center gap-2">
             <div className="h-5 w-5 bg-blue-600 text-white font-black text-xs rounded-full flex items-center justify-center shrink-0">
               {selectedIds.length}
@@ -1450,7 +1450,7 @@ export default function StudentLifecycleManagementPage() {
               onClick={handleBulkCredentials}
               className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 rounded text-[11px] font-bold text-slate-200 transition-colors flex items-center gap-1"
             >
-              <Lock className="h-3 w-3 text-slate-400" />
+              <Lock className="h-3 w-3 text-text-secondary" />
               Credentials
             </button>
 
@@ -1459,7 +1459,7 @@ export default function StudentLifecycleManagementPage() {
               onClick={handleBulkCertificates}
               className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 rounded text-[11px] font-bold text-slate-200 transition-colors flex items-center gap-1"
             >
-              <Award className="h-3 w-3 text-slate-400" />
+              <Award className="h-3 w-3 text-text-secondary" />
               Certificates
             </button>
 
@@ -1473,7 +1473,7 @@ export default function StudentLifecycleManagementPage() {
 
             <button 
               onClick={() => setSelectedIds([])}
-              className="p-1.5 hover:bg-slate-800 rounded text-slate-400 hover:text-white transition-colors"
+              className="p-1.5 hover:bg-slate-800 rounded text-text-secondary hover:text-white transition-colors"
               title="Clear selection"
             >
               <Trash className="h-4.5 w-4.5" />
@@ -1494,15 +1494,15 @@ export default function StudentLifecycleManagementPage() {
             {/* Drawer Master Sticky Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900 text-white p-5 -mx-6 -mt-6 sticky top-0 z-30 shadow-md">
               <div className="flex items-center gap-3">
-                <div className="h-11 w-11 rounded-full bg-blue-600 text-white flex items-center justify-center font-black text-sm border border-slate-700 shrink-0">
+                <div className="h-11 w-11 rounded-full bg-blue-600 text-white flex items-center justify-center font-black text-sm border border-border shrink-0">
                   {activeProfile.personalInfo.avatar}
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5">
                     <h3 className="font-extrabold text-sm tracking-tight">{activeProfile.personalInfo.name}</h3>
-                    <span className="text-[10px] font-bold bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-blue-400">{activeProfile.internId}</span>
+                    <span className="text-[10px] font-bold bg-slate-800 border border-border px-2 py-0.5 rounded text-blue-400">{activeProfile.internId}</span>
                   </div>
-                  <div className="text-[10.5px] text-slate-400 font-medium">
+                  <div className="text-[10.5px] text-text-secondary font-medium">
                     {activeProfile.academicInfo.college} | {activeProfile.academicInfo.department}
                   </div>
                 </div>
@@ -1549,23 +1549,23 @@ export default function StudentLifecycleManagementPage() {
             </div>
 
             {/* Profile Workspace Status Ribbon */}
-            <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 flex flex-wrap justify-between items-center text-xs font-semibold text-slate-600 gap-2">
+            <div className="bg-slate-50 border border-border rounded-lg p-3 flex flex-wrap justify-between items-center text-xs font-semibold text-text-secondary gap-2">
               <div className="flex items-center gap-2">
                 <span>Roster Status:</span>
                 <span className="font-extrabold text-blue-700 bg-blue-50 px-2 py-0.5 rounded">{activeProfile.status}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span>Current Batch:</span>
-                <span className="font-extrabold text-slate-800">{activeProfile.internshipInfo.batchName || 'TBA'}</span>
+                <span className="font-extrabold text-text-primary">{activeProfile.internshipInfo.batchName || 'TBA'}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span>Mentor:</span>
-                <span className="font-extrabold text-slate-800">{activeProfile.internshipInfo.mentorName || 'Unassigned'}</span>
+                <span className="font-extrabold text-text-primary">{activeProfile.internshipInfo.mentorName || 'Unassigned'}</span>
               </div>
             </div>
 
             {/* Drawer 9 Tabs Selector */}
-            <div className="border-b border-slate-200 flex flex-wrap gap-1">
+            <div className="border-b border-border flex flex-wrap gap-1">
               {[
                 { id: 'overview', label: 'Overview' },
                 { id: 'documents', label: 'Documents' },
@@ -1580,7 +1580,7 @@ export default function StudentLifecycleManagementPage() {
                 <button
                   key={tab.id}
                   onClick={() => setProfileTab(tab.id as any)}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-t-lg transition border-b-2 ${profileTab === tab.id ? 'border-blue-600 text-blue-600 bg-blue-50/20' : 'border-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}
+                  className={`px-3 py-1.5 text-xs font-bold rounded-t-lg transition border-b-2 ${profileTab === tab.id ? 'border-blue-600 text-blue-600 bg-blue-50/20' : 'border-transparent text-text-secondary hover:text-text-primary hover:bg-slate-50'}`}
                 >
                   {tab.label}
                 </button>
@@ -1594,103 +1594,103 @@ export default function StudentLifecycleManagementPage() {
               <div className="space-y-6">
                 
                 {/* Personal */}
-                <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-3">
-                  <h4 className="text-xs font-black uppercase text-slate-400 flex items-center gap-1">
-                    <Users className="h-4.5 w-4.5 text-slate-400" />
+                <div className="bg-white border border-border rounded-lg p-4 space-y-3">
+                  <h4 className="text-xs font-black uppercase text-text-secondary flex items-center gap-1">
+                    <Users className="h-4.5 w-4.5 text-text-secondary" />
                     Personal Information
                   </h4>
-                  <div className="grid grid-cols-2 gap-4 text-xs font-semibold text-slate-700">
+                  <div className="grid grid-cols-2 gap-4 text-xs font-semibold text-text-primary">
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Full Legal Name</span>
-                      <span className="text-slate-900 font-extrabold text-xs">{activeProfile.personalInfo.name}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Full Legal Name</span>
+                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.personalInfo.name}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Email Address</span>
-                      <span className="text-slate-900 font-extrabold text-xs">{activeProfile.personalInfo.email}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Email Address</span>
+                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.personalInfo.email}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Mobile Contact</span>
-                      <span className="text-slate-900 font-extrabold text-xs">{activeProfile.personalInfo.phone}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Mobile Contact</span>
+                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.personalInfo.phone}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Date of Birth</span>
-                      <span className="text-slate-900 font-extrabold text-xs">{activeProfile.personalInfo.dob}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Date of Birth</span>
+                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.personalInfo.dob}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Gender Identity</span>
-                      <span className="text-slate-900 font-extrabold text-xs">{activeProfile.personalInfo.gender}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Gender Identity</span>
+                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.personalInfo.gender}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Mailing Address</span>
-                      <span className="text-slate-900 font-extrabold text-xs truncate" title={activeProfile.personalInfo.address}>{activeProfile.personalInfo.address}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Mailing Address</span>
+                      <span className="text-text-primary font-extrabold text-xs truncate" title={activeProfile.personalInfo.address}>{activeProfile.personalInfo.address}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Academic */}
-                <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-3">
-                  <h4 className="text-xs font-black uppercase text-slate-400 flex items-center gap-1">
-                    <Building className="h-4.5 w-4.5 text-slate-400" />
+                <div className="bg-white border border-border rounded-lg p-4 space-y-3">
+                  <h4 className="text-xs font-black uppercase text-text-secondary flex items-center gap-1">
+                    <Building className="h-4.5 w-4.5 text-text-secondary" />
                     Academic Credentials
                   </h4>
-                  <div className="grid grid-cols-2 gap-4 text-xs font-semibold text-slate-700">
+                  <div className="grid grid-cols-2 gap-4 text-xs font-semibold text-text-primary">
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Institution / College</span>
-                      <span className="text-slate-900 font-extrabold text-xs">{activeProfile.academicInfo.college}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Institution / College</span>
+                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.academicInfo.college}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Academic Department</span>
-                      <span className="text-slate-900 font-extrabold text-xs">{activeProfile.academicInfo.department}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Academic Department</span>
+                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.academicInfo.department}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Degree / Certification Focus</span>
-                      <span className="text-slate-900 font-extrabold text-xs">{activeProfile.academicInfo.degree}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Degree / Certification Focus</span>
+                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.academicInfo.degree}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Current Year of Study</span>
-                      <span className="text-slate-900 font-extrabold text-xs">Year {activeProfile.academicInfo.year}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Current Year of Study</span>
+                      <span className="text-text-primary font-extrabold text-xs">Year {activeProfile.academicInfo.year}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Cumulative GPA / CGPA</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Cumulative GPA / CGPA</span>
                       <span className="text-emerald-700 bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 rounded font-black text-xs">{activeProfile.academicInfo.cgpa} / 10.0</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Graduation Year</span>
-                      <span className="text-slate-900 font-extrabold text-xs">{activeProfile.academicInfo.graduationYear}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Graduation Year</span>
+                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.academicInfo.graduationYear}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Internship mapping */}
-                <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-3">
-                  <h4 className="text-xs font-black uppercase text-slate-400 flex items-center gap-1">
-                    <Briefcase className="h-4.5 w-4.5 text-slate-400" />
+                <div className="bg-white border border-border rounded-lg p-4 space-y-3">
+                  <h4 className="text-xs font-black uppercase text-text-secondary flex items-center gap-1">
+                    <Briefcase className="h-4.5 w-4.5 text-text-secondary" />
                     Cohort Internship Registration
                   </h4>
-                  <div className="grid grid-cols-2 gap-4 text-xs font-semibold text-slate-700">
+                  <div className="grid grid-cols-2 gap-4 text-xs font-semibold text-text-primary">
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Active Program</span>
-                      <span className="text-slate-900 font-extrabold text-xs">{activeProfile.internshipInfo.program}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Active Program</span>
+                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.internshipInfo.program}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Internship Classification</span>
-                      <span className="text-slate-900 font-extrabold text-xs">{activeProfile.internshipInfo.internshipType}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Internship Classification</span>
+                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.internshipInfo.internshipType}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Cohort Batch Mapped</span>
-                      <span className="text-slate-900 font-extrabold text-xs">{activeProfile.internshipInfo.batchName || 'Not Assigned'}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Cohort Batch Mapped</span>
+                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.internshipInfo.batchName || 'Not Assigned'}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Assigned Mentor Roster</span>
-                      <span className="text-slate-900 font-extrabold text-xs">{activeProfile.internshipInfo.mentorName || 'Not Assigned'}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Assigned Mentor Roster</span>
+                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.internshipInfo.mentorName || 'Not Assigned'}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Cohort Joining Date</span>
-                      <span className="text-slate-900 font-extrabold text-xs">{activeProfile.internshipInfo.joiningDate}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Cohort Joining Date</span>
+                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.internshipInfo.joiningDate}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase text-slate-400 block">Expected Completion</span>
-                      <span className="text-slate-900 font-extrabold text-xs">{activeProfile.internshipInfo.expectedCompletion}</span>
+                      <span className="text-[10px] uppercase text-text-secondary block">Expected Completion</span>
+                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.internshipInfo.expectedCompletion}</span>
                     </div>
                   </div>
                 </div>
@@ -1701,25 +1701,25 @@ export default function StudentLifecycleManagementPage() {
             {/* TAB 2: DOCUMENTS */}
             {profileTab === 'documents' && (
               <div className="space-y-4">
-                <h4 className="text-xs font-black uppercase text-slate-400">Document Management Center</h4>
+                <h4 className="text-xs font-black uppercase text-text-secondary">Document Management Center</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {activeProfile.documents.map((doc, idx) => (
-                    <div key={idx} className="bg-slate-50 border border-slate-200 rounded-lg p-3 flex flex-col justify-between gap-3">
+                    <div key={idx} className="bg-slate-50 border border-border rounded-lg p-3 flex flex-col justify-between gap-3">
                       <div>
                         <div className="flex items-center justify-between">
-                          <span className="text-xs font-extrabold text-slate-800">{doc.type}</span>
+                          <span className="text-xs font-extrabold text-text-primary">{doc.type}</span>
                           <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                             doc.status === 'Verified' ? 'bg-emerald-50 text-emerald-700' :
                             doc.status === 'Pending' ? 'bg-amber-50 text-amber-700' : 'bg-red-50 text-red-700'
                           }`}>{doc.status}</span>
                         </div>
-                        <p className="text-[11px] font-bold text-slate-500 mt-1 truncate" title={doc.name}>{doc.name}</p>
-                        <p className="text-[10px] text-slate-400 font-medium">Uploaded: {doc.uploadDate}</p>
-                        {doc.verifiedBy && <p className="text-[9.5px] text-slate-400 font-medium">Verified by: {doc.verifiedBy}</p>}
+                        <p className="text-[11px] font-bold text-text-secondary mt-1 truncate" title={doc.name}>{doc.name}</p>
+                        <p className="text-[10px] text-text-secondary font-medium">Uploaded: {doc.uploadDate}</p>
+                        {doc.verifiedBy && <p className="text-[9.5px] text-text-secondary font-medium">Verified by: {doc.verifiedBy}</p>}
                         
                         {/* Simulated text preview */}
                         {doc.previewText && (
-                          <div className="mt-2 bg-white border border-slate-100 p-2 rounded text-[10px] text-slate-600 font-mono">
+                          <div className="mt-2 bg-white border border-border p-2 rounded text-[10px] text-text-secondary font-mono">
                             {doc.previewText}
                           </div>
                         )}
@@ -1745,7 +1745,7 @@ export default function StudentLifecycleManagementPage() {
                         <a
                           href="#"
                           onClick={(e) => { e.preventDefault(); showToast(`Simulating download for ${doc.name}`); }}
-                          className="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] font-bold text-slate-700 rounded transition text-center"
+                          className="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] font-bold text-text-primary rounded transition text-center"
                         >
                           Download
                         </a>
@@ -1761,32 +1761,32 @@ export default function StudentLifecycleManagementPage() {
               <div className="space-y-6">
                 
                 {/* ID Card Display */}
-                <div className="bg-slate-50 border border-slate-200 rounded-lg p-5 flex flex-col md:flex-row items-center gap-6">
+                <div className="bg-slate-50 border border-border rounded-lg p-5 flex flex-col md:flex-row items-center gap-6">
                   
                   {/* Mock ID Card */}
-                  <div className="bg-slate-900 text-white rounded-xl p-4 w-72 h-44 shadow-xl border border-slate-700 relative overflow-hidden shrink-0 flex flex-col justify-between font-mono">
+                  <div className="bg-slate-900 text-white rounded-xl p-4 w-72 h-44 shadow-xl border border-border relative overflow-hidden shrink-0 flex flex-col justify-between font-mono">
                     <div className="absolute top-0 right-0 h-16 w-16 bg-blue-600/30 rounded-bl-full" />
                     
                     <div className="flex justify-between items-start">
                       <div>
                         <div className="text-[10px] font-black text-blue-500 uppercase tracking-widest">PineSphere ERP</div>
-                        <div className="text-[7px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">INTERNSHIP ID CARD</div>
+                        <div className="text-[7px] text-text-secondary font-bold uppercase tracking-widest mt-0.5">INTERNSHIP ID CARD</div>
                       </div>
-                      <QrCode className="h-9 w-9 text-slate-400" />
+                      <QrCode className="h-9 w-9 text-text-secondary" />
                     </div>
 
                     <div className="flex items-center gap-3 my-2">
-                      <div className="h-10 w-10 bg-slate-800 text-white font-bold text-xs flex items-center justify-center rounded-lg border border-slate-700">
+                      <div className="h-10 w-10 bg-slate-800 text-white font-bold text-xs flex items-center justify-center rounded-lg border border-border">
                         {activeProfile.personalInfo.avatar}
                       </div>
                       <div className="text-[10px]">
                         <div className="font-extrabold text-white uppercase text-[11px] truncate max-w-[150px]">{activeProfile.personalInfo.name}</div>
-                        <div className="text-[9px] text-slate-400 font-bold">{activeProfile.internId}</div>
-                        <div className="text-[8px] text-slate-500 font-bold mt-0.5">{activeProfile.academicInfo.department} | Year {activeProfile.academicInfo.year}</div>
+                        <div className="text-[9px] text-text-secondary font-bold">{activeProfile.internId}</div>
+                        <div className="text-[8px] text-text-secondary font-bold mt-0.5">{activeProfile.academicInfo.department} | Year {activeProfile.academicInfo.year}</div>
                       </div>
                     </div>
 
-                    <div className="flex justify-between items-center text-[7px] text-slate-400 border-t border-slate-800 pt-1.5 mt-1">
+                    <div className="flex justify-between items-center text-[7px] text-text-secondary border-t border-border pt-1.5 mt-1">
                       <span>ROLE: COHORT INTERN</span>
                       <span>GEN: {activeProfile.timeline[0]?.date || '2026-05-01'}</span>
                     </div>
@@ -1794,8 +1794,8 @@ export default function StudentLifecycleManagementPage() {
 
                   {/* Actions */}
                   <div className="space-y-3">
-                    <h4 className="text-xs font-black uppercase text-slate-400">Intern ID Card Credentials</h4>
-                    <p className="text-[11px] text-slate-500 font-semibold leading-relaxed">
+                    <h4 className="text-xs font-black uppercase text-text-secondary">Intern ID Card Credentials</h4>
+                    <p className="text-[11px] text-text-secondary font-semibold leading-relaxed">
                       This ID is the unique campus security verification credential used across corporate centers and verification gates.
                     </p>
                     <div className="flex gap-2">
@@ -1818,27 +1818,27 @@ export default function StudentLifecycleManagementPage() {
                 </div>
 
                 {/* Account Access Controls */}
-                <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-4">
-                  <h4 className="text-xs font-black uppercase text-slate-400">Student Portal Access Controls</h4>
+                <div className="bg-white border border-border rounded-lg p-4 space-y-4">
+                  <h4 className="text-xs font-black uppercase text-text-secondary">Student Portal Access Controls</h4>
                   
-                  <div className="space-y-3 text-xs font-semibold text-slate-700">
-                    <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                  <div className="space-y-3 text-xs font-semibold text-text-primary">
+                    <div className="flex items-center justify-between border-b border-border pb-2">
                       <div>
                         <div>Portal User ID</div>
-                        <span className="font-mono text-[10.5px] text-slate-400 font-semibold">{activeProfile.credentials.username}</span>
+                        <span className="font-mono text-[10.5px] text-text-secondary font-semibold">{activeProfile.credentials.username}</span>
                       </div>
                       <button
                         onClick={() => showToast(`Password for username ${activeProfile.credentials.username} has been reset.`)}
-                        className="px-2.5 py-1.5 border border-slate-200 hover:border-blue-600 hover:text-blue-600 bg-white rounded text-[10px] font-bold transition-all"
+                        className="px-2.5 py-1.5 border border-border hover:border-secondary hover:text-blue-600 bg-white rounded text-[10px] font-bold transition-all"
                       >
                         Reset Password
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                    <div className="flex items-center justify-between border-b border-border pb-2">
                       <div>
                         <div>Student Portal Login</div>
-                        <span className="text-[10px] text-slate-400 font-bold block mt-0.5">Toggle student's ability to view assignments and report attendance.</span>
+                        <span className="text-[10px] text-text-secondary font-bold block mt-0.5">Toggle student's ability to view assignments and report attendance.</span>
                       </div>
                       <button
                         onClick={() => handleToggleAccess(activeProfile.id, 'portalAccess')}
@@ -1848,10 +1848,10 @@ export default function StudentLifecycleManagementPage() {
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                    <div className="flex items-center justify-between border-b border-border pb-2">
                       <div>
                         <div>LMS Access System</div>
-                        <span className="text-[10px] text-slate-400 font-bold block mt-0.5">Grant access to courses, video syllabi, and coding sandboxes.</span>
+                        <span className="text-[10px] text-text-secondary font-bold block mt-0.5">Grant access to courses, video syllabi, and coding sandboxes.</span>
                       </div>
                       <button
                         onClick={() => handleToggleAccess(activeProfile.id, 'lmsAccess')}
@@ -1864,7 +1864,7 @@ export default function StudentLifecycleManagementPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <div>Assessment System Access</div>
-                        <span className="text-[10px] text-slate-400 font-bold block mt-0.5">Allow student to lock and submit milestone assessment submissions.</span>
+                        <span className="text-[10px] text-text-secondary font-bold block mt-0.5">Allow student to lock and submit milestone assessment submissions.</span>
                       </div>
                       <button
                         onClick={() => handleToggleAccess(activeProfile.id, 'assessmentAccess')}
@@ -1883,32 +1883,32 @@ export default function StudentLifecycleManagementPage() {
             {/* TAB 4: BATCH ASSIGNMENT */}
             {profileTab === 'batch' && (
               <div className="space-y-4">
-                <h4 className="text-xs font-black uppercase text-slate-400">Current Batch Assignment</h4>
+                <h4 className="text-xs font-black uppercase text-text-secondary">Current Batch Assignment</h4>
                 
-                <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 text-xs font-semibold text-slate-700 space-y-3">
+                <div className="bg-slate-50 border border-border rounded-lg p-4 text-xs font-semibold text-text-primary space-y-3">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase block">Active Batch Name</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.batch.name}</span>
+                      <span className="text-[10px] text-text-secondary uppercase block">Active Batch Name</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.batch.name}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase block">Active Program</span>
-                      <span className="text-slate-900 font-extrabold truncate block">{activeProfile.batch.program}</span>
+                      <span className="text-[10px] text-text-secondary uppercase block">Active Program</span>
+                      <span className="text-text-primary font-extrabold truncate block">{activeProfile.batch.program}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase block">Start Date</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.batch.startDate}</span>
+                      <span className="text-[10px] text-text-secondary uppercase block">Start Date</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.batch.startDate}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase block">End Date</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.batch.endDate}</span>
+                      <span className="text-[10px] text-text-secondary uppercase block">End Date</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.batch.endDate}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase block">Cohort Mentor</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.batch.mentor}</span>
+                      <span className="text-[10px] text-text-secondary uppercase block">Cohort Mentor</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.batch.mentor}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase block">Batch Status</span>
+                      <span className="text-[10px] text-text-secondary uppercase block">Batch Status</span>
                       <span className="font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 inline-block mt-0.5">
                         {activeProfile.batch.status}
                       </span>
@@ -1916,7 +1916,7 @@ export default function StudentLifecycleManagementPage() {
                   </div>
                 </div>
 
-                <div className="border-t border-slate-200 pt-4">
+                <div className="border-t border-border pt-4">
                   <button
                     onClick={() => {
                       setBatchForm({
@@ -1939,28 +1939,28 @@ export default function StudentLifecycleManagementPage() {
             {/* TAB 5: MENTOR ASSIGNMENT */}
             {profileTab === 'mentor' && (
               <div className="space-y-4">
-                <h4 className="text-xs font-black uppercase text-slate-400">Mentor Assignment & Metrics</h4>
+                <h4 className="text-xs font-black uppercase text-text-secondary">Mentor Assignment & Metrics</h4>
 
-                <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 text-xs font-semibold text-slate-700 space-y-3">
+                <div className="bg-slate-50 border border-border rounded-lg p-4 text-xs font-semibold text-text-primary space-y-3">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase block">Assigned Mentor Name</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.mentor.name}</span>
+                      <span className="text-[10px] text-text-secondary uppercase block">Assigned Mentor Name</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.mentor.name}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase block">Mentor Department</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.mentor.department}</span>
+                      <span className="text-[10px] text-text-secondary uppercase block">Mentor Department</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.mentor.department}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase block">Primary Expertise Domain</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.mentor.expertise}</span>
+                      <span className="text-[10px] text-text-secondary uppercase block">Primary Expertise Domain</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.mentor.expertise}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase block">Sessions Conducted</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.mentor.sessionsConducted} Live Sessions</span>
+                      <span className="text-[10px] text-text-secondary uppercase block">Sessions Conducted</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.mentor.sessionsConducted} Live Sessions</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase block">Student Rating Score</span>
+                      <span className="text-[10px] text-text-secondary uppercase block">Student Rating Score</span>
                       <span className="text-emerald-700 bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 rounded font-black text-xs inline-block mt-0.5">
                         ★ {activeProfile.mentor.rating} / 5.0
                       </span>
@@ -1970,12 +1970,12 @@ export default function StudentLifecycleManagementPage() {
 
                 {/* Mentor Feedback Logs */}
                 <div className="space-y-3">
-                  <h5 className="text-[10.5px] font-black uppercase text-slate-400">Recent Mentor Performance Review logs</h5>
+                  <h5 className="text-[10.5px] font-black uppercase text-text-secondary">Recent Mentor Performance Review logs</h5>
                   {activeProfile.mentor.feedbackGiven.length > 0 ? (
                     <div className="space-y-3">
                       {activeProfile.mentor.feedbackGiven.map((fb, idx) => (
-                        <div key={idx} className="bg-white border border-slate-100 p-3 rounded-lg text-xs leading-relaxed text-slate-700">
-                          <div className="flex justify-between font-bold text-slate-500 text-[10px] mb-1">
+                        <div key={idx} className="bg-white border border-border p-3 rounded-lg text-xs leading-relaxed text-text-primary">
+                          <div className="flex justify-between font-bold text-text-secondary text-[10px] mb-1">
                             <span>Reviewed by: {fb.reviewer}</span>
                             <span>{fb.date}</span>
                           </div>
@@ -1984,13 +1984,13 @@ export default function StudentLifecycleManagementPage() {
                       ))}
                     </div>
                   ) : (
-                    <div className="text-center py-6 border border-dashed border-slate-200 rounded-lg text-xs text-slate-500">
+                    <div className="text-center py-6 border border-dashed border-border rounded-lg text-xs text-text-secondary">
                       No review logs have been submitted by the mentor yet.
                     </div>
                   )}
                 </div>
 
-                <div className="border-t border-slate-200 pt-4 flex gap-2">
+                <div className="border-t border-border pt-4 flex gap-2">
                   <button
                     onClick={() => {
                       setMentorForm({
@@ -2022,7 +2022,7 @@ export default function StudentLifecycleManagementPage() {
                           showToast('Removed assigned mentor');
                         }
                       }}
-                      className="px-3.5 py-2 border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 rounded-lg text-xs font-bold transition"
+                      className="px-3.5 py-2 border border-border text-text-primary bg-white hover:bg-slate-50 rounded-lg text-xs font-bold transition"
                     >
                       Remove Mentor
                     </button>
@@ -2034,7 +2034,7 @@ export default function StudentLifecycleManagementPage() {
             {/* TAB 6: PERFORMANCE CENTER */}
             {profileTab === 'performance' && (
               <div className="space-y-6">
-                <h4 className="text-xs font-black uppercase text-slate-400">Student Intelligence Scorecard</h4>
+                <h4 className="text-xs font-black uppercase text-text-secondary">Student Intelligence Scorecard</h4>
 
                 {/* Scorecards */}
                 <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
@@ -2045,9 +2045,9 @@ export default function StudentLifecycleManagementPage() {
                     { label: 'Mentor Rating', value: `★ ${activeProfile.performance.mentorRating}/5`, color: 'bg-amber-50 text-amber-700' },
                     { label: 'Overall Perf', value: `${activeProfile.performance.overallPerformance}%`, color: 'bg-emerald-50 text-emerald-700' }
                   ].map((card, idx) => (
-                    <div key={idx} className={`p-3 rounded-lg border border-slate-100 flex flex-col justify-center text-center ${card.color}`}>
+                    <div key={idx} className={`p-3 rounded-lg border border-border flex flex-col justify-center text-center ${card.color}`}>
                       <div className="text-lg font-black">{card.value}</div>
-                      <div className="text-[9.5px] uppercase font-bold text-slate-400 mt-0.5">{card.label}</div>
+                      <div className="text-[9.5px] uppercase font-bold text-text-secondary mt-0.5">{card.label}</div>
                     </div>
                   ))}
                 </div>
@@ -2057,28 +2057,28 @@ export default function StudentLifecycleManagementPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     
                     {/* Attendance SVG trend */}
-                    <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-3">
-                      <h5 className="text-[10px] font-black uppercase text-slate-500">Attendance Score Progression</h5>
+                    <div className="bg-slate-50 border border-border rounded-lg p-4 space-y-3">
+                      <h5 className="text-[10px] font-black uppercase text-text-secondary">Attendance Score Progression</h5>
                       <div className="h-32 w-full flex items-end justify-between px-2 pt-4">
                         {activeProfile.performance.attendanceTrend.map((t, idx) => (
                           <div key={idx} className="flex flex-col items-center gap-1.5 flex-1">
-                            <div className="text-[9px] font-bold text-slate-500">{t.score}%</div>
+                            <div className="text-[9px] font-bold text-text-secondary">{t.score}%</div>
                             <div className="w-8 bg-blue-600 rounded-t" style={{ height: `${t.score * 0.8}px` }} />
-                            <div className="text-[8.5px] font-semibold text-slate-400 mt-1 truncate max-w-[40px]">{t.date}</div>
+                            <div className="text-[8.5px] font-semibold text-text-secondary mt-1 truncate max-w-[40px]">{t.date}</div>
                           </div>
                         ))}
                       </div>
                     </div>
 
                     {/* Assessment SVG trend */}
-                    <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-3">
-                      <h5 className="text-[10px] font-black uppercase text-slate-500">Milestone Test Scores</h5>
+                    <div className="bg-slate-50 border border-border rounded-lg p-4 space-y-3">
+                      <h5 className="text-[10px] font-black uppercase text-text-secondary">Milestone Test Scores</h5>
                       <div className="h-32 w-full flex items-end justify-between px-2 pt-4">
                         {activeProfile.performance.assessmentTrend.map((t, idx) => (
                           <div key={idx} className="flex flex-col items-center gap-1.5 flex-1">
-                            <div className="text-[9px] font-bold text-slate-500">{t.score}</div>
+                            <div className="text-[9px] font-bold text-text-secondary">{t.score}</div>
                             <div className="w-8 bg-indigo-600 rounded-t" style={{ height: `${t.score * 0.8}px` }} />
-                            <div className="text-[8.5px] font-semibold text-slate-400 mt-1 truncate max-w-[40px]" title={t.test}>{t.test}</div>
+                            <div className="text-[8.5px] font-semibold text-text-secondary mt-1 truncate max-w-[40px]" title={t.test}>{t.test}</div>
                           </div>
                         ))}
                       </div>
@@ -2086,19 +2086,19 @@ export default function StudentLifecycleManagementPage() {
 
                   </div>
                 ) : (
-                  <div className="text-center py-10 border border-dashed border-slate-200 rounded-lg text-xs text-slate-500">
+                  <div className="text-center py-10 border border-dashed border-border rounded-lg text-xs text-text-secondary">
                     No analytics trends data is populated for this student record yet.
                   </div>
                 )}
 
                 {/* Skill Progression bars */}
                 {activeProfile.performance.skills.length > 0 && (
-                  <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-3">
-                    <h5 className="text-[10px] font-black uppercase text-slate-500">Skill Acquisition Metrics</h5>
+                  <div className="bg-slate-50 border border-border rounded-lg p-4 space-y-3">
+                    <h5 className="text-[10px] font-black uppercase text-text-secondary">Skill Acquisition Metrics</h5>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {activeProfile.performance.skills.map((skill, idx) => (
                         <div key={idx} className="space-y-1">
-                          <div className="flex justify-between text-xs font-semibold text-slate-700">
+                          <div className="flex justify-between text-xs font-semibold text-text-primary">
                             <span>{skill.name}</span>
                             <span>{skill.value}% Mastery</span>
                           </div>
@@ -2117,11 +2117,11 @@ export default function StudentLifecycleManagementPage() {
             {/* TAB 7: PLACEMENT TRACKING */}
             {profileTab === 'placement' && (
               <div className="space-y-6">
-                <h4 className="text-xs font-black uppercase text-slate-400">Placement Tracking & Status</h4>
+                <h4 className="text-xs font-black uppercase text-text-secondary">Placement Tracking & Status</h4>
 
                 {/* Placement stages flow */}
-                <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-4">
-                  <h5 className="text-[10.5px] font-black uppercase text-slate-500">Employment Pipeline Phase</h5>
+                <div className="bg-slate-50 border border-border rounded-lg p-4 space-y-4">
+                  <h5 className="text-[10.5px] font-black uppercase text-text-secondary">Employment Pipeline Phase</h5>
                   <div className="flex items-center justify-between text-center relative">
                     <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-slate-200 -translate-y-1/2 z-0" />
                     
@@ -2135,10 +2135,10 @@ export default function StudentLifecycleManagementPage() {
 
                       return (
                         <div key={idx} className="relative z-10 flex flex-col items-center flex-1">
-                          <div className={`h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold border transition ${isCurrent ? 'bg-blue-600 text-white border-blue-600 shadow-md' : isPast ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-white text-slate-400 border-slate-200'}`}>
+                          <div className={`h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold border transition ${isCurrent ? 'bg-blue-600 text-white border-blue-600 shadow-md' : isPast ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-white text-text-secondary border-border'}`}>
                             {idx + 1}
                           </div>
-                          <span className={`text-[8.5px] font-bold mt-1.5 transition leading-tight ${isCurrent ? 'text-blue-700' : isPast ? 'text-slate-800' : 'text-slate-400'}`}>
+                          <span className={`text-[8.5px] font-bold mt-1.5 transition leading-tight ${isCurrent ? 'text-blue-700' : isPast ? 'text-text-primary' : 'text-text-secondary'}`}>
                             {stage}
                           </span>
                         </div>
@@ -2148,29 +2148,29 @@ export default function StudentLifecycleManagementPage() {
                 </div>
 
                 {/* Placement info metrics */}
-                <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-3">
-                  <h5 className="text-[10.5px] font-black uppercase text-slate-500">Corporate Offer Parameters</h5>
-                  <div className="grid grid-cols-2 gap-4 text-xs font-semibold text-slate-700">
+                <div className="bg-white border border-border rounded-lg p-4 space-y-3">
+                  <h5 className="text-[10.5px] font-black uppercase text-text-secondary">Corporate Offer Parameters</h5>
+                  <div className="grid grid-cols-2 gap-4 text-xs font-semibold text-text-primary">
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase block">Hired Company</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.placement.company || 'N/A'}</span>
+                      <span className="text-[10px] text-text-secondary uppercase block">Hired Company</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.placement.company || 'N/A'}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase block">Offered Annual CTC (LPA)</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.placement.package || 'N/A'}</span>
+                      <span className="text-[10px] text-text-secondary uppercase block">Offered Annual CTC (LPA)</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.placement.package || 'N/A'}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase block">Interview Pipeline Logs</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.placement.interviewStatus || 'N/A'}</span>
+                      <span className="text-[10px] text-text-secondary uppercase block">Interview Pipeline Logs</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.placement.interviewStatus || 'N/A'}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase block">Candidate Offer Status</span>
-                      <span className="text-slate-900 font-extrabold">{activeProfile.placement.offerStatus || 'N/A'}</span>
+                      <span className="text-[10px] text-text-secondary uppercase block">Candidate Offer Status</span>
+                      <span className="text-text-primary font-extrabold">{activeProfile.placement.offerStatus || 'N/A'}</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="border-t border-slate-200 pt-4">
+                <div className="border-t border-border pt-4">
                   <button
                     onClick={() => {
                       setPlacementForm({
@@ -2194,7 +2194,7 @@ export default function StudentLifecycleManagementPage() {
             {/* TAB 8: LIFECYCLE MANAGEMENT */}
             {profileTab === 'lifecycle' && (
               <div className="space-y-4">
-                <h4 className="text-xs font-black uppercase text-slate-400">PineSphere Student SLMS Journey</h4>
+                <h4 className="text-xs font-black uppercase text-text-secondary">PineSphere Student SLMS Journey</h4>
                 
                 <div className="relative border-l-2 border-blue-500 ml-4 pl-6 space-y-6 pt-2">
                   {[
@@ -2213,13 +2213,13 @@ export default function StudentLifecycleManagementPage() {
 
                     return (
                       <div key={idx} className="relative">
-                        <div className={`absolute -left-[31px] top-0 h-4 w-4 rounded-full flex items-center justify-center border transition ${isCurrent ? 'bg-blue-600 border-blue-600 text-white shadow' : isPast ? 'bg-emerald-500 border-emerald-500 text-white' : 'bg-white border-slate-300 text-slate-400'}`}>
+                        <div className={`absolute -left-[31px] top-0 h-4 w-4 rounded-full flex items-center justify-center border transition ${isCurrent ? 'bg-blue-600 border-blue-600 text-white shadow' : isPast ? 'bg-emerald-500 border-emerald-500 text-white' : 'bg-white border-border text-text-secondary'}`}>
                           {isPast ? <Check className="h-2.5 w-2.5" /> : <div className="h-1 w-1 bg-slate-300 rounded-full" />}
                         </div>
-                        <div className={`text-xs font-extrabold ${isCurrent ? 'text-blue-700' : isPast ? 'text-slate-800' : 'text-slate-400'}`}>
+                        <div className={`text-xs font-extrabold ${isCurrent ? 'text-blue-700' : isPast ? 'text-text-primary' : 'text-text-secondary'}`}>
                           {phase.title}
                         </div>
-                        <p className="text-[10.5px] text-slate-500 font-medium leading-relaxed mt-0.5">{phase.desc}</p>
+                        <p className="text-[10.5px] text-text-secondary font-medium leading-relaxed mt-0.5">{phase.desc}</p>
                       </div>
                     );
                   })}
@@ -2230,14 +2230,14 @@ export default function StudentLifecycleManagementPage() {
             {/* TAB 9: AUDIT TIMELINE */}
             {profileTab === 'timeline' && (
               <div className="space-y-4">
-                <h4 className="text-xs font-black uppercase text-slate-400">Chronological Audit Log Feed</h4>
-                <div className="relative border-l border-slate-200 ml-2 space-y-4 pl-4 pt-1">
+                <h4 className="text-xs font-black uppercase text-text-secondary">Chronological Audit Log Feed</h4>
+                <div className="relative border-l border-border ml-2 space-y-4 pl-4 pt-1">
                   {activeProfile.timeline.map((evt, idx) => (
                     <div key={idx} className="relative text-xs">
                       <div className="absolute -left-[21px] top-1.5 h-2 w-2 rounded-full bg-slate-400 border border-white" />
-                      <div className="text-[9.5px] font-bold text-slate-400">{evt.date}</div>
-                      <div className="font-extrabold text-slate-800 mt-0.5">{evt.title}</div>
-                      <p className="text-[10.5px] text-slate-500 font-medium leading-normal mt-0.5">{evt.description}</p>
+                      <div className="text-[9.5px] font-bold text-text-secondary">{evt.date}</div>
+                      <div className="font-extrabold text-text-primary mt-0.5">{evt.title}</div>
+                      <p className="text-[10.5px] text-text-secondary font-medium leading-normal mt-0.5">{evt.description}</p>
                     </div>
                   ))}
                 </div>
@@ -2258,11 +2258,11 @@ export default function StudentLifecycleManagementPage() {
           <div className={`bg-white overflow-hidden transition-all duration-300 ${
             (activeActionModal.type === 'edit' || activeActionModal.type === 'onboard') 
               ? 'max-w-none w-full h-full rounded-none border-none flex flex-col' 
-              : 'rounded-xl shadow-2xl border border-slate-200 w-full max-w-md animate-zoom-in'
+              : 'rounded-xl shadow-2xl border border-border w-full max-w-md animate-zoom-in'
           }`}>
             
             {/* Modal Header */}
-            <div className="bg-slate-50 px-5 py-4 border-b border-slate-100 flex justify-between items-center text-sm font-black text-slate-900">
+            <div className="bg-slate-50 px-5 py-4 border-b border-border flex justify-between items-center text-sm font-black text-text-primary">
               <h3>
                 {activeActionModal.type === 'onboard' && 'Enroll New Student'}
                 {activeActionModal.type === 'edit' && 'Modify Student Record'}
@@ -2277,7 +2277,7 @@ export default function StudentLifecycleManagementPage() {
               </h3>
               <button 
                 onClick={() => setActiveActionModal(null)}
-                className="text-slate-400 hover:text-slate-700 transition font-black text-lg"
+                className="text-text-secondary hover:text-text-primary transition font-black text-lg"
               >
                 ✕
               </button>
@@ -2294,7 +2294,7 @@ export default function StudentLifecycleManagementPage() {
                 activeActionModal.type === 'placement' ? handleUpdatePlacement :
                 handleExecuteBulkAction
               }
-              className={`text-slate-800 flex flex-col min-h-0 ${
+              className={`text-text-primary flex flex-col min-h-0 ${
                 (activeActionModal.type === 'edit' || activeActionModal.type === 'onboard') 
                   ? 'p-8 space-y-6 flex-1 h-full justify-between' 
                   : 'p-5 space-y-4'
@@ -2307,54 +2307,54 @@ export default function StudentLifecycleManagementPage() {
                   
                   {/* Section 1 */}
                   <div className="space-y-2">
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                    <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest border-b border-border pb-1">
                       Section 1: Personal Info
                     </div>
                     <div className="grid grid-cols-3 gap-3">
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Legal Name *</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Legal Name *</label>
                         <input 
                           type="text" 
                           required 
                           value={editForm.name}
                           onChange={e => setEditForm({ ...editForm, name: e.target.value })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Email Address *</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Email Address *</label>
                         <input 
                           type="email" 
                           required 
                           value={editForm.email}
                           onChange={e => setEditForm({ ...editForm, email: e.target.value })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Phone Number</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Phone Number</label>
                         <input 
                           type="text" 
                           value={editForm.phone}
                           onChange={e => setEditForm({ ...editForm, phone: e.target.value })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Date of Birth</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Date of Birth</label>
                         <input 
                           type="date" 
                           value={editForm.dob}
                           onChange={e => setEditForm({ ...editForm, dob: e.target.value })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Gender</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Gender</label>
                         <select 
                           value={editForm.gender}
                           onChange={e => setEditForm({ ...editForm, gender: e.target.value })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         >
                           <option value="Male">Male</option>
                           <option value="Female">Female</option>
@@ -2362,12 +2362,12 @@ export default function StudentLifecycleManagementPage() {
                         </select>
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Address</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Address</label>
                         <input 
                           type="text" 
                           value={editForm.address}
                           onChange={e => setEditForm({ ...editForm, address: e.target.value })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         />
                       </div>
                     </div>
@@ -2375,26 +2375,26 @@ export default function StudentLifecycleManagementPage() {
 
                   {/* Section 2 */}
                   <div className="space-y-2">
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                    <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest border-b border-border pb-1">
                       Section 2: Academic Info
                     </div>
                     <div className="grid grid-cols-3 gap-3">
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Institution *</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Institution *</label>
                         <input 
                           type="text" 
                           required
                           value={editForm.college}
                           onChange={e => setEditForm({ ...editForm, college: e.target.value })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Department</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Department</label>
                         <select 
                           value={editForm.department}
                           onChange={e => setEditForm({ ...editForm, department: e.target.value as any })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         >
                           <option value="CSE">CSE</option>
                           <option value="IT">IT</option>
@@ -2407,40 +2407,40 @@ export default function StudentLifecycleManagementPage() {
                         </select>
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Degree Focus</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Degree Focus</label>
                         <input 
                           type="text" 
                           value={editForm.degree}
                           onChange={e => setEditForm({ ...editForm, degree: e.target.value })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">CGPA (out of 10.0)</label>
+                        <label className="text-[10px] font-bold text-text-secondary">CGPA (out of 10.0)</label>
                         <input 
                           type="number" 
                           step="0.01"
                           value={editForm.cgpa}
                           onChange={e => setEditForm({ ...editForm, cgpa: Number(e.target.value) })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Current Study Year</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Current Study Year</label>
                         <input 
                           type="number" 
                           value={editForm.year}
                           onChange={e => setEditForm({ ...editForm, year: Number(e.target.value) })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Graduation Year</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Graduation Year</label>
                         <input 
                           type="number" 
                           value={editForm.graduationYear}
                           onChange={e => setEditForm({ ...editForm, graduationYear: Number(e.target.value) })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         />
                       </div>
                     </div>
@@ -2448,25 +2448,25 @@ export default function StudentLifecycleManagementPage() {
 
                   {/* Section 3 */}
                   <div className="space-y-2">
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                    <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest border-b border-border pb-1">
                       Section 3: Internship Mapping
                     </div>
                     <div className="grid grid-cols-3 gap-3">
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Program Mapped</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Program Mapped</label>
                         <input 
                           type="text" 
                           value={editForm.program}
                           onChange={e => setEditForm({ ...editForm, program: e.target.value })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Internship Type</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Internship Type</label>
                         <select 
                           value={editForm.internshipType}
                           onChange={e => setEditForm({ ...editForm, internshipType: e.target.value as any })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         >
                           <option value="Free Internship">Free Internship</option>
                           <option value="Paid Internship">Paid Internship</option>
@@ -2477,12 +2477,12 @@ export default function StudentLifecycleManagementPage() {
                         </select>
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-500">Batch Cohort</label>
+                        <label className="text-[10px] font-bold text-text-secondary">Batch Cohort</label>
                         <input 
                           type="text" 
                           value={editForm.batchName}
                           onChange={e => setEditForm({ ...editForm, batchName: e.target.value })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-xs font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         />
                       </div>
                     </div>
@@ -2495,42 +2495,42 @@ export default function StudentLifecycleManagementPage() {
               {activeActionModal.type === 'batch' && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">Target Batch Name *</label>
+                    <label className="text-[10px] font-bold text-text-secondary uppercase">Target Batch Name *</label>
                     <input 
                       type="text" 
                       required
                       value={batchForm.name}
                       onChange={e => setBatchForm({ ...batchForm, name: e.target.value })}
                       placeholder="e.g. Gamma Cohort 2026"
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">Mapped Program</label>
+                    <label className="text-[10px] font-bold text-text-secondary uppercase">Mapped Program</label>
                     <input 
                       type="text" 
                       value={batchForm.program}
                       onChange={e => setBatchForm({ ...batchForm, program: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase">Start Date</label>
+                      <label className="text-[10px] font-bold text-text-secondary uppercase">Start Date</label>
                       <input 
                         type="date" 
                         value={batchForm.startDate}
                         onChange={e => setBatchForm({ ...batchForm, startDate: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700"
+                        className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase">End Date</label>
+                      <label className="text-[10px] font-bold text-text-secondary uppercase">End Date</label>
                       <input 
                         type="date" 
                         value={batchForm.endDate}
                         onChange={e => setBatchForm({ ...batchForm, endDate: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700"
+                        className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary"
                       />
                     </div>
                   </div>
@@ -2541,7 +2541,7 @@ export default function StudentLifecycleManagementPage() {
               {activeActionModal.type === 'mentor' && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">Select Target Mentor *</label>
+                    <label className="text-[10px] font-bold text-text-secondary uppercase">Select Target Mentor *</label>
                     <select
                       value={mentorForm.mentorId}
                       onChange={e => {
@@ -2549,7 +2549,7 @@ export default function StudentLifecycleManagementPage() {
                         const mName = mId === 'emp-2' ? 'Bob Johnson' : mId === 'emp-3' ? 'Diana Prince' : 'Charlie Davis';
                         setMentorForm({ mentorId: mId, mentorName: mName });
                       }}
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 focus:outline-none"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     >
                       <option value="emp-2">Bob Johnson (Technical Engineering)</option>
                       <option value="emp-3">Diana Prince (Data Operations)</option>
@@ -2563,11 +2563,11 @@ export default function StudentLifecycleManagementPage() {
               {activeActionModal.type === 'status' && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">Shift Lifecycle Status *</label>
+                    <label className="text-[10px] font-bold text-text-secondary uppercase">Shift Lifecycle Status *</label>
                     <select
                       value={statusForm}
                       onChange={e => setStatusForm(e.target.value as any)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 focus:outline-none"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     >
                       <option value="Applied">Applied</option>
                       <option value="Approved">Approved</option>
@@ -2588,11 +2588,11 @@ export default function StudentLifecycleManagementPage() {
               {activeActionModal.type === 'placement' && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">Employment Pipeline Phase</label>
+                    <label className="text-[10px] font-bold text-text-secondary uppercase">Employment Pipeline Phase</label>
                     <select
                       value={placementForm.status}
                       onChange={e => setPlacementForm({ ...placementForm, status: e.target.value as any })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 focus:outline-none"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     >
                       <option value="Not Eligible">Not Eligible</option>
                       <option value="Eligible">Eligible</option>
@@ -2604,45 +2604,45 @@ export default function StudentLifecycleManagementPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase">Hiring Company</label>
+                      <label className="text-[10px] font-bold text-text-secondary uppercase">Hiring Company</label>
                       <input 
                         type="text" 
                         value={placementForm.company}
                         onChange={e => setPlacementForm({ ...placementForm, company: e.target.value })}
                         placeholder="e.g. Amazon India"
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 focus:outline-none"
+                        className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase">Package (CTC / LPA)</label>
+                      <label className="text-[10px] font-bold text-text-secondary uppercase">Package (CTC / LPA)</label>
                       <input 
                         type="text" 
                         value={placementForm.package}
                         onChange={e => setPlacementForm({ ...placementForm, package: e.target.value })}
                         placeholder="e.g. 15 LPA"
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 focus:outline-none"
+                        className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                       />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase">Interview Status</label>
+                      <label className="text-[10px] font-bold text-text-secondary uppercase">Interview Status</label>
                       <input 
                         type="text" 
                         value={placementForm.interviewStatus}
                         onChange={e => setPlacementForm({ ...placementForm, interviewStatus: e.target.value })}
                         placeholder="e.g. L2 Cleared"
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 focus:outline-none"
+                        className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase">Offer Acceptance Status</label>
+                      <label className="text-[10px] font-bold text-text-secondary uppercase">Offer Acceptance Status</label>
                       <input 
                         type="text" 
                         value={placementForm.offerStatus}
                         onChange={e => setPlacementForm({ ...placementForm, offerStatus: e.target.value })}
                         placeholder="e.g. Accepted"
-                        className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 focus:outline-none"
+                        className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                       />
                     </div>
                   </div>
@@ -2653,11 +2653,11 @@ export default function StudentLifecycleManagementPage() {
               {activeActionModal.type === 'bulkStatus' && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">Bulk Shift Lifecycle Status *</label>
+                    <label className="text-[10px] font-bold text-text-secondary uppercase">Bulk Shift Lifecycle Status *</label>
                     <select
                       value={bulkVal}
                       onChange={e => setBulkVal(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 focus:outline-none"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     >
                       <option value="">-- Choose Status --</option>
                       <option value="Applied">Applied</option>
@@ -2677,14 +2677,14 @@ export default function StudentLifecycleManagementPage() {
               {activeActionModal.type === 'bulkBatch' && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">Enter Batch Name *</label>
+                    <label className="text-[10px] font-bold text-text-secondary uppercase">Enter Batch Name *</label>
                     <input 
                       type="text"
                       required
                       value={bulkVal}
                       onChange={e => setBulkVal(e.target.value)}
                       placeholder="e.g. Sigma Cohort 2026"
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 focus:outline-none"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     />
                   </div>
                 </div>
@@ -2693,11 +2693,11 @@ export default function StudentLifecycleManagementPage() {
               {activeActionModal.type === 'bulkMentor' && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">Map Mentor *</label>
+                    <label className="text-[10px] font-bold text-text-secondary uppercase">Map Mentor *</label>
                     <select
                       value={bulkVal}
                       onChange={e => setBulkVal(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 focus:outline-none"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     >
                       <option value="">-- Select Mentor --</option>
                       <option value="emp-2">Bob Johnson (Technical Engineering)</option>
@@ -2711,25 +2711,25 @@ export default function StudentLifecycleManagementPage() {
               {activeActionModal.type === 'bulkNotify' && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">Broadcast Notice Alert Msg *</label>
+                    <label className="text-[10px] font-bold text-text-secondary uppercase">Broadcast Notice Alert Msg *</label>
                     <textarea
                       required
                       rows={3}
                       value={notifyMsg}
                       onChange={e => setNotifyMsg(e.target.value)}
                       placeholder="Enter system broadcast email/SMS text content here..."
-                      className="w-full bg-slate-50 border border-slate-200 rounded p-2 text-xs font-semibold text-slate-700 focus:outline-none"
+                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     />
                   </div>
                 </div>
               )}
 
               {/* Modal Buttons */}
-              <div className="flex gap-2 justify-end pt-4 border-t border-slate-100">
+              <div className="flex gap-2 justify-end pt-4 border-t border-border">
                 <button
                   type="button"
                   onClick={() => setActiveActionModal(null)}
-                  className="px-4 py-2 border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 rounded-lg text-xs font-bold transition"
+                  className="px-4 py-2 border border-border text-text-primary bg-white hover:bg-slate-50 rounded-lg text-xs font-bold transition"
                 >
                   Cancel
                 </button>

@@ -327,7 +327,7 @@ export default function ApplicationPage() {
     <div className="space-y-6 animate-slide-in min-h-[calc(100vh-120px)] pb-12">
       {/* Toast Notification */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-white border border-slate-100 rounded-xl px-4 py-3.5 shadow-2xl animate-slide-in ring-1 ring-black/5 max-w-sm">
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-white border border-border rounded-xl px-4 py-3.5 shadow-2xl animate-slide-in ring-1 ring-black/5 max-w-sm">
           <div className={`p-1.5 rounded-lg shrink-0 ${
             toast.type === 'success' ? 'bg-emerald-50 text-emerald-600' :
             toast.type === 'warning' ? 'bg-amber-50 text-amber-600' : 'bg-blue-50 text-blue-600'
@@ -343,7 +343,7 @@ export default function ApplicationPage() {
       )}
 
       {/* Main Page Header */}
-      <div className="flex flex-col gap-4 border-b border-slate-200/80 pb-5">
+      <div className="flex flex-col gap-4 border-b border-border/80 pb-5">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="text-[10px] font-black text-text-secondary uppercase tracking-widest flex items-center gap-1.5">
@@ -352,7 +352,7 @@ export default function ApplicationPage() {
               <span className="text-blue-600 font-extrabold">Applications Workspace</span>
             </div>
             <h2 className="text-2xl font-black text-text-primary mt-1 tracking-tight">Intern Pipeline Hub</h2>
-            <p className="text-xs text-text-secondary mt-1">
+            <p className="text-xs text-helper mt-1">
               Linear-styled candidate evaluation dashboard with real-time analytics, Kanban views, and scorecard controls.
             </p>
           </div>
@@ -381,7 +381,7 @@ export default function ApplicationPage() {
                   document.body.removeChild(link);
                   triggerToast('Export Complete', 'Exported applications database to CSV successfully.', 'success');
                 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 bg-white hover:bg-slate-50 text-text-secondary rounded-lg text-xs font-semibold shadow-sm transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 border border-border bg-white hover:bg-slate-50 text-text-secondary rounded-lg text-xs font-semibold shadow-sm transition-colors cursor-pointer"
               >
                 <FileSpreadsheet className="h-3.5 w-3.5" />
                 <span>Export CSV</span>
@@ -391,7 +391,7 @@ export default function ApplicationPage() {
         </div>
 
         {/* Dashboard Sub Tabs Navigation */}
-        <div className="flex items-center gap-1.5 bg-slate-100/70 border border-slate-200/50 p-1.5 rounded-xl w-fit">
+        <div className="flex items-center gap-1.5 bg-slate-100/70 border border-border/50 p-1.5 rounded-xl w-fit">
           <button 
             onClick={() => setActiveTab('dashboard')}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
@@ -444,42 +444,42 @@ export default function ApplicationPage() {
         <div className="space-y-6 animate-slide-in">
           {/* KPI grid */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col justify-between min-h-[96px] hover:border-slate-300 transition-colors">
+            <div className="bg-white border border-border rounded-xl p-4 shadow-sm flex flex-col justify-between min-h-[96px] hover:border-secondary transition-colors">
               <span className="text-[10px] font-black text-text-secondary uppercase tracking-widest">Total Active</span>
               <div className="flex items-baseline justify-between mt-2">
                 <span className="text-2xl font-black text-text-primary">{stats.total}</span>
                 <span className="text-[9px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded font-black">Apps</span>
               </div>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col justify-between min-h-[96px] hover:border-slate-300 transition-colors">
+            <div className="bg-white border border-border rounded-xl p-4 shadow-sm flex flex-col justify-between min-h-[96px] hover:border-secondary transition-colors">
               <span className="text-[10px] font-black text-text-secondary uppercase tracking-widest">Pending Review</span>
               <div className="flex items-baseline justify-between mt-2">
                 <span className="text-2xl font-black text-text-primary">{stats.pending}</span>
                 <span className="text-[9px] bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded font-black">In Queue</span>
               </div>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col justify-between min-h-[96px] hover:border-slate-300 transition-colors">
+            <div className="bg-white border border-border rounded-xl p-4 shadow-sm flex flex-col justify-between min-h-[96px] hover:border-secondary transition-colors">
               <span className="text-[10px] font-black text-text-secondary uppercase tracking-widest">Shortlisted</span>
               <div className="flex items-baseline justify-between mt-2">
                 <span className="text-2xl font-black text-text-primary">{stats.shortlisted}</span>
                 <span className="text-[9px] bg-purple-50 text-purple-600 px-1.5 py-0.5 rounded font-black">Cleared</span>
               </div>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col justify-between min-h-[96px] hover:border-slate-300 transition-colors">
+            <div className="bg-white border border-border rounded-xl p-4 shadow-sm flex flex-col justify-between min-h-[96px] hover:border-secondary transition-colors">
               <span className="text-[10px] font-black text-text-secondary uppercase tracking-widest">Interviews</span>
               <div className="flex items-baseline justify-between mt-2">
                 <span className="text-2xl font-black text-text-primary">{stats.interviews}</span>
                 <span className="text-[9px] bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded font-black">Talks</span>
               </div>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col justify-between min-h-[96px] hover:border-slate-300 transition-colors">
+            <div className="bg-white border border-border rounded-xl p-4 shadow-sm flex flex-col justify-between min-h-[96px] hover:border-secondary transition-colors">
               <span className="text-[10px] font-black text-text-secondary uppercase tracking-widest">Selected</span>
               <div className="flex items-baseline justify-between mt-2">
                 <span className="text-2xl font-black text-text-primary">{stats.selected}</span>
                 <span className="text-[9px] bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded font-black">Offers</span>
               </div>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col justify-between min-h-[96px] hover:border-slate-300 transition-colors">
+            <div className="bg-white border border-border rounded-xl p-4 shadow-sm flex flex-col justify-between min-h-[96px] hover:border-secondary transition-colors">
               <span className="text-[10px] font-black text-text-secondary uppercase tracking-widest">Avg Review Time</span>
               <div className="flex items-baseline justify-between mt-2">
                 <span className="text-2xl font-black text-text-primary">1.8d</span>
@@ -491,7 +491,7 @@ export default function ApplicationPage() {
           {/* Core Analytics Visualizations */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Visual Bar chart of Internship type distributions */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
               <h3 className="text-sm font-bold text-text-primary">Applications by Internship Type</h3>
               <div className="space-y-3.5 pt-2">
                 {Object.entries(stats.types).map(([type, count]) => {
@@ -517,11 +517,11 @@ export default function ApplicationPage() {
             </div>
 
             {/* Top Colleges */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
               <h3 className="text-sm font-bold text-text-primary">Applications by College</h3>
               <div className="space-y-3 pt-2">
                 {Object.entries(stats.colleges).map(([college, count]) => (
-                  <div key={college} className="flex items-center justify-between text-xs border-b border-slate-100 pb-2.5 last:border-0 last:pb-0">
+                  <div key={college} className="flex items-center justify-between text-xs border-b border-border pb-2.5 last:border-0 last:pb-0">
                     <span className="font-semibold text-text-primary max-w-[200px] truncate">{college}</span>
                     <span className="bg-slate-100 font-bold px-2 py-0.5 rounded-full text-text-secondary text-[10px]">
                       {count} {count === 1 ? 'applicant' : 'applicants'}
@@ -532,7 +532,7 @@ export default function ApplicationPage() {
             </div>
 
             {/* Top Skills Tags */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
               <h3 className="text-sm font-bold text-text-primary">Top Skills Distribution</h3>
               <div className="flex flex-wrap gap-2.5 pt-2">
                 {stats.topSkills.map(([skill, count]) => {
@@ -549,9 +549,9 @@ export default function ApplicationPage() {
           </div>
 
           {/* Recent Submissions Feed */}
-          <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+          <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
             <h3 className="text-sm font-bold text-text-primary">Recent Applications Feed</h3>
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-border">
               {applications.slice(0, 4).map((app) => (
                 <div key={app.id} className="flex items-center justify-between py-4.5 first:pt-0 last:pb-0">
                   <div className="flex items-center gap-3">
@@ -589,7 +589,7 @@ export default function ApplicationPage() {
       {activeTab === 'applications' && (
         <div className="space-y-4 animate-slide-in">
           {/* Filters, Search & Toolbar Area */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white border border-slate-200 p-3 rounded-xl shadow-sm">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white border border-border p-3 rounded-xl shadow-sm">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary" />
               <input 
@@ -597,7 +597,7 @@ export default function ApplicationPage() {
                 placeholder="Search candidates, skills, colleges, etc..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-xs focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-medium placeholder-slate-400"
+                className="w-full pl-9 pr-4 py-2 border border-border rounded-lg text-xs focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-medium placeholder-slate-400"
               />
             </div>
             
@@ -605,7 +605,7 @@ export default function ApplicationPage() {
               <div className="relative">
                 <button 
                   onClick={() => setShowFiltersPopover(!showFiltersPopover)}
-                  className={`flex items-center gap-1.5 px-3 py-2 border border-slate-200 rounded-lg text-xs font-bold shadow-sm transition-colors cursor-pointer bg-white ${
+                  className={`flex items-center gap-1.5 px-3 py-2 border border-border rounded-lg text-xs font-bold shadow-sm transition-colors cursor-pointer bg-white ${
                     showFiltersPopover ? 'bg-slate-50 text-blue-600 border-blue-300' : 'text-text-secondary hover:bg-slate-50'
                   }`}
                 >
@@ -618,8 +618,8 @@ export default function ApplicationPage() {
                 
                 {/* Advanced Filters Panel */}
                 {showFiltersPopover && (
-                  <div className="absolute right-0 top-full mt-2 w-72 bg-white border border-slate-200 rounded-xl shadow-2xl z-40 p-4 space-y-3.5 animate-slide-in">
-                    <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                  <div className="absolute right-0 top-full mt-2 w-72 bg-white border border-border rounded-xl shadow-2xl z-40 p-4 space-y-3.5 animate-slide-in">
+                    <div className="flex items-center justify-between border-b border-border pb-2">
                       <span className="text-[10px] font-black text-text-secondary uppercase tracking-wider">Refine Pipeline</span>
                       <button 
                         onClick={() => {
@@ -643,7 +643,7 @@ export default function ApplicationPage() {
                       <select 
                         value={filterType}
                         onChange={(e) => setFilterType(e.target.value)}
-                        className="w-full text-xs font-semibold border border-slate-200 rounded-lg p-1.5 bg-white"
+                        className="w-full text-xs font-semibold border border-border rounded-lg p-1.5 bg-white"
                       >
                         <option value="all">All Types</option>
                         <option value="free">Free</option>
@@ -659,7 +659,7 @@ export default function ApplicationPage() {
                       <select 
                         value={filterStatus}
                         onChange={(e) => setFilterStatus(e.target.value)}
-                        className="w-full text-xs font-semibold border border-slate-200 rounded-lg p-1.5 bg-white"
+                        className="w-full text-xs font-semibold border border-border rounded-lg p-1.5 bg-white"
                       >
                         <option value="all">All Statuses</option>
                         <option value="New">New</option>
@@ -679,7 +679,7 @@ export default function ApplicationPage() {
                       <select 
                         value={filterCgpa}
                         onChange={(e) => setFilterCgpa(e.target.value)}
-                        className="w-full text-xs font-semibold border border-slate-200 rounded-lg p-1.5 bg-white"
+                        className="w-full text-xs font-semibold border border-border rounded-lg p-1.5 bg-white"
                       >
                         <option value="all">All Grades</option>
                         <option value="9+">Outstanding (&gt;= 9.0)</option>
@@ -693,7 +693,7 @@ export default function ApplicationPage() {
                       <select 
                         value={filterReviewer}
                         onChange={(e) => setFilterReviewer(e.target.value)}
-                        className="w-full text-xs font-semibold border border-slate-200 rounded-lg p-1.5 bg-white"
+                        className="w-full text-xs font-semibold border border-border rounded-lg p-1.5 bg-white"
                       >
                         <option value="all">All Reviewers</option>
                         {filterOptions.reviewers.map(r => (
@@ -707,7 +707,7 @@ export default function ApplicationPage() {
                       <select 
                         value={filterCollege}
                         onChange={(e) => setFilterCollege(e.target.value)}
-                        className="w-full text-xs font-semibold border border-slate-200 rounded-lg p-1.5 bg-white truncate"
+                        className="w-full text-xs font-semibold border border-border rounded-lg p-1.5 bg-white truncate"
                       >
                         <option value="all">All Colleges</option>
                         {filterOptions.colleges.map(c => (
@@ -721,7 +721,7 @@ export default function ApplicationPage() {
                       <select 
                         value={filterPayment}
                         onChange={(e) => setFilterPayment(e.target.value)}
-                        className="w-full text-xs font-semibold border border-slate-200 rounded-lg p-1.5 bg-white"
+                        className="w-full text-xs font-semibold border border-border rounded-lg p-1.5 bg-white"
                       >
                         <option value="all">All Payments</option>
                         <option value="verified">Verified</option>
@@ -743,10 +743,10 @@ export default function ApplicationPage() {
           </div>
 
           {/* High Density Candidates Table */}
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+          <div className="bg-white border border-border rounded-xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs whitespace-nowrap">
-                <thead className="bg-slate-50/80 border-b border-slate-200 text-text-secondary font-bold uppercase tracking-wider">
+                <thead className="bg-slate-50/80 border-b border-border text-text-secondary font-bold uppercase tracking-wider">
                   <tr>
                     <th className="px-4 py-3.5 w-10">
                       <input 
@@ -759,7 +759,7 @@ export default function ApplicationPage() {
                             setSelectedIds([]);
                           }
                         }}
-                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer h-3.5 w-3.5"
+                        className="rounded border-border text-blue-600 focus:ring-primary cursor-pointer h-3.5 w-3.5"
                       />
                     </th>
                     <th className="px-4 py-3.5">ID</th>
@@ -774,7 +774,7 @@ export default function ApplicationPage() {
                     <th className="px-4 py-3.5 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-border">
                   {filteredApplications.length > 0 ? (
                     filteredApplications.map((app) => {
                       const isSelected = selectedIds.includes(app.id);
@@ -794,7 +794,7 @@ export default function ApplicationPage() {
                                   setSelectedIds(selectedIds.filter(id => id !== app.id));
                                 }
                               }}
-                              className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer h-3.5 w-3.5"
+                              className="rounded border-border text-blue-600 focus:ring-primary cursor-pointer h-3.5 w-3.5"
                             />
                           </td>
                           <td className="px-4 py-4 font-mono font-bold text-text-secondary text-[10px]">
@@ -826,7 +826,7 @@ export default function ApplicationPage() {
                               app.internshipType === 'paid' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
                               app.internshipType === 'stipend' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
                               app.internshipType === 'industrial' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
-                              'bg-slate-50 text-text-primary border border-slate-200'
+                              'bg-slate-50 text-text-primary border border-border'
                             }`}>
                               {app.internshipType}
                             </span>
@@ -862,7 +862,7 @@ export default function ApplicationPage() {
                           <td className="px-4 py-4">
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black border ${
                               app.status === 'Accepted' || app.status === 'Selected' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                              app.status === 'Pending' || app.status === 'New' ? 'bg-slate-50 text-text-primary border-slate-200' :
+                              app.status === 'Pending' || app.status === 'New' ? 'bg-slate-50 text-text-primary border-border' :
                               app.status === 'Under Review' ? 'bg-blue-50 text-blue-700 border-blue-200' :
                               app.status === 'Shortlisted' ? 'bg-purple-50 text-purple-700 border-purple-200' :
                               app.status === 'Interview Scheduled' || app.status === 'Interview' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' :
@@ -910,7 +910,7 @@ export default function ApplicationPage() {
 
           {/* Sticky Bulk Action Panel */}
           {selectedIds.length > 0 && (
-            <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-5 z-40 border border-slate-800 animate-slide-in">
+            <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-5 z-40 border border-border animate-slide-in">
               <span className="text-xs font-bold text-slate-300">
                 Selected <span className="text-white font-black">{selectedIds.length}</span> candidates
               </span>
@@ -937,7 +937,7 @@ export default function ApplicationPage() {
                       placeholder="Reviewer Name" 
                       value={bulkReviewerName}
                       onChange={(e) => setBulkReviewerName(e.target.value)}
-                      className="bg-slate-800 text-white border border-slate-700 rounded px-2 py-1 text-[10px] w-28 focus:outline-none"
+                      className="bg-slate-800 text-white border border-border rounded px-2 py-1 text-[10px] w-28 focus:outline-none"
                     />
                     <button 
                       onClick={handleBulkAssign}
@@ -949,7 +949,7 @@ export default function ApplicationPage() {
                 ) : (
                   <button 
                     onClick={() => setShowBulkReviewerInput(true)}
-                    className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[10px] font-black uppercase tracking-wider transition-colors cursor-pointer border border-slate-700"
+                    className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[10px] font-black uppercase tracking-wider transition-colors cursor-pointer border border-border"
                   >
                     Assign
                   </button>
@@ -972,9 +972,9 @@ export default function ApplicationPage() {
           {(['New', 'Under Review', 'Shortlisted', 'Interview Scheduled', 'Selected', 'Rejected'] as ApplicationStatus[]).map((col) => {
             const colApps = applications.filter(a => a.status === col);
             return (
-              <div key={col} className="bg-slate-100/60 rounded-xl p-3 border border-slate-200/50 flex flex-col min-w-[200px] h-[550px]">
+              <div key={col} className="bg-slate-100/60 rounded-xl p-3 border border-border/50 flex flex-col min-w-[200px] h-[550px]">
                 {/* Column Title */}
-                <div className="flex items-center justify-between pb-3.5 border-b border-slate-200">
+                <div className="flex items-center justify-between pb-3.5 border-b border-border">
                   <span className="text-[10px] font-black text-text-primary uppercase tracking-widest truncate">{col}</span>
                   <span className="bg-slate-200/80 font-mono font-bold text-[9px] px-2 py-0.5 rounded-full text-text-secondary">
                     {colApps.length}
@@ -987,7 +987,7 @@ export default function ApplicationPage() {
                     colApps.map(app => (
                       <div 
                         key={app.id} 
-                        className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-sm space-y-3 hover:border-slate-300 hover:shadow transition-all group"
+                        className="bg-white border border-border rounded-xl p-3.5 shadow-sm space-y-3 hover:border-secondary hover:shadow transition-all group"
                       >
                         <div className="flex items-center justify-between">
                           <span className="text-[9px] bg-slate-100 text-text-secondary font-mono px-1 rounded">{app.id}</span>
@@ -1008,7 +1008,7 @@ export default function ApplicationPage() {
                           <p className="text-[10px] text-text-secondary mt-0.5 truncate">{app.college}</p>
                         </div>
 
-                        <div className="flex items-center justify-between pt-1 text-[9px] font-semibold text-text-secondary border-t border-slate-100">
+                        <div className="flex items-center justify-between pt-1 text-[9px] font-semibold text-text-secondary border-t border-border">
                           <span>GPA: {app.cgpa.toFixed(1)}</span>
                           {app.aiMatchPercentage && (
                             <span className="text-blue-600 flex items-center gap-0.5">
@@ -1019,7 +1019,7 @@ export default function ApplicationPage() {
                         </div>
 
                         {/* Interactive Drag Stage Quick Move controls */}
-                        <div className="flex items-center justify-between pt-2 border-t border-dashed border-slate-100 group-hover:block hidden">
+                        <div className="flex items-center justify-between pt-2 border-t border-dashed border-border group-hover:block hidden">
                           <span className="text-[8px] font-black text-text-secondary uppercase tracking-widest block mb-1">Stage Ops</span>
                           <div className="flex gap-1.5">
                             {col !== 'Shortlisted' && col !== 'Selected' && (
@@ -1058,7 +1058,7 @@ export default function ApplicationPage() {
                       </div>
                     ))
                   ) : (
-                    <div className="h-full flex items-center justify-center border-2 border-dashed border-slate-200 rounded-xl p-4 text-center">
+                    <div className="h-full flex items-center justify-center border-2 border-dashed border-border rounded-xl p-4 text-center">
                       <p className="text-[10px] text-text-secondary italic">No candidates at this stage</p>
                     </div>
                   )}
@@ -1073,7 +1073,7 @@ export default function ApplicationPage() {
       {activeTab === 'reports' && (
         <div className="space-y-6 animate-slide-in">
           {/* Conversion Funnel */}
-          <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+          <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
             <h3 className="text-sm font-bold text-text-primary">Recruitment Conversion Funnel</h3>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-3 pt-3">
               {[
@@ -1083,7 +1083,7 @@ export default function ApplicationPage() {
                 { stage: 'Interviewed', count: stats.interviews, color: 'bg-indigo-600 text-white', pct: Math.round((stats.interviews / stats.total) * 100) },
                 { stage: 'Offers Extended', count: stats.selected, color: 'bg-emerald-600 text-white', pct: Math.round((stats.selected / stats.total) * 100) }
               ].map((step, idx) => (
-                <div key={step.stage} className="relative flex flex-col justify-between border border-slate-200 rounded-xl p-4 h-32 hover:border-slate-300">
+                <div key={step.stage} className="relative flex flex-col justify-between border border-border rounded-xl p-4 h-32 hover:border-secondary">
                   <div>
                     <span className="text-[10px] font-black text-text-secondary uppercase tracking-widest">Step {idx + 1}</span>
                     <h4 className="text-xs font-bold text-text-primary mt-1">{step.stage}</h4>
@@ -1101,18 +1101,18 @@ export default function ApplicationPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Recruiter Speed & Volume */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
               <h3 className="text-sm font-bold text-text-primary">Recruiter Review Speed & Volume</h3>
               <div className="overflow-x-auto pt-2">
                 <table className="w-full text-left text-xs whitespace-nowrap">
-                  <thead className="bg-slate-50 border-b border-slate-200 text-text-secondary font-bold uppercase">
+                  <thead className="bg-slate-50 border-b border-border text-text-secondary font-bold uppercase">
                     <tr>
                       <th className="px-4 py-2.5">Reviewer</th>
                       <th className="px-4 py-2.5">Reviewed Count</th>
                       <th className="px-4 py-2.5">Average Score</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-border">
                     {['Alice Vance', 'David Miller', 'Sarah Connor'].map(rev => {
                       const revApps = applications.filter(a => a.assignedReviewer === rev);
                       const scores = revApps.map(a => a.reviewScore).filter(Boolean) as number[];
@@ -1131,9 +1131,9 @@ export default function ApplicationPage() {
             </div>
 
             {/* Geographical Distribution */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
               <h3 className="text-sm font-bold text-text-primary">Applications by Location</h3>
-              <div className="divide-y divide-slate-100 pt-2">
+              <div className="divide-y divide-border pt-2">
                 {Array.from(new Set(applications.map(a => `${a.city}, ${a.state}`))).map(loc => {
                   const locCount = applications.filter(a => `${a.city}, ${a.state}` === loc).length;
                   return (
@@ -1142,7 +1142,7 @@ export default function ApplicationPage() {
                         <MapPin className="h-4 w-4 text-text-secondary shrink-0" />
                         <span>{loc}</span>
                       </div>
-                      <span className="bg-slate-50 border border-slate-200 font-bold px-2 py-0.5 rounded text-text-secondary font-mono">
+                      <span className="bg-slate-50 border border-border font-bold px-2 py-0.5 rounded text-text-secondary font-mono">
                         {locCount} app
                       </span>
                     </div>
@@ -1163,7 +1163,7 @@ export default function ApplicationPage() {
         {reviewApp && (
           <div className="flex flex-col h-full bg-slate-50/50">
             {/* Sticky Actions Header */}
-            <div className="shrink-0 bg-white border-b border-slate-200 p-4.5 flex items-center justify-between shadow-sm z-30">
+            <div className="shrink-0 bg-white border-b border-border p-4.5 flex items-center justify-between shadow-sm z-30">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full bg-slate-100 text-text-primary flex items-center justify-center font-black text-base shrink-0">
                   {reviewApp.candidateName.charAt(0)}
@@ -1215,8 +1215,8 @@ export default function ApplicationPage() {
               <div className="flex-1 overflow-y-auto p-6 space-y-6">
                 
                 {/* Section 1: Personal Info */}
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-                  <h4 className="text-xs font-black text-text-primary uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
+                  <h4 className="text-xs font-black text-text-primary uppercase tracking-wider flex items-center gap-1.5 border-b border-border pb-2">
                     <User className="h-4 w-4 text-text-secondary" />
                     Personal Information
                   </h4>
@@ -1257,8 +1257,8 @@ export default function ApplicationPage() {
                 </div>
 
                 {/* Section 2: Academic Info */}
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-                  <h4 className="text-xs font-black text-text-primary uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
+                  <h4 className="text-xs font-black text-text-primary uppercase tracking-wider flex items-center gap-1.5 border-b border-border pb-2">
                     <GraduationCap className="h-4 w-4 text-text-secondary" />
                     Academic Credentials
                   </h4>
@@ -1291,8 +1291,8 @@ export default function ApplicationPage() {
                 </div>
 
                 {/* Section 3: Professional Portfolio */}
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-                  <h4 className="text-xs font-black text-text-primary uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
+                  <h4 className="text-xs font-black text-text-primary uppercase tracking-wider flex items-center gap-1.5 border-b border-border pb-2">
                     <Briefcase className="h-4 w-4 text-text-secondary" />
                     Professional Portfolio
                   </h4>
@@ -1301,7 +1301,7 @@ export default function ApplicationPage() {
                       <span className="text-text-secondary font-semibold block uppercase text-[10px] mb-1.5">Tech Skills</span>
                       <div className="flex flex-wrap gap-1.5">
                         {reviewApp.skills.map(s => (
-                          <span key={s} className="bg-slate-50 border border-slate-200 text-text-primary font-semibold px-2 py-0.5 rounded text-[10px]">
+                          <span key={s} className="bg-slate-50 border border-border text-text-primary font-semibold px-2 py-0.5 rounded text-[10px]">
                             {s}
                           </span>
                         ))}
@@ -1332,7 +1332,7 @@ export default function ApplicationPage() {
                     </div>
                     <div>
                       <span className="text-text-secondary font-semibold block uppercase text-[10px]">Project Work Experience</span>
-                      <p className="text-text-primary leading-relaxed mt-1 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                      <p className="text-text-primary leading-relaxed mt-1 bg-slate-50 p-2.5 rounded-lg border border-border">
                         {reviewApp.projectExperience}
                       </p>
                     </div>
@@ -1341,8 +1341,8 @@ export default function ApplicationPage() {
 
                 {/* Section 4: Internship Specific Dynamics */}
                 {reviewApp.internshipType === 'paid' && (
-                  <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-                    <h4 className="text-xs font-black text-text-primary uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                  <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
+                    <h4 className="text-xs font-black text-text-primary uppercase tracking-wider flex items-center gap-1.5 border-b border-border pb-2">
                       <AlertCircle className="h-4 w-4 text-amber-500" />
                       Paid Internship Verification
                     </h4>
@@ -1384,7 +1384,7 @@ export default function ApplicationPage() {
                       </div>
                       
                       {/* Simulated Payment Receipt Attachment Preview */}
-                      <div className="border border-slate-200 rounded-xl p-3.5 bg-slate-50 flex flex-col justify-between h-40">
+                      <div className="border border-border rounded-xl p-3.5 bg-slate-50 flex flex-col justify-between h-40">
                         <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-wider text-text-secondary">
                           <span>Screenshot Preview</span>
                           <Eye className="h-4 w-4" />
@@ -1399,15 +1399,15 @@ export default function ApplicationPage() {
                 )}
 
                 {reviewApp.internshipType === 'stipend' && (
-                  <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-                    <h4 className="text-xs font-black text-text-primary uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                  <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
+                    <h4 className="text-xs font-black text-text-primary uppercase tracking-wider flex items-center gap-1.5 border-b border-border pb-2">
                       <Sparkles className="h-4 w-4 text-blue-500" />
                       Stipend Specific Experience
                     </h4>
                     <div className="text-xs space-y-3.5">
                       <div>
                         <span className="text-text-secondary font-semibold block uppercase text-[10px]">Candidate Relevant Experience</span>
-                        <p className="text-text-primary leading-relaxed mt-1 font-medium bg-slate-50 p-2.5 rounded-lg border border-slate-100">{reviewApp.relevantExperience || 'N/A'}</p>
+                        <p className="text-text-primary leading-relaxed mt-1 font-medium bg-slate-50 p-2.5 rounded-lg border border-border">{reviewApp.relevantExperience || 'N/A'}</p>
                       </div>
                       <div>
                         <span className="text-text-secondary font-semibold block uppercase text-[10px]">AI-Generated Experience Evaluation</span>
@@ -1418,8 +1418,8 @@ export default function ApplicationPage() {
                 )}
 
                 {reviewApp.internshipType === 'industrial' && (
-                  <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-                    <h4 className="text-xs font-black text-text-primary uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                  <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
+                    <h4 className="text-xs font-black text-text-primary uppercase tracking-wider flex items-center gap-1.5 border-b border-border pb-2">
                       <Layers className="h-4 w-4 text-emerald-500" />
                       Industrial Specifics
                     </h4>
@@ -1436,15 +1436,15 @@ export default function ApplicationPage() {
                       </div>
                       <div>
                         <span className="text-text-secondary font-semibold block uppercase text-[10px]">Prior Tech Environment History</span>
-                        <p className="text-text-primary leading-relaxed mt-1 bg-slate-50 p-2.5 rounded-lg border border-slate-100">{reviewApp.technicalExperience || 'N/A'}</p>
+                        <p className="text-text-primary leading-relaxed mt-1 bg-slate-50 p-2.5 rounded-lg border border-border">{reviewApp.technicalExperience || 'N/A'}</p>
                       </div>
                     </div>
                   </div>
                 )}
 
                 {reviewApp.internshipType === 'research' && (
-                  <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-                    <h4 className="text-xs font-black text-text-primary uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                  <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
+                    <h4 className="text-xs font-black text-text-primary uppercase tracking-wider flex items-center gap-1.5 border-b border-border pb-2">
                       <BookOpen className="h-4 w-4 text-purple-500" />
                       Research Details
                     </h4>
@@ -1461,15 +1461,15 @@ export default function ApplicationPage() {
                       </div>
                       <div>
                         <span className="text-text-secondary font-semibold block uppercase text-[10px]">Research Statement Summary</span>
-                        <p className="text-text-primary leading-relaxed mt-1 bg-slate-50 p-2.5 rounded-lg border border-slate-100">{reviewApp.researchStatement || 'N/A'}</p>
+                        <p className="text-text-primary leading-relaxed mt-1 bg-slate-50 p-2.5 rounded-lg border border-border">{reviewApp.researchStatement || 'N/A'}</p>
                       </div>
                     </div>
                   </div>
                 )}
 
                 {/* Section 5: Resume Embedded Frame placeholder */}
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
+                  <div className="flex items-center justify-between border-b border-border pb-2">
                     <h4 className="text-xs font-black text-text-primary uppercase tracking-wider flex items-center gap-1.5">
                       <FileText className="h-4 w-4 text-text-secondary" />
                       Resume Documents
@@ -1487,13 +1487,13 @@ export default function ApplicationPage() {
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
                     {/* Simulated document PDF wrapper */}
-                    <div className="md:col-span-2 border border-slate-200 rounded-xl p-4 bg-slate-100 flex flex-col items-center justify-center min-h-[140px]">
+                    <div className="md:col-span-2 border border-border rounded-xl p-4 bg-slate-100 flex flex-col items-center justify-center min-h-[140px]">
                       <FileText className="h-12 w-12 text-slate-300" />
                       <span className="font-bold text-text-primary mt-2">{reviewApp.resumeUrl}</span>
                       <span className="text-[10px] text-text-secondary mt-0.5">Mock Resume Document Attached</span>
                     </div>
 
-                    <div className="bg-slate-50 rounded-xl p-3 border border-slate-100 space-y-2">
+                    <div className="bg-slate-50 rounded-xl p-3 border border-border space-y-2">
                       <span className="text-[9px] font-black text-text-secondary uppercase tracking-wider block">AI Resume Parser Summary</span>
                       <p className="text-[11px] text-text-secondary leading-relaxed">{reviewApp.aiResumeSummary || 'Resume parsing text pending.'}</p>
                     </div>
@@ -1501,28 +1501,28 @@ export default function ApplicationPage() {
                 </div>
 
                 {/* Section 6: Motivation Statement */}
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-                  <h4 className="text-xs font-black text-text-primary uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
+                  <h4 className="text-xs font-black text-text-primary uppercase tracking-wider flex items-center gap-1.5 border-b border-border pb-2">
                     <Sparkles className="h-4 w-4 text-indigo-500" />
                     Motivation & AI Assessment
                   </h4>
                   <div className="text-xs space-y-3">
                     <div>
                       <span className="text-text-secondary font-semibold block uppercase text-[10px]">Why do you want this Internship?</span>
-                      <p className="text-text-primary leading-relaxed mt-1.5 bg-slate-50 p-2.5 rounded-lg border border-slate-100">{reviewApp.whyInternship}</p>
+                      <p className="text-text-primary leading-relaxed mt-1.5 bg-slate-50 p-2.5 rounded-lg border border-border">{reviewApp.whyInternship}</p>
                     </div>
                     <div className="grid grid-cols-3 gap-3 pt-1 text-[11px]">
-                      <div className="bg-slate-50 p-2 rounded border border-slate-100 text-center">
+                      <div className="bg-slate-50 p-2 rounded border border-border text-center">
                         <span className="text-text-secondary block text-[9px] uppercase">Sentiment Analysis</span>
                         <span className={`font-bold block mt-0.5 ${reviewApp.aiSentiment === 'Positive' ? 'text-emerald-600' : 'text-text-secondary'}`}>
                           {reviewApp.aiSentiment || 'Neutral'}
                         </span>
                       </div>
-                      <div className="bg-slate-50 p-2 rounded border border-slate-100 text-center">
+                      <div className="bg-slate-50 p-2 rounded border border-border text-center">
                         <span className="text-text-secondary block text-[9px] uppercase">Commitment Score</span>
                         <span className="font-bold text-text-primary block mt-0.5">{reviewApp.aiCommitmentScore || 0}/100</span>
                       </div>
-                      <div className="bg-slate-50 p-2 rounded border border-slate-100 text-center">
+                      <div className="bg-slate-50 p-2 rounded border border-border text-center">
                         <span className="text-text-secondary block text-[9px] uppercase">Comms Score</span>
                         <span className="font-bold text-text-primary block mt-0.5">{reviewApp.aiCommunicationScore || 0}/100</span>
                       </div>
@@ -1533,7 +1533,7 @@ export default function ApplicationPage() {
               </div>
 
               {/* Right Column: Scorecard & AI assistance panel */}
-              <div className="w-[340px] border-l border-slate-200 bg-white overflow-y-auto p-5 space-y-5 shrink-0">
+              <div className="w-[340px] border-l border-border bg-white overflow-y-auto p-5 space-y-5 shrink-0">
                 {/* AI assistance assessment overview */}
                 <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-4 space-y-3.5">
                   <div className="flex items-center justify-between">
@@ -1594,7 +1594,7 @@ export default function ApplicationPage() {
 
                 {/* Scorecard Inputs Workspace */}
                 <div className="space-y-4">
-                  <h4 className="text-xs font-black text-text-primary uppercase tracking-wider border-b border-slate-100 pb-2">
+                  <h4 className="text-xs font-black text-text-primary uppercase tracking-wider border-b border-border pb-2">
                     Recruiter Scorecard
                   </h4>
 
@@ -1659,7 +1659,7 @@ export default function ApplicationPage() {
                     <select 
                       value={overallRec}
                       onChange={(e) => setOverallRec(e.target.value)}
-                      className="w-full text-xs font-semibold border border-slate-200 rounded-lg p-2 bg-white"
+                      className="w-full text-xs font-semibold border border-border rounded-lg p-2 bg-white"
                     >
                       <option value="Strong Hire">Strong Hire</option>
                       <option value="Hire">Hire</option>
@@ -1677,7 +1677,7 @@ export default function ApplicationPage() {
                       onChange={(e) => setNotesText(e.target.value)}
                       rows={3}
                       placeholder="Enter technical interview thoughts, logic check outcomes..."
-                      className="w-full text-xs font-medium border border-slate-200 rounded-lg p-2.5 bg-white focus:outline-none focus:border-blue-500 placeholder-slate-300"
+                      className="w-full text-xs font-medium border border-border rounded-lg p-2.5 bg-white focus:outline-none focus:border-primary placeholder-slate-300"
                     ></textarea>
                   </div>
 
@@ -1688,7 +1688,7 @@ export default function ApplicationPage() {
                       onChange={(e) => setFeedbackText(e.target.value)}
                       rows={3}
                       placeholder="Strengths to maintain, gaps to fill for next cycle..."
-                      className="w-full text-xs font-medium border border-slate-200 rounded-lg p-2.5 bg-white focus:outline-none focus:border-blue-500 placeholder-slate-300"
+                      className="w-full text-xs font-medium border border-border rounded-lg p-2.5 bg-white focus:outline-none focus:border-primary placeholder-slate-300"
                     ></textarea>
                   </div>
 
@@ -1710,7 +1710,7 @@ export default function ApplicationPage() {
       {showResumeFullScreen && reviewApp && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-6 backdrop-blur-sm">
           <div className="bg-white rounded-2xl w-full max-w-4xl h-[90vh] flex flex-col shadow-2xl animate-slide-in">
-            <div className="shrink-0 p-4 border-b border-slate-200 flex items-center justify-between">
+            <div className="shrink-0 p-4 border-b border-border flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-black text-text-primary leading-tight">Resume Preview: {reviewApp.candidateName}</h3>
                 <span className="text-[10px] text-text-secondary font-mono mt-0.5">{reviewApp.resumeUrl}</span>

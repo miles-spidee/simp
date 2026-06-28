@@ -39,7 +39,7 @@ export default function ReportCenterPage() {
 
   if (!hasPermission('report.view')) {
     return (
-      <div className="flex h-[50vh] items-center justify-center text-slate-500">
+      <div className="flex h-[50vh] items-center justify-center text-text-secondary">
         <p>You do not have permission to view reports.</p>
       </div>
     );
@@ -48,7 +48,7 @@ export default function ReportCenterPage() {
   if (loading) {
     return (
       <div className="flex h-[50vh] items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+        <Loader2 className="w-8 h-8 animate-spin text-text-secondary" />
       </div>
     );
   }
@@ -56,25 +56,25 @@ export default function ReportCenterPage() {
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-text-primary flex items-center gap-2">
           <FileBarChart className="w-6 h-6 text-rose-600" />
           Report Center
         </h1>
-        <p className="text-slate-500 text-sm mt-1">Generate, schedule, and view system reports.</p>
+        <p className="text-text-secondary text-sm mt-1">Generate, schedule, and view system reports.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {templates.map(tpl => (
-          <div key={tpl.id} className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col">
-            <div className="flex items-center gap-2 text-slate-400 mb-3">
+          <div key={tpl.id} className="bg-white p-5 rounded-xl border border-border shadow-sm flex flex-col">
+            <div className="flex items-center gap-2 text-text-secondary mb-3">
               <FileText className="w-4 h-4" />
               <span className="text-xs uppercase tracking-wider font-bold">{tpl.category}</span>
             </div>
-            <h3 className="font-bold text-slate-800 mb-1">{tpl.name}</h3>
-            <p className="text-xs text-slate-500 mb-4 flex-grow">{tpl.description}</p>
+            <h3 className="font-bold text-text-primary mb-1">{tpl.name}</h3>
+            <p className="text-xs text-text-secondary mb-4 flex-grow">{tpl.description}</p>
             <button 
               onClick={() => handleGenerate(tpl.id)}
-              className="w-full mt-auto flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer"
+              className="w-full mt-auto flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 border border-border text-text-primary py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer"
             >
               <Play className="w-3 h-3" />
               Generate
@@ -83,13 +83,13 @@ export default function ReportCenterPage() {
         ))}
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-slate-100 flex justify-between items-center">
-          <h2 className="font-bold text-slate-800">Generated Reports</h2>
+      <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+        <div className="p-4 border-b border-border flex justify-between items-center">
+          <h2 className="font-bold text-text-primary">Generated Reports</h2>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-slate-600">
-            <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+          <table className="w-full text-left text-sm text-text-secondary">
+            <thead className="bg-slate-50 text-xs uppercase text-text-secondary">
               <tr>
                 <th className="px-4 py-3 font-medium">Report Name</th>
                 <th className="px-4 py-3 font-medium">Category</th>
@@ -98,17 +98,17 @@ export default function ReportCenterPage() {
                 <th className="px-4 py-3 font-medium text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-border">
               {reports.map((report) => (
                 <tr key={report.id} className="hover:bg-slate-50">
-                  <td className="px-4 py-3 font-medium text-slate-900">{report.name}</td>
+                  <td className="px-4 py-3 font-medium text-text-primary">{report.name}</td>
                   <td className="px-4 py-3">
-                    <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs font-medium">
+                    <span className="bg-slate-100 text-text-secondary px-2 py-1 rounded text-xs font-medium">
                       {report.type}
                     </span>
                   </td>
                   <td className="px-4 py-3 flex items-center gap-2">
-                    <Calendar className="w-3 h-3 text-slate-400" />
+                    <Calendar className="w-3 h-3 text-text-secondary" />
                     {new Date(report.generatedDate).toLocaleDateString()}
                   </td>
                   <td className="px-4 py-3">

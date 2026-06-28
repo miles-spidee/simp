@@ -20,7 +20,7 @@ const Toast: React.FC<ToastProps> = ({ title, message, type = 'error', onClose }
   const iconColor = isSuccess ? 'text-emerald-500' : isWarning ? 'text-amber-500' : isInfo ? 'text-blue-500' : 'text-red-600';
 
   return (
-    <div className="fixed bottom-8 right-8 z-50 flex w-[420px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl bg-white shadow-2xl border border-gray-100/80 ring-1 ring-black/5 animate-slide-in">
+    <div className="fixed bottom-8 right-8 z-50 flex w-[420px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl bg-white shadow-2xl border border-border/80 ring-1 ring-black/5 animate-slide-in">
       <div className={`w-1.5 ${stripeColor} flex-shrink-0`}></div>
       <div className="flex flex-1 items-start p-5">
         <div className="flex-shrink-0">
@@ -43,13 +43,13 @@ const Toast: React.FC<ToastProps> = ({ title, message, type = 'error', onClose }
           )}
         </div>
         <div className="ml-3 w-0 flex-1 pt-0.5">
-          <p className="text-lg font-semibold text-gray-900">{title}</p>
-          <p className="mt-1 text-sm text-gray-500">{message}</p>
+          <p className="text-lg font-semibold text-text-primary">{title}</p>
+          <p className="mt-1 text-sm text-text-secondary">{message}</p>
         </div>
         <div className="ml-4 flex flex-shrink-0">
-          <button type="button" onClick={onClose} className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none">
+          <button type="button" onClick={onClose} className="inline-flex rounded-md bg-white text-text-secondary hover:text-text-secondary focus:outline-none">
             <span className="sr-only">Close</span>
-            <svg className="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
+            <svg className="h-5 w-5 text-text-secondary" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" clipRule="evenodd" />
             </svg>
           </button>

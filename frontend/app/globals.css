@@ -22,6 +22,12 @@
   
   --color-border: #D9E3EA;
   
+  --color-input-bg: #FFFFFF;
+  --color-placeholder: #94A3B8;
+  --color-label: #475569;
+  --color-helper: #64748B;
+  --color-disabled: #94A3B8;
+  
   --color-success: #22C55E;
   --color-warning: #F59E0B;
   --color-error: #EF4444;

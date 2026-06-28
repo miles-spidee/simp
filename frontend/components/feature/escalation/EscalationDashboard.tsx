@@ -26,7 +26,7 @@ function SkeletonTable() {
   return (
     <div className="animate-pulse">
       {Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className="flex gap-4 px-5 py-4 border-b border-slate-100">
+        <div key={i} className="flex gap-4 px-5 py-4 border-b border-border">
           <div className="h-4 w-24 bg-slate-200 rounded" />
           <div className="h-4 w-20 bg-slate-200 rounded" />
           <div className="h-4 w-28 bg-slate-200 rounded" />
@@ -51,7 +51,7 @@ const typeColors: Record<string, string> = {
 const statusColors: Record<string, string> = {
   Pending: 'bg-amber-100 text-amber-700',
   Resolved: 'bg-emerald-100 text-emerald-700',
-  Ignored: 'bg-slate-100 text-slate-500',
+  Ignored: 'bg-slate-100 text-text-secondary',
 };
 
 function getTimeSince(date: string) {
@@ -126,7 +126,7 @@ export default function EscalationDashboard() {
     { title: 'Total Escalations', value: stats.totalEscalations, icon: ShieldAlert, color: 'text-blue-600', bg: 'bg-blue-50' },
     { title: 'Pending', value: stats.pendingEscalations, icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
     { title: 'Resolved', value: stats.resolvedEscalations, icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { title: 'Ignored', value: stats.ignoredEscalations, icon: EyeOff, color: 'text-slate-500', bg: 'bg-slate-100' },
+    { title: 'Ignored', value: stats.ignoredEscalations, icon: EyeOff, color: 'text-text-secondary', bg: 'bg-slate-100' },
   ];
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode; count: number }[] = [
@@ -148,8 +148,8 @@ export default function EscalationDashboard() {
             <Zap size={24} />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Escalation Engine</h1>
-            <p className="text-sm text-slate-500 mt-0.5">Automated workflow and issue escalations.</p>
+            <h1 className="text-2xl font-bold text-text-primary tracking-tight">Escalation Engine</h1>
+            <p className="text-sm text-text-secondary mt-0.5">Automated workflow and issue escalations.</p>
           </div>
         </div>
         <button
@@ -185,8 +185,8 @@ export default function EscalationDashboard() {
                   </span>
                 )}
               </div>
-              <p className="text-sm text-slate-500 font-medium mb-1">{c.title}</p>
-              <h3 className="text-2xl font-bold text-slate-900">{c.value}</h3>
+              <p className="text-sm text-text-secondary font-medium mb-1">{c.title}</p>
+              <h3 className="text-2xl font-bold text-text-primary">{c.value}</h3>
             </div>
           ))
         )}
@@ -200,14 +200,14 @@ export default function EscalationDashboard() {
             onClick={() => setActiveTab(tab.id)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
               activeTab === tab.id
-                ? 'bg-white text-slate-900 shadow-sm'
-                : 'text-slate-500 hover:text-slate-700'
+                ? 'bg-white text-text-primary shadow-sm'
+                : 'text-text-secondary hover:text-text-primary'
             }`}
           >
             {tab.icon}
             {tab.label}
             <span className={`text-xs px-1.5 py-0.5 rounded-md ${
-              activeTab === tab.id ? 'bg-slate-100 text-slate-600' : 'bg-slate-200/60 text-slate-400'
+              activeTab === tab.id ? 'bg-slate-100 text-text-secondary' : 'bg-slate-200/60 text-text-secondary'
             }`}>{tab.count}</span>
           </button>
         ))}
@@ -215,21 +215,21 @@ export default function EscalationDashboard() {
 
       {/* Escalation Logs Tab */}
       {activeTab === 'logs' && (
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
           {/* Filter Bar */}
-          <div className="p-4 border-b border-slate-100 space-y-3">
+          <div className="p-4 border-b border-border space-y-3">
             <div className="flex flex-wrap items-center gap-3">
               <div className="relative flex-1 min-w-[220px]">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" />
                 <input
                   type="text"
                   placeholder="Search by target name or type..."
                   value={search}
                   onChange={e => setSearch(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2.5 text-sm border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 transition-all outline-none"
+                  className="w-full pl-9 pr-4 py-2.5 text-sm border border-border rounded-xl bg-slate-50 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none"
                 />
                 {search && (
-                  <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                  <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-secondary">
                     <X className="w-3.5 h-3.5" />
                   </button>
                 )}
@@ -246,7 +246,7 @@ export default function EscalationDashboard() {
             <div className="flex flex-wrap gap-3">
               {/* Status pills */}
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-semibold uppercase text-slate-400 mr-1">Status</span>
+                <span className="text-[10px] font-semibold uppercase text-text-secondary mr-1">Status</span>
                 {statusOptions.map(opt => (
                   <button
                     key={opt}
@@ -254,7 +254,7 @@ export default function EscalationDashboard() {
                     className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                       statusFilter === opt
                         ? opt === 'All' ? 'bg-slate-900 text-white' : statusColors[opt] || 'bg-slate-900 text-white'
-                        : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                        : 'bg-slate-100 text-text-secondary hover:bg-slate-200'
                     }`}
                   >
                     {opt}
@@ -263,7 +263,7 @@ export default function EscalationDashboard() {
               </div>
               {/* Type pills */}
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-semibold uppercase text-slate-400 mr-1">Type</span>
+                <span className="text-[10px] font-semibold uppercase text-text-secondary mr-1">Type</span>
                 {typeOptions.map(opt => (
                   <button
                     key={opt}
@@ -271,7 +271,7 @@ export default function EscalationDashboard() {
                     className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                       typeFilter === opt
                         ? opt === 'All' ? 'bg-slate-900 text-white' : typeColors[opt] || 'bg-slate-900 text-white'
-                        : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                        : 'bg-slate-100 text-text-secondary hover:bg-slate-200'
                     }`}
                   >
                     {opt}
@@ -285,15 +285,15 @@ export default function EscalationDashboard() {
           {loading ? (
             <SkeletonTable />
           ) : filteredEscalations.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-slate-400">
+            <div className="flex flex-col items-center justify-center py-16 text-text-secondary">
               <ShieldAlert className="w-12 h-12 mb-3 opacity-40" />
-              <p className="font-medium text-slate-500">No escalations found</p>
+              <p className="font-medium text-text-secondary">No escalations found</p>
               <p className="text-sm mt-1">Try adjusting your search or filter criteria.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="bg-slate-50/80 text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-slate-50/80 text-xs uppercase text-text-secondary tracking-wider">
                   <tr>
                     <th className="px-5 py-3.5 font-semibold">Triggered</th>
                     <th className="px-5 py-3.5 font-semibold">Type</th>
@@ -304,17 +304,17 @@ export default function EscalationDashboard() {
                     <th className="px-5 py-3.5 font-semibold text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 text-slate-600">
+                <tbody className="divide-y divide-border text-text-secondary">
                   {filteredEscalations.map(e => (
                     <tr key={e.id} className="hover:bg-slate-50/80 transition-colors cursor-pointer" onClick={() => handleView(e)}>
                       <td className="px-5 py-3.5">
                         <div>
-                          <p className="text-xs font-medium text-slate-700">{getTimeSince(e.triggeredDate)}</p>
-                          <p className="text-[10px] text-slate-400">{new Date(e.triggeredDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
+                          <p className="text-xs font-medium text-text-primary">{getTimeSince(e.triggeredDate)}</p>
+                          <p className="text-[10px] text-text-secondary">{new Date(e.triggeredDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
                         </div>
                       </td>
                       <td className="px-5 py-3.5">
-                        <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full ${typeColors[e.type] || 'bg-slate-100 text-slate-600'}`}>
+                        <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full ${typeColors[e.type] || 'bg-slate-100 text-text-secondary'}`}>
                           {e.type}
                         </span>
                       </td>
@@ -323,18 +323,18 @@ export default function EscalationDashboard() {
                           <div className="h-7 w-7 rounded-full bg-gradient-to-br from-rose-500 to-orange-500 flex items-center justify-center text-white text-[10px] font-bold">
                             {e.targetName.split(' ').map(n => n[0]).join('').slice(0, 2)}
                           </div>
-                          <span className="font-semibold text-slate-900 text-xs">{e.targetName}</span>
+                          <span className="font-semibold text-text-primary text-xs">{e.targetName}</span>
                         </div>
                       </td>
                       <td className="px-5 py-3.5">
                         <div className="flex -space-x-1.5">
                           {e.notifiedUsers.slice(0, 3).map((u, i) => (
-                            <div key={i} className="h-6 w-6 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-[8px] font-bold text-slate-600" title={`${u.name} (${u.role})`}>
+                            <div key={i} className="h-6 w-6 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-[8px] font-bold text-text-secondary" title={`${u.name} (${u.role})`}>
                               {u.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                             </div>
                           ))}
                           {e.notifiedUsers.length > 3 && (
-                            <div className="h-6 w-6 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-[8px] font-bold text-slate-500">
+                            <div className="h-6 w-6 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-[8px] font-bold text-text-secondary">
                               +{e.notifiedUsers.length - 3}
                             </div>
                           )}
@@ -347,7 +347,7 @@ export default function EscalationDashboard() {
                       </td>
                       <td className="px-5 py-3.5 max-w-[150px]">
                         {e.resolutionNotes ? (
-                          <p className="text-xs text-slate-500 truncate">{e.resolutionNotes}</p>
+                          <p className="text-xs text-text-secondary truncate">{e.resolutionNotes}</p>
                         ) : (
                           <span className="text-xs text-slate-300">—</span>
                         )}
@@ -364,7 +364,7 @@ export default function EscalationDashboard() {
                               </button>
                               <button
                                 onClick={ev => { ev.stopPropagation(); handleIgnore(e.id); }}
-                                className="px-2.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors"
+                                className="px-2.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-text-secondary hover:bg-slate-200 transition-colors"
                               >
                                 Ignore
                               </button>
@@ -387,7 +387,7 @@ export default function EscalationDashboard() {
 
           {/* Results count */}
           {!loading && filteredEscalations.length > 0 && (
-            <div className="px-5 py-3 border-t border-slate-100 text-xs text-slate-400">
+            <div className="px-5 py-3 border-t border-border text-xs text-text-secondary">
               Showing {filteredEscalations.length} of {escalations.length} escalations
             </div>
           )}
@@ -396,38 +396,38 @@ export default function EscalationDashboard() {
 
       {/* Escalation Rules Tab */}
       {activeTab === 'rules' && (
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-          <div className="p-5 border-b border-slate-100">
-            <h2 className="text-base font-semibold text-slate-900">Escalation Rules</h2>
-            <p className="text-xs text-slate-400 mt-0.5">Automated triggers for workflow escalations</p>
+        <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
+          <div className="p-5 border-b border-border">
+            <h2 className="text-base font-semibold text-text-primary">Escalation Rules</h2>
+            <p className="text-xs text-text-secondary mt-0.5">Automated triggers for workflow escalations</p>
           </div>
           {loading ? <SkeletonTable /> : rules.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-slate-400">
+            <div className="flex flex-col items-center justify-center py-16 text-text-secondary">
               <Settings className="w-12 h-12 mb-3 opacity-40" />
-              <p className="font-medium text-slate-500">No rules configured</p>
+              <p className="font-medium text-text-secondary">No rules configured</p>
             </div>
           ) : (
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-border">
               {rules.map(rule => (
                 <div key={rule.id} className="p-5 hover:bg-slate-50/80 transition-colors">
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-4">
-                      <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${typeColors[rule.type] || 'bg-slate-100 text-slate-600'}`}>
+                      <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${typeColors[rule.type] || 'bg-slate-100 text-text-secondary'}`}>
                         <Zap className="w-5 h-5" />
                       </div>
                       <div>
                         <div className="flex items-center gap-2 mb-1">
-                          <span className={`px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full ${typeColors[rule.type] || 'bg-slate-100 text-slate-600'}`}>
+                          <span className={`px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full ${typeColors[rule.type] || 'bg-slate-100 text-text-secondary'}`}>
                             {rule.type}
                           </span>
                           <span className={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full ${
-                            rule.status === 'Active' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-400'
+                            rule.status === 'Active' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-text-secondary'
                           }`}>
                             {rule.status}
                           </span>
                         </div>
-                        <p className="text-sm font-medium text-slate-900">{rule.condition}</p>
-                        <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
+                        <p className="text-sm font-medium text-text-primary">{rule.condition}</p>
+                        <div className="flex items-center gap-4 mt-2 text-xs text-text-secondary">
                           <span className="flex items-center gap-1">
                             <Clock className="w-3 h-3" />
                             Trigger after {rule.triggerDays} day(s)
@@ -458,8 +458,8 @@ export default function EscalationDashboard() {
                 {selectedEscalation.targetName.split(' ').map(n => n[0]).join('').slice(0, 2)}
               </div>
               <div>
-                <h3 className="text-lg font-bold text-slate-900">{selectedEscalation.targetName}</h3>
-                <p className="text-sm text-slate-500">Target ID: {selectedEscalation.targetId}</p>
+                <h3 className="text-lg font-bold text-text-primary">{selectedEscalation.targetName}</h3>
+                <p className="text-sm text-text-secondary">Target ID: {selectedEscalation.targetId}</p>
                 <div className="flex items-center gap-2 mt-1">
                   <span className={`px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full ${typeColors[selectedEscalation.type]}`}>
                     {selectedEscalation.type}
@@ -474,14 +474,14 @@ export default function EscalationDashboard() {
             {/* Timeline Info */}
             <div className="bg-gradient-to-r from-rose-50 to-orange-50 rounded-2xl p-5 border border-rose-100 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-500 uppercase">Triggered</span>
-                <span className="text-sm font-bold text-slate-900">{getTimeSince(selectedEscalation.triggeredDate)}</span>
+                <span className="text-xs font-semibold text-text-secondary uppercase">Triggered</span>
+                <span className="text-sm font-bold text-text-primary">{getTimeSince(selectedEscalation.triggeredDate)}</span>
               </div>
-              <p className="text-sm text-slate-600">{new Date(selectedEscalation.triggeredDate).toLocaleString('en-IN')}</p>
+              <p className="text-sm text-text-secondary">{new Date(selectedEscalation.triggeredDate).toLocaleString('en-IN')}</p>
               {selectedEscalation.resolvedDate && (
                 <div className="flex items-center justify-between pt-2 border-t border-rose-100">
-                  <span className="text-xs font-semibold text-slate-500 uppercase">Resolved</span>
-                  <span className="text-sm font-medium text-slate-700">{new Date(selectedEscalation.resolvedDate).toLocaleString('en-IN')}</span>
+                  <span className="text-xs font-semibold text-text-secondary uppercase">Resolved</span>
+                  <span className="text-sm font-medium text-text-primary">{new Date(selectedEscalation.resolvedDate).toLocaleString('en-IN')}</span>
                 </div>
               )}
             </div>
@@ -489,28 +489,28 @@ export default function EscalationDashboard() {
             {/* Details Grid */}
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-slate-50 rounded-xl p-3">
-                <p className="text-xs text-slate-400">Rule ID</p>
-                <p className="text-sm font-medium text-slate-700 mt-0.5 font-mono">{selectedEscalation.ruleId}</p>
+                <p className="text-xs text-text-secondary">Rule ID</p>
+                <p className="text-sm font-medium text-text-primary mt-0.5 font-mono">{selectedEscalation.ruleId}</p>
               </div>
               <div className="bg-slate-50 rounded-xl p-3">
-                <p className="text-xs text-slate-400">Resolved By</p>
-                <p className="text-sm font-medium text-slate-700 mt-0.5">{selectedEscalation.resolvedBy || '—'}</p>
+                <p className="text-xs text-text-secondary">Resolved By</p>
+                <p className="text-sm font-medium text-text-primary mt-0.5">{selectedEscalation.resolvedBy || '—'}</p>
               </div>
             </div>
 
             {/* Notified Users */}
             <div className="space-y-2">
-              <h4 className="text-sm font-semibold text-slate-900">Notified Users</h4>
+              <h4 className="text-sm font-semibold text-text-primary">Notified Users</h4>
               <div className="space-y-2">
                 {selectedEscalation.notifiedUsers.map((u, i) => (
                   <div key={i} className="bg-slate-50 rounded-xl p-3 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600">
+                      <div className="h-8 w-8 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold text-text-secondary">
                         {u.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-slate-700">{u.name}</p>
-                        <p className="text-xs text-slate-400">{u.role}</p>
+                        <p className="text-sm font-medium text-text-primary">{u.name}</p>
+                        <p className="text-xs text-text-secondary">{u.role}</p>
                       </div>
                     </div>
                   </div>
@@ -520,12 +520,12 @@ export default function EscalationDashboard() {
 
             {/* Resolution Notes */}
             <div className="space-y-2">
-              <h4 className="text-sm font-semibold text-slate-900">Resolution Notes</h4>
+              <h4 className="text-sm font-semibold text-text-primary">Resolution Notes</h4>
               <div className="bg-slate-50 rounded-xl p-4">
                 {selectedEscalation.resolutionNotes ? (
-                  <p className="text-sm text-slate-600 leading-relaxed">{selectedEscalation.resolutionNotes}</p>
+                  <p className="text-sm text-text-secondary leading-relaxed">{selectedEscalation.resolutionNotes}</p>
                 ) : (
-                  <p className="text-sm text-slate-400 italic">No resolution notes provided.</p>
+                  <p className="text-sm text-text-secondary italic">No resolution notes provided.</p>
                 )}
               </div>
             </div>
@@ -542,7 +542,7 @@ export default function EscalationDashboard() {
                 </button>
                 <button
                   onClick={() => { handleIgnore(selectedEscalation.id); setDrawerOpen(false); }}
-                  className="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 py-2.5 rounded-xl font-medium text-sm transition-colors flex items-center justify-center gap-2"
+                  className="flex-1 bg-slate-200 hover:bg-slate-300 text-text-primary py-2.5 rounded-xl font-medium text-sm transition-colors flex items-center justify-center gap-2"
                 >
                   <EyeOff className="w-4 h-4" />
                   Ignore

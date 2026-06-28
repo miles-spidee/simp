@@ -581,7 +581,7 @@ export default function OrganizationManagementPage() {
       
       {/* Toast Notification Banner */}
       {toast && (
-        <div className="fixed top-5 right-5 z-[9999] flex items-center gap-3 px-4 py-3 bg-slate-900 border border-slate-800 text-white rounded-xl shadow-2xl animate-bounce-in max-w-sm">
+        <div className="fixed top-5 right-5 z-[9999] flex items-center gap-3 px-4 py-3 bg-slate-900 border border-border text-white rounded-xl shadow-2xl animate-bounce-in max-w-sm">
           {toast.type === 'success' && <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />}
           {toast.type === 'error' && <XCircle className="h-5 w-5 text-rose-400 shrink-0" />}
           {toast.type === 'info' && <AlertCircle className="h-5 w-5 text-blue-400 shrink-0" />}
@@ -590,16 +590,16 @@ export default function OrganizationManagementPage() {
       )}
 
       {/* Header Panel */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4 bg-white/60 backdrop-blur-md sticky top-0 z-40">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-4 bg-white/60 backdrop-blur-md sticky top-0 z-40">
         <div>
-          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+          <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest flex items-center gap-1.5">
             <span>Institutional Relations</span>
             <ChevronRight className="h-3 w-3" />
             <span className="text-blue-600 font-extrabold">Academic Organizations</span>
           </div>
-          <h2 className="text-2xl font-black text-slate-900 mt-1 tracking-tight flex items-center gap-2">
+          <h2 className="text-2xl font-black text-text-primary mt-1 tracking-tight flex items-center gap-2">
             IRM Center
-            <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-mono font-medium">v1.2 (Executive)</span>
+            <span className="text-[10px] bg-slate-100 text-text-secondary px-2 py-0.5 rounded font-mono font-medium">v1.2 (Executive)</span>
           </h2>
         </div>
 
@@ -609,8 +609,8 @@ export default function OrganizationManagementPage() {
               onClick={() => setActiveView('dashboard')}
               className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all duration-200 cursor-pointer ${
                 activeView === 'dashboard' 
-                  ? 'bg-white text-slate-900 shadow-sm' 
-                  : 'text-slate-500 hover:text-slate-800'
+                  ? 'bg-white text-text-primary shadow-sm' 
+                  : 'text-text-secondary hover:text-text-primary'
               }`}
             >
               Executive Dashboard
@@ -619,8 +619,8 @@ export default function OrganizationManagementPage() {
               onClick={() => setActiveView('directory')}
               className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all duration-200 cursor-pointer ${
                 activeView === 'directory' 
-                  ? 'bg-white text-slate-900 shadow-sm' 
-                  : 'text-slate-500 hover:text-slate-800'
+                  ? 'bg-white text-text-primary shadow-sm' 
+                  : 'text-text-secondary hover:text-text-primary'
               }`}
             >
               College Directory ({filteredOrganizations.length})
@@ -629,7 +629,7 @@ export default function OrganizationManagementPage() {
 
           <button 
             onClick={handleExportData}
-            className="flex items-center gap-1.5 px-3 py-2 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 bg-white rounded-lg text-xs font-bold text-slate-700 shadow-sm transition-all duration-200 cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-2 border border-border hover:border-secondary hover:bg-slate-50 bg-white rounded-lg text-xs font-bold text-text-primary shadow-sm transition-all duration-200 cursor-pointer"
           >
             <FileDown className="h-3.5 w-3.5" />
             <span>Export Chart</span>
@@ -656,10 +656,10 @@ export default function OrganizationManagementPage() {
               { label: 'Active Partnerships', val: kpiStats.active, icon: CheckCircle2, color: 'bg-emerald-50 text-emerald-600 border-emerald-100', filter: { name: 'status', val: 'Active' } },
               { label: 'Total Departments', val: kpiStats.departmentsCount, icon: Layers, color: 'bg-purple-50 text-purple-600 border-purple-100', filter: { name: 'status', val: 'all' } },
               { label: 'Coordinators Mapped', val: kpiStats.coordinatorsCount, icon: UserCheck, color: 'bg-indigo-50 text-indigo-600 border-indigo-100', filter: { name: 'status', val: 'all' } },
-              { label: 'Active Students', val: kpiStats.studentsCount, icon: Users, color: 'bg-sky-50 text-sky-600 border-sky-100', filter: { name: 'status', val: 'all' } },
+              { label: 'Active Students', val: kpiStats.studentsCount, icon: Users, color: 'bg-sky-50 text-text-secondary border-border', filter: { name: 'status', val: 'all' } },
               { label: 'Internship Programs', val: kpiStats.programsCount, icon: Briefcase, color: 'bg-amber-50 text-amber-600 border-amber-100', filter: { name: 'status', val: 'all' } },
               { label: 'Inactive / Expired', val: kpiStats.inactive, icon: XCircle, color: 'bg-rose-50 text-rose-600 border-rose-100', filter: { name: 'status', val: 'Partnership Expired' } },
-              { label: 'New This Month', val: 1, icon: Calendar, color: 'bg-slate-100 text-slate-800 border-slate-200', filter: { name: 'status', val: 'all' } }
+              { label: 'New This Month', val: 1, icon: Calendar, color: 'bg-slate-100 text-text-primary border-border', filter: { name: 'status', val: 'all' } }
             ].map((kpi, idx) => (
               <div 
                 key={idx}
@@ -670,11 +670,11 @@ export default function OrganizationManagementPage() {
                   setActiveView('directory');
                   showToast(`Roster filtered by: ${kpi.label}`);
                 }}
-                className="bg-white border border-slate-200 hover:border-blue-500 hover:shadow-md rounded-xl p-4 shadow-sm transition-all duration-200 cursor-pointer flex items-center justify-between group"
+                className="bg-white border border-border hover:border-secondary hover:shadow-md rounded-xl p-4 shadow-sm transition-all duration-200 cursor-pointer flex items-center justify-between group"
               >
                 <div>
-                  <div className="text-2xl font-black text-slate-800 tracking-tight">{kpi.val}</div>
-                  <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-0.5">{kpi.label}</div>
+                  <div className="text-2xl font-black text-text-primary tracking-tight">{kpi.val}</div>
+                  <div className="text-[10px] font-bold text-text-secondary uppercase tracking-wider mt-0.5">{kpi.label}</div>
                 </div>
                 <div className={`h-10 w-10 rounded-lg ${kpi.color} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform`}>
                   <kpi.icon className="h-5 w-5" />
@@ -687,8 +687,8 @@ export default function OrganizationManagementPage() {
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             
             {/* Chart 1: College Distribution by Type & Departments */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-              <h3 className="text-sm font-bold text-slate-900 tracking-tight flex items-center gap-1.5">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
+              <h3 className="text-sm font-bold text-text-primary tracking-tight flex items-center gap-1.5">
                 <Building2 className="h-4.5 w-4.5 text-blue-600" />
                 Colleges by Category & Depts
               </h3>
@@ -704,7 +704,7 @@ export default function OrganizationManagementPage() {
                   const percent = Math.round((item.count / organizations.length) * 100) || 0;
                   return (
                     <div key={index} className="space-y-1">
-                      <div className="flex justify-between text-xs font-semibold text-slate-700">
+                      <div className="flex justify-between text-xs font-semibold text-text-primary">
                         <span>{item.type}</span>
                         <span>{item.count} ({percent}%)</span>
                       </div>
@@ -717,13 +717,13 @@ export default function OrganizationManagementPage() {
               </div>
 
               {/* Department Aggregations */}
-              <div className="border-t border-slate-100 pt-4 space-y-2">
-                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Student Enrolment by Course Node</div>
-                <div className="grid grid-cols-2 gap-2 text-xs font-bold text-slate-700">
+              <div className="border-t border-border pt-4 space-y-2">
+                <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-2">Student Enrolment by Course Node</div>
+                <div className="grid grid-cols-2 gap-2 text-xs font-bold text-text-primary">
                   {Object.entries(departmentDistribution).map(([dept, count], idx) => (
-                    <div key={idx} className="bg-slate-50 border border-slate-100 rounded-lg p-2 flex justify-between">
-                      <span className="text-slate-500">{dept}</span>
-                      <span className="text-slate-900">{count}</span>
+                    <div key={idx} className="bg-slate-50 border border-border rounded-lg p-2 flex justify-between">
+                      <span className="text-text-secondary">{dept}</span>
+                      <span className="text-text-primary">{count}</span>
                     </div>
                   ))}
                 </div>
@@ -731,9 +731,9 @@ export default function OrganizationManagementPage() {
             </div>
 
             {/* Chart 2: Top Colleges performance leaderboard */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="text-sm font-bold text-slate-900 tracking-tight flex items-center gap-1.5">
+                <h3 className="text-sm font-bold text-text-primary tracking-tight flex items-center gap-1.5">
                   <Award className="h-4.5 w-4.5 text-emerald-600" />
                   Top Colleges Leaderboard
                 </h3>
@@ -742,7 +742,7 @@ export default function OrganizationManagementPage() {
                 <select 
                   value={leaderboardMetric}
                   onChange={(e) => setLeaderboardMetric(e.target.value as any)}
-                  className="text-[10px] font-bold border border-slate-200 rounded p-1 bg-white focus:outline-none"
+                  className="text-[10px] font-bold border border-border rounded p-1 bg-white focus:outline-none"
                 >
                   <option value="students">Student Count</option>
                   <option value="internships">Internships</option>
@@ -751,7 +751,7 @@ export default function OrganizationManagementPage() {
                 </select>
               </div>
 
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-border">
                 {leaderboardColleges.map((org, index) => {
                   let scoreLabel = '';
                   if (leaderboardMetric === 'students') {
@@ -774,13 +774,13 @@ export default function OrganizationManagementPage() {
                       className="py-2.5 flex items-center justify-between hover:bg-slate-50 px-2 rounded-lg cursor-pointer transition-colors group"
                     >
                       <div className="flex items-center gap-2.5">
-                        <span className="text-xs font-black text-slate-400 w-4">{index + 1}</span>
+                        <span className="text-xs font-black text-text-secondary w-4">{index + 1}</span>
                         <div className="h-7 w-7 rounded bg-slate-900 text-white font-black text-[10px] flex items-center justify-center shrink-0">
                           {org.logo}
                         </div>
                         <div>
-                          <div className="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition-colors">{org.name}</div>
-                          <div className="text-[10px] text-slate-500 font-semibold">{org.location}</div>
+                          <div className="text-xs font-bold text-text-primary group-hover:text-blue-600 transition-colors">{org.name}</div>
+                          <div className="text-[10px] text-text-secondary font-semibold">{org.location}</div>
                         </div>
                       </div>
                       <span className="text-xs font-extrabold text-blue-600">{scoreLabel}</span>
@@ -791,37 +791,37 @@ export default function OrganizationManagementPage() {
             </div>
 
             {/* Chart 3: Coordinator Performance Scorecard */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-              <h3 className="text-sm font-bold text-slate-900 tracking-tight flex items-center gap-1.5">
+            <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
+              <h3 className="text-sm font-bold text-text-primary tracking-tight flex items-center gap-1.5">
                 <Users className="h-4.5 w-4.5 text-indigo-600" />
                 Coordinator Operational Performance
               </h3>
 
               <div className="max-h-[280px] overflow-y-auto space-y-3 pr-1 custom-scrollbar">
                 {organizations.flatMap(o => o.coordinators.map(c => ({ collegeName: o.name, ...c }))).slice(0, 6).map((coord, idx) => (
-                  <div key={idx} className="bg-slate-50 border border-slate-100 rounded-lg p-3 space-y-2">
+                  <div key={idx} className="bg-slate-50 border border-border rounded-lg p-3 space-y-2">
                     <div className="flex justify-between items-start">
                       <div>
-                        <div className="text-xs font-extrabold text-slate-900 leading-none">{coord.name}</div>
-                        <div className="text-[9px] font-bold text-slate-400 mt-1">{coord.collegeName} ({coord.department})</div>
+                        <div className="text-xs font-extrabold text-text-primary leading-none">{coord.name}</div>
+                        <div className="text-[9px] font-bold text-text-secondary mt-1">{coord.collegeName} ({coord.department})</div>
                       </div>
                       <span className="bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded text-[8px] font-bold border border-emerald-100">
                         {coord.kpis.placementSuccess}% Success
                       </span>
                     </div>
                     
-                    <div className="grid grid-cols-3 gap-1.5 text-center text-[9px] font-bold text-slate-600 border-t border-slate-200/60 pt-1.5">
+                    <div className="grid grid-cols-3 gap-1.5 text-center text-[9px] font-bold text-text-secondary border-t border-border/60 pt-1.5">
                       <div>
-                        <div className="text-slate-900">{coord.studentsManaged}</div>
-                        <div className="text-[7px] text-slate-400 uppercase">Managed</div>
+                        <div className="text-text-primary">{coord.studentsManaged}</div>
+                        <div className="text-[7px] text-text-secondary uppercase">Managed</div>
                       </div>
                       <div>
-                        <div className="text-slate-900">{coord.kpis.applicationsProcessed}</div>
-                        <div className="text-[7px] text-slate-400 uppercase">Processed</div>
+                        <div className="text-text-primary">{coord.kpis.applicationsProcessed}</div>
+                        <div className="text-[7px] text-text-secondary uppercase">Processed</div>
                       </div>
                       <div>
-                        <div className="text-slate-900">{coord.programsManaged}</div>
-                        <div className="text-[7px] text-slate-400 uppercase">Programs</div>
+                        <div className="text-text-primary">{coord.programsManaged}</div>
+                        <div className="text-[7px] text-text-secondary uppercase">Programs</div>
                       </div>
                     </div>
                   </div>
@@ -832,13 +832,13 @@ export default function OrganizationManagementPage() {
           </div>
 
           {/* Combined Operations Activity Timeline */}
-          <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-            <h3 className="text-sm font-bold text-slate-900 tracking-tight flex items-center gap-1.5">
-              <Activity className="h-4.5 w-4.5 text-slate-800" />
+          <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
+            <h3 className="text-sm font-bold text-text-primary tracking-tight flex items-center gap-1.5">
+              <Activity className="h-4.5 w-4.5 text-text-primary" />
               Partnership & Relationship timeline
             </h3>
 
-            <div className="divide-y divide-slate-100 max-h-[350px] overflow-y-auto pr-1">
+            <div className="divide-y divide-border max-h-[350px] overflow-y-auto pr-1">
               {recentActivities.map((act, index) => (
                 <div 
                   key={index}
@@ -853,13 +853,13 @@ export default function OrganizationManagementPage() {
                   </div>
                   
                   <div className="flex-1 space-y-0.5 text-xs">
-                    <div className="font-extrabold text-slate-900 group-hover:text-blue-600 transition-colors">{act.orgName}</div>
-                    <div className="text-slate-700 font-semibold leading-relaxed">
-                      {act.event.title} — <span className="text-slate-500 font-normal">{act.event.description}</span>
+                    <div className="font-extrabold text-text-primary group-hover:text-blue-600 transition-colors">{act.orgName}</div>
+                    <div className="text-text-primary font-semibold leading-relaxed">
+                      {act.event.title} — <span className="text-text-secondary font-normal">{act.event.description}</span>
                     </div>
                   </div>
 
-                  <span className="text-[10px] text-slate-400 font-bold shrink-0">{act.event.date}</span>
+                  <span className="text-[10px] text-text-secondary font-bold shrink-0">{act.event.date}</span>
                 </div>
               ))}
             </div>
@@ -873,18 +873,18 @@ export default function OrganizationManagementPage() {
         <div className="space-y-4 animate-fade-in">
           
           {/* Query search and advanced filter bars */}
-          <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm space-y-3">
+          <div className="bg-white border border-border rounded-xl p-4 shadow-sm space-y-3">
             <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
               
               {/* Search bar */}
               <div className="relative w-full md:w-80">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary" />
                 <input 
                   type="text" 
                   placeholder="Search by name, code, dept, coordinator..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  className="w-full pl-9 pr-4 py-2 bg-white border border-border rounded-lg text-xs font-semibold focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                 />
               </div>
 
@@ -911,7 +911,7 @@ export default function OrganizationManagementPage() {
                   className={`flex items-center gap-1.5 px-3 py-2 border rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer ${
                     showFilters 
                       ? 'border-blue-600 bg-blue-50/50 text-blue-600' 
-                      : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                      : 'border-border bg-white text-text-secondary hover:bg-slate-50'
                   }`}
                 >
                   <Filter className="h-3.5 w-3.5" />
@@ -923,13 +923,13 @@ export default function OrganizationManagementPage() {
 
             {/* Filter expansion cards */}
             {showFilters && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-3 border-t border-slate-100 animate-slide-down">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-3 border-t border-border animate-slide-down">
                 <div>
-                  <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Office Location</label>
+                  <label className="block text-[10px] font-extrabold text-text-secondary uppercase tracking-wider mb-1">Office Location</label>
                   <select 
                     value={filterLoc} 
                     onChange={(e) => setFilterLoc(e.target.value)}
-                    className="w-full text-xs font-semibold p-2 border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-blue-500"
+                    className="w-full text-xs font-semibold p-2 border border-border rounded-lg bg-white focus:outline-none focus:border-primary"
                   >
                     <option value="all">All Locations</option>
                     {Array.from(new Set(organizations.map(o => o.location))).map(loc => (
@@ -939,11 +939,11 @@ export default function OrganizationManagementPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">College Type</label>
+                  <label className="block text-[10px] font-extrabold text-text-secondary uppercase tracking-wider mb-1">College Type</label>
                   <select 
                     value={filterType} 
                     onChange={(e) => setFilterType(e.target.value)}
-                    className="w-full text-xs font-semibold p-2 border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-blue-500"
+                    className="w-full text-xs font-semibold p-2 border border-border rounded-lg bg-white focus:outline-none focus:border-primary"
                   >
                     <option value="all">All Types</option>
                     <option value="Engineering">Engineering</option>
@@ -953,11 +953,11 @@ export default function OrganizationManagementPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">NAAC Grade</label>
+                  <label className="block text-[10px] font-extrabold text-text-secondary uppercase tracking-wider mb-1">NAAC Grade</label>
                   <select 
                     value={filterAccreditation} 
                     onChange={(e) => setFilterAccreditation(e.target.value)}
-                    className="w-full text-xs font-semibold p-2 border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-blue-500"
+                    className="w-full text-xs font-semibold p-2 border border-border rounded-lg bg-white focus:outline-none focus:border-primary"
                   >
                     <option value="all">All Grades</option>
                     <option value="A++">A++ Grade</option>
@@ -966,11 +966,11 @@ export default function OrganizationManagementPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Partnership Status</label>
+                  <label className="block text-[10px] font-extrabold text-text-secondary uppercase tracking-wider mb-1">Partnership Status</label>
                   <select 
                     value={filterStatus} 
                     onChange={(e) => setFilterStatus(e.target.value)}
-                    className="w-full text-xs font-semibold p-2 border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-blue-500"
+                    className="w-full text-xs font-semibold p-2 border border-border rounded-lg bg-white focus:outline-none focus:border-primary"
                   >
                     <option value="all">All Statuses</option>
                     <option value="Active">Active Partner</option>
@@ -984,33 +984,33 @@ export default function OrganizationManagementPage() {
           </div>
 
           {/* Directory data table grid */}
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+          <div className="bg-white border border-border rounded-xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs whitespace-nowrap">
-                <thead className="bg-slate-50 border-b border-slate-200">
+                <thead className="bg-slate-50 border-b border-border">
                   <tr>
                     <th className="px-4 py-3 w-8">
                       <input 
                         type="checkbox" 
                         checked={filteredOrganizations.length > 0 && filteredOrganizations.every(o => selectedIds.includes(o.id))}
                         onChange={toggleSelectAll}
-                        className="rounded border-slate-300 h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                        className="rounded border-border h-3.5 w-3.5 text-blue-600 focus:ring-primary cursor-pointer"
                       />
                     </th>
-                    <th className="px-4 py-3 font-bold text-slate-600">Logo</th>
-                    <th className="px-4 py-3 font-bold text-slate-600">College Name</th>
-                    <th className="px-4 py-3 font-bold text-slate-600">College Code</th>
-                    <th className="px-4 py-3 font-bold text-slate-600">Institution Type</th>
-                    <th className="px-4 py-3 font-bold text-slate-600">University Affiliation</th>
-                    <th className="px-4 py-3 font-bold text-slate-600">Location</th>
-                    <th className="px-4 py-3 font-bold text-slate-600">Departments</th>
-                    <th className="px-4 py-3 font-bold text-slate-600">Students Enrolled</th>
-                    <th className="px-4 py-3 font-bold text-slate-600">Coordinators</th>
-                    <th className="px-4 py-3 font-bold text-slate-600">Partnership Status</th>
-                    <th className="px-4 py-3 font-bold text-slate-600 text-right">Actions</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary">Logo</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary">College Name</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary">College Code</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary">Institution Type</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary">University Affiliation</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary">Location</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary">Departments</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary">Students Enrolled</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary">Coordinators</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary">Partnership Status</th>
+                    <th className="px-4 py-3 font-bold text-text-secondary text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-border">
                   {filteredOrganizations.length > 0 ? (
                     filteredOrganizations.map((org) => {
                       const isSelected = selectedIds.includes(org.id);
@@ -1027,7 +1027,7 @@ export default function OrganizationManagementPage() {
                               type="checkbox" 
                               checked={isSelected}
                               onChange={() => toggleSelect(org.id)}
-                              className="rounded border-slate-300 h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                              className="rounded border-border h-3.5 w-3.5 text-blue-600 focus:ring-primary cursor-pointer"
                             />
                           </td>
                           <td className="px-4 py-3">
@@ -1036,16 +1036,16 @@ export default function OrganizationManagementPage() {
                             </div>
                           </td>
                           <td className="px-4 py-3">
-                            <div className="font-extrabold text-slate-900 group-hover:text-blue-600 transition-colors">{org.name}</div>
-                            <div className="text-[10px] text-slate-500 font-semibold">{org.website}</div>
+                            <div className="font-extrabold text-text-primary group-hover:text-blue-600 transition-colors">{org.name}</div>
+                            <div className="text-[10px] text-text-secondary font-semibold">{org.website}</div>
                           </td>
-                          <td className="px-4 py-3 font-mono font-bold text-slate-500">{org.code}</td>
-                          <td className="px-4 py-3 text-slate-700 font-bold">{org.type}</td>
-                          <td className="px-4 py-3 text-slate-500 font-medium">{org.university}</td>
-                          <td className="px-4 py-3 text-slate-600 font-medium">{org.location}</td>
-                          <td className="px-4 py-3 text-slate-800 font-bold">{org.departments.length}</td>
-                          <td className="px-4 py-3 text-slate-800 font-bold">{org.students.length || org.headcount}</td>
-                          <td className="px-4 py-3 text-slate-800 font-bold">{org.coordinators.length}</td>
+                          <td className="px-4 py-3 font-mono font-bold text-text-secondary">{org.code}</td>
+                          <td className="px-4 py-3 text-text-primary font-bold">{org.type}</td>
+                          <td className="px-4 py-3 text-text-secondary font-medium">{org.university}</td>
+                          <td className="px-4 py-3 text-text-secondary font-medium">{org.location}</td>
+                          <td className="px-4 py-3 text-text-primary font-bold">{org.departments.length}</td>
+                          <td className="px-4 py-3 text-text-primary font-bold">{org.students.length || org.headcount}</td>
+                          <td className="px-4 py-3 text-text-primary font-bold">{org.coordinators.length}</td>
                           <td className="px-4 py-3">
                             <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-black ${
                               org.partnershipStatus === 'Active' 
@@ -1054,7 +1054,7 @@ export default function OrganizationManagementPage() {
                                 ? 'bg-amber-50 text-amber-700 border border-amber-200'
                                 : org.partnershipStatus === 'Partnership Expired'
                                 ? 'bg-rose-50 text-rose-700 border border-rose-200'
-                                : 'bg-slate-100 text-slate-600 border border-slate-200'
+                                : 'bg-slate-100 text-text-secondary border border-border'
                             }`}>
                               {org.partnershipStatus}
                             </span>
@@ -1063,14 +1063,14 @@ export default function OrganizationManagementPage() {
                             <div className="flex justify-end gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
                               <button 
                                 onClick={() => handleOpenProfile(org)}
-                                className="p-1 hover:bg-slate-100 rounded text-slate-500 hover:text-slate-900 cursor-pointer"
+                                className="p-1 hover:bg-slate-100 rounded text-text-secondary hover:text-text-primary cursor-pointer"
                                 title="Open Profile File"
                               >
                                 <Eye className="h-3.5 w-3.5" />
                               </button>
                               <button 
                                 onClick={() => openEditModal(org)}
-                                className="p-1 hover:bg-slate-100 rounded text-slate-500 hover:text-slate-900 cursor-pointer"
+                                className="p-1 hover:bg-slate-100 rounded text-text-secondary hover:text-text-primary cursor-pointer"
                                 title="Edit Organization"
                               >
                                 <Edit className="h-3.5 w-3.5" />
@@ -1082,9 +1082,9 @@ export default function OrganizationManagementPage() {
                     })
                   ) : (
                     <tr>
-                      <td colSpan={12} className="px-4 py-12 text-center text-slate-500 bg-white">
+                      <td colSpan={12} className="px-4 py-12 text-center text-text-secondary bg-white">
                         <Building2 className="h-12 w-12 text-slate-300 mx-auto mb-3" />
-                        <p className="text-sm font-bold text-slate-600">No institutions match this search query</p>
+                        <p className="text-sm font-bold text-text-secondary">No institutions match this search query</p>
                       </td>
                     </tr>
                   )}
@@ -1098,7 +1098,7 @@ export default function OrganizationManagementPage() {
 
       {/* ------------------ BULK ACTIONS PANEL ------------------ */}
       {selectedIds.length > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 border border-slate-800 text-white rounded-xl shadow-2xl px-6 py-4 flex flex-col md:flex-row items-center gap-4 animate-slide-up max-w-4xl w-[90%]">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 border border-border text-white rounded-xl shadow-2xl px-6 py-4 flex flex-col md:flex-row items-center gap-4 animate-slide-up max-w-4xl w-[90%]">
           <div className="flex items-center gap-2">
             <div className="bg-blue-600 text-white h-6 w-6 rounded-full flex items-center justify-center font-extrabold text-xs">
               {selectedIds.length}
@@ -1115,7 +1115,7 @@ export default function OrganizationManagementPage() {
                 setPartnershipStatusInput('Active');
                 setActiveActionModal({ type: 'bulkPartnership' });
               }}
-              className="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors"
+              className="bg-slate-800 hover:bg-slate-700 border border-border px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors"
             >
               Bulk Change Status
             </button>
@@ -1125,7 +1125,7 @@ export default function OrganizationManagementPage() {
                 setCoordinatorNameInput('');
                 setActiveActionModal({ type: 'bulkCoordinator' });
               }}
-              className="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors"
+              className="bg-slate-800 hover:bg-slate-700 border border-border px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors"
             >
               Assign Coordinator
             </button>
@@ -1135,7 +1135,7 @@ export default function OrganizationManagementPage() {
                 setNotifyMsg('');
                 setActiveActionModal({ type: 'bulkNotify' });
               }}
-              className="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors text-blue-400"
+              className="bg-slate-800 hover:bg-slate-700 border border-border px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors text-blue-400"
             >
               Send Notification
             </button>
@@ -1145,7 +1145,7 @@ export default function OrganizationManagementPage() {
                 showToast(`Requesting document verification from ${selectedIds.length} colleges`, 'info');
                 setSelectedIds([]);
               }}
-              className="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors text-amber-400"
+              className="bg-slate-800 hover:bg-slate-700 border border-border px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors text-amber-400"
             >
               Request MoU renewal
             </button>
@@ -1153,7 +1153,7 @@ export default function OrganizationManagementPage() {
 
           <button 
             onClick={() => setSelectedIds([])}
-            className="text-xs font-bold text-slate-400 hover:text-white underline shrink-0 cursor-pointer ml-auto"
+            className="text-xs font-bold text-text-secondary hover:text-white underline shrink-0 cursor-pointer ml-auto"
           >
             Cancel Selection
           </button>
@@ -1167,23 +1167,23 @@ export default function OrganizationManagementPage() {
         title="Institutional Command Center"
       >
         {activeProfile ? (
-          <div className="flex-1 flex flex-col overflow-hidden bg-slate-50 text-slate-700 select-none">
+          <div className="flex-1 flex flex-col overflow-hidden bg-slate-50 text-text-primary select-none">
             
             {/* STICKY ACCENTED ACTIONS PANEL */}
-            <div className="bg-slate-900 text-white px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0 shadow-lg border-b border-slate-800">
+            <div className="bg-slate-900 text-white px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0 shadow-lg border-b border-border">
               
               <div className="flex items-center gap-3">
-                <div className="h-12 w-12 rounded bg-slate-800 text-slate-200 border border-slate-700 flex items-center justify-center font-black text-lg shrink-0 shadow-md">
+                <div className="h-12 w-12 rounded bg-slate-800 text-slate-200 border border-border flex items-center justify-center font-black text-lg shrink-0 shadow-md">
                   {activeProfile.logo}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="font-extrabold text-sm text-white tracking-tight">{activeProfile.name}</h3>
-                    <span className="text-[9px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-mono font-bold border border-slate-700">
+                    <span className="text-[9px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-mono font-bold border border-border">
                       {activeProfile.code}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-400 leading-none mt-1 font-semibold">
+                  <p className="text-xs text-text-secondary leading-none mt-1 font-semibold">
                     {activeProfile.type} — <span className="text-slate-300 font-bold">{activeProfile.location}</span>
                   </p>
                 </div>
@@ -1193,7 +1193,7 @@ export default function OrganizationManagementPage() {
               <div className="flex items-center flex-wrap gap-2">
                 <button 
                   onClick={() => openEditModal(activeProfile)}
-                  className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1"
+                  className="bg-slate-800 hover:bg-slate-700 border border-border text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1"
                 >
                   <Edit className="h-3 w-3" />
                   <span>Edit Info</span>
@@ -1203,7 +1203,7 @@ export default function OrganizationManagementPage() {
                     setPartnershipStatusInput(activeProfile.partnershipStatus);
                     setActiveActionModal({ type: 'partnership' });
                   }}
-                  className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1"
+                  className="bg-slate-800 hover:bg-slate-700 border border-border text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1"
                 >
                   <RefreshCw className="h-3 w-3 text-emerald-400" />
                   <span>Partnership</span>
@@ -1213,7 +1213,7 @@ export default function OrganizationManagementPage() {
                     setDeptForm({ name: '', hod: '', studentsCount: 120, facultyCount: 15, internshipsCount: 80, placementRate: 92 });
                     setActiveActionModal({ type: 'department' });
                   }}
-                  className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1 text-purple-400"
+                  className="bg-slate-800 hover:bg-slate-700 border border-border text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1 text-purple-400"
                 >
                   <PlusCircle className="h-3 w-3" />
                   <span>Add Dept</span>
@@ -1223,7 +1223,7 @@ export default function OrganizationManagementPage() {
                     setCoordinatorNameInput('');
                     setActiveActionModal({ type: 'coordinator' });
                   }}
-                  className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1 text-sky-400"
+                  className="bg-slate-800 hover:bg-slate-700 border border-border text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1 text-text-secondary"
                 >
                   <UserCheck className="h-3 w-3" />
                   <span>Liaison</span>
@@ -1233,7 +1233,7 @@ export default function OrganizationManagementPage() {
                     setNotifyMsg('');
                     setActiveActionModal({ type: 'notify' });
                   }}
-                  className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1 text-blue-400"
+                  className="bg-slate-800 hover:bg-slate-700 border border-border text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1 text-blue-400"
                 >
                   <Send className="h-3 w-3" />
                   <span>Notify</span>
@@ -1242,7 +1242,7 @@ export default function OrganizationManagementPage() {
                   onClick={() => {
                     showToast(`Single College placement audit compiled & exported for ${activeProfile.name}`);
                   }}
-                  className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white p-1.5 rounded cursor-pointer"
+                  className="bg-slate-800 hover:bg-slate-700 border border-border text-slate-300 hover:text-white p-1.5 rounded cursor-pointer"
                   title="Export Data Summary"
                 >
                   <FileDown className="h-4 w-4" />
@@ -1252,7 +1252,7 @@ export default function OrganizationManagementPage() {
             </div>
 
             {/* TAB STRIP */}
-            <div className="bg-white border-b border-slate-200 px-6 overflow-x-auto flex shrink-0 scrollbar-none">
+            <div className="bg-white border-b border-border px-6 overflow-x-auto flex shrink-0 scrollbar-none">
               {[
                 { id: 'overview', label: 'Overview' },
                 { id: 'departments', label: 'Departments Management' },
@@ -1272,7 +1272,7 @@ export default function OrganizationManagementPage() {
                     className={`py-3 px-4 font-bold text-xs border-b-2 transition-all shrink-0 cursor-pointer ${
                       isActive 
                         ? 'border-blue-600 text-blue-600' 
-                        : 'border-transparent text-slate-500 hover:text-slate-800'
+                        : 'border-transparent text-text-secondary hover:text-text-primary'
                     }`}
                   >
                     {tab.label}
@@ -1291,13 +1291,13 @@ export default function OrganizationManagementPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     
                     {/* Institutional Profile */}
-                    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-3">
-                      <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-3">
+                      <h4 className="text-xs font-extrabold text-text-secondary uppercase tracking-widest flex items-center gap-1.5">
                         <Building2 className="h-3.5 w-3.5 text-blue-600" />
                         Institutional Information
                       </h4>
                       
-                      <div className="divide-y divide-slate-100 text-xs font-semibold">
+                      <div className="divide-y divide-border text-xs font-semibold">
                         {[
                           { label: 'Official Name', val: activeProfile.name },
                           { label: 'Website Portal', val: activeProfile.website, isLink: true },
@@ -1307,14 +1307,14 @@ export default function OrganizationManagementPage() {
                           { label: 'Accrediting Board', val: activeProfile.affiliation }
                         ].map((row, idx) => (
                           <div key={idx} className="py-2.5 flex justify-between">
-                            <span className="text-slate-500">{row.label}</span>
+                            <span className="text-text-secondary">{row.label}</span>
                             {row.isLink ? (
                               <a href={row.val} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline flex items-center gap-0.5">
                                 {row.val}
                                 <ExternalLink className="h-3 w-3" />
                               </a>
                             ) : (
-                              <span className="text-slate-900 text-right max-w-[60%] leading-relaxed">{row.val}</span>
+                              <span className="text-text-primary text-right max-w-[60%] leading-relaxed">{row.val}</span>
                             )}
                           </div>
                         ))}
@@ -1322,13 +1322,13 @@ export default function OrganizationManagementPage() {
                     </div>
 
                     {/* Operational performance snapshot */}
-                    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-3">
-                      <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-3">
+                      <h4 className="text-xs font-extrabold text-text-secondary uppercase tracking-widest flex items-center gap-1.5">
                         <Activity className="h-3.5 w-3.5 text-emerald-600" />
                         Performance Snapshot
                       </h4>
 
-                      <div className="divide-y divide-slate-100 text-xs font-semibold">
+                      <div className="divide-y divide-border text-xs font-semibold">
                         {[
                           { label: 'Total Enrolled Students', val: activeProfile.students.length },
                           { label: 'Active Programs Count', val: activeProfile.programs.length },
@@ -1338,8 +1338,8 @@ export default function OrganizationManagementPage() {
                           { label: 'Departments Count', val: activeProfile.departments.length }
                         ].map((row, idx) => (
                           <div key={idx} className="py-2.5 flex justify-between">
-                            <span className="text-slate-500">{row.label}</span>
-                            <span className="text-slate-900 font-extrabold">{row.val}</span>
+                            <span className="text-text-secondary">{row.label}</span>
+                            <span className="text-text-primary font-extrabold">{row.val}</span>
                           </div>
                         ))}
                       </div>
@@ -1355,7 +1355,7 @@ export default function OrganizationManagementPage() {
                 <div className="space-y-6 animate-fade-in">
                   
                   <div className="flex justify-between items-center">
-                    <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest">
+                    <h4 className="text-xs font-extrabold text-text-secondary uppercase tracking-widest">
                       Departments list
                     </h4>
                     
@@ -1372,33 +1372,33 @@ export default function OrganizationManagementPage() {
                   </div>
 
                   {/* Departments Table */}
-                  <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+                  <div className="bg-white border border-border rounded-xl shadow-sm overflow-hidden">
                     <table className="w-full text-left text-xs whitespace-nowrap">
-                      <thead className="bg-slate-50 border-b border-slate-200">
+                      <thead className="bg-slate-50 border-b border-border">
                         <tr>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Department Name</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Head of Department (HOD)</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Students Count</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Faculty Count</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Active Internships</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600 text-right">Placement Rate</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Department Name</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Head of Department (HOD)</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Students Count</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Faculty Count</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Active Internships</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary text-right">Placement Rate</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-100">
+                      <tbody className="divide-y divide-border">
                         {activeProfile.departments.length > 0 ? (
                           activeProfile.departments.map((dept, idx) => (
                             <tr key={idx} className="hover:bg-slate-50/50 transition-colors">
-                              <td className="px-4 py-3 font-bold text-slate-900">{dept.name}</td>
-                              <td className="px-4 py-3 text-slate-600 font-semibold">{dept.hod}</td>
-                              <td className="px-4 py-3 text-slate-800 font-bold">{dept.studentsCount}</td>
-                              <td className="px-4 py-3 text-slate-500 font-medium">{dept.facultyCount}</td>
-                              <td className="px-4 py-3 text-slate-500 font-medium">{dept.internshipsCount}</td>
+                              <td className="px-4 py-3 font-bold text-text-primary">{dept.name}</td>
+                              <td className="px-4 py-3 text-text-secondary font-semibold">{dept.hod}</td>
+                              <td className="px-4 py-3 text-text-primary font-bold">{dept.studentsCount}</td>
+                              <td className="px-4 py-3 text-text-secondary font-medium">{dept.facultyCount}</td>
+                              <td className="px-4 py-3 text-text-secondary font-medium">{dept.internshipsCount}</td>
                               <td className="px-4 py-3 text-right font-black text-blue-600">{dept.placementRate}%</td>
                             </tr>
                           ))
                         ) : (
                           <tr>
-                            <td colSpan={6} className="px-4 py-6 text-center text-slate-400 bg-white">
+                            <td colSpan={6} className="px-4 py-6 text-center text-text-secondary bg-white">
                               No departments configured for this college.
                             </td>
                           </tr>
@@ -1415,7 +1415,7 @@ export default function OrganizationManagementPage() {
                 <div className="space-y-6 animate-fade-in">
                   
                   <div className="flex justify-between items-center">
-                    <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest">
+                    <h4 className="text-xs font-extrabold text-text-secondary uppercase tracking-widest">
                       Institutional Coordinators
                     </h4>
                     
@@ -1434,39 +1434,39 @@ export default function OrganizationManagementPage() {
                   {/* Coordinators Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {activeProfile.coordinators.map((coord) => (
-                      <div key={coord.id} className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+                      <div key={coord.id} className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
                         <div className="flex justify-between items-start">
                           <div>
-                            <h5 className="font-extrabold text-slate-950 text-xs leading-none">{coord.name}</h5>
-                            <p className="text-[10px] text-slate-400 font-bold mt-1.5 uppercase tracking-wider">{coord.department}</p>
+                            <h5 className="font-extrabold text-text-primary text-xs leading-none">{coord.name}</h5>
+                            <p className="text-[10px] text-text-secondary font-bold mt-1.5 uppercase tracking-wider">{coord.department}</p>
                           </div>
                           
                           <span className={`inline-flex px-1.5 py-0.5 rounded text-[8px] font-bold border ${
                             coord.status === 'Active' 
                               ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
-                              : 'bg-slate-100 text-slate-600 border-slate-200'
+                              : 'bg-slate-100 text-text-secondary border-border'
                           }`}>
                             {coord.status}
                           </span>
                         </div>
 
-                        <div className="text-[10px] font-semibold text-slate-500 space-y-1">
-                          <div>Email: <span className="text-slate-800">{coord.email}</span></div>
-                          <div>Phone: <span className="text-slate-800">{coord.phone}</span></div>
+                        <div className="text-[10px] font-semibold text-text-secondary space-y-1">
+                          <div>Email: <span className="text-text-primary">{coord.email}</span></div>
+                          <div>Phone: <span className="text-text-primary">{coord.phone}</span></div>
                         </div>
 
-                        <div className="border-t border-slate-100 pt-3.5 grid grid-cols-3 gap-2 text-center text-[10px] font-bold">
-                          <div className="bg-slate-50 border border-slate-100 rounded-lg p-1.5">
-                            <div className="text-slate-900">{coord.studentsManaged}</div>
-                            <div className="text-[8px] text-slate-400 uppercase mt-0.5">Students</div>
+                        <div className="border-t border-border pt-3.5 grid grid-cols-3 gap-2 text-center text-[10px] font-bold">
+                          <div className="bg-slate-50 border border-border rounded-lg p-1.5">
+                            <div className="text-text-primary">{coord.studentsManaged}</div>
+                            <div className="text-[8px] text-text-secondary uppercase mt-0.5">Students</div>
                           </div>
-                          <div className="bg-slate-50 border border-slate-100 rounded-lg p-1.5">
-                            <div className="text-slate-900">{coord.kpis.applicationsProcessed}</div>
-                            <div className="text-[8px] text-slate-400 uppercase mt-0.5">Processed</div>
+                          <div className="bg-slate-50 border border-border rounded-lg p-1.5">
+                            <div className="text-text-primary">{coord.kpis.applicationsProcessed}</div>
+                            <div className="text-[8px] text-text-secondary uppercase mt-0.5">Processed</div>
                           </div>
-                          <div className="bg-slate-50 border border-slate-100 rounded-lg p-1.5">
+                          <div className="bg-slate-50 border border-border rounded-lg p-1.5">
                             <div className="text-emerald-600">{coord.kpis.placementSuccess}%</div>
-                            <div className="text-[8px] text-slate-400 uppercase mt-0.5">Placement</div>
+                            <div className="text-[8px] text-text-secondary uppercase mt-0.5">Placement</div>
                           </div>
                         </div>
                       </div>
@@ -1488,36 +1488,36 @@ export default function OrganizationManagementPage() {
                       { label: 'Placement Ready', val: activeProfile.students.filter(s => s.status === 'Placement Ready').length },
                       { label: 'Placed Students', val: activeProfile.students.filter(s => s.status === 'Placed').length }
                     ].map((card, idx) => (
-                      <div key={idx} className="bg-white border border-slate-200 rounded-xl p-3 shadow-sm">
-                        <div className="text-lg font-black text-slate-950">{card.val}</div>
-                        <div className="text-[8px] font-bold text-slate-500 uppercase tracking-widest mt-1">{card.label}</div>
+                      <div key={idx} className="bg-white border border-border rounded-xl p-3 shadow-sm">
+                        <div className="text-lg font-black text-text-primary">{card.val}</div>
+                        <div className="text-[8px] font-bold text-text-secondary uppercase tracking-widest mt-1">{card.label}</div>
                       </div>
                     ))}
                   </div>
 
                   {/* Students Table */}
-                  <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+                  <div className="bg-white border border-border rounded-xl shadow-sm overflow-hidden">
                     <table className="w-full text-left text-xs whitespace-nowrap">
-                      <thead className="bg-slate-50 border-b border-slate-200">
+                      <thead className="bg-slate-50 border-b border-border">
                         <tr>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Student ID</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Student Name</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Department</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Academic Year</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Internship Program</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Status</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600 text-right">Liaison</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Student ID</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Student Name</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Department</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Academic Year</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Internship Program</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Status</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary text-right">Liaison</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-100">
+                      <tbody className="divide-y divide-border">
                         {activeProfile.students.length > 0 ? (
                           activeProfile.students.map((student) => (
                             <tr key={student.id} className="hover:bg-slate-50/50 transition-colors">
-                              <td className="px-4 py-3 font-mono font-bold text-slate-500">{student.id}</td>
-                              <td className="px-4 py-3 font-bold text-slate-950">{student.name}</td>
-                              <td className="px-4 py-3 text-slate-600 font-semibold">{student.department}</td>
-                              <td className="px-4 py-3 text-slate-500 font-medium">Year {student.year}</td>
-                              <td className="px-4 py-3 text-slate-500 font-medium">{student.program}</td>
+                              <td className="px-4 py-3 font-mono font-bold text-text-secondary">{student.id}</td>
+                              <td className="px-4 py-3 font-bold text-text-primary">{student.name}</td>
+                              <td className="px-4 py-3 text-text-secondary font-semibold">{student.department}</td>
+                              <td className="px-4 py-3 text-text-secondary font-medium">Year {student.year}</td>
+                              <td className="px-4 py-3 text-text-secondary font-medium">{student.program}</td>
                               <td className="px-4 py-3">
                                 <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold ${
                                   student.status === 'Placed' 
@@ -1529,12 +1529,12 @@ export default function OrganizationManagementPage() {
                                   {student.status}
                                 </span>
                               </td>
-                              <td className="px-4 py-3 text-right text-slate-500 font-semibold">{student.coordinatorName}</td>
+                              <td className="px-4 py-3 text-right text-text-secondary font-semibold">{student.coordinatorName}</td>
                             </tr>
                           ))
                         ) : (
                           <tr>
-                            <td colSpan={7} className="px-4 py-6 text-center text-slate-400 bg-white">
+                            <td colSpan={7} className="px-4 py-6 text-center text-text-secondary bg-white">
                               No students registered to this institution account.
                             </td>
                           </tr>
@@ -1550,42 +1550,42 @@ export default function OrganizationManagementPage() {
               {profileTab === 'programs' && (
                 <div className="space-y-6 animate-fade-in animate-slide-down">
                   
-                  <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest">
+                  <h4 className="text-xs font-extrabold text-text-secondary uppercase tracking-widest">
                     University Placement Programs
                   </h4>
 
-                  <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+                  <div className="bg-white border border-border rounded-xl shadow-sm overflow-hidden">
                     <table className="w-full text-left text-xs whitespace-nowrap">
-                      <thead className="bg-slate-50 border-b border-slate-200">
+                      <thead className="bg-slate-50 border-b border-border">
                         <tr>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Program Course Name</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Duration</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Students Enrolled</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Program Status</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Completion Rate</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600">Attendance Health</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-600 text-right">Satisfaction</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Program Course Name</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Duration</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Students Enrolled</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Program Status</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Completion Rate</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary">Attendance Health</th>
+                          <th className="px-4 py-2.5 font-bold text-text-secondary text-right">Satisfaction</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-100">
+                      <tbody className="divide-y divide-border">
                         {activeProfile.programs.length > 0 ? (
                           activeProfile.programs.map((prog, idx) => (
                             <tr key={idx} className="hover:bg-slate-50/50 transition-colors">
-                              <td className="px-4 py-3 font-bold text-slate-900 flex items-center gap-1.5">
+                              <td className="px-4 py-3 font-bold text-text-primary flex items-center gap-1.5">
                                 <Briefcase className="h-3.5 w-3.5 text-blue-600 shrink-0" />
                                 {prog.name}
                               </td>
-                              <td className="px-4 py-3 text-slate-600 font-semibold">{prog.duration}</td>
-                              <td className="px-4 py-3 text-slate-800 font-extrabold">{prog.enrolledCount}</td>
+                              <td className="px-4 py-3 text-text-secondary font-semibold">{prog.duration}</td>
+                              <td className="px-4 py-3 text-text-primary font-extrabold">{prog.enrolledCount}</td>
                               <td className="px-4 py-3">
                                 <span className={`inline-flex px-1.5 py-0.5 rounded text-[10px] font-bold ${
-                                  prog.status === 'Active' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'
+                                  prog.status === 'Active' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-text-secondary'
                                 }`}>
                                   {prog.status}
                                 </span>
                               </td>
-                              <td className="px-4 py-3 font-black text-slate-900">{prog.analytics.completionRate}%</td>
-                              <td className="px-4 py-3 font-black text-slate-900">{prog.analytics.attendanceRate}%</td>
+                              <td className="px-4 py-3 font-black text-text-primary">{prog.analytics.completionRate}%</td>
+                              <td className="px-4 py-3 font-black text-text-primary">{prog.analytics.attendanceRate}%</td>
                               <td className="px-4 py-3 text-right font-bold text-amber-500 flex items-center justify-end gap-0.5">
                                 <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
                                 {prog.analytics.satisfactionScore} / 5
@@ -1594,7 +1594,7 @@ export default function OrganizationManagementPage() {
                           ))
                         ) : (
                           <tr>
-                            <td colSpan={7} className="px-4 py-6 text-center text-slate-400 bg-white">
+                            <td colSpan={7} className="px-4 py-6 text-center text-text-secondary bg-white">
                               No active programs registered.
                             </td>
                           </tr>
@@ -1618,13 +1618,13 @@ export default function OrganizationManagementPage() {
                       { label: 'Hiring Partners', val: activeProfile.placementAnalytics.companiesParticipated, icon: Building2, color: 'text-purple-600 bg-purple-50/40' },
                       { label: 'Average Package LPA', val: activeProfile.placementAnalytics.avgPackage, icon: DollarSign, color: 'text-amber-600 bg-amber-50/40' }
                     ].map((kpi, idx) => (
-                      <div key={idx} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex items-center gap-3">
+                      <div key={idx} className="bg-white border border-border rounded-xl p-4 shadow-sm flex items-center gap-3">
                         <div className={`h-10 w-10 rounded-lg flex items-center justify-center shrink-0 ${kpi.color}`}>
                           <kpi.icon className="h-5 w-5" />
                         </div>
                         <div className="text-left leading-none">
-                          <div className="text-lg font-black text-slate-900">{kpi.val}</div>
-                          <div className="text-[8px] font-bold text-slate-500 uppercase tracking-wider mt-1">{kpi.label}</div>
+                          <div className="text-lg font-black text-text-primary">{kpi.val}</div>
+                          <div className="text-[8px] font-bold text-text-secondary uppercase tracking-wider mt-1">{kpi.label}</div>
                         </div>
                       </div>
                     ))}
@@ -1634,19 +1634,19 @@ export default function OrganizationManagementPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     
                     {/* SVG placement rate line chart */}
-                    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-                      <h5 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest">Historical Placement Rate Trend</h5>
+                    <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
+                      <h5 className="text-xs font-extrabold text-text-secondary uppercase tracking-widest">Historical Placement Rate Trend</h5>
                       
-                      <div className="h-44 w-full bg-slate-50 border border-slate-100 rounded-lg p-4 flex flex-col justify-between">
-                        <div className="flex justify-between text-[10px] text-slate-400 font-bold border-b border-slate-200 pb-1">
+                      <div className="h-44 w-full bg-slate-50 border border-border rounded-lg p-4 flex flex-col justify-between">
+                        <div className="flex justify-between text-[10px] text-text-secondary font-bold border-b border-border pb-1">
                           <span>Placement Rate (%)</span>
                           <span>Trend Range: 3 Years</span>
                         </div>
                         
                         <div className="relative flex-1 flex items-end justify-between px-6 pt-6">
                           <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-50 py-3">
-                            <div className="border-b border-dashed border-slate-200 w-full" />
-                            <div className="border-b border-dashed border-slate-200 w-full" />
+                            <div className="border-b border-dashed border-border w-full" />
+                            <div className="border-b border-dashed border-border w-full" />
                           </div>
 
                           <svg className="absolute inset-0 h-full w-full" preserveAspectRatio="none" viewBox="0 0 100 100">
@@ -1664,8 +1664,8 @@ export default function OrganizationManagementPage() {
 
                           {activeProfile.placementAnalytics.placementTrend.map((t, idx) => (
                             <div key={idx} className="z-10 flex flex-col items-center">
-                              <span className="text-[10px] font-black text-slate-900 bg-white border border-slate-200 rounded px-1 shadow-sm mb-1">{t.rate}%</span>
-                              <span className="text-[10px] font-bold text-slate-400">{t.year}</span>
+                              <span className="text-[10px] font-black text-text-primary bg-white border border-border rounded px-1 shadow-sm mb-1">{t.rate}%</span>
+                              <span className="text-[10px] font-bold text-text-secondary">{t.year}</span>
                             </div>
                           ))}
                         </div>
@@ -1673,15 +1673,15 @@ export default function OrganizationManagementPage() {
                     </div>
 
                     {/* Company hire table */}
-                    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-3">
-                      <h5 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest">Top Recruiter Companies</h5>
+                    <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-3">
+                      <h5 className="text-xs font-extrabold text-text-secondary uppercase tracking-widest">Top Recruiter Companies</h5>
                       
-                      <div className="divide-y divide-slate-100">
+                      <div className="divide-y divide-border">
                         {activeProfile.placementAnalytics.companyHiring.map((c, idx) => (
                           <div key={idx} className="py-2.5 flex items-center justify-between text-xs font-semibold">
-                            <span className="text-slate-900 font-extrabold">{c.companyName}</span>
+                            <span className="text-text-primary font-extrabold">{c.companyName}</span>
                             <div className="flex gap-4">
-                              <span className="text-slate-500">{c.hiredCount} Hired</span>
+                              <span className="text-text-secondary">{c.hiredCount} Hired</span>
                               <span className="text-blue-600 font-black">{c.avgPackage}</span>
                             </div>
                           </div>
@@ -1699,36 +1699,36 @@ export default function OrganizationManagementPage() {
                 <div className="space-y-6 animate-fade-in animate-slide-down">
                   
                   {/* Accreditation indicators */}
-                  <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-                    <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                  <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
+                    <h4 className="text-xs font-extrabold text-text-secondary uppercase tracking-widest flex items-center gap-1.5">
                       <Shield className="h-3.5 w-3.5 text-blue-600" />
                       Accreditation Parameters
                     </h4>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-semibold">
-                      <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                        <div className="text-[10px] text-slate-400 uppercase mb-0.5">NAAC Grade Rating</div>
-                        <div className="text-slate-900 font-black text-lg">{activeProfile.naacGrade}</div>
+                      <div className="bg-slate-50 p-3 rounded-lg border border-border">
+                        <div className="text-[10px] text-text-secondary uppercase mb-0.5">NAAC Grade Rating</div>
+                        <div className="text-text-primary font-black text-lg">{activeProfile.naacGrade}</div>
                       </div>
-                      <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                        <div className="text-[10px] text-slate-400 uppercase mb-0.5">NBA Accreditation</div>
-                        <div className="text-slate-900 font-black text-sm">{activeProfile.nbaStatus}</div>
+                      <div className="bg-slate-50 p-3 rounded-lg border border-border">
+                        <div className="text-[10px] text-text-secondary uppercase mb-0.5">NBA Accreditation</div>
+                        <div className="text-text-primary font-black text-sm">{activeProfile.nbaStatus}</div>
                       </div>
-                      <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                        <div className="text-[10px] text-slate-400 uppercase mb-0.5">Autonomy Status</div>
-                        <div className="text-slate-900 font-black text-sm">{activeProfile.autonomousStatus}</div>
+                      <div className="bg-slate-50 p-3 rounded-lg border border-border">
+                        <div className="text-[10px] text-text-secondary uppercase mb-0.5">Autonomy Status</div>
+                        <div className="text-text-primary font-black text-sm">{activeProfile.autonomousStatus}</div>
                       </div>
-                      <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                        <div className="text-[10px] text-slate-400 uppercase mb-0.5">National Ranking</div>
+                      <div className="bg-slate-50 p-3 rounded-lg border border-border">
+                        <div className="text-[10px] text-text-secondary uppercase mb-0.5">National Ranking</div>
                         <div className="text-blue-600 font-black text-lg">#{activeProfile.nationalRanking}</div>
                       </div>
                     </div>
                   </div>
 
                   {/* MoU Document Center */}
-                  <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+                  <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
                     <div className="flex justify-between items-center">
-                      <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                      <h4 className="text-xs font-extrabold text-text-secondary uppercase tracking-widest flex items-center gap-1.5">
                         <FileText className="h-3.5 w-3.5 text-purple-600" />
                         Accredited documents (MoUs)
                       </h4>
@@ -1752,7 +1752,7 @@ export default function OrganizationManagementPage() {
                         <div 
                           key={idx}
                           onClick={() => setPreviewDoc(doc)}
-                          className="bg-white border border-slate-200 hover:border-blue-400 rounded-xl p-4 flex flex-col justify-between h-36 cursor-pointer shadow-sm transition-all"
+                          className="bg-white border border-border hover:border-secondary rounded-xl p-4 flex flex-col justify-between h-36 cursor-pointer shadow-sm transition-all"
                         >
                           <div className="flex justify-between items-start">
                             <FileText className="h-8 w-8 text-purple-500 shrink-0" />
@@ -1768,11 +1768,11 @@ export default function OrganizationManagementPage() {
                           </div>
 
                           <div className="mt-2.5">
-                            <h6 className="font-extrabold text-xs text-slate-900 leading-none">{doc.type}</h6>
-                            <p className="text-[10px] text-slate-500 mt-1 truncate">{doc.name}</p>
+                            <h6 className="font-extrabold text-xs text-text-primary leading-none">{doc.type}</h6>
+                            <p className="text-[10px] text-text-secondary mt-1 truncate">{doc.name}</p>
                           </div>
 
-                          <div className="border-t border-slate-100 pt-2 flex justify-between text-[9px] font-semibold text-slate-400 mt-2">
+                          <div className="border-t border-border pt-2 flex justify-between text-[9px] font-semibold text-text-secondary mt-2">
                             <span>Uploaded: {doc.uploadDate}</span>
                             <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
                               {doc.status !== 'Verified' && (
@@ -1797,7 +1797,7 @@ export default function OrganizationManagementPage() {
                                   e.preventDefault();
                                   showToast(`Downloading: ${doc.name}`);
                                 }}
-                                className="text-slate-500 hover:text-slate-800"
+                                className="text-text-secondary hover:text-text-primary"
                               >
                                 Download
                               </a>
@@ -1809,21 +1809,21 @@ export default function OrganizationManagementPage() {
 
                     {/* Previews */}
                     {previewDoc && (
-                      <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-inner text-white animate-slide-down">
-                        <div className="flex justify-between items-center border-b border-slate-800 pb-3 mb-3">
+                      <div className="bg-slate-900 border border-border rounded-xl p-5 shadow-inner text-white animate-slide-down">
+                        <div className="flex justify-between items-center border-b border-border pb-3 mb-3">
                           <div>
-                            <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">MoU Workspace Previews</div>
+                            <div className="text-[10px] text-text-secondary font-bold uppercase tracking-wider">MoU Workspace Previews</div>
                             <h5 className="font-extrabold text-sm text-blue-400">{previewDoc.type} — {previewDoc.name}</h5>
                           </div>
                           <button 
                             onClick={() => setPreviewDoc(null)}
-                            className="text-xs font-bold text-slate-400 hover:text-white underline cursor-pointer"
+                            className="text-xs font-bold text-text-secondary hover:text-white underline cursor-pointer"
                           >
                             Close Workspace
                           </button>
                         </div>
                         
-                        <div className="font-mono text-xs text-slate-300 bg-slate-950 p-4 rounded-lg border border-slate-900 min-h-[100px] leading-relaxed whitespace-pre-wrap">
+                        <div className="font-mono text-xs text-slate-300 bg-slate-950 p-4 rounded-lg border border-border min-h-[100px] leading-relaxed whitespace-pre-wrap">
                           {previewDoc.previewContent || `Digital MoU validation check. Academic credentials audit log signature matched.`}
                         </div>
                       </div>
@@ -1838,15 +1838,15 @@ export default function OrganizationManagementPage() {
               {profileTab === 'timeline' && (
                 <div className="space-y-6 animate-fade-in">
                   <div className="bg-white border border-slate-150 rounded-2xl p-5 shadow-sm">
-                    <h3 className="font-bold text-slate-800 text-lg mb-1 flex items-center gap-2">
+                    <h3 className="font-bold text-text-primary text-lg mb-1 flex items-center gap-2">
                       <Calendar className="w-5 h-5 text-emerald-600" />
                       Interaction Timeline
                     </h3>      
-                  <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest">
+                  <h4 className="text-xs font-extrabold text-text-secondary uppercase tracking-widest">
                     Partnership Timeline Audit Log
                   </h4>
 
-                  <div className="relative border-l-2 border-slate-200 pl-6 space-y-6 ml-2 py-2">
+                  <div className="relative border-l-2 border-border pl-6 space-y-6 ml-2 py-2">
                     {activeProfile.timeline.map((evt, idx) => (
                       <div key={idx} className="relative">
                         
@@ -1861,9 +1861,9 @@ export default function OrganizationManagementPage() {
                         }`} />
                         
                         <div className="text-xs">
-                          <span className="font-mono font-bold text-slate-400">{evt.date}</span>
-                          <h5 className="font-extrabold text-slate-900 mt-0.5">{evt.title}</h5>
-                          <p className="text-slate-600 mt-0.5 font-medium leading-relaxed">
+                          <span className="font-mono font-bold text-text-secondary">{evt.date}</span>
+                          <h5 className="font-extrabold text-text-primary mt-0.5">{evt.title}</h5>
+                          <p className="text-text-secondary mt-0.5 font-medium leading-relaxed">
                             {evt.description}
                           </p>
                         </div>
@@ -1879,8 +1879,8 @@ export default function OrganizationManagementPage() {
                 <div className="space-y-6 animate-fade-in">
                   <div className="bg-white border border-slate-150 rounded-2xl p-5 shadow-sm flex flex-col items-center text-center justify-center py-12">
                     <ShieldCheck className="w-16 h-16 text-indigo-200 mb-4" />
-                    <h3 className="font-bold text-slate-800 text-lg mb-1">Verify Student Certificates</h3>
-                    <p className="text-xs text-slate-500 max-w-md">Enter the Verification Code (Hash Number) found on the student's certificate to instantly verify its authenticity on the network.</p>
+                    <h3 className="font-bold text-text-primary text-lg mb-1">Verify Student Certificates</h3>
+                    <p className="text-xs text-text-secondary max-w-md">Enter the Verification Code (Hash Number) found on the student's certificate to instantly verify its authenticity on the network.</p>
                     <div className="flex gap-3 mt-6">
                       <a 
                         href="/feature/college-certificates" 
@@ -1892,7 +1892,7 @@ export default function OrganizationManagementPage() {
                         href="/verify" 
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-white text-slate-700 border border-slate-200 px-6 py-3 rounded-xl font-bold text-sm hover:bg-slate-50 transition-colors inline-flex items-center gap-2 cursor-pointer shadow-sm"
+                        className="bg-white text-text-primary border border-border px-6 py-3 rounded-xl font-bold text-sm hover:bg-slate-50 transition-colors inline-flex items-center gap-2 cursor-pointer shadow-sm"
                       >
                         <Search className="w-4 h-4" /> Public Verification Portal
                       </a>
@@ -1905,7 +1905,7 @@ export default function OrganizationManagementPage() {
 
           </div>
         ) : (
-          <div className="flex-1 flex items-center justify-center text-slate-400">
+          <div className="flex-1 flex items-center justify-center text-text-secondary">
             Select an institution account from the directory to inspect.
           </div>
         )}
@@ -1921,12 +1921,12 @@ export default function OrganizationManagementPage() {
           <div className={`bg-white overflow-hidden transition-all duration-300 ${
             (activeActionModal.type === 'edit' || activeActionModal.type === 'onboard') 
               ? 'max-w-none w-full h-full rounded-none border-none flex flex-col' 
-              : 'border border-slate-200 rounded-xl shadow-2xl max-w-lg w-full animate-bounce-in'
+              : 'border border-border rounded-xl shadow-2xl max-w-lg w-full animate-bounce-in'
           }`}>
             
             {/* Modal Header */}
-            <div className="bg-slate-50 border-b border-slate-100 px-6 py-4 flex justify-between items-center">
-              <h3 className="font-extrabold text-sm text-slate-900 uppercase tracking-wide">
+            <div className="bg-slate-50 border-b border-border px-6 py-4 flex justify-between items-center">
+              <h3 className="font-extrabold text-sm text-text-primary uppercase tracking-wide">
                 {activeActionModal.type === 'partnership' && 'Configure Partnership Status'}
                 {activeActionModal.type === 'coordinator' && 'Map New Coordinator Liaison'}
                 {activeActionModal.type === 'department' && 'Create Academic Department'}
@@ -1943,7 +1943,7 @@ export default function OrganizationManagementPage() {
               
               <button 
                 onClick={() => setActiveActionModal(null)}
-                className="text-xs font-bold text-slate-400 hover:text-slate-800"
+                className="text-xs font-bold text-text-secondary hover:text-text-primary"
               >
                 Cancel
               </button>
@@ -1952,7 +1952,7 @@ export default function OrganizationManagementPage() {
             {/* Forms body */}
             <form 
               onSubmit={executeAction} 
-              className={`text-xs font-semibold text-slate-700 flex flex-col min-h-0 ${
+              className={`text-xs font-semibold text-text-primary flex flex-col min-h-0 ${
                 (activeActionModal.type === 'edit' || activeActionModal.type === 'onboard') 
                   ? 'p-8 space-y-6 flex-1 h-full justify-between' 
                   : 'p-6 space-y-4'
@@ -1962,11 +1962,11 @@ export default function OrganizationManagementPage() {
               {/* Form 1: Partnership status */}
               {(activeActionModal.type === 'partnership' || activeActionModal.type === 'bulkPartnership') && (
                 <div className="space-y-3">
-                  <label className="block text-slate-500">Configure Institutional Partnership Status</label>
+                  <label className="block text-text-secondary">Configure Institutional Partnership Status</label>
                   <select
                     value={partnershipStatusInput}
                     onChange={(e) => setPartnershipStatusInput(e.target.value as any)}
-                    className="w-full p-2.5 border border-slate-200 rounded-lg bg-white font-semibold text-xs focus:outline-none focus:border-blue-500"
+                    className="w-full p-2.5 border border-border rounded-lg bg-white font-semibold text-xs focus:outline-none focus:border-primary"
                   >
                     <option value="Active">Active Partner</option>
                     <option value="Inactive">Inactive</option>
@@ -1999,14 +1999,14 @@ export default function OrganizationManagementPage() {
               {/* Form 2: Coordinator Liaison assignment */}
               {(activeActionModal.type === 'coordinator' || activeActionModal.type === 'bulkCoordinator') && (
                 <div className="space-y-3">
-                  <label className="block text-slate-500">Name of Coordinator Liaison</label>
+                  <label className="block text-text-secondary">Name of Coordinator Liaison</label>
                   <input 
                     type="text" 
                     required
                     placeholder="e.g. Richard Feynman"
                     value={coordinatorNameInput}
                     onChange={(e) => setCoordinatorNameInput(e.target.value)}
-                    className="w-full p-2.5 border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-blue-500"
+                    className="w-full p-2.5 border border-border rounded-lg bg-white focus:outline-none focus:border-primary"
                   />
                   
                   {activeActionModal.type === 'bulkCoordinator' ? (
@@ -2031,14 +2031,14 @@ export default function OrganizationManagementPage() {
               {/* Form 3: Notification dispatcher */}
               {(activeActionModal.type === 'notify' || activeActionModal.type === 'bulkNotify') && (
                 <div className="space-y-3">
-                  <label className="block text-slate-500">System Notification Content Message</label>
+                  <label className="block text-text-secondary">System Notification Content Message</label>
                   <textarea 
                     required
                     rows={3}
                     placeholder="Dispatches global notifications to institutional coordinators..."
                     value={notifyMsg}
                     onChange={(e) => setNotifyMsg(e.target.value)}
-                    className="w-full p-2.5 border border-slate-200 rounded-lg bg-white focus:outline-none text-xs font-semibold leading-relaxed"
+                    className="w-full p-2.5 border border-border rounded-lg bg-white focus:outline-none text-xs font-semibold leading-relaxed"
                   />
                   
                   {activeActionModal.type === 'bulkNotify' ? (
@@ -2064,65 +2064,65 @@ export default function OrganizationManagementPage() {
               {activeActionModal.type === 'department' && (
                 <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
                   <div className="space-y-1">
-                    <label className="block text-slate-500">Department Name</label>
+                    <label className="block text-text-secondary">Department Name</label>
                     <input 
                       type="text" 
                       required
                       placeholder="e.g. Mechanical Engineering"
                       value={deptForm.name}
                       onChange={(e) => setDeptForm({ ...deptForm, name: e.target.value })}
-                      className="w-full p-2 border border-slate-200 rounded focus:outline-none"
+                      className="w-full p-2 border border-border rounded focus:outline-none"
                     />
                   </div>
                   
                   <div className="space-y-1">
-                    <label className="block text-slate-500">Head of Department (HOD)</label>
+                    <label className="block text-text-secondary">Head of Department (HOD)</label>
                     <input 
                       type="text" 
                       required
                       placeholder="e.g. Dr. Jane Smith"
                       value={deptForm.hod}
                       onChange={(e) => setDeptForm({ ...deptForm, hod: e.target.value })}
-                      className="w-full p-2 border border-slate-200 rounded focus:outline-none"
+                      className="w-full p-2 border border-border rounded focus:outline-none"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="block text-slate-500">Student Intake Count</label>
+                      <label className="block text-text-secondary">Student Intake Count</label>
                       <input 
                         type="number" 
                         required
                         value={deptForm.studentsCount}
                         onChange={(e) => setDeptForm({ ...deptForm, studentsCount: Number(e.target.value) })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
+                        className="w-full p-2 border border-border rounded focus:outline-none"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="block text-slate-500">Faculty Intake Count</label>
+                      <label className="block text-text-secondary">Faculty Intake Count</label>
                       <input 
                         type="number" 
                         required
                         value={deptForm.facultyCount}
                         onChange={(e) => setDeptForm({ ...deptForm, facultyCount: Number(e.target.value) })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
+                        className="w-full p-2 border border-border rounded focus:outline-none"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="block text-slate-500">Active Internships</label>
+                      <label className="block text-text-secondary">Active Internships</label>
                       <input 
                         type="number" 
                         required
                         value={deptForm.internshipsCount}
                         onChange={(e) => setDeptForm({ ...deptForm, internshipsCount: Number(e.target.value) })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
+                        className="w-full p-2 border border-border rounded focus:outline-none"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="block text-slate-500">Placement Target Rate (%)</label>
+                      <label className="block text-text-secondary">Placement Target Rate (%)</label>
                       <input 
                         type="number" 
                         required
@@ -2130,7 +2130,7 @@ export default function OrganizationManagementPage() {
                         max="100"
                         value={deptForm.placementRate}
                         onChange={(e) => setDeptForm({ ...deptForm, placementRate: Number(e.target.value) })}
-                        className="w-full p-2 border border-slate-200 rounded focus:outline-none"
+                        className="w-full p-2 border border-border rounded focus:outline-none"
                       />
                     </div>
                   </div>
@@ -2148,11 +2148,11 @@ export default function OrganizationManagementPage() {
               {activeActionModal.type === 'uploadDoc' && (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="block text-slate-500">Accreditation Document Category</label>
+                    <label className="block text-text-secondary">Accreditation Document Category</label>
                     <select
                       value={docTypeInput}
                       onChange={(e) => setDocTypeInput(e.target.value as any)}
-                      className="w-full p-2 border border-slate-200 rounded bg-white focus:outline-none"
+                      className="w-full p-2 border border-border rounded bg-white focus:outline-none"
                     >
                       <option value="MoU">MoU Agreement</option>
                       <option value="Partnership Agreement">Partnership Contract</option>
@@ -2163,13 +2163,13 @@ export default function OrganizationManagementPage() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="block text-slate-500">Filename (Optional)</label>
+                    <label className="block text-text-secondary">Filename (Optional)</label>
                     <input 
                       type="text" 
                       placeholder="e.g. affiliation_certificate_2026.pdf"
                       value={docNameInput}
                       onChange={(e) => setDocNameInput(e.target.value)}
-                      className="w-full p-2 border border-slate-200 rounded focus:outline-none"
+                      className="w-full p-2 border border-border rounded focus:outline-none"
                     />
                   </div>
 
@@ -2188,37 +2188,37 @@ export default function OrganizationManagementPage() {
                   
                   {/* Section 1 */}
                   <div className="space-y-2">
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                    <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest border-b border-border pb-1">
                       Section 1: College Registry Info
                     </div>
                     <div className="grid grid-cols-3 gap-3">
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">College Name</label>
+                        <label className="block text-text-secondary text-[10px]">College Name</label>
                         <input 
                           type="text" 
                           required
                           value={collegeForm.name}
                           onChange={(e) => setCollegeForm({ ...collegeForm, name: e.target.value })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Unique Code</label>
+                        <label className="block text-text-secondary text-[10px]">Unique Code</label>
                         <input 
                           type="text" 
                           required
                           placeholder="e.g. MIT"
                           value={collegeForm.code}
                           onChange={(e) => setCollegeForm({ ...collegeForm, code: e.target.value })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Institution Type</label>
+                        <label className="block text-text-secondary text-[10px]">Institution Type</label>
                         <select 
                           value={collegeForm.type}
                           onChange={(e) => setCollegeForm({ ...collegeForm, type: e.target.value })}
-                          className="w-full p-2 border border-slate-200 rounded bg-white text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded bg-white text-xs focus:outline-none"
                         >
                           <option value="Engineering">Engineering College</option>
                           <option value="Science">Science College</option>
@@ -2226,33 +2226,33 @@ export default function OrganizationManagementPage() {
                         </select>
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">University Affiliation</label>
+                        <label className="block text-text-secondary text-[10px]">University Affiliation</label>
                         <input 
                           type="text" 
                           required
                           value={collegeForm.university}
                           onChange={(e) => setCollegeForm({ ...collegeForm, university: e.target.value })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Campus Location</label>
+                        <label className="block text-text-secondary text-[10px]">Campus Location</label>
                         <input 
                           type="text" 
                           required
                           value={collegeForm.location}
                           onChange={(e) => setCollegeForm({ ...collegeForm, location: e.target.value })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Establishment Year</label>
+                        <label className="block text-text-secondary text-[10px]">Establishment Year</label>
                         <input 
                           type="number" 
                           required
                           value={collegeForm.establishmentYear}
                           onChange={(e) => setCollegeForm({ ...collegeForm, establishmentYear: Number(e.target.value) })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                     </div>
@@ -2260,34 +2260,34 @@ export default function OrganizationManagementPage() {
 
                   {/* Section 2 */}
                   <div className="space-y-2">
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                    <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest border-b border-border pb-1">
                       Section 2: Accreditations & Rankings
                     </div>
                     <div className="grid grid-cols-4 gap-3">
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">NAAC Grade</label>
+                        <label className="block text-text-secondary text-[10px]">NAAC Grade</label>
                         <input 
                           type="text" 
                           value={collegeForm.naacGrade}
                           onChange={(e) => setCollegeForm({ ...collegeForm, naacGrade: e.target.value })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">National Ranking</label>
+                        <label className="block text-text-secondary text-[10px]">National Ranking</label>
                         <input 
                           type="number" 
                           value={collegeForm.nationalRanking}
                           onChange={(e) => setCollegeForm({ ...collegeForm, nationalRanking: Number(e.target.value) })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">NBA Status</label>
+                        <label className="block text-text-secondary text-[10px]">NBA Status</label>
                         <select 
                           value={collegeForm.nbaStatus}
                           onChange={(e) => setCollegeForm({ ...collegeForm, nbaStatus: e.target.value as any })}
-                          className="w-full p-2 border border-slate-200 rounded bg-white text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded bg-white text-xs focus:outline-none"
                         >
                           <option value="Accredited">Accredited</option>
                           <option value="Not Accredited">Not Accredited</option>
@@ -2295,11 +2295,11 @@ export default function OrganizationManagementPage() {
                         </select>
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Autonomous Status</label>
+                        <label className="block text-text-secondary text-[10px]">Autonomous Status</label>
                         <select 
                           value={collegeForm.autonomousStatus}
                           onChange={(e) => setCollegeForm({ ...collegeForm, autonomousStatus: e.target.value as any })}
-                          className="w-full p-2 border border-slate-200 rounded bg-white text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded bg-white text-xs focus:outline-none"
                         >
                           <option value="Autonomous">Autonomous</option>
                           <option value="Affiliated">Affiliated</option>
@@ -2310,58 +2310,58 @@ export default function OrganizationManagementPage() {
 
                   {/* Section 3 */}
                   <div className="space-y-2">
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1">
+                    <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest border-b border-border pb-1">
                       Section 3: Communication & Address
                     </div>
                     <div className="grid grid-cols-3 gap-3">
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Website Portal</label>
+                        <label className="block text-text-secondary text-[10px]">Website Portal</label>
                         <input 
                           type="url" 
                           required
                           value={collegeForm.website}
                           onChange={(e) => setCollegeForm({ ...collegeForm, website: e.target.value })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Registrar Email</label>
+                        <label className="block text-text-secondary text-[10px]">Registrar Email</label>
                         <input 
                           type="email" 
                           required
                           value={collegeForm.email}
                           onChange={(e) => setCollegeForm({ ...collegeForm, email: e.target.value })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Contact Phone</label>
+                        <label className="block text-text-secondary text-[10px]">Contact Phone</label>
                         <input 
                           type="text" 
                           required
                           value={collegeForm.phone}
                           onChange={(e) => setCollegeForm({ ...collegeForm, phone: e.target.value })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Affiliation Accreditation</label>
+                        <label className="block text-text-secondary text-[10px]">Affiliation Accreditation</label>
                         <input 
                           type="text" 
                           required
                           value={collegeForm.affiliation}
                           onChange={(e) => setCollegeForm({ ...collegeForm, affiliation: e.target.value })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                       <div className="col-span-2 space-y-1">
-                        <label className="block text-slate-500 text-[10px]">Campus Address</label>
+                        <label className="block text-text-secondary text-[10px]">Campus Address</label>
                         <input 
                           type="text" 
                           required
                           value={collegeForm.address}
                           onChange={(e) => setCollegeForm({ ...collegeForm, address: e.target.value })}
-                          className="w-full p-2 border border-slate-200 rounded text-xs focus:outline-none"
+                          className="w-full p-2 border border-border rounded text-xs focus:outline-none"
                         />
                       </div>
                     </div>

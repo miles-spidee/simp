@@ -45,7 +45,7 @@ Section.displayName = "Section";
 // --- HERO COMPONENTS ---
 const HeroBadge = () => (
   <div className="inline-flex items-center gap-2 text-[10px] sm:text-xs font-[family-name:var(--font-outfit)] font-bold text-text-secondary tracking-widest uppercase mb-6">
-    <span className="w-4 h-4 rounded-full border-[3px] border-sky-100 flex items-center justify-center">
+    <span className="w-4 h-4 rounded-full border-[3px] border-border flex items-center justify-center">
       <span className="w-1.5 h-1.5 rounded-full bg-sky-600" />
     </span>
     {heroData.badge}
@@ -84,7 +84,7 @@ const HeroButtons = () => {
       {/* <a 
         href="#programs"
         onClick={handleExploreClick}
-        className="rounded-xl px-8 py-4 text-xs font-bold tracking-widest uppercase bg-white border border-slate-200 text-text-primary hover:bg-slate-50 flex items-center gap-3 transition-colors shadow-sm"
+        className="rounded-xl px-8 py-4 text-xs font-bold tracking-widest uppercase bg-white border border-border text-text-primary hover:bg-slate-50 flex items-center gap-3 transition-colors shadow-sm"
       >
         DIVE DEEPER
         <ArrowRight className="w-4 h-4" />
@@ -248,7 +248,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-sky-50 font-sans flex flex-col justify-between text-text-primary">
       <div>
         {/* Navigation Header */}
-        <header className="h-20 w-full bg-white flex items-center justify-between px-4 sm:px-6 lg:px-16 border-b border-sky-100 sticky top-0 z-40 animate-slide-in">
+        <header className="h-20 w-full bg-white flex items-center justify-between px-4 sm:px-6 lg:px-16 border-b border-border sticky top-0 z-40 animate-slide-in">
           <div className="flex items-center gap-12">
             <Link href="/" className="flex items-center">
               <img src="/logo.png" alt="Pinesphere Logo" className="h-10 sm:h-12 w-auto object-contain transition-transform hover:scale-[1.02]" />
@@ -294,7 +294,7 @@ export default function LandingPage() {
             ) : opportunities.map((opp, idx) => (
               <div 
                 key={idx} 
-                className={`flex flex-col h-full rounded-2xl border border-slate-200 bg-white p-8 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.06)] hover:-translate-y-1.5 transition-all duration-300 ${
+                className={`flex flex-col h-full rounded-2xl border border-border bg-white p-8 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.06)] hover:-translate-y-1.5 transition-all duration-300 ${
                   programsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20 pointer-events-none'
                 }`}
                 style={{ 
@@ -315,7 +315,7 @@ export default function LandingPage() {
                 <h3 className="text-xl font-bold text-text-primary mb-2">{opp.title}</h3>
                 <p className="text-sm text-text-secondary flex-1 leading-relaxed mb-6">{opp.description}</p>
                 
-                <div className="space-y-3 border-t border-slate-100 pt-5 mb-6 text-text-secondary text-sm">
+                <div className="space-y-3 border-t border-border pt-5 mb-6 text-text-secondary text-sm">
                   <div className="flex items-center gap-3">
                     <svg className="h-4 w-4 text-text-secondary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -450,7 +450,7 @@ export default function LandingPage() {
                     }
                   }}
                   disabled={isVerifying}
-                  className="w-full py-3 px-4 bg-white border border-sky-200 hover:bg-sky-50 text-text-primary rounded-xl font-[family-name:var(--font-outfit)] font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  className="w-full py-3 px-4 bg-white border border-border hover:bg-sky-50 text-text-primary rounded-xl font-[family-name:var(--font-outfit)] font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   Cancel
                 </button>
