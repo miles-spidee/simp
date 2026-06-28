@@ -306,7 +306,11 @@ export function TopNav({ setMobileOpen }: TopNavProps) {
 
           <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-border" aria-hidden="true" />
           
-          <button type="button" className="-m-2.5 p-2.5 ml-2 text-text-secondary hover:text-text-primary transition-colors">
+          <button 
+            type="button" 
+            onClick={() => router.push('/feature/settings')}
+            className="-m-2.5 p-2.5 ml-2 text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
+          >
             <span className="sr-only">Settings</span>
             <Settings className="h-5 w-5" aria-hidden="true" />
           </button>

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { ReferralService } from '@/src/services/referral.service';
 import { Referral, ReferralCampaign } from '@/src/types/referral.types';
-import { Gift, Loader2, Users, Trophy, ChevronRight, Copy, Plus } from 'lucide-react';
+import { Gift, Loader2, Users, Trophy, ChevronRight, Copy, Plus, X, Check } from 'lucide-react';
 import { usePermissions } from '@/src/hooks/usePermissions';
 import { useAuth } from '@/src/context/AuthContext';
 
@@ -14,6 +14,16 @@ export default function ReferralsPage() {
   const [referrals, setReferrals] = useState<Referral[]>([]);
   const [campaigns, setCampaigns] = useState<ReferralCampaign[]>([]);
   const [totalRewards, setTotalRewards] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+
+  const referralLink = user ? `https://simp.edu/join?ref=${user.user_id}` : '';
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(referralLink);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
+  };
 
   useEffect(() => {
     loadData();
@@ -65,7 +75,10 @@ export default function ReferralsPage() {
           <p className="text-text-secondary text-sm mt-1">Refer candidates and earn reward points.</p>
         </div>
         {hasPermission('referral.create') && (
-          <button className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2">
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2"
+          >
             <Plus className="w-4 h-4" />
             Refer a Friend
           </button>
@@ -152,6 +165,47 @@ export default function ReferralsPage() {
           </div>
         </div>
       </div>
+
+      {/* Referral Link Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+            <div className="flex items-center justify-between p-4 border-b border-border bg-slate-50">
+              <h3 className="font-bold text-text-primary flex items-center gap-2">
+                <Gift className="w-5 h-5 text-rose-500" />
+                Refer a Friend
+              </h3>
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                className="text-text-secondary hover:text-text-primary transition-colors p-1"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <p className="text-sm text-text-secondary">
+                Share this link with your friends to invite them to the platform. You'll earn rewards when they join!
+              </p>
+              
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Your Referral Link</label>
+                <div className="flex gap-2">
+                  <div className="flex-1 bg-slate-100 border border-border rounded-lg px-3 py-2 text-sm text-text-primary font-mono overflow-x-auto whitespace-nowrap">
+                    {referralLink}
+                  </div>
+                  <button 
+                    onClick={handleCopyLink}
+                    className="bg-slate-900 hover:bg-black text-white px-3 py-2 rounded-lg transition-colors flex items-center gap-2"
+                  >
+                    {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    <span className="text-sm font-medium">{isCopied ? 'Copied!' : 'Copy'}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { ExportService } from '@/src/services/export.service';
 import { ExportJob, ExportSchedule } from '@/src/types/export.types';
-import { DownloadCloud, Loader2, Clock, CheckCircle2, AlertCircle, RefreshCw, Plus } from 'lucide-react';
+import { DownloadCloud, Loader2, Clock, CheckCircle2, AlertCircle, RefreshCw, Plus, X } from 'lucide-react';
 import { usePermissions } from '@/src/hooks/usePermissions';
 
 export default function ExportCenterPage() {
@@ -11,6 +11,7 @@ export default function ExportCenterPage() {
   const [loading, setLoading] = useState(true);
   const [jobs, setJobs] = useState<ExportJob[]>([]);
   const [schedules, setSchedules] = useState<ExportSchedule[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -104,7 +105,10 @@ export default function ExportCenterPage() {
           <div className="p-4 border-b border-border flex justify-between items-center bg-slate-50">
             <h2 className="font-bold text-text-primary">Scheduled Deliveries</h2>
             {hasPermission('export.manage') && (
-              <button className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1 cursor-pointer">
+              <button 
+                onClick={() => setIsModalOpen(true)}
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1 cursor-pointer"
+              >
                 <Plus className="w-4 h-4" />
                 New Schedule
               </button>
@@ -134,6 +138,51 @@ export default function ExportCenterPage() {
           </div>
         </div>
       </div>
+
+      {/* New Schedule Modal */}
+      
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+            <div className="flex items-center justify-between p-4 border-b border-border bg-slate-50">
+              <h3 className="font-bold text-text-primary">Create New Export Schedule</h3>
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                className="text-text-secondary hover:text-text-primary transition-colors p-1"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-text-secondary mb-1">Schedule Name</label>
+                <input 
+                  type="text" 
+                  className="w-full bg-slate-50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
+                  placeholder="e.g. Monthly Finance Report"
+                />
+              </div>
+              <div className="pt-4 border-t border-border flex justify-end gap-3">
+                <button 
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={() => {
+                    alert('Schedule created successfully! (Mock implementation)');
+                    setIsModalOpen(false);
+                  }}
+                  className="bg-slate-900 hover:bg-black text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors"
+                >
+                  Create Schedule
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
