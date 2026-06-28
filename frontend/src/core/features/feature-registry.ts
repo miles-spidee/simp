@@ -44,19 +44,23 @@ export const FEATURE_REGISTRY: FeatureDefinition[] = [
 
   // LMS
   { moduleId: 'lms', featureId: 'lms_dashboard', permissionKey: 'lms.view', displayName: 'LMS Dashboard', navigationLabel: 'LMS Dashboard', route: '/feature/lms', icon: MonitorPlay },
+  { moduleId: 'lms_management', featureId: 'lms_management_main', permissionKey: 'lms.create', displayName: 'LMS Management', navigationLabel: 'LMS Management', route: '/feature/lms-management', icon: Settings },
   { moduleId: 'my_learning', featureId: 'my_learning_main', permissionKey: 'my_learning.view', displayName: 'My Learning', navigationLabel: 'LMS My Learning', route: '/feature/my-learning', icon: BookOpen },
 
   // Attendance
   { moduleId: 'attendance', featureId: 'attendance_dashboard', permissionKey: 'attendance.view', displayName: 'Attendance Dashboard', navigationLabel: 'Attendance Dashboard', route: '/feature/attendance', icon: Calendar },
+  { moduleId: 'attendance_management', featureId: 'attendance_management_main', permissionKey: 'attendance.mark', displayName: 'Attendance Management', navigationLabel: 'Attendance Management', route: '/feature/attendance-management', icon: Settings },
   { moduleId: 'my_attendance', featureId: 'my_attendance_main', permissionKey: 'my_attendance.view', displayName: 'My Attendance', navigationLabel: 'Attendance My Attendance', route: '/feature/my-attendance', icon: Calendar },
 
   // Task
   { moduleId: 'task', featureId: 'task_dashboard', permissionKey: 'task.view', displayName: 'Task Dashboard', navigationLabel: 'Task Dashboard', route: '/feature/task', icon: CheckSquare },
-  { moduleId: 'management', featureId: 'management_main', permissionKey: 'management.view', displayName: 'Task Management', navigationLabel: 'Task Management', route: '/feature/management', icon: CheckSquare },
+  { moduleId: 'task_management', featureId: 'task_management_main', permissionKey: 'task.create', displayName: 'Task Management', navigationLabel: 'Task Management', route: '/feature/task-management', icon: Settings },
   { moduleId: 'my_tasks', featureId: 'my_tasks_main', permissionKey: 'my_tasks.view', displayName: 'My Tasks', navigationLabel: 'Task My Tasks', route: '/feature/my-tasks', icon: ClipboardList },
 
   // Assessment
   { moduleId: 'assessment', featureId: 'assessment_dashboard', permissionKey: 'assessment.view', displayName: 'Assessment Dashboard', navigationLabel: 'Assessment Dashboard', route: '/feature/assessment', icon: FileText },
+  { moduleId: 'assessment_management', featureId: 'assessment_management_main', permissionKey: 'assessment.create', displayName: 'Assessment Management', navigationLabel: 'Assessment Management', route: '/feature/assessment-management', icon: Settings },
+  { moduleId: 'my_assessments', featureId: 'my_assessments_main', permissionKey: 'my_assessments.view', displayName: 'My Assessments', navigationLabel: 'Assessment My Assessments', route: '/feature/my-assessments', icon: ClipboardList },
 
   // Others
   { moduleId: 'submission', featureId: 'submission_main', permissionKey: 'submission.view', displayName: 'Submissions', navigationLabel: 'Submission', route: '/feature/submissions', icon: Package },

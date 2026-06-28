@@ -26,7 +26,7 @@ export function Sidebar({ isMobileOpen, setMobileOpen, isCollapsed, setCollapsed
     if (href === '/feature') {
       return pathname === '/feature';
     }
-    return pathname.startsWith(href);
+    return pathname === href || pathname.startsWith(href + '/');
   };
 
   // Filter menu items dynamically based on module and permissions from FEATURE_REGISTRY

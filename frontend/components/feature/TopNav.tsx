@@ -37,7 +37,7 @@ export function TopNav({ setMobileOpen }: TopNavProps) {
   const [showDropdown, setShowDropdown] = useState(false);
   const router = useRouter();
   const searchRef = useRef<HTMLDivElement>(null);
-  const { user } = useAuth();
+  const { user, switchUser } = useAuth();
   const { modules } = usePermissions();
 
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -302,6 +302,8 @@ export function TopNav({ setMobileOpen }: TopNavProps) {
             )}
           </div>
           
+
+
           <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-slate-200" aria-hidden="true" />
           
           <button type="button" className="-m-2.5 p-2.5 ml-2 text-slate-400 hover:text-slate-500">
