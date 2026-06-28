@@ -22,7 +22,7 @@ export const batchService = {
       const data = await batchApi.getBatch(id);
       return this.mapToExtended(data);
     } catch (e) {
-      console.error(e);
+      console.debug(e);
       return undefined;
     }
   },
@@ -47,7 +47,7 @@ export const batchService = {
       const res = await batchApi.updateBatch(id, req);
       return this.mapToExtended(res);
     } catch (e) {
-      console.error(e);
+      console.debug(e);
       return undefined;
     }
   },

@@ -58,7 +58,7 @@ export const organizationService = {
         return data.map(col => this.mapToExtended(col));
       }
     } catch (e) {
-      console.error("Failed to load organizations from API, falling back to mock data:", e);
+      console.debug("Failed to load organizations from API, falling back to mock data:", e);
     }
     return MOCK_ORGANIZATIONS.map((org: any) => ({
       ...org,

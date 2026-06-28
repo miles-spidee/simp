@@ -37,7 +37,7 @@ class OpportunitiesService {
       await new Promise(resolve => setTimeout(resolve, 500));
       return MOCK_OPPORTUNITIES as any;
     } catch (e) {
-      console.error(e);
+      console.debug(e);
       return [];
     }
   }
@@ -49,7 +49,7 @@ class OpportunitiesService {
       await new Promise(resolve => setTimeout(resolve, 500));
       return MOCK_OPPORTUNITIES.find(o => o.id === id) as any;
     } catch (e) {
-      console.error(e);
+      console.debug(e);
       return undefined;
     }
   }

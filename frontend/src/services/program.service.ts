@@ -48,7 +48,7 @@ export const programService = {
       const data = await programApi.getPrograms();
       return data.map(prog => this.mapToExtended(prog));
     } catch (e) {
-      console.error(e);
+      console.debug(e);
       return [];
     }
   },

@@ -53,7 +53,7 @@ export const applicationService = {
       const data = await applicationApi.getAllApplications();
       return data.map(app => this.mapToExtended(app));
     } catch (e) {
-      console.error(e);
+      console.debug(e);
       return [];
     }
   },
@@ -63,7 +63,7 @@ export const applicationService = {
       const app = await applicationApi.getApplication(id);
       return this.mapToExtended(app);
     } catch (e) {
-      console.error(e);
+      console.debug(e);
       return undefined;
     }
   },
@@ -79,7 +79,7 @@ export const applicationService = {
       const res = await applicationApi.reviewApplication(id, req);
       return this.mapToExtended(res);
     } catch (e) {
-      console.error(e);
+      console.debug(e);
       return undefined;
     }
   },

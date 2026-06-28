@@ -101,7 +101,7 @@ export const studentService = {
         return data.map(stu => this.mapToExtended(stu));
       }
     } catch (e) {
-      console.error("Failed to load students from API, falling back to mock data:", e);
+      console.debug("Failed to load students from API, falling back to mock data:", e);
     }
     return MOCK_STUDENTS.map((stu: any) => ({
       ...stu,
@@ -121,7 +121,7 @@ export const studentService = {
       const stu = await studentApi.getStudent(id);
       return this.mapToExtended(stu);
     } catch (e) {
-      console.error(e);
+      console.debug(e);
       return undefined;
     }
   },
@@ -134,7 +134,7 @@ export const studentService = {
       }
       return undefined;
     } catch (e) {
-      console.error(e);
+      console.debug(e);
       return undefined;
     }
   },

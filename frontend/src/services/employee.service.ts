@@ -46,7 +46,7 @@ export const employeeService = {
         return data.map(emp => this.mapToExtended(emp));
       }
     } catch (e) {
-      console.error("Failed to load employees from API, falling back to mock data:", e);
+      console.debug("Failed to load employees from API, falling back to mock data:", e);
     }
     return MOCK_EMPLOYEES.map((emp: any) => ({
       ...emp,

@@ -12,13 +12,8 @@ export const apiClient: AxiosInstance = axios.create({
 // Request Interceptor
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // We will pull the token from localStorage or cookie here
-    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
-    
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
+    // Immediately reject to simulate offline backend and remove latency
+    return Promise.reject(new axios.Cancel("Backend connection disabled"));
   },
   (error: AxiosError) => {
     return Promise.reject(error);
