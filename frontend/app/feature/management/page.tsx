@@ -5,7 +5,8 @@ import {
   CheckSquare, Plus, CheckCircle, ChevronRight, Clock, AlertTriangle, 
   ExternalLink, User, Send, CheckCircle2, XCircle, RefreshCw, X, FileText
 } from 'lucide-react';
-import { Task, MOCK_TASKS } from '@/src/data/mock-tasks';
+import { Task } from '@/src/types/api/task.types';
+import { taskService } from '@/src/services/task.service';
 
 interface Submission {
   id: string;
@@ -23,8 +24,19 @@ export default function TaskManagementPage() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   
   // Tasks local state
-  const [tasks, setTasks] = useState<Task[]>(MOCK_TASKS);
-  const [selectedTaskId, setSelectedTaskId] = useState<string>(MOCK_TASKS[0]?.id || '');
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [selectedTaskId, setSelectedTaskId] = useState<string>('');
+  
+  React.useEffect(() => {
+    async function loadTasks() {
+      const data = await taskService.getTasks();
+      setTasks(data);
+      if (data.length > 0) {
+        setSelectedTaskId(data[0].id);
+      }
+    }
+    loadTasks();
+  }, []);
   
   // Submissions local state mapped by taskId
   const [submissions, setSubmissions] = useState<Record<string, Submission[]>>({
