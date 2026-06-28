@@ -1,17 +1,4 @@
-export interface MentorAssignment {
-  id: string;
-  mentorProfileId: string;
-  mentorName: string;
-  employeeId: string;
-  studentId: string;
-  studentName: string;
-  internId: string;
-  batchId: string;
-  batchName: string;
-  assignedDate: string;
-  status: 'Active' | 'Completed' | 'Transferred';
-  assignedBy: string;
-}
+import { MentorAssignment } from '../types/api/mentor.types';
 
 export const MOCK_MENTOR_ASSIGNMENTS: MentorAssignment[] = [
   {

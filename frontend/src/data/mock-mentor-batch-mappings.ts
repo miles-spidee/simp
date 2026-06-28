@@ -1,18 +1,4 @@
-export interface MentorBatchMapping {
-  id: string;
-  mentorProfileId: string;
-  mentorName: string;
-  employeeId: string;
-  batchId: string;
-  batchName: string;
-  batchCode: string;
-  programName: string;
-  studentCount: number;
-  batchCapacity: number;
-  mappedDate: string;
-  status: 'Active' | 'Completed' | 'Upcoming';
-  mappedBy: string;
-}
+import { MentorBatchMapping } from '../types/api/mentor.types';
 
 export const MOCK_MENTOR_BATCH_MAPPINGS: MentorBatchMapping[] = [
   {

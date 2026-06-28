@@ -1,11 +1,14 @@
+import { apiClient } from './api.client';
 import { PaymentTransaction } from '../types/payment.types';
-import { MOCK_PAYMENTS } from '../data/mock-payments';
 
 export const paymentApi = {
   getPayments: async (): Promise<PaymentTransaction[]> => {
-    return new Promise(resolve => setTimeout(() => resolve(MOCK_PAYMENTS), 600));
+    const res = await apiClient.get<PaymentTransaction[]>('/payments');
+    return res.data;
   },
-  getPaymentById: async (id: string): Promise<PaymentTransaction | undefined> => {
-    return new Promise(resolve => setTimeout(() => resolve(MOCK_PAYMENTS.find(p => p.id === id)), 400));
+  getPaymentById: async (id: string): Promise<PaymentTransaction> => {
+    const res = await apiClient.get<PaymentTransaction>(`/payments/${id}`);
+    return res.data;
   }
 };
+

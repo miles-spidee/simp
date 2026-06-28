@@ -1,25 +1,24 @@
+import { apiClient } from './api.client';
 import { LeaveRequest } from '../types/leave.types';
-import { MOCK_LEAVES } from '../data/mock-leaves';
 
 export const leaveApi = {
   getAllLeaves: async (): Promise<LeaveRequest[]> => {
-    return Promise.resolve([...MOCK_LEAVES]);
+    const res = await apiClient.get<LeaveRequest[]>('/leaves');
+    return res.data;
   },
   
-  getLeaveById: async (id: string): Promise<LeaveRequest | undefined> => {
-    return Promise.resolve(MOCK_LEAVES.find(l => l.id === id));
+  getLeaveById: async (id: string): Promise<LeaveRequest> => {
+    const res = await apiClient.get<LeaveRequest>(`/leaves/${id}`);
+    return res.data;
   },
 
   getLeavesByUser: async (userId: string): Promise<LeaveRequest[]> => {
-    return Promise.resolve(MOCK_LEAVES.filter(l => l.userId === userId));
+    const res = await apiClient.get<LeaveRequest[]>(`/users/${userId}/leaves`);
+    return res.data;
   },
   
   createLeave: async (leave: Omit<LeaveRequest, 'id'>): Promise<LeaveRequest> => {
-    const newLeave: LeaveRequest = {
-      ...leave,
-      id: `leave-${Date.now()}`,
-    };
-    MOCK_LEAVES.push(newLeave);
-    return Promise.resolve(newLeave);
+    const res = await apiClient.post<LeaveRequest>('/leaves', leave);
+    return res.data;
   }
 };

@@ -1,9 +1,16 @@
 import { paymentApi } from '../api/payment.api';
 import { PaymentTransaction } from '../types/payment.types';
+import { MOCK_PAYMENTS } from '../data/mock-payments';
 
 class PaymentService {
   async getPayments(): Promise<PaymentTransaction[]> {
-    return await paymentApi.getPayments();
+    try {
+      const data = await paymentApi.getPayments();
+      if (data && data.length > 0) return data;
+    } catch (e) {
+      console.debug(e);
+    }
+    return MOCK_PAYMENTS;
   }
 
   async getPaymentStatistics() {

@@ -1,32 +1,4 @@
-export interface Subtask {
-  id: string;
-  phase: number;
-  task: string;
-  completed: boolean;
-}
-
-export interface Commit {
-  commit: string;
-  message: string;
-  author: string;
-  date: string;
-  guideComment?: string;
-}
-
-export interface Submission {
-  id: string;
-  studentId: string;
-  taskId?: string;
-  assessmentId?: string;
-  status: 'PENDING' | 'APPROVED' | 'REJECTED';
-  repoLink: string;
-  liveLink: string;
-  subtasks: Subtask[];
-  commits: Commit[];
-  submissionDate?: string;
-  marksObtained?: number;
-  fileIds?: string[];
-}
+import { Submission } from '../types/api/submission.types';
 
 export const MOCK_SUBMISSIONS: Submission[] = [
   {

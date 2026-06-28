@@ -1,16 +1,4 @@
-export interface MentorProfile {
-  mentor_profile_id: string;
-  employee_id: string;
-  employeeName: string;
-  mentor_bio: string;
-  mentor_expertise: string[];
-  years_of_experience: number;
-  max_student_capacity: number;
-  current_student_count: number;
-  is_available: boolean;
-  created_at: string;
-  updated_at: string;
-}
+import { MentorProfile } from '../types/api/mentor.types';
 
 /** @deprecated Use MentorProfile — kept for backward compatibility */
 export type Mentor = MentorProfile & { id: string; employeeId: string; batchIds: string[] };

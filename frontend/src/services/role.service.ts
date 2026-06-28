@@ -1,19 +1,34 @@
 import { Role, MOCK_ROLES } from '../data/mock-roles';
+import { roleApi } from '../api/role.api';
 
 export const roleService = {
   async getRoles(): Promise<Role[]> {
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+      const data = await roleApi.getRoles();
+      if (data && data.length > 0) return data;
+    } catch (e) {
+      console.debug(e);
+    }
     return [...MOCK_ROLES];
   },
 
   async getRole(id: string): Promise<Role | undefined> {
-    await new Promise(resolve => setTimeout(resolve, 200));
+    try {
+      const data = await roleApi.getRoleById(id);
+      if (data) return data;
+    } catch (e) {
+      console.debug(e);
+    }
     return MOCK_ROLES.find(r => r.id === id);
   },
 
   async createRole(role: Omit<Role, 'id' | 'modulesCount' | 'usersCount' | 'color' | 'bg'> & { color?: string, bg?: string }): Promise<Role> {
-    await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+      const data = await roleApi.createRole(role);
+      if (data) return data;
+    } catch (e) {
+      console.debug(e);
+    }
     const randomColors = [
       { color: 'text-purple-600', bg: 'bg-purple-100' },
       { color: 'text-indigo-600', bg: 'bg-indigo-100' },
@@ -35,7 +50,12 @@ export const roleService = {
   },
 
   async updateRole(id: string, updatedData: Partial<Role>): Promise<Role | undefined> {
-    await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+      const data = await roleApi.updateRole(id, updatedData);
+      if (data) return data;
+    } catch (e) {
+      console.debug(e);
+    }
     const idx = MOCK_ROLES.findIndex(r => r.id === id);
     if (idx !== -1) {
       MOCK_ROLES[idx] = {
@@ -49,7 +69,12 @@ export const roleService = {
   },
 
   async deleteRole(id: string): Promise<boolean> {
-    await new Promise(resolve => setTimeout(resolve, 300));
+    try {
+      const success = await roleApi.deleteRole(id);
+      if (success !== undefined) return success;
+    } catch (e) {
+      console.debug(e);
+    }
     const idx = MOCK_ROLES.findIndex(r => r.id === id);
     if (idx !== -1) {
       MOCK_ROLES.splice(idx, 1);
