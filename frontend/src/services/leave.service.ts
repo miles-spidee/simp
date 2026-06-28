@@ -25,7 +25,17 @@ export const leaveService = {
     } catch (e) {
       console.debug(e);
     }
-    return MOCK_LEAVES;
+    
+    // Load local leaves
+    let localLeaves: LeaveRequest[] = [];
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('pinesphere_local_leaves');
+      if (stored) {
+        localLeaves = JSON.parse(stored);
+      }
+    }
+    
+    return [...localLeaves, ...MOCK_LEAVES];
   },
 
   applyLeave: async (leaveData: Omit<LeaveRequest, 'id'>) => {
@@ -39,7 +49,16 @@ export const leaveService = {
       ...leaveData,
       id: `leave-${Date.now()}`,
     };
-    MOCK_LEAVES.push(newLeave);
+    
+    // Persist locally
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('pinesphere_local_leaves');
+      const localLeaves = stored ? JSON.parse(stored) : [];
+      localLeaves.unshift(newLeave);
+      localStorage.setItem('pinesphere_local_leaves', JSON.stringify(localLeaves));
+    }
+    
+    MOCK_LEAVES.unshift(newLeave);
     return newLeave;
   }
 };

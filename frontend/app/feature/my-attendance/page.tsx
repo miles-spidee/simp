@@ -3,8 +3,10 @@
 import React, { useEffect, useState } from 'react';
 import { 
   ChevronRight, Calendar, UserCheck, Clock, AlertTriangle, 
-  CheckCircle2, MapPin, FileText, Send, ArrowRight, ShieldCheck
+  CheckCircle2, MapPin, FileText, Send, ArrowRight, ShieldCheck, CalendarDays
 } from 'lucide-react';
+import { leaveService } from '../../../src/services/leave.service';
+import { LeaveRequest } from '../../../src/types/leave.types';
 
 interface AttendanceLog {
   id: string;
@@ -49,6 +51,13 @@ export default function MyAttendancePage() {
   const [appealFile, setAppealFile] = useState<string>('');
   const [myAppeals, setMyAppeals] = useState<LocalAppeal[]>([]);
 
+  // Leave form states
+  const [leaveType, setLeaveType] = useState<'Medical' | 'Casual' | 'Emergency' | 'OD' | 'WFH'>('Casual');
+  const [leaveStartDate, setLeaveStartDate] = useState('');
+  const [leaveEndDate, setLeaveEndDate] = useState('');
+  const [leaveReason, setLeaveReason] = useState('');
+  const [myLeaves, setMyLeaves] = useState<LeaveRequest[]>([]);
+
   useEffect(() => {
     // Load initial logs
     const initialLogs: AttendanceLog[] = [
@@ -69,6 +78,12 @@ export default function MyAttendancePage() {
         setMyAppeals(parsed.filter((a: LocalAppeal) => a.studentId === 'stu-12')); // filter for student Ananya Desai
       }
     }
+
+    const fetchLeaves = async () => {
+      const all = await leaveService.getAllLeaves();
+      setMyLeaves(all.filter(l => l.userId === 'user-1')); // mock user ID for current user
+    };
+    fetchLeaves();
   }, []);
 
   const triggerToast = (msg: string) => {
@@ -158,6 +173,30 @@ export default function MyAttendancePage() {
     triggerToast("Correction appeal submitted to mentor dashboard!");
     setAppealReason('');
     setAppealFile('');
+  };
+
+  const handleApplyLeave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!leaveStartDate || !leaveEndDate || !leaveReason) {
+      triggerToast("Please fill all required leave fields.");
+      return;
+    }
+    const newLeave = await leaveService.applyLeave({
+      userId: 'user-1',
+      userName: 'Ananya Desai',
+      role: 'Student',
+      leaveType,
+      startDate: new Date(leaveStartDate).toISOString(),
+      endDate: new Date(leaveEndDate).toISOString(),
+      reason: leaveReason,
+      status: 'Pending',
+      appliedOn: new Date().toISOString(),
+    });
+    setMyLeaves(prev => [newLeave, ...prev]);
+    triggerToast("Leave application submitted successfully!");
+    setLeaveReason('');
+    setLeaveStartDate('');
+    setLeaveEndDate('');
   };
 
   return (
@@ -417,6 +456,107 @@ export default function MyAttendancePage() {
             ))}
             {myAppeals.length === 0 && (
               <p className="text-xs text-slate-400 italic text-center py-12">No correction appeals submitted yet.</p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Leave Application Form and Leave History */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Apply for Leave */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+          <h3 className="font-bold text-xs text-slate-450 uppercase tracking-widest border-b border-slate-100 pb-3 flex items-center gap-2">
+            <CalendarDays className="h-4.5 w-4.5 text-blue-500" />
+            <span>Apply for Leave</span>
+          </h3>
+
+          <form onSubmit={handleApplyLeave} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-[10px] font-bold text-slate-450 uppercase mb-1.5">Start Date</label>
+                <input 
+                  type="date"
+                  required
+                  value={leaveStartDate}
+                  onChange={(e) => setLeaveStartDate(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold text-slate-450 uppercase mb-1.5">End Date</label>
+                <input 
+                  type="date"
+                  required
+                  value={leaveEndDate}
+                  onChange={(e) => setLeaveEndDate(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 outline-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-bold text-slate-455 uppercase mb-1.5">Leave Type</label>
+              <select 
+                value={leaveType} 
+                onChange={(e) => setLeaveType(e.target.value as any)}
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 outline-none cursor-pointer"
+              >
+                <option value="Casual">Casual Leave</option>
+                <option value="Medical">Medical Leave</option>
+                <option value="Emergency">Emergency Leave</option>
+                <option value="OD">On Duty (OD)</option>
+                <option value="WFH">Work from Home (WFH)</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-bold text-slate-455 uppercase mb-1.5">Reason for leave</label>
+              <textarea 
+                rows={3}
+                required
+                value={leaveReason}
+                onChange={(e) => setLeaveReason(e.target.value)}
+                placeholder="Explain why you are applying for leave..."
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none resize-none"
+              />
+            </div>
+
+            <button 
+              type="submit"
+              className="w-full py-3 bg-slate-900 hover:bg-black text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-lg shadow-slate-900/10 flex items-center justify-center gap-1.5"
+            >
+              <FileText className="h-3 w-3" /> Submit Leave Request
+            </button>
+          </form>
+        </div>
+
+        {/* My Leave History */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+          <h3 className="font-bold text-xs text-slate-455 uppercase tracking-widest border-b border-slate-100 pb-3">
+            My Leave History
+          </h3>
+
+          <div className="space-y-3 overflow-y-auto max-h-[360px] pr-1 custom-scrollbar">
+            {myLeaves.map(l => (
+              <div key={l.id} className="p-4 border border-slate-100 rounded-xl space-y-2 hover:border-slate-300 transition-all bg-slate-50/20">
+                <div className="flex justify-between items-center text-[10px]">
+                  <span className="font-bold text-slate-400">Date: {l.startDate.split('T')[0]} to {l.endDate.split('T')[0]}</span>
+                  <span className={`font-extrabold uppercase px-2 py-0.5 rounded border text-[9px] ${
+                    l.status === 'Pending' ? 'bg-amber-50 border-amber-100 text-amber-600' :
+                    l.status === 'Approved' ? 'bg-emerald-50 border-emerald-100 text-emerald-600' :
+                    'bg-rose-50 border-rose-100 text-rose-600'
+                  }`}>
+                    {l.status}
+                  </span>
+                </div>
+                <div className="text-xs font-semibold text-slate-700 leading-snug flex items-center justify-between">
+                  <span>Type: <span className="bg-blue-50 border border-blue-100 text-blue-600 font-extrabold px-1 rounded text-[9px]">{l.leaveType}</span></span>
+                </div>
+                <p className="text-[11px] text-slate-500 leading-snug">"{l.reason}"</p>
+              </div>
+            ))}
+            {myLeaves.length === 0 && (
+              <p className="text-xs text-slate-400 italic text-center py-12">No leaves applied yet.</p>
             )}
           </div>
         </div>
