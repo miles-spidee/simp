@@ -7,6 +7,7 @@ import {
   TrendingUp, UserPlus, FileText, Activity, Building, Calendar,
   UsersRound, ShieldCheck
 } from 'lucide-react';
+
 import { opportunitiesService } from '@/src/services/opportunities.service';
 import { Opportunity } from '@/src/data/mock-opportunities';
 import { CreateOpportunityWizard } from '@/components/feature/opportunity/CreateOpportunityWizard';
@@ -16,7 +17,7 @@ import { Application } from '@/src/data/mock-applications';
 import { openingMentorsService } from '@/src/services/opening-mentors.service';
 import { OpeningMentor } from '@/src/data/mock-opening-mentors';
 import { mentorService } from '@/src/services/mentor.service';
-import { MentorProfile } from '@/src/data/mock-mentors';
+import { MentorProfile } from '@/src/types/api/mentor.types';
 
 type TabType = 'dashboard' | 'directory';
 type DrawerTabType = 'overview' | 'mentors' | 'applications' | 'analytics' | 'timeline';

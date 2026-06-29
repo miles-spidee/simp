@@ -1,4 +1,5 @@
-import { StudentPerformance, BatchPerformance, MOCK_STUDENT_PERFORMANCE, MOCK_BATCH_PERFORMANCE } from '../data/mock-performance';
+import { StudentPerformance, BatchPerformance } from '../types/api/performance.types';
+import { MOCK_STUDENT_PERFORMANCE, MOCK_BATCH_PERFORMANCE } from '../data/mock-performance';
 import { performanceApi } from '../api/performance.api';
 
 class PerformanceService {

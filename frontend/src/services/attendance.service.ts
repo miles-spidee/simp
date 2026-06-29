@@ -1,4 +1,5 @@
-import { AttendanceSession, AttendanceRecord, AttendanceStatus, MOCK_ATTENDANCE_SESSIONS, MOCK_ATTENDANCE_RECORDS, MOCK_ATTENDANCE_STATUS } from '../data/mock-attendance';
+import { AttendanceSession, AttendanceRecord, AttendanceStatus } from '../types/api/attendance.types';
+import { MOCK_ATTENDANCE_SESSIONS, MOCK_ATTENDANCE_RECORDS, MOCK_ATTENDANCE_STATUS } from '../data/mock-attendance';
 import { attendanceApi } from '../api/attendance.api';
 
 class AttendanceService {

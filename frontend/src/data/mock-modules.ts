@@ -1,4 +1,5 @@
 import { Module } from '../types/api/module.types';
+export type { Module };
 
 export const MOCK_MODULES: Module[] = [
   { id: 'dashboard', code: 'DASHBOARD', name: 'Dashboard', route: '/feature', active: true, desc: 'General system dashboards' },
