@@ -114,7 +114,7 @@ export function TopNav({ setMobileOpen }: TopNavProps) {
     <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-x-4 border-b border-border bg-navbar px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
       <button
         type="button"
-        className="-m-2.5 p-2.5 text-text-primary lg:hidden"
+        className="-m-2.5 p-2.5 text-text-primary md:hidden"
         onClick={() => setMobileOpen(true)}
       >
         <span className="sr-only">Open sidebar</span>

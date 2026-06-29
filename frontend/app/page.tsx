@@ -245,7 +245,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-sky-50 font-sans flex flex-col justify-between text-text-primary">
+    <div className="min-h-screen bg-slate-50 font-sans flex flex-col justify-between text-text-primary">
       <div>
         {/* Navigation Header */}
         <header className="h-20 w-full bg-white flex items-center justify-between px-4 sm:px-6 lg:px-16 border-b border-border sticky top-0 z-40 animate-slide-in">

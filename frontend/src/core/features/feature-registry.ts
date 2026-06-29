@@ -5,7 +5,10 @@ import {
   Briefcase, Activity, ShieldAlert, CreditCard, FileSignature, Wallet,
   Bell, Megaphone, MessageSquare, Mail, Award, TrendingUp, GraduationCap,
   LineChart, FileBarChart, Target, BarChart4, DownloadCloud, Lightbulb, LayoutDashboard, Key, Lock, Building2,
-  LifeBuoy, Gift, IdCard, UserCircle, Zap, Sparkles, Building, ShieldCheck
+  LifeBuoy, Gift, IdCard, UserCircle, Zap, Sparkles, Building, ShieldCheck,
+  Blocks, UserCog, FileDigit, Layers, UserCheck, Video, CalendarCheck, CalendarCog, CalendarDays,
+  ListTodo, ClipboardCheck, ClipboardEdit, FileQuestion, BookCheck, FileCheck, BarChart3, Landmark,
+  UserSearch, Plane, AlertTriangle, Receipt, Coins, History
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -26,61 +29,61 @@ export const FEATURE_REGISTRY: FeatureDefinition[] = [
   // Identity
   { moduleId: 'users', featureId: 'users_main', permissionKey: 'users.view', displayName: 'Users', navigationLabel: 'Identity - Users', route: '/feature/users', icon: UsersIcon },
   { moduleId: 'roles', featureId: 'roles_main', permissionKey: 'roles.view', displayName: 'Roles', navigationLabel: 'Identity - Roles', route: '/feature/roles', icon: Key },
-  { moduleId: 'modules', featureId: 'modules_main', permissionKey: 'modules.view', displayName: 'Module Registry', navigationLabel: 'Identity - Module Registry', route: '/feature/modules', icon: Settings },
+  { moduleId: 'modules', featureId: 'modules_main', permissionKey: 'modules.view', displayName: 'Module Registry', navigationLabel: 'Identity - Module Registry', route: '/feature/modules', icon: Blocks },
   { moduleId: 'security', featureId: 'security_main', permissionKey: 'security.view', displayName: 'Security Center', navigationLabel: 'Identity - Security Center', route: '/feature/security', icon: ShieldAlert },
 
   // HR/Management
-  { moduleId: 'employee', featureId: 'employee_main', permissionKey: 'employee.view', displayName: 'Employee Management', navigationLabel: 'Employee', route: '/feature/employee', icon: UsersIcon },
+  { moduleId: 'employee', featureId: 'employee_main', permissionKey: 'employee.view', displayName: 'Employee Management', navigationLabel: 'Employee', route: '/feature/employee', icon: UserCog },
   { moduleId: 'organization', featureId: 'organization_main', permissionKey: 'organization.view', displayName: 'Organization Management', navigationLabel: 'Organization', route: '/feature/organization', icon: Building2 },
   { moduleId: 'program', featureId: 'program_main', permissionKey: 'program.view', displayName: 'Program Management', navigationLabel: 'Program', route: '/feature/program', icon: GraduationCap },
   { moduleId: 'opportunity', featureId: 'opportunity_main', permissionKey: 'opportunity.view', displayName: 'Opportunity Management', navigationLabel: 'Opportunity', route: '/feature/opportunity', icon: Briefcase },
-  { moduleId: 'application', featureId: 'application_main', permissionKey: 'application.view', displayName: 'Application Management', navigationLabel: 'Application', route: '/feature/application', icon: FileText },
+  { moduleId: 'application', featureId: 'application_main', permissionKey: 'application.view', displayName: 'Application Management', navigationLabel: 'Application', route: '/feature/application', icon: FileDigit },
   { moduleId: 'student', featureId: 'student_main', permissionKey: 'student.view', displayName: 'Student Management', navigationLabel: 'Student', route: '/feature/student', icon: UsersRound },
-  { moduleId: 'batch', featureId: 'batch_main', permissionKey: 'batch.view', displayName: 'Batch Management', navigationLabel: 'Batch', route: '/feature/batch', icon: Package },
+  { moduleId: 'batch', featureId: 'batch_main', permissionKey: 'batch.view', displayName: 'Batch Management', navigationLabel: 'Batch', route: '/feature/batch', icon: Layers },
   { moduleId: 'allocation', featureId: 'allocation_main', permissionKey: 'allocation.view', displayName: 'Allocation', navigationLabel: 'Allocation', route: '/feature/allocation', icon: Network },
 
   // Mentor
-  { moduleId: 'mentor', featureId: 'mentor_profile', permissionKey: 'mentor.view', displayName: 'Mentor Profile', navigationLabel: 'Mentor Profile', route: '/feature/mentor/profile', icon: User },
+  { moduleId: 'mentor', featureId: 'mentor_profile', permissionKey: 'mentor.view', displayName: 'Mentor Profile', navigationLabel: 'Mentor Profile', route: '/feature/mentor/profile', icon: UserCheck },
 
   // LMS
   { moduleId: 'lms', featureId: 'lms_dashboard', permissionKey: 'lms.view', displayName: 'LMS Dashboard', navigationLabel: 'LMS Dashboard', route: '/feature/lms', icon: MonitorPlay },
-  { moduleId: 'lms_management', featureId: 'lms_management_main', permissionKey: 'lms.create', displayName: 'LMS Management', navigationLabel: 'LMS Management', route: '/feature/lms-management', icon: Settings },
+  { moduleId: 'lms_management', featureId: 'lms_management_main', permissionKey: 'lms.create', displayName: 'LMS Management', navigationLabel: 'LMS Management', route: '/feature/lms-management', icon: Video },
   { moduleId: 'my_learning', featureId: 'my_learning_main', permissionKey: 'my_learning.view', displayName: 'My Learning', navigationLabel: 'LMS My Learning', route: '/feature/my-learning', icon: BookOpen },
 
   // Attendance
-  { moduleId: 'attendance', featureId: 'attendance_dashboard', permissionKey: 'attendance.view', displayName: 'Attendance Dashboard', navigationLabel: 'Attendance Dashboard', route: '/feature/attendance', icon: Calendar },
-  { moduleId: 'attendance_management', featureId: 'attendance_management_main', permissionKey: 'attendance.mark', displayName: 'Attendance Management', navigationLabel: 'Attendance Management', route: '/feature/attendance-management', icon: Settings },
-  { moduleId: 'my_attendance', featureId: 'my_attendance_main', permissionKey: 'my_attendance.view', displayName: 'My Attendance', navigationLabel: 'Attendance My Attendance', route: '/feature/my-attendance', icon: Calendar },
+  { moduleId: 'attendance', featureId: 'attendance_dashboard', permissionKey: 'attendance.view', displayName: 'Attendance Dashboard', navigationLabel: 'Attendance Dashboard', route: '/feature/attendance', icon: CalendarCheck },
+  { moduleId: 'attendance_management', featureId: 'attendance_management_main', permissionKey: 'attendance.mark', displayName: 'Attendance Management', navigationLabel: 'Attendance Management', route: '/feature/attendance-management', icon: CalendarCog },
+  { moduleId: 'my_attendance', featureId: 'my_attendance_main', permissionKey: 'my_attendance.view', displayName: 'My Attendance', navigationLabel: 'Attendance My Attendance', route: '/feature/my-attendance', icon: CalendarDays },
 
   // Task
   { moduleId: 'task', featureId: 'task_dashboard', permissionKey: 'task.view', displayName: 'Task Dashboard', navigationLabel: 'Task Dashboard', route: '/feature/task', icon: CheckSquare },
-  { moduleId: 'task_management', featureId: 'task_management_main', permissionKey: 'task.create', displayName: 'Task Management', navigationLabel: 'Task Management', route: '/feature/task-management', icon: Settings },
-  { moduleId: 'my_tasks', featureId: 'my_tasks_main', permissionKey: 'my_tasks.view', displayName: 'My Tasks', navigationLabel: 'Task My Tasks', route: '/feature/my-tasks', icon: ClipboardList },
+  { moduleId: 'task_management', featureId: 'task_management_main', permissionKey: 'task.create', displayName: 'Task Management', navigationLabel: 'Task Management', route: '/feature/task-management', icon: ListTodo },
+  { moduleId: 'my_tasks', featureId: 'my_tasks_main', permissionKey: 'my_tasks.view', displayName: 'My Tasks', navigationLabel: 'Task My Tasks', route: '/feature/my-tasks', icon: ClipboardCheck },
 
   // Assessment
-  { moduleId: 'assessment', featureId: 'assessment_dashboard', permissionKey: 'assessment.view', displayName: 'Assessment Dashboard', navigationLabel: 'Assessment Dashboard', route: '/feature/assessment', icon: FileText },
-  { moduleId: 'assessment_management', featureId: 'assessment_management_main', permissionKey: 'assessment.create', displayName: 'Assessment Management', navigationLabel: 'Assessment Management', route: '/feature/assessment-management', icon: Settings },
-  { moduleId: 'my_assessments', featureId: 'my_assessments_main', permissionKey: 'my_assessments.view', displayName: 'My Assessments', navigationLabel: 'Assessment My Assessments', route: '/feature/my-assessments', icon: ClipboardList },
+  { moduleId: 'assessment', featureId: 'assessment_dashboard', permissionKey: 'assessment.view', displayName: 'Assessment Dashboard', navigationLabel: 'Assessment Dashboard', route: '/feature/assessment', icon: ClipboardEdit },
+  { moduleId: 'assessment_management', featureId: 'assessment_management_main', permissionKey: 'assessment.create', displayName: 'Assessment Management', navigationLabel: 'Assessment Management', route: '/feature/assessment-management', icon: FileQuestion },
+  { moduleId: 'my_assessments', featureId: 'my_assessments_main', permissionKey: 'my_assessments.view', displayName: 'My Assessments', navigationLabel: 'Assessment My Assessments', route: '/feature/my-assessments', icon: BookCheck },
 
   // Others
-  { moduleId: 'submission', featureId: 'submission_main', permissionKey: 'submission.view', displayName: 'Submissions', navigationLabel: 'Submission', route: '/feature/submissions', icon: Package },
-  { moduleId: 'performance', featureId: 'performance_main', permissionKey: 'performance.view', displayName: 'Performance', navigationLabel: 'Performance', route: '/feature/performance', icon: PieChart },
-  { moduleId: 'college_coordinator', featureId: 'coordinator_main', permissionKey: 'college_coordinator.view', displayName: 'College Coordinator', navigationLabel: 'College Coordinator', route: '/feature/coordinator', icon: UsersIcon },
+  { moduleId: 'submission', featureId: 'submission_main', permissionKey: 'submission.view', displayName: 'Submissions', navigationLabel: 'Submission', route: '/feature/submissions', icon: FileCheck },
+  { moduleId: 'performance', featureId: 'performance_main', permissionKey: 'performance.view', displayName: 'Performance', navigationLabel: 'Performance', route: '/feature/performance', icon: BarChart3 },
+  { moduleId: 'college_coordinator', featureId: 'coordinator_main', permissionKey: 'college_coordinator.view', displayName: 'College Coordinator', navigationLabel: 'College Coordinator', route: '/feature/coordinator', icon: Landmark },
   { moduleId: 'common_file', featureId: 'files_main', permissionKey: 'common_file.view', displayName: 'Common Files', navigationLabel: 'Common Files', route: '/feature/files', icon: FolderOpen },
   
   // Phase 2: Internship Operations
-  { moduleId: 'reporting_manager', featureId: 'reporting_manager_main', permissionKey: 'reporting_manager.view', displayName: 'Reporting Manager', navigationLabel: 'Reporting Manager', route: '/feature/reporting-manager', icon: Briefcase },
-  { moduleId: 'leave', featureId: 'leave_main', permissionKey: 'leave.view', displayName: 'Leave Management', navigationLabel: 'Leave Management', route: '/feature/leave', icon: Calendar },
+  { moduleId: 'reporting_manager', featureId: 'reporting_manager_main', permissionKey: 'reporting_manager.view', displayName: 'Reporting Manager', navigationLabel: 'Reporting Manager', route: '/feature/reporting-manager', icon: UserSearch },
+  { moduleId: 'leave', featureId: 'leave_main', permissionKey: 'leave.view', displayName: 'Leave Management', navigationLabel: 'Leave Management', route: '/feature/leave', icon: Plane },
   { moduleId: 'activity', featureId: 'activity_main', permissionKey: 'activity.view', displayName: 'Activity Tracking', navigationLabel: 'Activity Tracking', route: '/feature/activity', icon: Activity },
-  { moduleId: 'escalation', featureId: 'escalation_main', permissionKey: 'escalation.view', displayName: 'Escalation Engine', navigationLabel: 'Escalation Engine', route: '/feature/escalation', icon: ShieldAlert },
+  { moduleId: 'escalation', featureId: 'escalation_main', permissionKey: 'escalation.view', displayName: 'Escalation Engine', navigationLabel: 'Escalation Engine', route: '/feature/escalation', icon: AlertTriangle },
   
   // Phase 3: Finance & Commercial Management
   { moduleId: 'payment', featureId: 'payment_main', permissionKey: 'payment.view', displayName: 'Payment Management', navigationLabel: 'Payments', route: '/feature/payments', icon: CreditCard },
-  { moduleId: 'fee', featureId: 'fee_main', permissionKey: 'fee.view', displayName: 'Fee Structure', navigationLabel: 'Fee Structure', route: '/feature/fees', icon: FileText },
+  { moduleId: 'fee', featureId: 'fee_main', permissionKey: 'fee.view', displayName: 'Fee Structure', navigationLabel: 'Fee Structure', route: '/feature/fees', icon: Receipt },
   { moduleId: 'billing', featureId: 'billing_main', permissionKey: 'billing.view', displayName: 'Invoice & Receipt', navigationLabel: 'Billing', route: '/feature/billing', icon: FileSignature },
   { moduleId: 'wallet', featureId: 'wallet_main', permissionKey: 'wallet.view', displayName: 'Internship Wallet', navigationLabel: 'Wallet', route: '/feature/wallet', icon: Wallet },
   { moduleId: 'finance', featureId: 'finance_dashboard', permissionKey: 'finance.view', displayName: 'Finance Dashboard', navigationLabel: 'Finance Dashboard', route: '/feature/finance-dashboard', icon: PieChart },
-  { moduleId: 'finance_analytics', featureId: 'analytics_main', permissionKey: 'analytics.finance.view', displayName: 'Revenue Analytics', navigationLabel: 'Revenue Analytics', route: '/feature/finance-analytics', icon: Activity },
+  { moduleId: 'finance_analytics', featureId: 'analytics_main', permissionKey: 'analytics.finance.view', displayName: 'Revenue Analytics', navigationLabel: 'Revenue Analytics', route: '/feature/finance-analytics', icon: Coins },
   
   // Phase 4: Communication Platform
   { moduleId: 'notification', featureId: 'notification_main', permissionKey: 'notification.view', displayName: 'Notification Center', navigationLabel: 'Notifications', route: '/feature/notifications', icon: Bell },
@@ -94,7 +97,7 @@ export const FEATURE_REGISTRY: FeatureDefinition[] = [
   { moduleId: 'college_certificates', featureId: 'college_cert_dashboard', permissionKey: 'certificate.view', displayName: 'College Certificate Dashboard', navigationLabel: 'College Certificates', route: '/feature/college-certificates', icon: ShieldCheck },
   { moduleId: 'document', featureId: 'document_main', permissionKey: 'document.view', displayName: 'Document Generation', navigationLabel: 'Documents', route: '/feature/documents', icon: FileText },
   { moduleId: 'placement', featureId: 'placement_main', permissionKey: 'placement.view', displayName: 'Placement & Hiring', navigationLabel: 'Placement', route: '/feature/placement', icon: TrendingUp },
-  { moduleId: 'alumni', featureId: 'alumni_main', permissionKey: 'alumni.view', displayName: 'Alumni Management', navigationLabel: 'Alumni', route: '/feature/alumni', icon: GraduationCap },
+  { moduleId: 'alumni', featureId: 'alumni_main', permissionKey: 'alumni.view', displayName: 'Alumni Management', navigationLabel: 'Alumni', route: '/feature/alumni', icon: History },
 
   // Phase 6: Analytics & BI
   { moduleId: 'analytics', featureId: 'analytics_dashboard', permissionKey: 'analytics.view', displayName: 'Analytics Dashboard', navigationLabel: 'Analytics', route: '/feature/analytics', icon: LineChart },
