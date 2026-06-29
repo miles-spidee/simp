@@ -6,8 +6,8 @@ export const authApi = {
     const res = await apiClient.post<RegisterResponse>('/api/v1/auth/register', data);
     return res.data;
   },
-  // login: async (data: LoginRequest): Promise<LoginResponse> => {
-  //   const usernameLower = data.username.toLowerCase().trim();
+  login: async (data: LoginRequest): Promise<LoginResponse> => {
+    const usernameLower = data.username.toLowerCase().trim();
   //   const devUsers = [
   //     { email: 'superadmin@pinesphere.com', username: 'superadmin', password: 'Admin@123', userId: '0' },
   //     { email: 'hr@pinesphere.com', username: 'hr', password: 'Hr@123', userId: '10' },
