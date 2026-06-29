@@ -1,7 +1,9 @@
 "use client";
 
-import React, { createContext, useContext, useMemo } from 'react';
+import React, { createContext, useMemo } from 'react';
 import { useAuth } from './AuthContext';
+import type { Module } from '../types/api/module.types';
+import { ROUTE_MODULE_MAP } from '../data/mock-permissions';
 
 interface PermissionContextType {
   modules: Module[];

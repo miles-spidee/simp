@@ -1,3 +1,5 @@
+import type { Module } from './module.types';
+
 export interface RegisterRequest {
   username: string;
   email: string;
@@ -25,6 +27,22 @@ export interface LoginResponse {
   access_token: string;
   refresh_token: string;
   token_type: string;
+}
+
+export interface CurrentUserResponse {
+  user_id: string;
+  name: string;
+  email: string;
+  roleName: string;
+  roleId: string;
+  roleCode: string;
+  modules: Module[];
+  permissions: string[];
+}
+
+export interface AuthActionResponse {
+  message: string;
+  success?: boolean;
 }
 
 export interface AssignRoleRequest {

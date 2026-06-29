@@ -1,60 +1,98 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { Module } from '../types/api/module.types';
+import type { Module } from '../types/api/module.types';
+import type { CurrentUserResponse } from '../types/api/auth.types';
+import { authService } from '../services/auth.service';
 
-export interface AuthUser {
-  user_id: string;
-  name: string;
-  email: string;
-  roleName: string;
-  roleId: string;
-  roleCode: string;
-  modules: Module[];
-  permissions: string[];
-}
+const ACCESS_TOKEN_KEY = 'access_token';
+const AUTH_USER_KEY = 'auth_user';
 
 interface AuthContextType {
   user: AuthUser | null;
   loading: boolean;
-  login: (token: string) => void;
+  login: () => Promise<void>;
   logout: () => void;
+}
+
+export interface AuthUser extends CurrentUserResponse {
+  modules: Module[];
 }
 
 const AuthContext = createContext<AuthContextType>({ 
   user: null, 
   loading: true,
-  login: () => {},
+  login: async () => {},
   logout: () => {},
 });
+
+function readStoredAuthUser(): AuthUser | null {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  const rawUser = localStorage.getItem(AUTH_USER_KEY);
+  if (!rawUser) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(rawUser) as AuthUser;
+  } catch {
+    localStorage.removeItem(AUTH_USER_KEY);
+    return null;
+  }
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
-    
-    // Check token existence. The backend /me endpoint should be called here in the future
-    // to populate the user context. For now, we clear loading once checked.
-    if (!token) {
-      setUser(null);
+    let cancelled = false;
+
+    async function initializeAuth() {
+      const token = typeof window !== 'undefined' ? localStorage.getItem(ACCESS_TOKEN_KEY) : null;
+
+      if (!token) {
+        if (!cancelled) {
+          setUser(null);
+          setLoading(false);
+        }
+        return;
+      }
+
+      try {
+        const currentUser = await authService.getCurrentUser();
+        if (!cancelled) {
+          setUser(currentUser);
+        }
+      } catch {
+        const storedUser = readStoredAuthUser();
+        if (!cancelled) {
+          setUser(storedUser);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
     }
-    setLoading(false);
+
+    initializeAuth();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const login = useCallback((token: string) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('access_token', token);
-    }
-    // After login, the user profile should be fetched from the backend.
+  const login = useCallback(async () => {
+    const currentUser = await authService.getCurrentUser();
+    setUser(currentUser);
   }, []);
 
   const logout = useCallback(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-    }
+    authService.logout();
     setUser(null);
   }, []);
 

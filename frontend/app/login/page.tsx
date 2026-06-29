@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Toast from '../../components/ui/toast'; 
-import { authApi } from '@/src/api/auth.api';
+import { authService } from '@/src/services/auth.service';
 import { useAuth } from '@/src/context/AuthContext';
 
 const LoginPage = () => {
@@ -18,12 +19,14 @@ const LoginPage = () => {
   });
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setIsSubmitting(true);
+
     try {
-      const response = await authApi.login({ username: username.trim(), password });
+      const response = await authService.login({ username: username.trim(), password });
 
       if (response && response.access_token) {
         setToastConfig({
@@ -33,7 +36,7 @@ const LoginPage = () => {
           type: 'success'
         });
         
-        login(response.access_token);
+        await login();
         
         if (typeof window !== 'undefined') {
           localStorage.setItem('pinesphere_username', username.trim());
@@ -66,6 +69,8 @@ const LoginPage = () => {
       setTimeout(() => {
         setToastConfig((prev: any) => ({ ...prev, show: false }));
       }, 4000);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -75,7 +80,14 @@ const LoginPage = () => {
       {/* Navigation Header */}
       <header className="h-16 w-full bg-white flex items-center justify-between px-6 lg:px-16 border-b border-border sticky top-0 z-40 backdrop-blur-md bg-white/90">
         <Link href="/" className="flex items-center">
-          <img src="/logo.png" alt="Pinesphere Logo" className="h-13.5 w-auto object-contain transition-transform hover:scale-[1.02]" />
+          <Image
+            src="/logo.png"
+            alt="Pinesphere Logo"
+            width={160}
+            height={54}
+            className="h-13.5 w-auto object-contain transition-transform hover:scale-[1.02]"
+            priority
+          />
         </Link>
         <Link href="/" className="text-xs font-bold uppercase tracking-wider text-text-secondary hover:text-blue-600 transition-colors flex items-center gap-1.5">
           <span>←</span> Return to Homepage
@@ -216,8 +228,12 @@ const LoginPage = () => {
                   <label htmlFor="remember-me" className="ml-2 block text-xs font-semibold text-label select-none">Remember Me</label>
                 </div>
 
-                <button type="submit" className="flex w-full justify-center rounded-none bg-orange-500 hover:bg-orange-600 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:shadow transition-all duration-200 active:scale-[0.98] font-[family-name:var(--font-outfit)]">
-                  Sign In <span className="ml-2">→</span>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="flex w-full justify-center rounded-none bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 disabled:cursor-not-allowed px-4 py-3 text-sm font-semibold text-white shadow-sm hover:shadow transition-all duration-200 active:scale-[0.98] font-[family-name:var(--font-outfit)]"
+                >
+                  {isSubmitting ? 'Signing In...' : 'Sign In'} <span className="ml-2">→</span>
                 </button>
               </form>
             </div>

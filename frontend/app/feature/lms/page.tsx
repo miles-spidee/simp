@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { 
-  BookOpen, Play, FileText, Award, ChevronRight
+  BookOpen, Play, FileText, Award, ChevronRight, Users, UserCheck
 } from 'lucide-react';
+import { MOCK_STUDENTS, Student } from '@/src/data/mock-students';
 
 interface Submodule {
   id: string;
@@ -100,6 +101,7 @@ export default function LMSDashboardPage() {
 
   // Drill-down states
   const [selectedBatch, setSelectedBatch] = useState<BatchLms | null>(null);
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [selectedCourse, setSelectedCourse] = useState<CourseItem | null>(null);
 
   useEffect(() => {
@@ -186,8 +188,8 @@ export default function LMSDashboardPage() {
             </div>
           </div>
         </>
-      ) : !selectedCourse ? (
-        /* Courses inside Batch */
+      ) : !selectedStudent ? (
+        /* Students inside Batch */
         <div className="bg-white border border-border rounded-2xl p-6 shadow-sm space-y-6">
           <div className="flex items-center justify-between border-b pb-4">
             <div>
@@ -197,7 +199,51 @@ export default function LMSDashboardPage() {
               >
                 ← Back to Cohorts
               </button>
-              <h3 className="text-lg font-black text-text-primary">{selectedBatch.name} Tracks</h3>
+              <h3 className="text-lg font-black text-text-primary">{selectedBatch.name} - Students</h3>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4">
+            {MOCK_STUDENTS.map(student => (
+              <div 
+                key={student.id}
+                onClick={() => setSelectedStudent(student)}
+                className="p-5 border border-border hover:border-secondary hover:shadow-md rounded-2xl transition-all cursor-pointer bg-slate-50/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-lg">
+                    {student.personalInfo.avatar}
+                  </div>
+                  <div>
+                    <h4 className="text-base font-black text-text-primary">{student.personalInfo.name}</h4>
+                    <p className="text-xs text-text-secondary">{student.academicInfo.college} • {student.academicInfo.department}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-6 shrink-0 text-xs font-bold text-text-secondary">
+                  <div className="text-right">
+                    <span>Overall Performance: <strong className="text-indigo-600">{student.performance.overallPerformance}%</strong></span>
+                  </div>
+                  <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-750 text-white font-bold text-xs uppercase tracking-wider rounded-xl">
+                    View LMS Progress
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : !selectedCourse ? (
+        /* Courses inside Batch for Selected Student */
+        <div className="bg-white border border-border rounded-2xl p-6 shadow-sm space-y-6">
+          <div className="flex items-center justify-between border-b pb-4">
+            <div>
+              <button 
+                onClick={() => setSelectedStudent(null)} 
+                className="text-xs font-bold text-indigo-600 hover:underline mb-1 block"
+              >
+                ← Back to Students
+              </button>
+              <h3 className="text-lg font-black text-text-primary">{selectedStudent.personalInfo.name}'s LMS Progress</h3>
+              <p className="text-xs text-text-secondary mt-1">{selectedBatch.name}</p>
             </div>
           </div>
 
@@ -237,7 +283,7 @@ export default function LMSDashboardPage() {
                 onClick={() => setSelectedCourse(null)} 
                 className="text-xs font-bold text-indigo-650 hover:underline mb-1 block"
               >
-                ← Back to Curriculum Tracks
+                ← Back to {selectedStudent.personalInfo.name}'s Courses
               </button>
               <h3 className="text-lg font-black text-text-primary">{selectedCourse.title}</h3>
             </div>
