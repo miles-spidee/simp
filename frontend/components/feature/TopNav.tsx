@@ -37,7 +37,7 @@ export function TopNav({ setMobileOpen }: TopNavProps) {
   const [showDropdown, setShowDropdown] = useState(false);
   const router = useRouter();
   const searchRef = useRef<HTMLDivElement>(null);
-  const { user, switchUser } = useAuth();
+  const { user } = useAuth();
   const { modules } = usePermissions();
 
   const [notifications, setNotifications] = useState<any[]>([]);

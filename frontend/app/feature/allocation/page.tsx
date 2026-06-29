@@ -265,7 +265,8 @@ export default function AllocationManagementPage() {
   const studentStatusCounts = useMemo(() => {
     const counts = { Allocated: 0, Pending: 0, Waitlisted: 0, Reassigned: 0, Dropped: 0 };
     allocations.forEach((a: any) => {
-      if (counts[a.status] !== undefined) counts[a.status]++;
+      const statusKey = a.status as keyof typeof counts;
+      if (counts[statusKey] !== undefined) counts[statusKey]++;
     });
     return counts;
   }, [allocations]);

@@ -19,7 +19,6 @@ interface AuthContextType {
   loading: boolean;
   login: (token: string) => void;
   logout: () => void;
-  switchUser: (userId: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({ 
@@ -27,40 +26,7 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   login: () => {},
   logout: () => {},
-  switchUser: () => {},
 });
-
-function resolveAuthUser(userId: string): AuthUser | null {
-  const mockUser = ([] as any[]).find(u => u.id === userId);
-  if (!mockUser) return null;
-
-  const role = ([] as any[]).find(r => r.id === mockUser.roleId);
-  if (!role) return null;
-
-  const isSuperAdmin = role.permissions.includes('all');
-
-  // Collect module IDs from role + user overrides
-  const allowedModuleIds = new Set<string>(role.moduleIds);
-  if (mockUser.moduleOverrides) {
-    mockUser.moduleOverrides.forEach((m: any) => allowedModuleIds.add(m));
-  }
-
-  // Resolve modules
-  const modules = isSuperAdmin
-    ? ([] as any[]).filter(m => m.active)
-    : ([] as any[]).filter(m => allowedModuleIds.has(m.id) && m.active);
-
-  return {
-    user_id: mockUser.id,
-    name: mockUser.name,
-    email: mockUser.email,
-    roleName: mockUser.roleName,
-    roleId: role.id,
-    roleCode: role.code,
-    modules,
-    permissions: role.permissions,
-  };
-}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -69,13 +35,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
     
-    if (token) {
-      // Check if there's a saved user_id for dev switching
-      const savedUserId = typeof window !== 'undefined' ? localStorage.getItem('dev_user_id') : null;
-      const userId = savedUserId || '0'; // Default to Super Admin
-      const resolved = resolveAuthUser(userId);
-      setUser(resolved);
-    } else {
+    // Check token existence. The backend /me endpoint should be called here in the future
+    // to populate the user context. For now, we clear loading once checked.
+    if (!token) {
       setUser(null);
     }
     setLoading(false);
@@ -85,30 +47,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (typeof window !== 'undefined') {
       localStorage.setItem('access_token', token);
     }
-    const savedUserId = typeof window !== 'undefined' ? localStorage.getItem('dev_user_id') : null;
-    const userId = savedUserId || '0';
-    setUser(resolveAuthUser(userId));
+    // After login, the user profile should be fetched from the backend.
   }, []);
 
   const logout = useCallback(() => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
-      localStorage.removeItem('dev_user_id');
     }
     setUser(null);
   }, []);
 
-  const switchUser = useCallback((userId: string) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('dev_user_id', userId);
-    }
-    const resolved = resolveAuthUser(userId);
-    setUser(resolved);
-  }, []);
-
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, switchUser }}>
+    <AuthContext.Provider value={{ user, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
