@@ -5,6 +5,7 @@ import { reportingManagerService } from '../../../src/services/reportingManager.
 import { ManagerAssignment, ManagerEvaluation } from '../../../src/types/reporting-manager.types';
 import { Briefcase, Users, AlertCircle, TrendingUp, Search, ChevronDown, X, Star, FileText, Eye, Loader2 } from 'lucide-react';
 import { Drawer } from '../ui/Drawer';
+import { Pagination } from "@/components/common/Pagination";
 
 type Tab = 'interns' | 'evaluations';
 type RiskFilter = 'All' | 'Low' | 'Medium' | 'High';
@@ -52,6 +53,11 @@ function ProgressBar({ value, color }: { value: number; color: string }) {
 }
 
 export default function ReportingManagerDashboard() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = React.useState(1);
+      const itemsPerPage = 10;
+
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ totalInterns: 0, averagePerformance: 0, highRiskInterns: 0, evaluationCount: 0 });
   const [assignments, setAssignments] = useState<ManagerAssignment[]>([]);
@@ -230,7 +236,7 @@ export default function ReportingManagerDashboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border text-text-secondary">
-                  {filteredAssignments.map(a => (
+                  {filteredAssignments.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(a => (
                     <tr key={a.id} className="hover:bg-slate-50/80 transition-colors cursor-pointer" onClick={() => handleViewIntern(a)}>
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-3">
@@ -278,7 +284,12 @@ export default function ReportingManagerDashboard() {
                   ))}
                 </tbody>
               </table>
-            </div>
+            <Pagination 
+          currentPage={currentPage} 
+          totalPages={Math.ceil((filteredAssignments?.length || 0) / itemsPerPage)} 
+          onPageChange={setCurrentPage} 
+        />
+          </div>
           )}
         </div>
       )}

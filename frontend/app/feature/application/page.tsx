@@ -15,10 +15,16 @@ import { AddCandidateDrawer } from '@/components/feature/application/AddCandidat
 import { Drawer } from '@/components/feature/ui/Drawer';
 import { useRouter } from 'next/navigation';
 import { PermissionGuard } from '@/components/feature/ui/PermissionGuard';
+import { Pagination } from "@/components/common/Pagination";
 
 type TabType = 'dashboard' | 'applications' | 'pipeline' | 'reports';
 
 export default function ApplicationPage() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = React.useState(1);
+      const itemsPerPage = 10;
+
   const router = useRouter();
 
   // Navigation State
@@ -1113,7 +1119,7 @@ export default function ApplicationPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
-                    {['Alice Vance', 'David Miller', 'Sarah Connor'].map(rev => {
+                    {['Alice Vance', 'David Miller', 'Sarah Connor'].slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(rev => {
                       const revApps = applications.filter(a => a.assignedReviewer === rev);
                       const scores = revApps.map(a => a.reviewScore).filter(Boolean) as number[];
                       const avg = scores.length > 0 ? Math.round(scores.reduce((a,b)=>a+b, 0) / scores.length) : '-';

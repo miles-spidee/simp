@@ -13,6 +13,7 @@ import { Student, StudentDocument, StudentTimelineEvent, StudentBatch } from '@/
 import { useAuth } from '@/src/context/AuthContext';
 import { Drawer } from '@/components/feature/ui/Drawer';
 import { PermissionGuard } from '@/components/feature/ui/PermissionGuard';
+import { Pagination } from '@/components/common/Pagination';
 
 export default function StudentLifecycleManagementPage() {
   const { user } = useAuth();
@@ -197,6 +198,16 @@ export default function StudentLifecycleManagementPage() {
       return matchesSearch && matchesProgram && matchesDept && matchesCollege && matchesBatch && matchesMentor && matchesStatus && matchesPlacement && matchesPerformance;
     });
   }, [students, searchTerm, filterProgram, filterDept, filterCollege, filterBatch, filterMentor, filterStatus, filterPlacement, filterPerformance]);
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const paginatedStudents = filteredStudents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  // Reset pagination on filter change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterProgram, filterDept, filterCollege, filterBatch, filterMentor, filterStatus, filterPlacement, filterPerformance]);
 
   // Executive Dashboard KPIs
   const dashboardStats = useMemo(() => {
@@ -1277,8 +1288,8 @@ export default function StudentLifecycleManagementPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border font-medium">
-                {filteredStudents.length > 0 ? (
-                  filteredStudents.map((s) => {
+                {paginatedStudents.length > 0 ? (
+                  paginatedStudents.map((s) => {
                     const isSelected = selectedIds.includes(s.id);
                     return (
                       <tr 
@@ -1406,6 +1417,13 @@ export default function StudentLifecycleManagementPage() {
               )}
             </div>
           </div>
+          {filteredStudents.length > itemsPerPage && (
+            <Pagination 
+              currentPage={currentPage} 
+              totalPages={Math.ceil(filteredStudents.length / itemsPerPage)} 
+              onPageChange={setCurrentPage} 
+            />
+          )}
         </div>
       )}
 

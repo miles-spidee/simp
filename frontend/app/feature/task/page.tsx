@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   CheckSquare, FileText, Clock, AlertTriangle, ChevronRight, TrendingUp, BarChart2, CheckCircle
 } from 'lucide-react';
+import { Pagination } from '@/components/common/Pagination';
 
 interface TaskSubmission {
   studentId: string;
@@ -155,6 +156,15 @@ export default function TaskDashboardPage() {
     }
   }
 
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Reset pagination on batch change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedBatch?.id]);
+
   return (
     <div className="space-y-6 animate-slide-in select-none">
       
@@ -227,7 +237,7 @@ export default function TaskDashboardPage() {
           </div>
 
           <div className="grid grid-cols-1 gap-4">
-            {batchStudents.map(student => (
+            {batchStudents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(student => (
               <div 
                 key={student.id}
                 onClick={() => setSelectedStudentId(student.id)}
@@ -258,6 +268,15 @@ export default function TaskDashboardPage() {
               <p className="text-sm text-text-secondary text-center py-10">No students found with tasks in this cohort.</p>
             )}
           </div>
+          {batchStudents.length > itemsPerPage && (
+            <div className="mt-4">
+              <Pagination 
+                currentPage={currentPage} 
+                totalPages={Math.ceil(batchStudents.length / itemsPerPage)} 
+                onPageChange={setCurrentPage} 
+              />
+            </div>
+          )}
         </div>
       ) : (
         /* Student's Tasks and Trace View */

@@ -12,6 +12,7 @@ import {
 import { usePermissions } from '@/src/hooks/usePermissions';
 import { useAuth } from '@/src/context/AuthContext';
 import { Drawer } from '@/components/feature/ui/Drawer';
+import { Pagination } from "@/components/common/Pagination";
 
 interface Recommendation {
   id: string;
@@ -227,6 +228,11 @@ function ForecastChart({ forecast }: { forecast: InsightForecast }) {
 }
 
 export default function PredictiveInsightsPage() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = useState(1);
+      const itemsPerPage = 10;
+
   const { hasPermission } = usePermissions();
   const { user } = useAuth();
   
@@ -545,7 +551,7 @@ export default function PredictiveInsightsPage() {
 
             {/* Student Directory List */}
             <div className="divide-y divide-border max-h-[350px] overflow-y-auto pr-1">
-              {filteredRisks.map((risk) => (
+              {filteredRisks.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((risk) => (
                 <div 
                   key={risk.studentId} 
                   onClick={() => setSelectedStudent(risk)}
@@ -586,6 +592,11 @@ export default function PredictiveInsightsPage() {
                 </div>
               )}
             </div>
+            {filteredRisks.length > itemsPerPage && (
+              <div className="mt-4">
+                <Pagination currentPage={currentPage} totalPages={Math.ceil((filteredRisks.length || 0) / itemsPerPage)} onPageChange={setCurrentPage} />
+              </div>
+            )}
           </div>
         </div>
       </div>

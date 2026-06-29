@@ -6,8 +6,14 @@ import { fileService } from '@/src/services/file.service';
 import { CommonFile } from '@/src/data/mock-common-files';
 import { Drawer } from '@/components/feature/ui/Drawer';
 import { PermissionGuard } from '@/components/feature/ui/PermissionGuard';
+import { Pagination } from "@/components/common/Pagination";
 
 export default function CommonFilePage() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = React.useState(1);
+      const itemsPerPage = 10;
+
   const [activeView, setActiveView] = useState<'dashboard' | 'directory'>('dashboard');
   const [files, setFiles] = useState<CommonFile[]>([]);
   const [selectedFile, setSelectedFile] = useState<CommonFile | null>(null);
@@ -166,7 +172,7 @@ export default function CommonFilePage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  {filteredFiles.map(f => (
+                  {filteredFiles.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(f => (
                     <tr key={f.file_id} className="hover:bg-blue-50/50 cursor-pointer transition-colors" onClick={() => handleFileClick(f)}>
                       <td className="px-6 py-4 font-medium text-text-primary flex items-center gap-2">
                         <File className="h-4 w-4 text-text-secondary" />
@@ -190,6 +196,11 @@ export default function CommonFilePage() {
                 </tbody>
               </table>
             </div>
+        <Pagination 
+          currentPage={currentPage} 
+          totalPages={Math.ceil((filteredFiles?.length || 0) / itemsPerPage)} 
+          onPageChange={setCurrentPage} 
+        />
           </div>
         )}
       </div>

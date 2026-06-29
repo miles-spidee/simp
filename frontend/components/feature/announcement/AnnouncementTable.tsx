@@ -4,8 +4,14 @@ import { Announcement } from '@/src/types/announcement.types';
 import { AnnouncementService } from '@/src/services/announcement.service';
 import { Megaphone, Pin, Clock, MoreVertical, RefreshCw } from 'lucide-react';
 import ViewNotificationModal from '../notification/ViewNotificationModal';
+import { Pagination } from "@/components/common/Pagination";
 
 export default function AnnouncementTable() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = useState(1);
+      const itemsPerPage = 10;
+
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState<Announcement | null>(null);
@@ -75,7 +81,7 @@ export default function AnnouncementTable() {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {announcements.slice(0, 50).map((a) => (
+            {announcements.slice(0, 50).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((a) => (
               <tr 
                 key={a.id} 
                 className="hover:bg-slate-50/70 transition-colors cursor-pointer"
@@ -127,6 +133,11 @@ export default function AnnouncementTable() {
           </tbody>
         </table>
       </div>
+        <Pagination 
+          currentPage={currentPage} 
+          totalPages={Math.ceil((announcements.slice(0, 50)?.length || 0) / itemsPerPage)} 
+          onPageChange={setCurrentPage} 
+        />
 
       <ViewNotificationModal 
         isOpen={isModalOpen}

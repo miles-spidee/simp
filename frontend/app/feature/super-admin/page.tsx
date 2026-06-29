@@ -7,8 +7,14 @@ import { AlertTriangle,
  } from 'lucide-react';
 import { superAdminService } from '@/src/services/super-admin.service';
 import { SystemSetting, AuditLog, RolePermission } from '@/src/data/mock-super-admin';
+import { Pagination } from "@/components/common/Pagination";
 
 export default function SuperAdminPage() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = React.useState(1);
+      const itemsPerPage = 10;
+
   const [activeTab, setActiveTab] = useState<'dashboard' | 'settings' | 'logs' | 'roles'>('dashboard');
   const [settings, setSettings] = useState<SystemSetting[]>([]);
   const [logs, setLogs] = useState<AuditLog[]>([]);
@@ -226,7 +232,7 @@ export default function SuperAdminPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  {logs.map(l => (
+                  {logs.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(l => (
                     <tr key={l.id} className="hover:bg-slate-50">
                       <td className="px-6 py-3 text-text-secondary whitespace-nowrap">{l.timestamp}</td>
                       <td className="px-6 py-3 font-medium text-text-primary font-mono text-xs">{l.action}</td>
@@ -243,7 +249,12 @@ export default function SuperAdminPage() {
                   ))}
                 </tbody>
               </table>
-            </div>
+            <Pagination 
+          currentPage={currentPage} 
+          totalPages={Math.ceil((logs?.length || 0) / itemsPerPage)} 
+          onPageChange={setCurrentPage} 
+        />
+          </div>
           )}
         </div>
       </div>

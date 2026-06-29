@@ -7,8 +7,14 @@ import { Target, Loader2, ArrowUpRight, ArrowDownRight, Minus, AlertCircle, Chec
 import { usePermissions } from '@/src/hooks/usePermissions';
 import { useAuth } from '@/src/context/AuthContext';
 import { Drawer } from '@/components/feature/ui/Drawer';
+import { Pagination } from "@/components/common/Pagination";
 
 export default function KPIManagementPage() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = useState(1);
+      const itemsPerPage = 10;
+
   const { hasPermission } = usePermissions();
   const { user } = useAuth();
   
@@ -157,7 +163,7 @@ export default function KPIManagementPage() {
 
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {kpis.map(kpi => {
+        {kpis.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(kpi => {
           const progress = (kpi.currentValue / kpi.targetValue) * 100;
           return (
             <div 
@@ -222,6 +228,11 @@ export default function KPIManagementPage() {
           );
         })}
       </div>
+      {kpis?.length > itemsPerPage && (
+        <div className="mt-4">
+          <Pagination currentPage={currentPage} totalPages={Math.ceil((kpis?.length || 0) / itemsPerPage)} onPageChange={setCurrentPage} />
+        </div>
+      )}
 
       {/* --- DRAWERS --- */}
 

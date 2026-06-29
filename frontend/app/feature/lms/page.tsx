@@ -5,6 +5,7 @@ import {
   BookOpen, Play, FileText, Award, ChevronRight, Users, UserCheck
 } from 'lucide-react';
 import { MOCK_STUDENTS, Student } from '@/src/data/mock-students';
+import { Pagination } from '@/components/common/Pagination';
 
 interface Submodule {
   id: string;
@@ -117,6 +118,15 @@ export default function LMSDashboardPage() {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [selectedCourse, setSelectedCourse] = useState<CourseItem | null>(null);
 
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Reset pagination on batch change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedBatch?.id]);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('pinesphere_courses');
@@ -223,7 +233,7 @@ export default function LMSDashboardPage() {
           </div>
 
           <div className="grid grid-cols-1 gap-4">
-            {MOCK_STUDENTS.map(student => (
+            {MOCK_STUDENTS.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(student => (
               <div 
                 key={student.id}
                 onClick={() => setSelectedStudent(student)}
@@ -249,6 +259,15 @@ export default function LMSDashboardPage() {
               </div>
             ))}
           </div>
+          {MOCK_STUDENTS.length > itemsPerPage && (
+            <div className="mt-4">
+              <Pagination 
+                currentPage={currentPage} 
+                totalPages={Math.ceil(MOCK_STUDENTS.length / itemsPerPage)} 
+                onPageChange={setCurrentPage} 
+              />
+            </div>
+          )}
         </div>
       ) : !selectedCourse ? (
         /* Courses inside Batch for Selected Student */

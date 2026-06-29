@@ -6,6 +6,7 @@ import {
   ChevronRight, UploadCloud, GitBranch, Globe, RefreshCw, Send, 
   CheckCircle, Download, File, Play, Video, ExternalLink
 } from 'lucide-react';
+import { Pagination } from '@/components/common/Pagination';
 
 interface LocalSubmission {
   taskId: string;
@@ -88,6 +89,10 @@ export default function MyTasksPage() {
   const [tasks, setTasks] = useState<StudentTask[]>(DEFAULT_TASKS);
   const [selectedTaskId, setSelectedTaskId] = useState<string>('TSK-202');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   // Form states
   const [githubUrl, setGithubUrl] = useState('');
@@ -259,7 +264,7 @@ export default function MyTasksPage() {
           <h3 className="font-bold text-[10px] text-text-secondary uppercase tracking-widest">Active Milestones</h3>
           
           <div className="space-y-3">
-            {tasks.map((task) => {
+            {tasks.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((task) => {
               const isSelected = task.id === selectedTaskId;
               const isOverdue = task.isOverdue && task.status === 'pending';
 
@@ -301,6 +306,15 @@ export default function MyTasksPage() {
               );
             })}
           </div>
+          {tasks.length > itemsPerPage && (
+            <div className="mt-4">
+              <Pagination 
+                currentPage={currentPage} 
+                totalPages={Math.ceil(tasks.length / itemsPerPage)} 
+                onPageChange={setCurrentPage} 
+              />
+            </div>
+          )}
         </div>
 
         {/* Right Column: Task workspace */}

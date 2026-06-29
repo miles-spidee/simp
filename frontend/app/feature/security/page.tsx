@@ -4,8 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { Shield, ShieldAlert, Key, Activity, AlertTriangle, CheckCircle2, Lock, Monitor, Search, Smartphone, Clock, AlertCircle } from 'lucide-react';
 import { sessionService } from '@/src/services/session.service';
 import { UserSession } from '@/src/data/mock-user-sessions';
+import { Pagination } from "@/components/common/Pagination";
 
 export default function SecurityCenterPage() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = React.useState(1);
+      const itemsPerPage = 10;
+
   const [sessions, setSessions] = useState<UserSession[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -184,7 +190,7 @@ export default function SecurityCenterPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filteredSessions.map((session) => (
+                {filteredSessions.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((session) => (
                   <tr key={session.id} className="hover:bg-slate-50/50 transition-colors">
                     <td className="px-6 py-4 font-medium text-text-primary">{session.userId}</td>
                     <td className="px-6 py-4">

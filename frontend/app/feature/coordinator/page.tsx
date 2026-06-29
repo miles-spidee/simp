@@ -8,8 +8,14 @@ import {
 import { coordinatorService } from '@/src/services/coordinator.service';
 import { Coordinator, CollegeReport } from '@/src/types/api/coordinator.types';
 import { Drawer } from '@/components/feature/ui/Drawer';
+import { Pagination } from "@/components/common/Pagination";
 
 export default function CoordinatorManagementPage() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = React.useState(1);
+      const itemsPerPage = 10;
+
   const [activeView, setActiveView] = useState<'dashboard' | 'directory'>('dashboard');
   const [coordinators, setCoordinators] = useState<Coordinator[]>([]);
   const [selectedCoordinator, setSelectedCoordinator] = useState<Coordinator | null>(null);
@@ -167,7 +173,7 @@ export default function CoordinatorManagementPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  {filteredCoordinators.map(c => (
+                  {filteredCoordinators.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(c => (
                     <tr key={c.id} className="hover:bg-blue-50/50 cursor-pointer transition-colors" onClick={() => handleCoordinatorClick(c)}>
                       <td className="px-6 py-4 font-medium text-text-primary flex items-center gap-3">
                         <Building2 className="h-4 w-4 text-blue-500" />
@@ -197,6 +203,11 @@ export default function CoordinatorManagementPage() {
                 </tbody>
               </table>
             </div>
+        <Pagination 
+          currentPage={currentPage} 
+          totalPages={Math.ceil((filteredCoordinators?.length || 0) / itemsPerPage)} 
+          onPageChange={setCurrentPage} 
+        />
           </div>
         )}
       </div>

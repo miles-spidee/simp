@@ -4,8 +4,14 @@ import { Notification } from '@/src/types/notification.types';
 import { NotificationService } from '@/src/services/notification.service';
 import { Bell, Mail, MessageSquare, Smartphone, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import ViewNotificationModal from './ViewNotificationModal';
+import { Pagination } from "@/components/common/Pagination";
 
 export default function NotificationTable() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = useState(1);
+      const itemsPerPage = 10;
+
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedNotif, setSelectedNotif] = useState<Notification | null>(null);
@@ -74,7 +80,7 @@ export default function NotificationTable() {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {notifications.slice(0, 50).map((n) => (
+            {notifications.slice(0, 50).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((n) => (
               <tr 
                 key={n.id} 
                 className="hover:bg-slate-50/70 transition-colors cursor-pointer"
@@ -130,6 +136,11 @@ export default function NotificationTable() {
           </tbody>
         </table>
       </div>
+        <Pagination 
+          currentPage={currentPage} 
+          totalPages={Math.ceil((notifications.slice(0, 50)?.length || 0) / itemsPerPage)} 
+          onPageChange={setCurrentPage} 
+        />
 
       <ViewNotificationModal 
         isOpen={isModalOpen}

@@ -13,6 +13,7 @@ import { organizationService } from '@/src/services/organization.service';
 import { Organization, OrganizationDepartment, OrganizationCoordinator, OrganizationStudent, OrganizationProgram, OrganizationDocument, OrganizationTimelineEvent } from '@/src/data/mock-organizations';
 import { useAuth } from '@/src/context/AuthContext';
 import { Drawer } from '@/components/feature/ui/Drawer';
+import { Pagination } from '@/components/common/Pagination';
 
 export default function OrganizationManagementPage() {
   const { user } = useAuth();
@@ -135,7 +136,7 @@ export default function OrganizationManagementPage() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [activeActionModal]);
 
   // Filtered organizations calculation
   const filteredOrganizations = useMemo(() => {
@@ -571,6 +572,15 @@ export default function OrganizationManagementPage() {
     document.body.removeChild(link);
     showToast('Partnership directory CSV downloaded successfully');
   };
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  
+  // Reset pagination on filter change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterLoc, filterType, filterAccreditation, filterStatus]);
 
   return (
     <div className={`space-y-6 select-none ${
@@ -1012,7 +1022,7 @@ export default function OrganizationManagementPage() {
                 </thead>
                 <tbody className="divide-y divide-border">
                   {filteredOrganizations.length > 0 ? (
-                    filteredOrganizations.map((org) => {
+                    filteredOrganizations.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((org) => {
                       const isSelected = selectedIds.includes(org.id);
                       return (
                         <tr 
@@ -1091,6 +1101,13 @@ export default function OrganizationManagementPage() {
                 </tbody>
               </table>
             </div>
+            {filteredOrganizations.length > itemsPerPage && (
+              <Pagination 
+                currentPage={currentPage} 
+                totalPages={Math.ceil(filteredOrganizations.length / itemsPerPage)} 
+                onPageChange={setCurrentPage} 
+              />
+            )}
           </div>
 
         </div>

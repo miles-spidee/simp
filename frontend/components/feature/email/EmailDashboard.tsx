@@ -4,6 +4,7 @@ import { EmailTemplate, EmailHistory } from '@/src/types/email.types';
 import { EmailService } from '@/src/services/email.service';
 import { Mail, CheckCircle, XCircle, Send, Edit, PlayCircle, Loader2, Search, Calendar, User, Eye } from 'lucide-react';
 import { Drawer } from '../ui/Drawer';
+import { Pagination } from '@/components/common/Pagination';
 
 export default function EmailDashboard() {
   const [activeTab, setActiveTab] = useState<'templates' | 'history'>('templates');
@@ -15,6 +16,14 @@ export default function EmailDashboard() {
   // Search & Filter
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, categoryFilter, activeTab]);
 
   // New & Edit Template drawer state
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -116,6 +125,12 @@ export default function EmailDashboard() {
     const matchesCategory = categoryFilter === 'All' || t.category === categoryFilter;
     return matchesSearch && matchesCategory;
   });
+
+  const totalPagesTemplates = Math.ceil(filteredTemplates.length / itemsPerPage);
+  const paginatedTemplates = filteredTemplates.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const totalPagesHistory = Math.ceil(history.length / itemsPerPage);
+  const paginatedHistory = history.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const getStatusBadge = (status: string) => {
     const map: Record<string, string> = {
@@ -252,7 +267,7 @@ export default function EmailDashboard() {
                       Loading templates...
                     </td>
                   </tr>
-                ) : filteredTemplates.map(tpl => (
+                ) : paginatedTemplates.map(tpl => (
                   <tr key={tpl.id} className="hover:bg-slate-50/50 transition-colors">
                     <td className="px-5 py-4">
                       <div className="font-bold text-text-primary text-sm">{tpl.name}</div>
@@ -293,6 +308,11 @@ export default function EmailDashboard() {
               </tbody>
             </table>
           </div>
+          <Pagination 
+            currentPage={currentPage} 
+            totalPages={totalPagesTemplates} 
+            onPageChange={setCurrentPage} 
+          />
         </div>
       ) : (
         <div className="bg-white border border-border rounded-2xl shadow-sm p-6 space-y-4">
@@ -311,7 +331,7 @@ export default function EmailDashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {history.slice(0, 30).map(item => (
+                {paginatedHistory.map(item => (
                   <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
                     <td className="px-5 py-4 font-bold text-text-primary">{item.recipientEmail}</td>
                     <td className="px-5 py-4 font-mono font-medium text-text-secondary">{item.templateId}</td>
@@ -332,6 +352,11 @@ export default function EmailDashboard() {
               </tbody>
             </table>
           </div>
+          <Pagination 
+            currentPage={currentPage} 
+            totalPages={totalPagesHistory} 
+            onPageChange={setCurrentPage} 
+          />
         </div>
       )}
 

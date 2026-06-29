@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Calendar, CheckSquare, Clock, AlertTriangle, ChevronRight, TrendingUp, BarChart2, CheckCircle2
 } from 'lucide-react';
+import { Pagination } from '@/components/common/Pagination';
 
 interface StudentRosterItem {
   id: string;
@@ -183,6 +184,15 @@ export default function AttendanceDashboardPage() {
   const totalAbsentCount = batches.reduce((sum, b) => sum + b.absentCount, 0);
   const totalLateCount = batches.reduce((sum, b) => sum + b.lateCount, 0);
 
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Reset pagination on batch change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedBatch?.id]);
+
   return (
     <div className="space-y-6 animate-slide-in select-none">
       
@@ -263,7 +273,7 @@ export default function AttendanceDashboardPage() {
             </div>
 
             <div className="space-y-2">
-              {selectedBatch.students.map(s => (
+              {selectedBatch.students.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(s => (
                 <div 
                   key={s.id}
                   onClick={() => setSelectedStudent(s)}
@@ -291,6 +301,15 @@ export default function AttendanceDashboardPage() {
                 </div>
               ))}
             </div>
+            {selectedBatch.students.length > itemsPerPage && (
+              <div className="mt-4">
+                <Pagination 
+                  currentPage={currentPage} 
+                  totalPages={Math.ceil(selectedBatch.students.length / itemsPerPage)} 
+                  onPageChange={setCurrentPage} 
+                />
+              </div>
+            )}
           </div>
 
           {/* Right Column: Individual Student Timeline Sheet */}

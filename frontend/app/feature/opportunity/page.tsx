@@ -18,11 +18,17 @@ import { openingMentorsService } from '@/src/services/opening-mentors.service';
 import { OpeningMentor } from '@/src/data/mock-opening-mentors';
 import { mentorService } from '@/src/services/mentor.service';
 import { MentorProfile } from '@/src/types/api/mentor.types';
+import { Pagination } from "@/components/common/Pagination";
 
 type TabType = 'dashboard' | 'directory';
 type DrawerTabType = 'overview' | 'mentors' | 'applications' | 'analytics' | 'timeline';
 
 export default function OpportunityPage() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = React.useState(1);
+      const itemsPerPage = 10;
+
   const [activeTab, setActiveTab] = useState<TabType>('dashboard');
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
@@ -239,7 +245,7 @@ export default function OpportunityPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {filteredOpportunities.map(opp => (
+            {filteredOpportunities.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(opp => (
               <tr key={opp.id} className="hover:bg-slate-50/50 transition-colors">
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
@@ -287,6 +293,11 @@ export default function OpportunityPage() {
           </tbody>
         </table>
       </div>
+        <Pagination 
+          currentPage={currentPage} 
+          totalPages={Math.ceil((filteredOpportunities?.length || 0) / itemsPerPage)} 
+          onPageChange={setCurrentPage} 
+        />
     </div>
   );
 

@@ -5,6 +5,7 @@ import { escalationService } from '../../../src/services/escalation.service';
 import { EscalationRule, EscalationLog } from '../../../src/types/escalation.types';
 import { ShieldAlert, AlertTriangle, CheckCircle, Clock, Search, X, Eye, Settings, EyeOff, Loader2, Zap, Users, FileText, ChevronRight } from 'lucide-react';
 import { Drawer } from '../ui/Drawer';
+import { Pagination } from "@/components/common/Pagination";
 
 type Tab = 'logs' | 'rules';
 type StatusFilter = 'All' | 'Pending' | 'Resolved' | 'Ignored';
@@ -65,6 +66,11 @@ function getTimeSince(date: string) {
 }
 
 export default function EscalationDashboard() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = React.useState(1);
+      const itemsPerPage = 10;
+
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ totalEscalations: 0, pendingEscalations: 0, resolvedEscalations: 0, ignoredEscalations: 0 });
   const [escalations, setEscalations] = useState<EscalationLog[]>([]);
@@ -305,7 +311,7 @@ export default function EscalationDashboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border text-text-secondary">
-                  {filteredEscalations.map(e => (
+                  {filteredEscalations.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(e => (
                     <tr key={e.id} className="hover:bg-slate-50/80 transition-colors cursor-pointer" onClick={() => handleView(e)}>
                       <td className="px-5 py-3.5">
                         <div>
@@ -382,7 +388,12 @@ export default function EscalationDashboard() {
                   ))}
                 </tbody>
               </table>
-            </div>
+            <Pagination 
+          currentPage={currentPage} 
+          totalPages={Math.ceil((filteredEscalations?.length || 0) / itemsPerPage)} 
+          onPageChange={setCurrentPage} 
+        />
+          </div>
           )}
 
           {/* Results count */}

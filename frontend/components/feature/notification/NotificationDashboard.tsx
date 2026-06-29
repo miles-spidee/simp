@@ -5,6 +5,7 @@ import { NotificationService } from '@/src/services/notification.service';
 import { Notification, NotificationChannel, NotificationPriority, NotificationStatus } from '@/src/types/notification.types';
 import { Bell, CheckCircle, AlertCircle, Mail, MessageSquare, Smartphone, Search, X, Eye, Send, Clock, ChevronLeft, ChevronRight, RefreshCw, Inbox } from 'lucide-react';
 import { Drawer } from '../ui/Drawer';
+import { Pagination } from "@/components/common/Pagination";
 
 type StatusFilter = 'All' | NotificationStatus;
 type ChannelFilter = 'All' | NotificationChannel;
@@ -77,6 +78,11 @@ function getRelativeTime(timestamp: string) {
 }
 
 export default function NotificationDashboard() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = useState(1);
+      const itemsPerPage = 10;
+
   const [loading, setLoading] = useState(true);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [search, setSearch] = useState('');
@@ -306,7 +312,7 @@ export default function NotificationDashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border text-text-secondary">
-                {paginated.map(n => {
+                {paginated.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(n => {
                   const ch = channelIcons[n.channel] || channelIcons['In-App Notification'];
                   const ChIcon = ch.icon;
                   return (
@@ -372,6 +378,11 @@ export default function NotificationDashboard() {
                 })}
               </tbody>
             </table>
+          <Pagination 
+          currentPage={currentPage} 
+          totalPages={Math.ceil((paginated?.length || 0) / itemsPerPage)} 
+          onPageChange={setCurrentPage} 
+        />
           </div>
         )}
 

@@ -13,8 +13,14 @@ import { batchService } from '@/src/services/batch.service';
 import { Batch, BatchStudent, BatchTimelineEvent, BatchProject } from '@/src/data/mock-batches';
 import { useAuth } from '@/src/context/AuthContext';
 import { Drawer } from '@/components/feature/ui/Drawer';
+import { Pagination } from "@/components/common/Pagination";
 
 export default function BatchManagementPage() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = React.useState(1);
+      const itemsPerPage = 10;
+
   const { user } = useAuth();
   
   // App views: dashboard, directory
@@ -355,7 +361,7 @@ export default function BatchManagementPage() {
   const handleAddStudentToBatch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeProfile) return;
-    const batchId = activeProfile.id;
+    const batchId = activeProfile?.id;
 
     const hasStudent = activeProfile.students.some(s => s.internId === studentForm.internId);
     if (hasStudent) {
@@ -397,7 +403,7 @@ export default function BatchManagementPage() {
   // Remove student from roster
   const handleRemoveStudentFromBatch = async (studentId: string) => {
     if (!activeProfile) return;
-    const batchId = activeProfile.id;
+    const batchId = activeProfile?.id;
 
     const removedStudent = activeProfile.students.find(s => s.id === studentId);
     const updatedStudents = activeProfile.students.filter(s => s.id !== studentId);
@@ -425,7 +431,7 @@ export default function BatchManagementPage() {
   const handleRemapMentor = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeProfile) return;
-    const batchId = activeProfile.id;
+    const batchId = activeProfile?.id;
 
     const mentorName = mentorForm.mentorId === 'emp-2' ? 'Bob Johnson' : mentorForm.mentorId === 'emp-3' ? 'Diana Prince' : 'Charlie Davis';
     const updated = await batchService.updateBatch(batchId, {
@@ -465,7 +471,7 @@ export default function BatchManagementPage() {
   const handleUpdateCapacity = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeProfile) return;
-    const batchId = activeProfile.id;
+    const batchId = activeProfile?.id;
 
     const updated = await batchService.updateBatch(batchId, {
       capacity: Number(capacityForm)
@@ -494,7 +500,7 @@ export default function BatchManagementPage() {
   const handleUpdateStatus = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeProfile) return;
-    const batchId = activeProfile.id;
+    const batchId = activeProfile?.id;
 
     const updated = await batchService.updateBatch(batchId, {
       status: statusForm
@@ -1138,7 +1144,7 @@ export default function BatchManagementPage() {
               </thead>
               <tbody className="divide-y divide-border font-medium">
                 {filteredBatches.length > 0 ? (
-                  filteredBatches.map(b => {
+                  filteredBatches.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(b => {
                     const isSelected = selectedIds.includes(b.id);
                     const utilPct = Math.round((b.students.length / b.capacity) * 100) || 0;
 
@@ -1229,6 +1235,11 @@ export default function BatchManagementPage() {
               </tbody>
             </table>
           </div>
+        <Pagination 
+          currentPage={currentPage} 
+          totalPages={Math.ceil((filteredBatches.length || 0) / itemsPerPage)} 
+          onPageChange={setCurrentPage} 
+        />
 
           <div className="p-4 border-t border-border bg-slate-50/50 flex justify-between items-center text-xs font-bold text-text-secondary">
             <div>
@@ -1517,7 +1528,7 @@ export default function BatchManagementPage() {
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-border font-semibold text-text-primary">
-                          {activeProfile.students.map(stu => (
+                          {activeProfile.students.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(stu => (
                             <tr key={stu.id} className="hover:bg-slate-50/50">
                               <td className="px-4 py-2.5 font-extrabold text-text-primary">{stu.name}</td>
                               <td className="px-4 py-2.5 font-mono text-text-secondary font-bold">{stu.internId}</td>
@@ -1622,13 +1633,13 @@ export default function BatchManagementPage() {
                   {activeProfile.mentor.name && (
                     <button
                       onClick={async () => {
-                        const updated = await batchService.updateBatch(activeProfile.id, {
+                        const updated = await batchService.updateBatch(activeProfile?.id, {
                           mentor: {
                             id: '', name: '', department: '', expertise: '', rating: 0, sessionsConducted: 0, studentSatisfaction: 0, successRate: 0, completionContribution: 0
                           }
                         });
                         if (updated) {
-                          setBatches(batches.map(b => b.id === activeProfile.id ? updated : b));
+                          setBatches(batches.map(b => b.id === activeProfile?.id ? updated : b));
                           setActiveProfile(updated);
                           showToast('Removed assigned mentor');
                         }
@@ -1684,9 +1695,9 @@ export default function BatchManagementPage() {
                   {activeProfile.status !== 'Enrollment Open' ? (
                     <button
                       onClick={async () => {
-                        const updated = await batchService.updateBatch(activeProfile.id, { status: 'Enrollment Open' });
+                        const updated = await batchService.updateBatch(activeProfile?.id, { status: 'Enrollment Open' });
                         if (updated) {
-                          setBatches(batches.map(b => b.id === activeProfile.id ? updated : b));
+                          setBatches(batches.map(b => b.id === activeProfile?.id ? updated : b));
                           setActiveProfile(updated);
                           showToast('Enrollment open status activated');
                         }
@@ -1698,9 +1709,9 @@ export default function BatchManagementPage() {
                   ) : (
                     <button
                       onClick={async () => {
-                        const updated = await batchService.updateBatch(activeProfile.id, { status: 'Active' });
+                        const updated = await batchService.updateBatch(activeProfile?.id, { status: 'Active' });
                         if (updated) {
-                          setBatches(batches.map(b => b.id === activeProfile.id ? updated : b));
+                          setBatches(batches.map(b => b.id === activeProfile?.id ? updated : b));
                           setActiveProfile(updated);
                           showToast('Enrollment frozen');
                         }
@@ -1855,9 +1866,9 @@ export default function BatchManagementPage() {
                         submissionRate: 0,
                         evaluationStatus: 'Pending' as const
                       }];
-                      const updated = await batchService.updateBatch(activeProfile.id, { projects: updatedProj });
+                      const updated = await batchService.updateBatch(activeProfile?.id, { projects: updatedProj });
                       if (updated) {
-                        setBatches(batches.map(b => b.id === activeProfile.id ? updated : b));
+                        setBatches(batches.map(b => b.id === activeProfile?.id ? updated : b));
                         setActiveProfile(updated);
                         showToast('Appended new sprint capstone task');
                       }

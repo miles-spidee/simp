@@ -6,8 +6,14 @@ import { Referral, ReferralCampaign } from '@/src/types/referral.types';
 import { Gift, Loader2, Users, Trophy, ChevronRight, Copy, Plus, X, Check } from 'lucide-react';
 import { usePermissions } from '@/src/hooks/usePermissions';
 import { useAuth } from '@/src/context/AuthContext';
+import { Pagination } from "@/components/common/Pagination";
 
 export default function ReferralsPage() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = useState(1);
+      const itemsPerPage = 10;
+
   const { hasPermission } = usePermissions();
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -95,7 +101,7 @@ export default function ReferralsPage() {
               </h2>
             </div>
             <div className="divide-y divide-border">
-              {referrals.map(ref => (
+              {referrals.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(ref => (
                 <div key={ref.id} className="p-4 hover:bg-slate-50 transition-colors flex items-center justify-between">
                   <div>
                     <h3 className="font-bold text-text-primary">{ref.candidateName}</h3>
@@ -128,6 +134,11 @@ export default function ReferralsPage() {
                 </div>
               )}
             </div>
+            {referrals.length > itemsPerPage && (
+              <div className="mt-4">
+                <Pagination currentPage={currentPage} totalPages={Math.ceil((referrals.length || 0) / itemsPerPage)} onPageChange={setCurrentPage} />
+              </div>
+            )}
           </div>
         </div>
 

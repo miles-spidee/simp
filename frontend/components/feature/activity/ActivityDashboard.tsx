@@ -5,6 +5,7 @@ import { activityService } from '../../../src/services/activity.service';
 import { ActivityLog } from '../../../src/types/activity.types';
 import { Activity, CheckCircle, AlertTriangle, XCircle, Search, X, Eye, Download, Monitor, Smartphone, Tablet, Globe, Clock, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { Drawer } from '../ui/Drawer';
+import { Pagination } from "@/components/common/Pagination";
 
 type StatusFilter = 'All' | 'Success' | 'Failed' | 'Warning';
 type ModuleFilter = 'All' | 'Login' | 'Attendance' | 'Task' | 'Assessment' | 'Assignment' | 'Leave' | 'Profile' | 'Certificate' | 'Payment';
@@ -89,6 +90,11 @@ function getRelativeTime(timestamp: string) {
 }
 
 export default function ActivityDashboard() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = React.useState(1);
+      const itemsPerPage = 10;
+
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ totalLogs: 0, successLogs: 0, failedLogs: 0, criticalLogs: 0 });
   const [activities, setActivities] = useState<ActivityLog[]>([]);
@@ -302,7 +308,7 @@ export default function ActivityDashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border text-text-secondary">
-                {paginatedActivities.map(a => (
+                {paginatedActivities.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(a => (
                   <tr key={a.id} className="hover:bg-slate-50/80 transition-colors cursor-pointer" onClick={() => handleView(a)}>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-1.5 text-text-secondary">
@@ -356,6 +362,11 @@ export default function ActivityDashboard() {
                 ))}
               </tbody>
             </table>
+          <Pagination 
+          currentPage={currentPage} 
+          totalPages={Math.ceil((paginatedActivities?.length || 0) / itemsPerPage)} 
+          onPageChange={setCurrentPage} 
+        />
           </div>
         )}
 

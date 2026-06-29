@@ -17,9 +17,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   useEffect(() => {
     const handleResize = () => {
       if (typeof window !== 'undefined') {
-        if (window.innerWidth >= 768 && window.innerWidth < 1024) {
-          setSidebarCollapsed(true);
-        } else {
+        if (window.innerWidth < 768) {
           setSidebarCollapsed(false);
         }
       }

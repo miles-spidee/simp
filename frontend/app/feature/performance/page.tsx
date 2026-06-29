@@ -8,8 +8,14 @@ import {
 import { performanceService } from '@/src/services/performance.service';
 import { StudentPerformance, BatchPerformance } from '@/src/types/api/performance.types';
 import { Drawer } from '@/components/feature/ui/Drawer';
+import { Pagination } from "@/components/common/Pagination";
 
 export default function PerformanceManagementPage() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = React.useState(1);
+      const itemsPerPage = 10;
+
   const [activeView, setActiveView] = useState<'dashboard' | 'directory'>('dashboard');
   const [performances, setPerformances] = useState<StudentPerformance[]>([]);
   const [selectedPerformance, setSelectedPerformance] = useState<StudentPerformance | null>(null);
@@ -178,7 +184,7 @@ export default function PerformanceManagementPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  {filteredPerformances.map(p => (
+                  {filteredPerformances.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(p => (
                     <tr key={p.studentId} className="hover:bg-blue-50/50 cursor-pointer transition-colors" onClick={() => handleStudentClick(p)}>
                       <td className="px-6 py-4 font-medium text-text-primary flex items-center gap-3">
                         <Users className="h-4 w-4 text-blue-500" />
@@ -205,6 +211,11 @@ export default function PerformanceManagementPage() {
                 </tbody>
               </table>
             </div>
+        <Pagination 
+          currentPage={currentPage} 
+          totalPages={Math.ceil((filteredPerformances?.length || 0) / itemsPerPage)} 
+          onPageChange={setCurrentPage} 
+        />
           </div>
         )}
       </div>

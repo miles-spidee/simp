@@ -9,7 +9,14 @@ import BatchMappingView from './BatchMappingView';
 import MentorPerformanceView from './MentorPerformanceView';
 
 import { employeeService } from '@/src/services/employee.service';
+import { Pagination } from "@/components/common/Pagination";
+
 export default function MentorProfilePage() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = React.useState(1);
+      const itemsPerPage = 10;
+
   const [profiles, setProfiles] = useState<MentorProfile[]>([]);
   const [selected, setSelected] = useState<MentorProfile | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -178,7 +185,7 @@ export default function MentorProfilePage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filtered.map(p => (
+                {filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(p => (
                   <tr
                     key={p.mentor_profile_id}
                     className="hover:bg-blue-50/50 cursor-pointer transition-colors"
@@ -229,6 +236,11 @@ export default function MentorProfilePage() {
               </tbody>
             </table>
           </div>
+        <Pagination 
+          currentPage={currentPage} 
+          totalPages={Math.ceil((filtered?.length || 0) / itemsPerPage)} 
+          onPageChange={setCurrentPage} 
+        />
         </div>
         )}
       </div>

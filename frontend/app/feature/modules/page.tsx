@@ -7,6 +7,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Search, Plus, Settings, Eye, Edit, ToggleLeft, ToggleRight, Info } from 'lucide-react';
 import { moduleService } from '@/src/services/module.service';
 import { Module } from '@/src/data/mock-modules';
+import { Pagination } from '@/components/common/Pagination';
+import { FEATURE_REGISTRY } from '@/src/core/features/feature-registry';
 
 export default function ModuleRegistryPage() {
   const [modules, setModules] = useState<Module[]>([]);
@@ -96,6 +98,15 @@ export default function ModuleRegistryPage() {
     });
   }, [modules, searchTerm]);
 
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Reset pagination on search
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -153,12 +164,19 @@ export default function ModuleRegistryPage() {
                   </TableCell>
                 </TableRow>
               ) : (
-                filteredModules.map(m => (
+                filteredModules.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(m => (
                   <TableRow key={m.id}>
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <div className="h-8 w-8 rounded bg-slate-100 flex items-center justify-center font-bold text-text-primary">
-                          {m.name.slice(0, 2).toUpperCase()}
+                          {(() => {
+                            const feature = FEATURE_REGISTRY.find(f => f.moduleId === m.id);
+                            if (feature && feature.icon) {
+                              const Icon = feature.icon;
+                              return <Icon className="h-4 w-4 text-primary" />;
+                            }
+                            return m.name.slice(0, 2).toUpperCase();
+                          })()}
                         </div>
                         <div>
                           <span className="font-semibold text-text-primary block">{m.name}</span>
@@ -194,6 +212,15 @@ export default function ModuleRegistryPage() {
               )}
             </TableBody>
           </Table>
+          {filteredModules.length > itemsPerPage && (
+            <div className="mt-4">
+              <Pagination 
+                currentPage={currentPage} 
+                totalPages={Math.ceil(filteredModules.length / itemsPerPage)} 
+                onPageChange={setCurrentPage} 
+              />
+            </div>
+          )}
         </CardContent>
       </Card>
 

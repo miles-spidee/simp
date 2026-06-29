@@ -5,8 +5,14 @@ import { ReportService } from '@/src/services/report.service';
 import { ReportRecord, ReportTemplate } from '@/src/types/report.types';
 import { FileBarChart, Loader2, DownloadCloud, Play, Calendar, FileText } from 'lucide-react';
 import { usePermissions } from '@/src/hooks/usePermissions';
+import { Pagination } from "@/components/common/Pagination";
 
 export default function ReportCenterPage() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = React.useState(1);
+      const itemsPerPage = 10;
+
   const { hasPermission } = usePermissions();
   const [loading, setLoading] = useState(true);
   const [templates, setTemplates] = useState<ReportTemplate[]>([]);
@@ -99,7 +105,7 @@ export default function ReportCenterPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {reports.map((report) => (
+              {reports.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((report) => (
                 <tr key={report.id} className="hover:bg-slate-50">
                   <td className="px-4 py-3 font-medium text-text-primary">{report.name}</td>
                   <td className="px-4 py-3">
@@ -132,6 +138,11 @@ export default function ReportCenterPage() {
             </tbody>
           </table>
         </div>
+        <Pagination 
+          currentPage={currentPage} 
+          totalPages={Math.ceil((reports?.length || 0) / itemsPerPage)} 
+          onPageChange={setCurrentPage} 
+        />
       </div>
     </div>
   );

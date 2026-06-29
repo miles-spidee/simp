@@ -6,6 +6,7 @@ import {
   Users, Play, XCircle, Trash2, Send, Save, ArrowUpRight, GitBranch, ExternalLink, Video
 } from 'lucide-react';
 import { useAuth } from '@/src/context/AuthContext';
+import { Pagination } from '@/components/common/Pagination';
 
 interface StudentSubmission {
   studentId: string;
@@ -111,6 +112,10 @@ export default function TaskManagementPage() {
   const [reqScreenshot, setReqScreenshot] = useState(false);
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const triggerToast = (msg: string) => {
     setToastMessage(msg);
@@ -329,7 +334,7 @@ export default function TaskManagementPage() {
               <div className="space-y-3">
                 <span className="block text-[10px] font-bold text-text-secondary uppercase tracking-wider">Candidate Submissions</span>
                 
-                {submissions.map(sub => (
+                {submissions.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(sub => (
                   <div 
                     key={sub.studentId}
                     onClick={() => { setSelectedSub(sub); setInputScore(sub.score || 0); setInputFeedback(sub.feedback || ''); }}
@@ -355,6 +360,15 @@ export default function TaskManagementPage() {
                   </div>
                 ))}
               </div>
+              {submissions.length > itemsPerPage && (
+                <div className="mt-4">
+                  <Pagination 
+                    currentPage={currentPage} 
+                    totalPages={Math.ceil(submissions.length / itemsPerPage)} 
+                    onPageChange={setCurrentPage} 
+                  />
+                </div>
+              )}
 
               {/* Grading Workspace Panel */}
               <div className="border border-slate-150 rounded-2xl p-5 bg-slate-50/20">

@@ -16,6 +16,7 @@ import { useAuth } from '@/src/context/AuthContext';
 import { Drawer } from '@/components/feature/ui/Drawer';
 import { useRouter } from 'next/navigation';
 import { PermissionGuard } from '@/components/feature/ui/PermissionGuard';
+import { Pagination } from '@/components/common/Pagination';
 
 export default function EmployeeManagementPage() {
   const { user } = useAuth();
@@ -575,7 +576,16 @@ export default function EmployeeManagementPage() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [activeActionModal]);
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  
+  // Reset pagination on filter change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterDept, filterStatus, filterLocation, filterExperience, filterType]);
 
   return (
     <div className={`space-y-6 select-none ${
@@ -1050,7 +1060,7 @@ export default function EmployeeManagementPage() {
                 </thead>
                 <tbody className="divide-y divide-border">
                   {filteredEmployees.length > 0 ? (
-                    filteredEmployees.map((emp) => {
+                    filteredEmployees.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((emp) => {
                       const isSelected = selectedIds.includes(emp.id);
                       
                       // Find reporting manager name
@@ -1152,6 +1162,13 @@ export default function EmployeeManagementPage() {
                 </tbody>
               </table>
             </div>
+            {filteredEmployees.length > itemsPerPage && (
+              <Pagination 
+                currentPage={currentPage} 
+                totalPages={Math.ceil(filteredEmployees.length / itemsPerPage)} 
+                onPageChange={setCurrentPage} 
+              />
+            )}
           </div>
         </div>
       )}

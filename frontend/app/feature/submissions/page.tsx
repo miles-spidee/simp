@@ -10,8 +10,14 @@ import { submissionService } from '@/src/services/submission.service';
 import { Submission } from '@/src/types/api/submission.types';
 import { studentService, ExtendedStudent } from '@/src/services/student.service';
 import { Drawer } from '@/components/feature/ui/Drawer';
+import { Pagination } from "@/components/common/Pagination";
 
 export default function SubmissionsManagementPage() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = React.useState(1);
+      const itemsPerPage = 10;
+
   const [activeView, setActiveView] = useState<'dashboard' | 'directory' | 'batches'>('dashboard');
   const [students, setStudents] = useState<ExtendedStudent[]>([]);
   const [selectedBatch, setSelectedBatch] = useState<string | null>(null);
@@ -198,7 +204,7 @@ export default function SubmissionsManagementPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  {filteredSubmissions.map(s => (
+                  {filteredSubmissions.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(s => (
                     <tr key={s.id} className="hover:bg-blue-50/50 cursor-pointer transition-colors" onClick={() => handleSubmissionClick(s)}>
                       <td className="px-6 py-4 font-medium text-text-primary">{s.studentId}</td>
                       <td className="px-6 py-4 text-text-secondary">{s.taskId || s.assessmentId}</td>
@@ -221,6 +227,11 @@ export default function SubmissionsManagementPage() {
                 </tbody>
               </table>
             </div>
+        <Pagination 
+          currentPage={currentPage} 
+          totalPages={Math.ceil((filteredSubmissions?.length || 0) / itemsPerPage)} 
+          onPageChange={setCurrentPage} 
+        />
           </div>
         )}
 

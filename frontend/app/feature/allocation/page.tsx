@@ -17,10 +17,16 @@ import { batchService } from '@/src/services/batch.service';
 import { Batch } from '@/src/data/mock-batches';
 import { useAuth } from '@/src/context/AuthContext';
 import { Drawer } from '@/components/feature/ui/Drawer';
+import { Pagination } from "@/components/common/Pagination";
 
 type AllocationTab = 'dashboard' | 'students' | 'batches' | 'mentors' | 'programs' | 'colleges' | 'capacity' | 'conflicts' | 'rules' | 'timeline';
 
 export default function AllocationManagementPage() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = React.useState(1);
+      const itemsPerPage = 10;
+
   const { user } = useAuth();
   
   // App views: Left panel tabs
@@ -944,7 +950,7 @@ export default function AllocationManagementPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border font-medium">
-                    {filteredAllocations.map(a => (
+                    {filteredAllocations.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(a => (
                       <tr 
                         key={a.id}
                         className={`hover:bg-slate-50/50 cursor-pointer ${selectedAllocation?.id === a.id ? 'bg-blue-50/30' : ''}`}
@@ -988,6 +994,11 @@ export default function AllocationManagementPage() {
                   </tbody>
                 </table>
               </div>
+        <Pagination 
+          currentPage={currentPage} 
+          totalPages={Math.ceil((filteredAllocations?.length || 0) / itemsPerPage)} 
+          onPageChange={setCurrentPage} 
+        />
 
             </div>
           )}

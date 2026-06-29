@@ -5,6 +5,7 @@ import { leaveService } from '../../../src/services/leave.service';
 import { LeaveRequest } from '../../../src/types/leave.types';
 import { Calendar, CheckCircle, Clock, XCircle, Search, X, Filter, Eye, Loader2, CalendarDays, FileText, ThumbsUp, ThumbsDown, ArrowUpDown } from 'lucide-react';
 import { Drawer } from '../ui/Drawer';
+import { Pagination } from "@/components/common/Pagination";
 
 type StatusFilter = 'All' | 'Pending' | 'Approved' | 'Rejected';
 type LeaveTypeFilter = 'All' | 'Medical' | 'Casual' | 'Emergency' | 'OD' | 'WFH';
@@ -74,6 +75,11 @@ function getDayCount(start: string, end: string) {
 }
 
 export default function LeaveDashboard() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = React.useState(1);
+      const itemsPerPage = 10;
+
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ totalRequests: 0, pendingRequests: 0, approvedRequests: 0, rejectedRequests: 0 });
   const [leaves, setLeaves] = useState<LeaveRequest[]>([]);
@@ -282,7 +288,7 @@ export default function LeaveDashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border text-text-secondary">
-                {filteredLeaves.map(l => (
+                {filteredLeaves.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(l => (
                   <tr key={l.id} className="hover:bg-slate-50/80 transition-colors cursor-pointer" onClick={() => handleView(l)}>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
@@ -346,6 +352,11 @@ export default function LeaveDashboard() {
                 ))}
               </tbody>
             </table>
+          <Pagination 
+          currentPage={currentPage} 
+          totalPages={Math.ceil((filteredLeaves?.length || 0) / itemsPerPage)} 
+          onPageChange={setCurrentPage} 
+        />
           </div>
         )}
 

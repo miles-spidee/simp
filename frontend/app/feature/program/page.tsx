@@ -16,12 +16,18 @@ import { Organization } from '@/src/data/mock-organizations';
 import { useAuth } from '@/src/context/AuthContext';
 import { Drawer } from '@/components/feature/ui/Drawer';
 import { PermissionGuard } from '@/components/feature/ui/PermissionGuard';
+import { Pagination } from "@/components/common/Pagination";
 
 interface ProgramWithOrg extends Program {
   organizationData?: Organization;
 }
 
 export default function ProgramManagementPage() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = React.useState(1);
+      const itemsPerPage = 10;
+
   const { user } = useAuth();
   
   // App views: dashboard, directory
@@ -128,7 +134,7 @@ export default function ProgramManagementPage() {
   // Sync activeProfile state from main array
   useEffect(() => {
     if (activeProfile) {
-      const refreshed = programs.find(p => p.id === activeProfile.id);
+      const refreshed = programs.find(p => p.id === activeProfile?.id);
       if (refreshed) {
         setActiveProfile(refreshed);
       }
@@ -1084,7 +1090,7 @@ export default function ProgramManagementPage() {
                 </thead>
                 <tbody className="divide-y divide-border">
                   {filteredPrograms.length > 0 ? (
-                    filteredPrograms.map((prog) => {
+                    filteredPrograms.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((prog) => {
                       const isSelected = selectedIds.includes(prog.id);
                       return (
                         <tr 
@@ -1172,6 +1178,11 @@ export default function ProgramManagementPage() {
                 </tbody>
               </table>
             </div>
+        <Pagination 
+          currentPage={currentPage} 
+          totalPages={Math.ceil((filteredPrograms.length || 0) / itemsPerPage)} 
+          onPageChange={setCurrentPage} 
+        />
           </div>
 
         </div>
@@ -1576,7 +1587,7 @@ export default function ProgramManagementPage() {
                                 <div className="flex gap-2 justify-end">
                                   {enr.status !== 'Approved' && (
                                     <button 
-                                      onClick={() => handleEnrollmentStatus(activeProfile.id, enr.id, 'Approved')}
+                                      onClick={() => handleEnrollmentStatus(activeProfile?.id, enr.id, 'Approved')}
                                       className="text-emerald-600 hover:text-emerald-700 font-bold"
                                     >
                                       Approve
@@ -1584,7 +1595,7 @@ export default function ProgramManagementPage() {
                                   )}
                                   {enr.status !== 'Rejected' && (
                                     <button 
-                                      onClick={() => handleEnrollmentStatus(activeProfile.id, enr.id, 'Rejected')}
+                                      onClick={() => handleEnrollmentStatus(activeProfile?.id, enr.id, 'Rejected')}
                                       className="text-rose-600 hover:text-rose-700 font-bold"
                                     >
                                       Reject
@@ -1786,7 +1797,7 @@ export default function ProgramManagementPage() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border">
-                        {activeProfile.enrollments.map((enr) => {
+                        {activeProfile.enrollments.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((enr) => {
                           const issuedCert = activeProfile.certifications.list.find(c => c.studentName === enr.name);
                           return (
                             <tr key={enr.id} className="hover:bg-slate-50/50 transition-colors">
@@ -1808,7 +1819,7 @@ export default function ProgramManagementPage() {
                                 <div className="flex gap-2 justify-end">
                                   {!issuedCert && (
                                     <button 
-                                      onClick={() => handleGenerateCertificate(activeProfile.id, enr.name)}
+                                      onClick={() => handleGenerateCertificate(activeProfile?.id, enr.name)}
                                       className="text-blue-600 hover:text-blue-700 font-bold"
                                     >
                                       Generate Certificate

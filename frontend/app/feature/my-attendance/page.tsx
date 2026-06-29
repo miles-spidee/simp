@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { leaveService } from '../../../src/services/leave.service';
 import { LeaveRequest } from '../../../src/types/leave.types';
+import { Pagination } from "@/components/common/Pagination";
 
 interface AttendanceLog {
   id: string;
@@ -32,6 +33,11 @@ interface LocalAppeal {
 }
 
 export default function MyAttendancePage() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = React.useState(1);
+      const itemsPerPage = 10;
+
   const [attendanceLogs, setAttendanceLogs] = useState<AttendanceLog[]>([]);
   const [complianceRate, setComplianceRate] = useState(88);
   const [presentDays, setPresentDays] = useState(15);
@@ -579,7 +585,7 @@ export default function MyAttendancePage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border text-slate-655 select-text">
-              {attendanceLogs.map((log) => (
+              {attendanceLogs.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((log) => (
                 <tr key={log.id} className="hover:bg-slate-50/50 transition-colors">
                   <td className="py-3 px-4 font-semibold text-text-primary">{log.date}</td>
                   <td className="py-3 px-4">{log.clockIn}</td>
@@ -601,6 +607,11 @@ export default function MyAttendancePage() {
             </tbody>
           </table>
         </div>
+        <Pagination 
+          currentPage={currentPage} 
+          totalPages={Math.ceil((attendanceLogs?.length || 0) / itemsPerPage)} 
+          onPageChange={setCurrentPage} 
+        />
       </div>
     </div>
   );

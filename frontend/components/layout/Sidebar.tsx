@@ -64,11 +64,16 @@ export function Sidebar({ isMobileOpen, setMobileOpen, isCollapsed, setCollapsed
         {/* Branding header */}
         <div className="flex h-16 shrink-0 items-center px-6 border-b border-border justify-between">
           <Link href="/feature" className="flex items-center gap-3 overflow-hidden">
-            {(!isCollapsed || isMobileOpen) ? (
-              <img src="/logo.png" alt="Pinesphere Logo" className="h-15 w-auto object-contain transition-transform hover:scale-[1.02] animate-fade-in" />
-            ) : (
-              <img src="/pinesphere_ai_app_icon.png" alt="Pinesphere Icon" className="h-8 w-8 object-contain transition-transform hover:scale-[1.02] animate-fade-in shadow-sm shadow-primary/30 rounded" />
-            )}
+            <img 
+              src="/logo.png" 
+              alt="Pinesphere Logo" 
+              className={`h-15 w-auto object-contain transition-transform hover:scale-[1.02] animate-fade-in ${isCollapsed && !isMobileOpen ? 'hidden' : 'block'}`} 
+            />
+            <img 
+              src="/pinesphere_ai_app_icon.png" 
+              alt="Pinesphere Icon" 
+              className={`h-8 w-8 object-contain transition-transform hover:scale-[1.02] animate-fade-in shadow-sm shadow-primary/30 rounded ${isCollapsed && !isMobileOpen ? 'block' : 'hidden'}`} 
+            />
           </Link>
           <button className="md:hidden text-text-secondary hover:text-text-primary cursor-pointer" onClick={() => setMobileOpen(false)}>
             <X className="h-6 w-6" />
@@ -94,11 +99,9 @@ export function Sidebar({ isMobileOpen, setMobileOpen, isCollapsed, setCollapsed
               >
                 <div className="flex items-center gap-3 overflow-hidden">
                   <IconComponent className={`h-5 w-5 shrink-0 ${active ? 'text-primary' : 'text-text-secondary group-hover:text-primary-hover'}`} />
-                  {(!isCollapsed || isMobileOpen) && (
-                    <span className="text-sm font-medium whitespace-nowrap truncate animate-fade-in">
-                      {item.navigationLabel}
-                    </span>
-                  )}
+                  <span className={`text-sm font-medium whitespace-nowrap truncate animate-fade-in ${isCollapsed && !isMobileOpen ? 'hidden' : 'block'}`}>
+                    {item.navigationLabel}
+                  </span>
                 </div>
               </Link>
             );
@@ -116,12 +119,10 @@ export function Sidebar({ isMobileOpen, setMobileOpen, isCollapsed, setCollapsed
                   className="h-full w-full object-cover" 
                 />
               </div>
-              {(!isCollapsed || isMobileOpen) && (
-                <div className="overflow-hidden animate-fade-in font-[family-name:var(--font-outfit)]">
-                  <p className="text-sm font-bold text-text-primary truncate leading-tight">{user?.name || "User"}</p>
-                  <p className="text-[9px] font-bold uppercase tracking-wider text-text-secondary truncate mt-0.5">{user?.roleName || "Role"}</p>
-                </div>
-              )}
+              <div className={`overflow-hidden animate-fade-in font-[family-name:var(--font-outfit)] ${isCollapsed && !isMobileOpen ? 'hidden' : 'block'}`}>
+                <p className="text-sm font-bold text-text-primary truncate leading-tight">{user?.name || "User"}</p>
+                <p className="text-[9px] font-bold uppercase tracking-wider text-text-secondary truncate mt-0.5">{user?.roleName || "Role"}</p>
+              </div>
             </div>
             <button
               onClick={() => {

@@ -15,8 +15,14 @@ import { useAuth } from '@/src/context/AuthContext';
 import ViewNotificationModal from '@/components/feature/notification/ViewNotificationModal';
 import { CertificateService } from '@/src/services/certificate.service';
 import { Certificate } from '@/src/types/certificate.types';
+import { Pagination } from "@/components/common/Pagination";
 
 export default function SelfServicePage() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = React.useState(1);
+      const itemsPerPage = 10;
+
   const { hasPermission } = usePermissions();
   const { user } = useAuth();
   
@@ -446,7 +452,7 @@ export default function SelfServicePage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border text-text-primary">
-                      {submittedDocs.map(doc => (
+                      {submittedDocs.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(doc => (
                         <tr key={doc.name} className="hover:bg-slate-50/50 transition-all font-medium text-text-primary">
                           <td className="px-5 py-4 font-bold text-text-primary">{doc.name}</td>
                           <td className="px-5 py-4"><span className="bg-slate-100 text-text-secondary px-2 py-0.5 rounded text-xs">{doc.type}</span></td>
@@ -465,6 +471,11 @@ export default function SelfServicePage() {
                     </tbody>
                   </table>
                 </div>
+        <Pagination 
+          currentPage={currentPage} 
+          totalPages={Math.ceil((submittedDocs?.length || 0) / itemsPerPage)} 
+          onPageChange={setCurrentPage} 
+        />
               </div>
 
               {/* Portal Provided documents card */}

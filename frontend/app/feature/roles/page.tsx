@@ -7,6 +7,7 @@ import { Search, Plus, Shield, Users, Edit, Trash, Eye } from 'lucide-react';
 import { CreateRoleWizard } from '../../../components/feature/roles/CreateRoleWizard';
 import { Role } from '@/src/data/mock-roles';
 import { roleService } from '@/src/services/role.service';
+import { Pagination } from '@/components/common/Pagination';
 
 export default function RolesPage() {
   const [isCreateWizardOpen, setIsCreateWizardOpen] = useState(false);
@@ -55,6 +56,10 @@ export default function RolesPage() {
     }
   };
 
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -95,7 +100,7 @@ export default function RolesPage() {
             No roles found.
           </div>
         ) : (
-          roles.map((role) => (
+          roles.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((role) => (
             <Card key={role.id} className="flex flex-col hover:shadow-md transition-shadow bg-white">
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
@@ -144,6 +149,15 @@ export default function RolesPage() {
           ))
         )}
       </div>
+      {roles.length > itemsPerPage && (
+        <div className="mt-4">
+          <Pagination 
+            currentPage={currentPage} 
+            totalPages={Math.ceil(roles.length / itemsPerPage)} 
+            onPageChange={setCurrentPage} 
+          />
+        </div>
+      )}
 
       <CreateRoleWizard 
         isOpen={isCreateWizardOpen} 

@@ -10,8 +10,14 @@ import {
 import { usePermissions } from '@/src/hooks/usePermissions';
 import { useAuth } from '@/src/context/AuthContext';
 import { Drawer } from '@/components/feature/ui/Drawer';
+import { Pagination } from "@/components/common/Pagination";
 
 export default function HelpdeskPage() {
+
+      // Pagination State
+      const [currentPage, setCurrentPage] = React.useState(1);
+      const itemsPerPage = 10;
+
   const { hasPermission } = usePermissions();
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -206,7 +212,7 @@ export default function HelpdeskPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {tickets.map((ticket) => (
+              {tickets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((ticket) => (
                 <tr 
                   key={ticket.id} 
                   onClick={() => handleOpenTicket(ticket)}
@@ -266,6 +272,11 @@ export default function HelpdeskPage() {
             </tbody>
           </table>
         </div>
+        <Pagination 
+          currentPage={currentPage} 
+          totalPages={Math.ceil((tickets?.length || 0) / itemsPerPage)} 
+          onPageChange={setCurrentPage} 
+        />
       </div>
 
       {/* --- DRAWERS --- */}
