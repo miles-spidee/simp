@@ -15,13 +15,9 @@ import { useAuth } from '@/src/context/AuthContext';
 import ViewNotificationModal from '@/components/feature/notification/ViewNotificationModal';
 import { CertificateService } from '@/src/services/certificate.service';
 import { Certificate } from '@/src/types/certificate.types';
-import { Pagination } from "@/components/common/Pagination";
+import { EnhancedTable } from '@/components/feature/ui/Table';
 
 export default function SelfServicePage() {
-
-      // Pagination State
-      const [currentPage, setCurrentPage] = React.useState(1);
-      const itemsPerPage = 10;
 
   const { hasPermission } = usePermissions();
   const { user } = useAuth();
@@ -440,42 +436,43 @@ export default function SelfServicePage() {
                   <p className="text-xs text-slate-455">Files uploaded by you during application or onboarding.</p>
                 </div>
 
-                <div className="overflow-hidden border border-slate-150 rounded-xl">
-                  <table className="w-full text-sm text-left">
-                    <thead className="bg-slate-50 border-b border-slate-150 text-text-secondary text-xs font-bold uppercase tracking-wide">
-                      <tr>
-                        <th className="px-5 py-3 font-semibold">Document Name</th>
-                        <th className="px-5 py-3 font-semibold">Type</th>
-                        <th className="px-5 py-3 font-semibold">Upload Date</th>
-                        <th className="px-5 py-3 font-semibold">Size</th>
-                        <th className="px-5 py-3 font-semibold text-right">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border text-text-primary">
-                      {submittedDocs.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(doc => (
-                        <tr key={doc.name} className="hover:bg-slate-50/50 transition-all font-medium text-text-primary">
-                          <td className="px-5 py-4 font-bold text-text-primary">{doc.name}</td>
-                          <td className="px-5 py-4"><span className="bg-slate-100 text-text-secondary px-2 py-0.5 rounded text-xs">{doc.type}</span></td>
-                          <td className="px-5 py-4 text-xs text-text-secondary">{new Date(doc.date).toLocaleDateString()}</td>
-                          <td className="px-5 py-4 text-xs text-text-secondary font-semibold">{doc.size}</td>
-                          <td className="px-5 py-4 text-right">
-                            <button 
-                              onClick={() => handleDownload(doc.name, doc.type)}
-                              className="text-teal-600 hover:text-teal-800 hover:bg-teal-50/70 p-1.5 rounded-lg inline-flex items-center gap-1 text-xs font-bold border border-teal-100 shadow-xxs transition-all"
-                            >
-                              <FileDown className="w-4 h-4" /> Download
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-        <Pagination 
-          currentPage={currentPage} 
-          totalPages={Math.ceil((submittedDocs?.length || 0) / itemsPerPage)} 
-          onPageChange={setCurrentPage} 
-        />
+                <EnhancedTable
+                  data={submittedDocs}
+                  columns={[
+                    { key: 'name', label: 'Document Name', className: 'font-bold text-text-primary' },
+                    {
+                      key: 'type',
+                      label: 'Type',
+                      render: (doc: typeof submittedDocs[0]) => (
+                        <span className="bg-slate-100 text-text-secondary px-2 py-0.5 rounded text-xs">{doc.type}</span>
+                      ),
+                    },
+                    {
+                      key: 'date',
+                      label: 'Upload Date',
+                      render: (doc: typeof submittedDocs[0]) => (
+                        <span className="text-xs text-text-secondary">{new Date(doc.date).toLocaleDateString()}</span>
+                      ),
+                    },
+                    { key: 'size', label: 'Size', className: 'text-xs text-text-secondary font-semibold' },
+                    {
+                      key: 'action',
+                      label: 'Action',
+                      className: 'text-right',
+                      render: (doc: typeof submittedDocs[0]) => (
+                        <button
+                          onClick={() => handleDownload(doc.name, doc.type)}
+                          className="text-teal-600 hover:text-teal-800 hover:bg-teal-50/70 p-1.5 rounded-lg inline-flex items-center gap-1 text-xs font-bold border border-teal-100 shadow-xxs transition-all"
+                        >
+                          <FileDown className="w-4 h-4" /> Download
+                        </button>
+                      ),
+                    },
+                  ]}
+                  searchPlaceholder="Search documents..."
+                  itemsPerPage={10}
+                  emptyMessage="No submitted documents."
+                />
               </div>
 
               {/* Portal Provided documents card */}
@@ -485,37 +482,43 @@ export default function SelfServicePage() {
                   <p className="text-xs text-text-secondary">Official offers, certifications, policy guidelines, and training catalogs.</p>
                 </div>
 
-                <div className="overflow-hidden border border-slate-150 rounded-xl">
-                  <table className="w-full text-sm text-left">
-                    <thead className="bg-slate-50 border-b border-slate-150 text-text-secondary text-xs font-bold uppercase tracking-wide">
-                      <tr>
-                        <th className="px-5 py-3 font-semibold">Document Name</th>
-                        <th className="px-5 py-3 font-semibold">Type</th>
-                        <th className="px-5 py-3 font-semibold">Available Date</th>
-                        <th className="px-5 py-3 font-semibold">Size</th>
-                        <th className="px-5 py-3 font-semibold text-right">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border text-text-primary">
-                      {providedDocs.map(doc => (
-                        <tr key={doc.name} className="hover:bg-slate-50/50 transition-all font-medium text-text-primary">
-                          <td className="px-5 py-4 font-bold text-text-primary">{doc.name}</td>
-                          <td className="px-5 py-4"><span className="bg-teal-50 text-teal-700 border border-teal-100 px-2 py-0.5 rounded text-xs font-semibold">{doc.type}</span></td>
-                          <td className="px-5 py-4 text-xs text-text-secondary">{new Date(doc.date).toLocaleDateString()}</td>
-                          <td className="px-5 py-4 text-xs text-text-secondary font-semibold">{doc.size}</td>
-                          <td className="px-5 py-4 text-right">
-                            <button 
-                              onClick={() => handleDownload(doc.name, doc.type)}
-                              className="text-teal-600 hover:text-teal-800 hover:bg-teal-50/70 p-1.5 rounded-lg inline-flex items-center gap-1 text-xs font-bold border border-teal-100 shadow-xxs transition-all"
-                            >
-                              <FileDown className="w-4 h-4" /> Download
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                <EnhancedTable
+                  data={providedDocs}
+                  columns={[
+                    { key: 'name', label: 'Document Name', className: 'font-bold text-text-primary' },
+                    {
+                      key: 'type',
+                      label: 'Type',
+                      render: (doc: typeof providedDocs[0]) => (
+                        <span className="bg-teal-50 text-teal-700 border border-teal-100 px-2 py-0.5 rounded text-xs font-semibold">{doc.type}</span>
+                      ),
+                    },
+                    {
+                      key: 'date',
+                      label: 'Available Date',
+                      render: (doc: typeof providedDocs[0]) => (
+                        <span className="text-xs text-text-secondary">{new Date(doc.date).toLocaleDateString()}</span>
+                      ),
+                    },
+                    { key: 'size', label: 'Size', className: 'text-xs text-text-secondary font-semibold' },
+                    {
+                      key: 'action',
+                      label: 'Action',
+                      className: 'text-right',
+                      render: (doc: typeof providedDocs[0]) => (
+                        <button
+                          onClick={() => handleDownload(doc.name, doc.type)}
+                          className="text-teal-600 hover:text-teal-800 hover:bg-teal-50/70 p-1.5 rounded-lg inline-flex items-center gap-1 text-xs font-bold border border-teal-100 shadow-xxs transition-all"
+                        >
+                          <FileDown className="w-4 h-4" /> Download
+                        </button>
+                      ),
+                    },
+                  ]}
+                  searchPlaceholder="Search documents..."
+                  itemsPerPage={10}
+                  emptyMessage="No provided documents."
+                />
               </div>
             </div>
           )}
