@@ -71,7 +71,7 @@ export const MOCK_ROLES: Role[] = [
     usersCount: 12,
     color: 'text-rose-600',
     bg: 'bg-rose-100',
-    moduleIds: ['dashboard', 'employee', 'organization', 'program', 'opportunity', 'application', 'student', 'batch', 'reporting_manager', 'leave', 'activity', 'escalation', 'payment', 'fee', 'billing', 'wallet', 'finance', 'finance_analytics', 'notification', 'announcement', 'communication', 'calendar', 'email', 'certificate', 'document', 'placement', 'alumni', 'analytics', 'reports', 'kpi', 'export', 'insights', 'helpdesk', 'marketplace', 'referral', 'idcard', 'selfservice', 'productivity'],
+    moduleIds: ['dashboard', 'employee', 'organization', 'program', 'opportunity', 'application', 'student', 'batch', 'reporting_manager', 'leave', 'activity', 'escalation', 'payment', 'fee', 'billing', 'wallet', 'finance', 'finance_analytics', 'notification', 'announcement', 'communication', 'calendar', 'email', 'certificate', 'document', 'placement', 'alumni', 'analytics', 'reports', 'kpi', 'export', 'helpdesk', 'idcard', 'selfservice', 'productivity'],
     permissions: [
       'dashboard.view',
       'employee.view', 'employee.create', 'employee.edit',
@@ -101,10 +101,8 @@ export const MOCK_ROLES: Role[] = [
       'alumni.view', 'alumni.create', 'alumni.edit', 'alumni.export',
       'analytics.view', 'analytics.export', 'analytics.configure', 'analytics.dashboard',
       'report.view', 'report.export', 'report.schedule', 'report.share',
-      'kpi.view', 'export.view', 'insights.view',
+      'kpi.view', 'export.view',
       'helpdesk.view', 'helpdesk.create', 'helpdesk.edit', 'helpdesk.assign', 'helpdesk.resolve', 'helpdesk.close', 'helpdesk.export',
-      'marketplace.view', 'marketplace.apply', 'marketplace.favorite', 'marketplace.publish', 'marketplace.manage',
-      'referral.view', 'referral.create', 'referral.approve', 'referral.export',
       'idcard.view', 'idcard.generate', 'idcard.download', 'idcard.print',
       'selfservice.view',
       'productivity.view', 'productivity.manage'
@@ -153,8 +151,8 @@ export const MOCK_ROLES: Role[] = [
       'payment', 'fee', 'billing', 'wallet', 'finance', 'finance_analytics',
       'notification', 'announcement', 'communication', 'calendar', 'email',
       'certificate', 'document', 'placement', 'alumni',
-      'analytics', 'reports', 'kpi', 'executive', 'export', 'insights',
-      'helpdesk', 'marketplace', 'referral', 'idcard', 'selfservice', 'productivity'
+      'analytics', 'reports', 'kpi', 'executive', 'export',
+      'helpdesk', 'idcard', 'selfservice', 'productivity'
     ],
     permissions: ['all'],
   },

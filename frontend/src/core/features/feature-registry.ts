@@ -4,8 +4,8 @@ import {
   FileText, PieChart, UsersIcon, FolderOpen, Settings,
   Briefcase, Activity, ShieldAlert, CreditCard, FileSignature, Wallet,
   Bell, Megaphone, MessageSquare, Mail, Award, TrendingUp, GraduationCap,
-  LineChart, FileBarChart, Target, BarChart4, DownloadCloud, Lightbulb, LayoutDashboard, Key, Lock, Building2,
-  LifeBuoy, Gift, IdCard, UserCircle, Zap, Sparkles, Building, ShieldCheck,
+  LineChart, FileBarChart, Target, BarChart4, DownloadCloud, LayoutDashboard, Key, Lock, Building2,
+  LifeBuoy, IdCard, UserCircle, Zap, Building, ShieldCheck,
   Blocks, UserCog, FileDigit, Layers, UserCheck, Video, CalendarCheck, CalendarCog, CalendarDays,
   ListTodo, ClipboardCheck, ClipboardEdit, FileQuestion, BookCheck, FileCheck, BarChart3, Landmark,
   UserSearch, Plane, AlertTriangle, Receipt, Coins, History
@@ -105,12 +105,9 @@ export const FEATURE_REGISTRY: FeatureDefinition[] = [
   { moduleId: 'kpi', featureId: 'kpi_main', permissionKey: 'kpi.view', displayName: 'KPI Management', navigationLabel: 'KPIs', route: '/feature/kpi', icon: Target },
   { moduleId: 'executive', featureId: 'executive_dashboard', permissionKey: 'executive.view', displayName: 'Executive Dashboard', navigationLabel: 'Executive Dashboard', route: '/feature/executive', icon: BarChart4 },
   { moduleId: 'export', featureId: 'export_main', permissionKey: 'export.view', displayName: 'Data Export Center', navigationLabel: 'Export Center', route: '/feature/export', icon: DownloadCloud },
-  { moduleId: 'insights', featureId: 'insights_main', permissionKey: 'insights.view', displayName: 'Predictive Insights', navigationLabel: 'Insights', route: '/feature/insights', icon: Lightbulb },
 
   // Phase 7: Support, Productivity & Experience
   { moduleId: 'helpdesk', featureId: 'helpdesk_main', permissionKey: 'helpdesk.view', displayName: 'Help Desk / Tickets', navigationLabel: 'Help Desk', route: '/feature/helpdesk', icon: LifeBuoy },
-  { moduleId: 'marketplace', featureId: 'idbuilder_main', permissionKey: 'idcard.view', displayName: 'ID Card Builder', navigationLabel: 'ID Card Builder', route: '/feature/id-builder', icon: Sparkles },
-  { moduleId: 'referral', featureId: 'referral_main', permissionKey: 'referral.view', displayName: 'Referral Management', navigationLabel: 'Referrals', route: '/feature/referrals', icon: Gift },
   { moduleId: 'idcard', featureId: 'idcard_main', permissionKey: 'idcard.view', displayName: 'Digital ID Card', navigationLabel: 'Digital ID', route: '/feature/id-card', icon: IdCard },
   { moduleId: 'selfservice', featureId: 'selfservice_main', permissionKey: 'selfservice.view', displayName: 'Self-Service Portal', navigationLabel: 'Self-Service', route: '/feature/self-service', icon: UserCircle },
   { moduleId: 'productivity', featureId: 'productivity_main', permissionKey: 'productivity.view', displayName: 'Productivity Center', navigationLabel: 'Productivity', route: '/feature/productivity', icon: Zap },

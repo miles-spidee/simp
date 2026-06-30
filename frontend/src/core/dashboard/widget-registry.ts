@@ -439,23 +439,5 @@ export const WIDGET_REGISTRY: WidgetDefinition[] = [
     permissionKey: 'analytics.view',
     supportedRoles: ['Super Admin', 'HR'],
     size: 'small'
-  },
-  {
-    widgetId: 'student_risk_overview',
-    name: 'Student Risk Overview',
-    description: 'AI-driven risk classification of students',
-    moduleId: 'insights',
-    permissionKey: 'insights.view',
-    supportedRoles: ['Super Admin', 'HR', 'Management'],
-    size: 'medium'
-  },
-  {
-    widgetId: 'upcoming_milestones',
-    name: 'Upcoming Milestones',
-    description: 'Predicted upcoming system milestones',
-    moduleId: 'insights',
-    permissionKey: 'insights.view',
-    supportedRoles: ['Super Admin', 'HR'],
-    size: 'small'
   }
 ];

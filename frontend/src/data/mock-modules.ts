@@ -55,12 +55,9 @@ export const MOCK_MODULES: Module[] = [
   { id: 'kpi', code: 'KPI', name: 'KPI Management', route: '/feature/kpi', active: true },
   { id: 'executive', code: 'EXEC', name: 'Executive Dashboard', route: '/feature/executive', active: true },
   { id: 'export', code: 'EXP', name: 'Data Export Center', route: '/feature/export', active: true },
-  { id: 'insights', code: 'INS', name: 'Predictive Insights', route: '/feature/insights', active: true },
 
   // Phase 7: Support & Productivity
   { id: 'helpdesk', code: 'HELP', name: 'Help Desk', route: '/feature/helpdesk', active: true },
-  { id: 'marketplace', code: 'MKT', name: 'ID Card Builder', route: '/feature/id-builder', active: true },
-  { id: 'referral', code: 'REF', name: 'Referral Management', route: '/feature/referrals', active: true },
   { id: 'idcard', code: 'IDC', name: 'Digital ID Card', route: '/feature/id-card', active: true },
   { id: 'selfservice', code: 'SELF', name: 'Self-Service Portal', route: '/feature/self-service', active: true },
   { id: 'productivity', code: 'PROD', name: 'Productivity Center', route: '/feature/productivity', active: true },

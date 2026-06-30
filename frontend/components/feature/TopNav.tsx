@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Menu, Search, Bell, Settings, X, ChevronRight, Mail, MessageSquare, Smartphone, Inbox, Clock, ShieldAlert } from 'lucide-react';
+import { Menu, Search, Bell, X, ChevronRight, Mail, MessageSquare, Smartphone, Inbox, Clock, ShieldAlert } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/src/context/AuthContext';
 import { usePermissions } from '@/src/hooks/usePermissions';
@@ -305,15 +305,6 @@ export function TopNav({ setMobileOpen }: TopNavProps) {
 
 
           <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-border" aria-hidden="true" />
-          
-          <button 
-            type="button" 
-            onClick={() => router.push('/feature/settings')}
-            className="-m-2.5 p-2.5 ml-2 text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
-          >
-            <span className="sr-only">Settings</span>
-            <Settings className="h-5 w-5" aria-hidden="true" />
-          </button>
         </div>
       </div>
 

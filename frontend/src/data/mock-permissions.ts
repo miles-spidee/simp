@@ -317,8 +317,6 @@ export const MOCK_PERMISSIONS: Permission[] = [
   { id: 'executive.view', module: 'executive', action: 'view', label: 'View executive dashboard' },
   
   { id: 'export.view', module: 'export', action: 'view', label: 'View exports' },
-  
-  { id: 'insights.view', module: 'insights', action: 'view', label: 'View insights' },
 
   // Phase 7: Support & Productivity
   { id: 'helpdesk.view', module: 'helpdesk', action: 'view', label: 'View tickets' },
@@ -328,17 +326,6 @@ export const MOCK_PERMISSIONS: Permission[] = [
   { id: 'helpdesk.resolve', module: 'helpdesk', action: 'resolve', label: 'Resolve tickets' },
   { id: 'helpdesk.close', module: 'helpdesk', action: 'close', label: 'Close tickets' },
   { id: 'helpdesk.export', module: 'helpdesk', action: 'export', label: 'Export tickets' },
-
-  { id: 'marketplace.view', module: 'marketplace', action: 'view', label: 'View marketplace' },
-  { id: 'marketplace.apply', module: 'marketplace', action: 'apply', label: 'Apply for internships' },
-  { id: 'marketplace.favorite', module: 'marketplace', action: 'favorite', label: 'Favorite internships' },
-  { id: 'marketplace.publish', module: 'marketplace', action: 'publish', label: 'Publish internships' },
-  { id: 'marketplace.manage', module: 'marketplace', action: 'manage', label: 'Manage marketplace' },
-
-  { id: 'referral.view', module: 'referral', action: 'view', label: 'View referrals' },
-  { id: 'referral.create', module: 'referral', action: 'create', label: 'Create referrals' },
-  { id: 'referral.approve', module: 'referral', action: 'approve', label: 'Approve referrals' },
-  { id: 'referral.export', module: 'referral', action: 'export', label: 'Export referrals' },
 
   { id: 'idcard.view', module: 'idcard', action: 'view', label: 'View ID card' },
   { id: 'idcard.generate', module: 'idcard', action: 'generate', label: 'Generate ID card' },
