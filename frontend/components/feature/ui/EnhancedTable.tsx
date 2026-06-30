@@ -28,6 +28,7 @@ interface EnhancedTableProps<T> {
   emptyMessage?: string;
   loading?: boolean;
   className?: string;
+  searchFields?: (keyof T)[];
 }
 
 export function EnhancedTable<T>({
@@ -39,6 +40,7 @@ export function EnhancedTable<T>({
   emptyMessage = "No data found",
   loading = false,
   className = "",
+  searchFields,
 }: EnhancedTableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
@@ -49,13 +51,22 @@ export function EnhancedTable<T>({
     let filtered = [...data];
 
     if (searchTerm) {
-      filtered = filtered.filter(item =>
-        columns.some(col => {
-          const key = typeof col.key === 'string' ? col.key : String(col.key);
-          const value = item[col.key as keyof T] as any;
-          return value && String(value).toLowerCase().includes(searchTerm.toLowerCase());
-        })
-      );
+      const search = searchTerm.toLowerCase();
+      if (searchFields) {
+        filtered = filtered.filter(item =>
+          searchFields.some(field => {
+            const val = item[field];
+            return val && String(val).toLowerCase().includes(search);
+          })
+        );
+      } else {
+        filtered = filtered.filter(item =>
+          columns.some(col => {
+            const value = item[col.key as keyof T] as any;
+            return value && String(value).toLowerCase().includes(search);
+          })
+        );
+      }
     }
 
     Object.entries(activeFilters).forEach(([key, value]) => {
