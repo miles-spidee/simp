@@ -6,13 +6,9 @@ import { fileService } from '@/src/services/file.service';
 import { CommonFile } from '@/src/data/mock-common-files';
 import { Drawer } from '@/components/feature/ui/Drawer';
 import { PermissionGuard } from '@/components/feature/ui/PermissionGuard';
-import { Pagination } from "@/components/common/Pagination";
+import { EnhancedTable } from '@/components/feature/ui/Table';
 
 export default function CommonFilePage() {
-
-      // Pagination State
-      const [currentPage, setCurrentPage] = React.useState(1);
-      const itemsPerPage = 10;
 
   const [activeView, setActiveView] = useState<'dashboard' | 'directory'>('dashboard');
   const [files, setFiles] = useState<CommonFile[]>([]);
@@ -160,47 +156,33 @@ export default function CommonFilePage() {
               </PermissionGuard>
             </div>
             <div className="flex-1 overflow-auto">
-              <table className="w-full text-left text-sm whitespace-nowrap">
-                <thead className="bg-slate-50 sticky top-0 z-10 border-b border-border text-text-secondary font-medium">
-                  <tr>
-                    <th className="px-6 py-3">File Name</th>
-                    <th className="px-6 py-3">Type</th>
-                    <th className="px-6 py-3">Size</th>
-                    <th className="px-6 py-3">Uploaded By</th>
-                    <th className="px-6 py-3">Upload Date</th>
-                    <th className="px-6 py-3"></th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {filteredFiles.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(f => (
-                    <tr key={f.file_id} className="hover:bg-blue-50/50 cursor-pointer transition-colors" onClick={() => handleFileClick(f)}>
-                      <td className="px-6 py-4 font-medium text-text-primary flex items-center gap-2">
-                        <File className="h-4 w-4 text-text-secondary" />
-                        {f.file_name}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-slate-100 text-text-primary">
-                          {f.file_type}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-text-secondary">{(f.file_size / 1024 / 1024).toFixed(2)} MB</td>
-                      <td className="px-6 py-4 text-text-secondary">{f.uploaded_by}</td>
-                      <td className="px-6 py-4 text-text-secondary">{new Date(f.uploaded_at).toLocaleDateString()}</td>
-                      <td className="px-6 py-4 text-right">
-                        <button className="p-1 text-text-secondary hover:text-blue-600 transition-colors">
-                          <Eye className="h-4 w-4" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <EnhancedTable
+                data={filteredFiles}
+                columns={[
+                  { key: 'file_name', label: 'File Name', render: (f: CommonFile) => (
+                    <span className="flex items-center gap-2 font-medium text-text-primary">
+                      <File className="h-4 w-4 text-text-secondary" />
+                      {f.file_name}
+                    </span>
+                  )},
+                  { key: 'file_type', label: 'Type', render: (f: CommonFile) => (
+                    <span className="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-slate-100 text-text-primary">
+                      {f.file_type}
+                    </span>
+                  )},
+                  { key: 'file_size', label: 'Size', render: (f: CommonFile) => (
+                    <span className="text-text-secondary">{(f.file_size / 1024 / 1024).toFixed(2)} MB</span>
+                  )},
+                  { key: 'uploaded_by', label: 'Uploaded By' },
+                  { key: 'uploaded_at', label: 'Upload Date', render: (f: CommonFile) => (
+                    <span className="text-text-secondary">{new Date(f.uploaded_at).toLocaleDateString()}</span>
+                  )},
+                ]}
+                searchPlaceholder="Search files..."
+                itemsPerPage={10}
+                emptyMessage="No files found."
+              />
             </div>
-        <Pagination 
-          currentPage={currentPage} 
-          totalPages={Math.ceil((filteredFiles?.length || 0) / itemsPerPage)} 
-          onPageChange={setCurrentPage} 
-        />
           </div>
         )}
       </div>
