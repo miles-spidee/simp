@@ -896,31 +896,33 @@ export default function ApplicationPage() {
             {/* Recruiter Speed & Volume */}
             <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
               <h3 className="text-sm font-bold text-text-primary">Recruiter Review Speed & Volume</h3>
-              <div className="overflow-x-auto pt-2">
-                <table className="w-full text-left text-xs whitespace-nowrap">
-                  <thead className="bg-slate-50 border-b border-border text-text-secondary font-bold uppercase">
-                    <tr>
-                      <th className="px-4 py-2.5">Reviewer</th>
-                      <th className="px-4 py-2.5">Reviewed Count</th>
-                      <th className="px-4 py-2.5">Average Score</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {['Alice Vance', 'David Miller', 'Sarah Connor'].map(rev => {
-                      const revApps = applications.filter(a => a.assignedReviewer === rev);
-                      const scores = revApps.map(a => a.reviewScore).filter(Boolean) as number[];
-                      const avg = scores.length > 0 ? Math.round(scores.reduce((a,b)=>a+b, 0) / scores.length) : '-';
-                      return (
-                        <tr key={rev} className="hover:bg-slate-50/50">
-                          <td className="px-4 py-3 font-semibold text-text-primary">{rev}</td>
-                          <td className="px-4 py-3 font-bold text-text-secondary">{revApps.length} applications</td>
-                          <td className="px-4 py-3 font-mono font-bold text-blue-600">{avg}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
+              <EnhancedTable
+                data={['Alice Vance', 'David Miller', 'Sarah'Connor'].map(rev => {
+                  const revApps = applications.filter(a => a.assignedReviewer === rev);
+                  const scores = revApps.map(a => a.reviewScore).filter(Boolean) as number[];
+                  const avg = scores.length > 0 ? Math.round(scores.reduce((a,b)=>a+b, 0) / scores.length) : '-';
+                  return { reviewer: rev, count: revApps.length, avgScore: avg };
+                })}
+                searchPlaceholder="Search reviewers..."
+                itemsPerPage={10}
+                columns={[
+                  {
+                    key: 'reviewer',
+                    label: 'Reviewer',
+                    render: (item) => <span className="font-semibold text-text-primary">{item.reviewer}</span>,
+                  },
+                  {
+                    key: 'count',
+                    label: 'Reviewed Count',
+                    render: (item) => <span className="font-bold text-text-secondary">{item.count} applications</span>,
+                  },
+                  {
+                    key: 'avgScore',
+                    label: 'Average Score',
+                    render: (item) => <span className="font-mono font-bold text-blue-600">{item.avgScore}</span>,
+                  },
+                ]}
+              />
             </div>
 
             {/* Geographical Distribution */}
