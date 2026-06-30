@@ -5,13 +5,9 @@ import { ReportService } from '@/src/services/report.service';
 import { ReportRecord, ReportTemplate } from '@/src/types/report.types';
 import { FileBarChart, Loader2, DownloadCloud, Play, Calendar, FileText } from 'lucide-react';
 import { usePermissions } from '@/src/hooks/usePermissions';
-import { Pagination } from "@/components/common/Pagination";
+import { EnhancedTable } from '@/components/feature/ui/Table';
 
 export default function ReportCenterPage() {
-
-      // Pagination State
-      const [currentPage, setCurrentPage] = React.useState(1);
-      const itemsPerPage = 10;
 
   const { hasPermission } = usePermissions();
   const [loading, setLoading] = useState(true);
@@ -89,61 +85,59 @@ export default function ReportCenterPage() {
         ))}
       </div>
 
-      <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-border flex justify-between items-center">
-          <h2 className="font-bold text-text-primary">Generated Reports</h2>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-text-secondary">
-            <thead className="bg-slate-50 text-xs uppercase text-text-secondary">
-              <tr>
-                <th className="px-4 py-3 font-medium">Report Name</th>
-                <th className="px-4 py-3 font-medium">Category</th>
-                <th className="px-4 py-3 font-medium">Generated Date</th>
-                <th className="px-4 py-3 font-medium">Status</th>
-                <th className="px-4 py-3 font-medium text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {reports.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((report) => (
-                <tr key={report.id} className="hover:bg-slate-50">
-                  <td className="px-4 py-3 font-medium text-text-primary">{report.name}</td>
-                  <td className="px-4 py-3">
-                    <span className="bg-slate-100 text-text-secondary px-2 py-1 rounded text-xs font-medium">
-                      {report.type}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 flex items-center gap-2">
-                    <Calendar className="w-3 h-3 text-text-secondary" />
-                    {new Date(report.generatedDate).toLocaleDateString()}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                      report.status === 'Completed' ? 'bg-emerald-100 text-emerald-700' :
-                      report.status === 'Processing' ? 'bg-amber-100 text-amber-700' :
-                      'bg-rose-100 text-rose-700'
-                    }`}>
-                      {report.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    {report.status === 'Completed' && hasPermission('report.export') && (
-                      <button className="text-blue-600 hover:text-blue-800 cursor-pointer">
-                        <DownloadCloud className="w-4 h-4" />
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <Pagination 
-          currentPage={currentPage} 
-          totalPages={Math.ceil((reports?.length || 0) / itemsPerPage)} 
-          onPageChange={setCurrentPage} 
-        />
-      </div>
+      <EnhancedTable
+        data={reports}
+        columns={[
+          { key: 'name', label: 'Report Name' },
+          { 
+            key: 'type', 
+            label: 'Category',
+            render: (report: ReportRecord) => (
+              <span className="bg-slate-100 text-text-secondary px-2 py-1 rounded text-xs font-medium">
+                {report.type}
+              </span>
+            )
+          },
+          { 
+            key: 'generatedDate', 
+            label: 'Generated Date',
+            render: (report: ReportRecord) => (
+              <span className="flex items-center gap-2">
+                <Calendar className="w-3 h-3 text-text-secondary" />
+                {new Date(report.generatedDate).toLocaleDateString()}
+              </span>
+            )
+          },
+          { 
+            key: 'status', 
+            label: 'Status',
+            render: (report: ReportRecord) => (
+              <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                report.status === 'Completed' ? 'bg-emerald-100 text-emerald-700' :
+                report.status === 'Processing' ? 'bg-amber-100 text-amber-700' :
+                'bg-rose-100 text-rose-700'
+              }`}>
+                {report.status}
+              </span>
+            )
+          },
+          { 
+            key: 'actions', 
+            label: 'Actions',
+            className: 'text-right',
+            render: (report: ReportRecord) => (
+              report.status === 'Completed' && hasPermission('report.export') ? (
+                <button className="text-blue-600 hover:text-blue-800 cursor-pointer">
+                  <DownloadCloud className="w-4 h-4" />
+                </button>
+              ) : null
+            )
+          }
+        ]}
+        searchPlaceholder="Search reports..."
+        itemsPerPage={10}
+        emptyMessage="No reports generated yet"
+      />
     </div>
   );
 }
