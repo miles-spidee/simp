@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { leaveService } from '../../../src/services/leave.service';
 import { LeaveRequest } from '../../../src/types/leave.types';
-import { Pagination } from "@/components/common/Pagination";
+import { EnhancedTable } from '@/components/feature/ui/Table';
 
 interface AttendanceLog {
   id: string;
@@ -33,10 +33,6 @@ interface LocalAppeal {
 }
 
 export default function MyAttendancePage() {
-
-      // Pagination State
-      const [currentPage, setCurrentPage] = React.useState(1);
-      const itemsPerPage = 10;
 
   const [attendanceLogs, setAttendanceLogs] = useState<AttendanceLog[]>([]);
   const [complianceRate, setComplianceRate] = useState(88);
@@ -573,44 +569,28 @@ export default function MyAttendancePage() {
         <h3 className="font-bold text-xs text-text-secondary uppercase tracking-widest border-b border-border pb-3">
           Historical Check-In Signatures
         </h3>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
-            <thead>
-              <tr className="border-b border-border text-text-secondary uppercase tracking-widest font-bold">
-                <th className="py-2.5 px-4 font-semibold">Session Date</th>
-                <th className="py-2.5 px-4">Checked In</th>
-                <th className="py-2.5 px-4">Checked Out</th>
-                <th className="py-2.5 px-4">Log Hours</th>
-                <th className="py-2.5 px-4 text-right">Register Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border text-slate-655 select-text">
-              {attendanceLogs.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((log) => (
-                <tr key={log.id} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="py-3 px-4 font-semibold text-text-primary">{log.date}</td>
-                  <td className="py-3 px-4">{log.clockIn}</td>
-                  <td className="py-3 px-4">{log.clockOut}</td>
-                  <td className="py-3 px-4">{log.duration}</td>
-                  <td className="py-3 px-4 text-right">
-                    <span className={`inline-block border font-bold px-2 py-0.5 rounded-sm ${
-                      log.status === 'Present' 
-                        ? 'bg-emerald-50 border-emerald-100 text-emerald-600' :
-                      log.status === 'Absent'
-                        ? 'bg-rose-50 border-rose-100 text-rose-600'
-                        : 'bg-amber-50 border-amber-100 text-amber-600'
-                    }`}>
-                      {log.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <Pagination 
-          currentPage={currentPage} 
-          totalPages={Math.ceil((attendanceLogs?.length || 0) / itemsPerPage)} 
-          onPageChange={setCurrentPage} 
+        <EnhancedTable
+          data={attendanceLogs}
+          columns={[
+            { key: 'date', label: 'Session Date' },
+            { key: 'clockIn', label: 'Checked In' },
+            { key: 'clockOut', label: 'Checked Out' },
+            { key: 'duration', label: 'Log Hours' },
+            { key: 'status', label: 'Register Status', render: (log: AttendanceLog) => (
+              <span className={`inline-block border font-bold px-2 py-0.5 rounded-sm ${
+                log.status === 'Present' 
+                  ? 'bg-emerald-50 border-emerald-100 text-emerald-600' :
+                log.status === 'Absent'
+                  ? 'bg-rose-50 border-rose-100 text-rose-600'
+                  : 'bg-amber-50 border-amber-100 text-amber-600'
+              }`}>
+                {log.status}
+              </span>
+            )},
+          ]}
+          searchPlaceholder="Search logs..."
+          itemsPerPage={10}
+          emptyMessage="No attendance logs found."
         />
       </div>
     </div>
