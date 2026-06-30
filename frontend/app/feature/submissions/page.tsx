@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { AlertTriangle,  
-  FolderDown, Search, Filter, Plus, FileText, CheckCircle2, 
+  FolderDown, Plus, FileText, CheckCircle2, 
   XCircle, Clock, Eye, MessageSquare, GitCommit, Link,
   CheckSquare
  } from 'lucide-react';
@@ -10,13 +10,9 @@ import { submissionService } from '@/src/services/submission.service';
 import { Submission } from '@/src/types/api/submission.types';
 import { studentService, ExtendedStudent } from '@/src/services/student.service';
 import { Drawer } from '@/components/feature/ui/Drawer';
-import { Pagination } from "@/components/common/Pagination";
+import { EnhancedTable } from '@/components/feature/ui/Table';
 
 export default function SubmissionsManagementPage() {
-
-      // Pagination State
-      const [currentPage, setCurrentPage] = React.useState(1);
-      const itemsPerPage = 10;
 
   const [activeView, setActiveView] = useState<'dashboard' | 'directory' | 'batches'>('dashboard');
   const [students, setStudents] = useState<ExtendedStudent[]>([]);
@@ -25,7 +21,6 @@ export default function SubmissionsManagementPage() {
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'files' | 'feedback' | 'audit'>('overview');
-  const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -48,8 +43,6 @@ export default function SubmissionsManagementPage() {
     setActiveTab('overview');
     setIsDrawerOpen(true);
   };
-
-  const filteredSubmissions = submissions.filter(s => s.studentId.toLowerCase().includes(searchTerm.toLowerCase()));
 
   // Batch Grouping
   const batchMap = new Map<string, { students: ExtendedStudent[], submissions: Submission[] }>();
@@ -174,64 +167,48 @@ export default function SubmissionsManagementPage() {
         )}
 
         {activeView === 'directory' && (
-          <div className="bg-white border border-border rounded-xl shadow-sm max-w-7xl mx-auto flex flex-col h-[calc(100vh-12rem)]">
-            <div className="p-4 border-b border-border flex items-center justify-between gap-4 bg-slate-50/50">
-              <div className="flex items-center gap-2 flex-1 max-w-md">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary" />
-                  <input 
-                    type="text"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search by student ID..."
-                    className="w-full pl-9 pr-4 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                  />
-                </div>
-                <button className="p-2 border border-border text-text-secondary rounded-lg hover:bg-slate-50">
-                  <Filter className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-            <div className="flex-1 overflow-auto">
-              <table className="w-full text-left text-sm whitespace-nowrap">
-                <thead className="bg-slate-50 sticky top-0 z-10 border-b border-border text-text-secondary font-medium">
-                  <tr>
-                    <th className="px-6 py-3">Student ID</th>
-                    <th className="px-6 py-3">Reference (Task/Assm)</th>
-                    <th className="px-6 py-3">Status</th>
-                    <th className="px-6 py-3">Marks</th>
-                    <th className="px-6 py-3"></th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {filteredSubmissions.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(s => (
-                    <tr key={s.id} className="hover:bg-blue-50/50 cursor-pointer transition-colors" onClick={() => handleSubmissionClick(s)}>
-                      <td className="px-6 py-4 font-medium text-text-primary">{s.studentId}</td>
-                      <td className="px-6 py-4 text-text-secondary">{s.taskId || s.assessmentId}</td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex px-2 py-1 rounded text-xs font-semibold ${
-                          s.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700' :
-                          s.status === 'REJECTED' ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'
-                        }`}>
-                          {s.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-text-secondary">{s.marksObtained !== undefined ? s.marksObtained : '-'}</td>
-                      <td className="px-6 py-4 text-right">
-                        <button className="p-1 text-text-secondary hover:text-blue-600 transition-colors">
-                          <Eye className="h-4 w-4" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-        <Pagination 
-          currentPage={currentPage} 
-          totalPages={Math.ceil((filteredSubmissions?.length || 0) / itemsPerPage)} 
-          onPageChange={setCurrentPage} 
-        />
+          <div className="max-w-7xl mx-auto">
+            <EnhancedTable
+              data={submissions}
+              columns={[
+                { key: 'studentId', label: 'Student ID', className: 'font-medium text-text-primary' },
+                {
+                  key: 'reference',
+                  label: 'Reference (Task/Assm)',
+                  render: (s: Submission) => <span>{s.taskId || s.assessmentId}</span>,
+                },
+                {
+                  key: 'status',
+                  label: 'Status',
+                  render: (s: Submission) => (
+                    <span className={`inline-flex px-2 py-1 rounded text-xs font-semibold ${
+                      s.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700' :
+                      s.status === 'REJECTED' ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'
+                    }`}>
+                      {s.status}
+                    </span>
+                  ),
+                },
+                {
+                  key: 'marksObtained',
+                  label: 'Marks',
+                  render: (s: Submission) => <span>{s.marksObtained !== undefined ? s.marksObtained : '-'}</span>,
+                },
+                {
+                  key: 'actions',
+                  label: '',
+                  className: 'text-right',
+                  render: (s: Submission) => (
+                    <button className="p-1 text-text-secondary hover:text-blue-600 transition-colors">
+                      <Eye className="h-4 w-4" />
+                    </button>
+                  ),
+                },
+              ]}
+              searchPlaceholder="Search by student ID..."
+              itemsPerPage={10}
+              emptyMessage="No submissions found."
+            />
           </div>
         )}
 
@@ -271,60 +248,82 @@ export default function SubmissionsManagementPage() {
                       <h2 className="text-lg font-bold text-text-primary">{batch.name} Students</h2>
                     </div>
                   </div>
-                  <div className="flex-1 overflow-auto">
-                    <table className="w-full text-left text-sm whitespace-nowrap">
-                      <thead className="bg-slate-50 sticky top-0 z-10 border-b border-border text-text-secondary font-medium">
-                        <tr>
-                          <th className="px-6 py-3">Student Name</th>
-                          <th className="px-6 py-3">Student ID</th>
-                          <th className="px-6 py-3">Submissions</th>
-                          <th className="px-6 py-3">Status</th>
-                          <th className="px-6 py-3"></th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-border">
-                        {batch.students.map(stu => {
-                          const stuSubmissions = batch.submissions.filter(s => s.studentId === stu.id || s.studentId === stu.student_id);
-                          return (
-                            <tr key={stu.id || stu.student_id} className="hover:bg-blue-50/50 transition-colors">
-                              <td className="px-6 py-4 font-medium text-text-primary">{stu.name || 'Unknown'}</td>
-                              <td className="px-6 py-4 text-text-secondary">{stu.student_id || stu.id}</td>
-                              <td className="px-6 py-4">
-                                {stuSubmissions.length > 0 ? (
-                                  <div className="flex flex-col gap-1">
-                                    {stuSubmissions.map(sub => (
-                                      <div key={sub.id} className="flex items-center gap-2 cursor-pointer hover:text-blue-600" onClick={() => handleSubmissionClick(sub)}>
-                                        <FileText className="h-3 w-3 text-text-secondary" />
-                                        <span className="text-xs font-medium">{sub.taskId || sub.assessmentId || sub.id}</span>
-                                      </div>
-                                    ))}
+                  <div className="flex-1 overflow-auto p-4">
+                    <EnhancedTable
+                      data={batch.students}
+                      columns={[
+                        {
+                          key: 'name',
+                          label: 'Student Name',
+                          render: (stu: ExtendedStudent) => <span className="font-medium text-text-primary">{stu.name || 'Unknown'}</span>,
+                        },
+                        {
+                          key: 'student_id',
+                          label: 'Student ID',
+                          render: (stu: ExtendedStudent) => <span>{stu.student_id || stu.id}</span>,
+                        },
+                        {
+                          key: 'submissions',
+                          label: 'Submissions',
+                          render: (stu: ExtendedStudent) => {
+                            const stuSubmissions = batch.submissions.filter(
+                              (s: Submission) => s.studentId === stu.id || s.studentId === stu.student_id
+                            );
+                            return stuSubmissions.length > 0 ? (
+                              <div className="flex flex-col gap-1">
+                                {stuSubmissions.map((sub: Submission) => (
+                                  <div
+                                    key={sub.id}
+                                    className="flex items-center gap-2 cursor-pointer hover:text-blue-600"
+                                    onClick={() => handleSubmissionClick(sub)}
+                                  >
+                                    <FileText className="h-3 w-3 text-text-secondary" />
+                                    <span className="text-xs font-medium">{sub.taskId || sub.assessmentId || sub.id}</span>
                                   </div>
-                                ) : (
-                                  <span className="text-xs text-text-secondary italic">No submissions</span>
-                                )}
-                              </td>
-                              <td className="px-6 py-4">
-                                {stuSubmissions.length > 0 ? (
-                                  <span className={`inline-flex px-2 py-1 rounded text-xs font-semibold ${
-                                    stuSubmissions[0].status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700' :
-                                    stuSubmissions[0].status === 'REJECTED' ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'
-                                  }`}>
-                                    {stuSubmissions[0].status}
-                                  </span>
-                                ) : '-'}
-                              </td>
-                              <td className="px-6 py-4 text-right">
-                                {stuSubmissions.length > 0 && (
-                                  <button onClick={() => handleSubmissionClick(stuSubmissions[0])} className="p-1 text-text-secondary hover:text-blue-600 transition-colors">
-                                    <Eye className="h-4 w-4" />
-                                  </button>
-                                )}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
+                                ))}
+                              </div>
+                            ) : (
+                              <span className="text-xs text-text-secondary italic">No submissions</span>
+                            );
+                          },
+                        },
+                        {
+                          key: 'status',
+                          label: 'Status',
+                          render: (stu: ExtendedStudent) => {
+                            const stuSubmissions = batch.submissions.filter(
+                              (s: Submission) => s.studentId === stu.id || s.studentId === stu.student_id
+                            );
+                            return stuSubmissions.length > 0 ? (
+                              <span className={`inline-flex px-2 py-1 rounded text-xs font-semibold ${
+                                stuSubmissions[0].status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700' :
+                                stuSubmissions[0].status === 'REJECTED' ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'
+                              }`}>
+                                {stuSubmissions[0].status}
+                              </span>
+                            ) : <span>-</span>;
+                          },
+                        },
+                        {
+                          key: 'actions',
+                          label: '',
+                          className: 'text-right',
+                          render: (stu: ExtendedStudent) => {
+                            const stuSubmissions = batch.submissions.filter(
+                              (s: Submission) => s.studentId === stu.id || s.studentId === stu.student_id
+                            );
+                            return stuSubmissions.length > 0 ? (
+                              <button onClick={() => handleSubmissionClick(stuSubmissions[0])} className="p-1 text-text-secondary hover:text-blue-600 transition-colors">
+                                <Eye className="h-4 w-4" />
+                              </button>
+                            ) : null;
+                          },
+                        },
+                      ]}
+                      searchPlaceholder="Search students..."
+                      itemsPerPage={10}
+                      emptyMessage="No students in this batch."
+                    />
                   </div>
                 </div>
               );
