@@ -1,12 +1,28 @@
+import { Invoice, Receipt } from '../types/billing.types';
 import { billingApi } from '../api/billing.api';
-
 class BillingService {
   async getInvoices() {
     return await billingApi.getInvoices();
   }
   
+  async getInvoiceById(id: string): Promise<Invoice> {
+    return await billingApi.getInvoiceById(id);
+  }
+
+  async generateInvoice(data: Partial<Invoice>): Promise<Invoice> {
+    return await billingApi.generateInvoice(data);
+  }
+
   async getReceipts() {
     return await billingApi.getReceipts();
+  }
+
+  async getReceiptById(id: string): Promise<Receipt> {
+    return await billingApi.getReceiptById(id);
+  }
+
+  async generateReceipt(data: Partial<Receipt>): Promise<Receipt> {
+    return await billingApi.generateReceipt(data);
   }
   
   async getBillingSummary() {

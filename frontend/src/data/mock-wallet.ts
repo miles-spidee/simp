@@ -18,3 +18,12 @@ export const MOCK_WALLET_TRANSACTIONS: WalletTransaction[] = Array.from({ length
     date: new Date(Date.now() - Math.floor(Math.random() * 5000000000)).toISOString(),
   };
 });
+
+export const MOCK_WALLET_SUMMARY = {
+  walletId: 'W-SYS-001',
+  studentId: 'ALL',
+  studentName: 'Global',
+  balance: 450000,
+  totalCredits: 1250000,
+  totalDebits: 800000
+};
