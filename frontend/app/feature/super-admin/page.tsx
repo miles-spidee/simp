@@ -7,13 +7,9 @@ import { AlertTriangle,
  } from 'lucide-react';
 import { superAdminService } from '@/src/services/super-admin.service';
 import { SystemSetting, AuditLog, RolePermission } from '@/src/data/mock-super-admin';
-import { Pagination } from "@/components/common/Pagination";
+import { EnhancedTable } from '@/components/feature/ui/Table';
 
 export default function SuperAdminPage() {
-
-      // Pagination State
-      const [currentPage, setCurrentPage] = React.useState(1);
-      const itemsPerPage = 10;
 
   const [activeTab, setActiveTab] = useState<'dashboard' | 'settings' | 'logs' | 'roles'>('dashboard');
   const [settings, setSettings] = useState<SystemSetting[]>([]);
@@ -221,40 +217,34 @@ export default function SuperAdminPage() {
                 <h3 className="font-bold text-text-primary">System Audit Trail</h3>
                 <button className="text-sm font-medium text-blue-600 hover:text-blue-700">Export CSV</button>
               </div>
-              <table className="w-full text-left text-sm">
-                <thead className="bg-slate-50 border-b border-border text-text-secondary font-medium">
-                  <tr>
-                    <th className="px-6 py-3">Timestamp</th>
-                    <th className="px-6 py-3">Action</th>
-                    <th className="px-6 py-3">User ID</th>
-                    <th className="px-6 py-3">Entity</th>
-                    <th className="px-6 py-3">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {logs.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(l => (
-                    <tr key={l.id} className="hover:bg-slate-50">
-                      <td className="px-6 py-3 text-text-secondary whitespace-nowrap">{l.timestamp}</td>
-                      <td className="px-6 py-3 font-medium text-text-primary font-mono text-xs">{l.action}</td>
-                      <td className="px-6 py-3 text-text-secondary">{l.userId}</td>
-                      <td className="px-6 py-3 text-text-secondary">{l.entityType} ({l.entityId})</td>
-                      <td className="px-6 py-3">
-                        <span className={`inline-flex px-2 py-1 rounded text-xs font-bold uppercase tracking-wider ${
-                          l.status === 'Success' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'
-                        }`}>
-                          {l.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            <Pagination 
-          currentPage={currentPage} 
-          totalPages={Math.ceil((logs?.length || 0) / itemsPerPage)} 
-          onPageChange={setCurrentPage} 
-        />
-          </div>
+              <EnhancedTable
+                data={logs}
+                columns={[
+                  { key: 'timestamp', label: 'Timestamp', className: 'whitespace-nowrap' },
+                  { key: 'action', label: 'Action', className: 'font-medium text-text-primary font-mono text-xs' },
+                  { key: 'userId', label: 'User ID' },
+                  {
+                    key: 'entity',
+                    label: 'Entity',
+                    render: (l: AuditLog) => <span>{l.entityType} ({l.entityId})</span>,
+                  },
+                  {
+                    key: 'status',
+                    label: 'Status',
+                    render: (l: AuditLog) => (
+                      <span className={`inline-flex px-2 py-1 rounded text-xs font-bold uppercase tracking-wider ${
+                        l.status === 'Success' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'
+                      }`}>
+                        {l.status}
+                      </span>
+                    ),
+                  },
+                ]}
+                searchPlaceholder="Search audit logs..."
+                itemsPerPage={10}
+                emptyMessage="No audit logs found."
+              />
+            </div>
           )}
         </div>
       </div>
