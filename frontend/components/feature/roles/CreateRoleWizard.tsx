@@ -6,11 +6,11 @@ import { Stepper } from '@/components/feature/ui/Stepper';
 import { Button } from '@/components/feature/ui/Button';
 import { Search, ChevronRight, ChevronLeft, Upload, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react';
 import { Card } from '@/components/feature/ui/Card';
-import { Module } from '@/src/data/mock-modules';
+import { Module } from '@/src/types/modules.types';
 import { moduleService } from '@/src/services/module.service';
 import { permissionService } from '@/src/services/permission.service';
 import { roleService } from '@/src/services/role.service';
-import { Role } from '@/src/data/mock-roles';
+import { Role } from '@/src/types/api/role.types';
 
 interface CreateRoleWizardProps {
   isOpen: boolean;
@@ -52,7 +52,7 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
       try {
         setLoading(true);
         const mods = await moduleService.getModules();
-        setModules(mods);
+        setModules(mods as any);
       } catch (err) {
         console.error('Failed to load modules', err);
       } finally {
@@ -92,7 +92,7 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
         // Parse permissions mapping from role permissions list (format is "moduleId:permissionName")
         const parsedPerms: Record<string, string[]> = {};
         if (roleToEdit.permissions) {
-          roleToEdit.permissions.forEach(permStr => {
+          roleToEdit.permissions.forEach((permStr: any) => {
             const parts = permStr.split(':');
             if (parts.length === 2) {
               const [modId, action] = parts;
@@ -405,7 +405,7 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
                       </div>
                       <div>
                         <p className={`text-sm font-semibold ${isSelected ? 'text-blue-900' : 'text-text-primary'}`}>{module.name}</p>
-                        <p className="text-xs text-helper mt-1">{module.desc}</p>
+                        <p className="text-xs text-helper mt-1">{(module as any).description || (module as any).desc}</p>
                       </div>
                     </div>
                   </div>

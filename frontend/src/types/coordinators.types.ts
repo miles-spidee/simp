@@ -1,0 +1,1 @@
+import { Coordinator, CollegeReport } from '../types/api/coordinator.types';

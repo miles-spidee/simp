@@ -6,15 +6,15 @@ import { Stepper } from '@/components/feature/ui/Stepper';
 import { Button } from '@/components/feature/ui/Button';
 import { Search, CheckCircle2, ChevronRight, ChevronLeft, Shield, Upload, Users, Sparkles, Key } from 'lucide-react';
 import { Card } from '@/components/feature/ui/Card';
-import { Role } from '@/src/data/mock-roles';
-import { Module } from '@/src/data/mock-modules';
+import { Role } from '@/src/types/api/role.types';
+import { Module } from '@/src/types/modules.types';
 import { roleService } from '@/src/services/role.service';
 import { moduleService } from '@/src/services/module.service';
 import { userService } from '@/src/services/user.service';
 import { employeeService, ExtendedEmployee } from '@/src/services/employee.service';
 import { studentService, ExtendedStudent } from '@/src/services/student.service';
 import { organizationService, ExtendedCollege } from '@/src/services/organization.service';
-import { User } from '@/src/data/mock-users';
+import { User } from '@/src/types/api/user.types';
 
 interface CreateUserWizardProps {
   isOpen: boolean;
@@ -126,7 +126,7 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
         });
 
         setRoles(loadedRoles);
-        setModules(loadedModules);
+        setModules(loadedModules as any);
         setUnlinkedEntities(entities);
         setExistingUsers(loadedUsers);
       } catch (err) {

@@ -9,13 +9,13 @@ import {
 } from 'lucide-react';
 
 import { opportunitiesService } from '@/src/services/opportunities.service';
-import { Opportunity } from '@/src/data/mock-opportunities';
+import { Opportunity } from '@/src/types/opportunities.types';
 import { CreateOpportunityWizard } from '@/components/feature/opportunity/CreateOpportunityWizard';
 import { Drawer } from '@/components/feature/ui/Drawer';
 import { applicationService } from '@/src/services/application.service';
-import { Application } from '@/src/data/mock-applications';
+import { Application } from '@/src/types/applications.types';
 import { openingMentorsService } from '@/src/services/opening-mentors.service';
-import { OpeningMentor } from '@/src/data/mock-opening-mentors';
+import { OpeningMentor } from '@/src/types/opening-mentors.types';
 import { mentorService } from '@/src/services/mentor.service';
 import { MentorProfile } from '@/src/types/api/mentor.types';
 import { EnhancedTable } from '@/components/feature/ui/Table';

@@ -1,18 +1,25 @@
+import { apiClient } from './api.client';
 import { MarketplaceOpportunity, MarketplaceApplication } from '../types/marketplace.types';
-import { MOCK_MARKETPLACE, MOCK_MARKETPLACE_APPLICATIONS } from '../data/mock-marketplace';
+import {} from '../types/marketplace.types';
 
 const DELAY = 500;
 
 export const MarketplaceAPI = {
   getOpportunities: async (): Promise<MarketplaceOpportunity[]> => {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve([...MOCK_MARKETPLACE]), DELAY);
-    });
+    try {
+      const res = await apiClient.get('/api/v1/marketplace');
+      return res.data?.data || [];
+    } catch (error) {
+      return [];
+    }
   },
   
   getApplications: async (): Promise<MarketplaceApplication[]> => {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve([...MOCK_MARKETPLACE_APPLICATIONS]), DELAY);
-    });
+    try {
+      const res = await apiClient.get('/api/v1/marketplace');
+      return res.data?.data || [];
+    } catch (error) {
+      return [];
+    }
   }
 };

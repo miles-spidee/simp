@@ -1,31 +1,33 @@
+import { apiClient } from './api.client';
 import { PlacementRecord, Company } from '../types/placement.types';
-import { MOCK_PLACEMENTS, MOCK_COMPANIES } from '../data/mock-placement';
+import {} from '../types/placement.types';
 
-const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
 export const PlacementApi = {
   getPlacements: async (): Promise<PlacementRecord[]> => {
-    await delay(500);
-    return MOCK_PLACEMENTS;
+    try {
+      const res = await apiClient.get('/api/v1/placement');
+      return res.data?.data || [];
+    } catch (error) {
+      return [];
+    }
   },
   
   getCompanies: async (): Promise<Company[]> => {
-    await delay(400);
-    return [...MOCK_COMPANIES];
+    try {
+      const res = await apiClient.get('/api/v1/placement');
+      return res.data?.data || [];
+    } catch (error) {
+      return [];
+    }
   },
 
   createCompany: async (company: Partial<Company>): Promise<Company> => {
-    await delay(300);
-    const newCompany: Company = {
-      id: `comp_${MOCK_COMPANIES.length + 1}`,
-      name: company.name || 'New Company Solutions',
-      industry: company.industry || 'IT Services',
-      website: company.website || 'https://example.com',
-      contactPerson: company.contactPerson || 'HR Manager',
-      contactEmail: company.contactEmail || 'hr@example.com',
-      activeRoles: company.activeRoles || 1
-    };
-    MOCK_COMPANIES.unshift(newCompany);
-    return newCompany;
+    try {
+      const res = await apiClient.post('/api/v1/placement');
+      return res.data?.data || null as any;
+    } catch (error) {
+      return null as any;
+    }
   }
 };

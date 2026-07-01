@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { opportunitiesService } from '@/src/services/opportunities.service';
-import { Opportunity } from '@/src/data/mock-opportunities';
+import { Opportunity } from '@/src/types/opportunities.types';
 import { Footer } from '@/components/layout/Footer';
 import Image from "next/image";
 import { useRouter } from 'next/navigation';

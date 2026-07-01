@@ -10,7 +10,4 @@ export const MOCK_EXPORT_JOBS: ExportJob[] = Array.from({ length: 20 }).map((_, 
   fileUrl: i === 0 ? undefined : 'https://example.com/download'
 }));
 
-export const MOCK_EXPORT_SCHEDULES: ExportSchedule[] = [
-  { id: 'expsch_1', name: 'Weekly Finance Summary', module: 'Finance', frequency: 'Weekly', format: 'Excel', recipients: ['finance@pinesphere.com'], nextRun: new Date(Date.now() + 86400000 * 3).toISOString() },
-  { id: 'expsch_2', name: 'Monthly Placement Report', module: 'Placements', frequency: 'Monthly', format: 'PDF', recipients: ['placements@pinesphere.com'], nextRun: new Date(Date.now() + 86400000 * 15).toISOString() },
-];
+export const MOCK_EXPORT_SCHEDULES: ExportSchedule[] = [];

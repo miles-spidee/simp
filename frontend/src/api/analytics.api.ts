@@ -1,14 +1,30 @@
+import { apiClient } from './api.client';
 import { AnalyticsSummary, AnalyticsDataPoint, AnalyticsDimension } from '../types/analytics.types';
-import { MOCK_ANALYTICS_SUMMARY, MOCK_ATTENDANCE_TREND, MOCK_TOP_PROGRAMS } from '../data/mock-analytics';
+import {} from '../types/analytics.types';
 
 export const AnalyticsApi = {
   getSummary: async (): Promise<AnalyticsSummary> => {
-    return new Promise((resolve) => setTimeout(() => resolve(MOCK_ANALYTICS_SUMMARY), 600));
+    try {
+      const res = await apiClient.get('/api/v1/analytics');
+      return res.data?.data || null as any;
+    } catch (error) {
+      return null as any;
+    }
   },
   getAttendanceTrend: async (): Promise<AnalyticsDataPoint[]> => {
-    return new Promise((resolve) => setTimeout(() => resolve(MOCK_ATTENDANCE_TREND), 600));
+    try {
+      const res = await apiClient.get('/api/v1/analytics');
+      return res.data?.data || [];
+    } catch (error) {
+      return [];
+    }
   },
   getTopPrograms: async (): Promise<AnalyticsDimension[]> => {
-    return new Promise((resolve) => setTimeout(() => resolve(MOCK_TOP_PROGRAMS), 600));
+    try {
+      const res = await apiClient.get('/api/v1/analytics');
+      return res.data?.data || [];
+    } catch (error) {
+      return [];
+    }
   }
 };

@@ -1,36 +1,43 @@
+import { apiClient } from './api.client';
 import { FeeStructure } from '../types/fee.types';
-import { MOCK_FEES } from '../data/mock-fees';
+import {} from '../types/fees.types';
 
 export const feeApi = {
   getFees: async (): Promise<FeeStructure[]> => {
-    return new Promise((resolve) => setTimeout(() => resolve([...MOCK_FEES]), 600));
+    try {
+      const res = await apiClient.get('/api/v1/fee');
+      return res.data?.data || [];
+    } catch (error) {
+      return [];
+    }
   },
   getFeeById: async (id: string): Promise<FeeStructure> => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const f = MOCK_FEES.find(x => x.id === id);
-        if (f) resolve(f);
-        else reject(new Error('Not found'));
-      }, 600);
-    });
+    try {
+      const res = await apiClient.get('/api/v1/fee');
+      return res.data?.data || null as any;
+    } catch (error) {
+      return null as any;
+    }
   },
   createFee: async (data: Partial<FeeStructure>): Promise<FeeStructure> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const f = { id: `FEE-${Date.now()}`, ...data } as FeeStructure;
-        resolve(f);
-      }, 600);
-    });
+    try {
+      const res = await apiClient.post('/api/v1/fee', data);
+      return res.data?.data || null as any;
+    } catch (error) {
+      return null as any;
+    }
   },
   updateFee: async (id: string, data: Partial<FeeStructure>): Promise<FeeStructure> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const f = MOCK_FEES.find(x => x.id === id) || (data as FeeStructure);
-        resolve({ ...f, ...data });
-      }, 600);
-    });
+    try {
+      const res = await apiClient.patch('/api/v1/fee');
+      return res.data?.data || null as any;
+    } catch (error) {
+      return null as any;
+    }
   },
   deleteFee: async (id: string): Promise<void> => {
-    return new Promise((resolve) => setTimeout(() => resolve(), 600));
+    try {
+      await apiClient.delete(`/api/v1/fee/${id}`);
+    } catch (error) {}
   }
 };

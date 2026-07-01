@@ -6,7 +6,7 @@ import { Badge } from '@/components/feature/ui/Badge';
 import { EnhancedTable } from '@/components/feature/ui/Table';
 import { Plus, Eye, Edit, Trash, UserX, Users } from 'lucide-react';
 import { CreateUserWizard } from '../../../components/feature/users/CreateUserWizard';
-import { User } from '@/src/data/mock-users';
+import { User } from '@/src/types/api/user.types';
 import { userService } from '@/src/services/user.service';
 import { employeeService, ExtendedEmployee } from '@/src/services/employee.service';
 import { studentService, ExtendedStudent } from '@/src/services/student.service';

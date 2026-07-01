@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Plus, Play, FileText, Trash2, Save, CheckCircle2, GripVertical, ChevronLeft, Image, FolderOpen, UploadCloud
 } from 'lucide-react';
-import { CommonFile } from '@/src/data/mock-common-files';
+import { CommonFile } from '@/src/types/common-files.types';
 import { fileService } from '@/src/services/file.service';
 
 interface Submodule {

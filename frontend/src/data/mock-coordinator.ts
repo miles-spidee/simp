@@ -20,8 +20,4 @@ export const MOCK_COORDINATOR_STATS: CoordinatorStats = {
   pendingAssessments: 12
 };
 
-export const MOCK_BATCH_PERFORMANCE: BatchPerformance[] = [
-  { batchId: 'B-2023-FA-01', program: 'Full Stack Engineering', studentCount: 25, avgScore: 82.5, status: 'On Track' },
-  { batchId: 'B-2023-FA-02', program: 'AI/ML Specialization', studentCount: 18, avgScore: 71.0, status: 'At Risk' },
-  { batchId: 'B-2023-SP-01', program: 'Cloud DevOps', studentCount: 22, avgScore: 89.0, status: 'On Track' }
-];
+export const MOCK_BATCH_PERFORMANCE: BatchPerformance[] = [];

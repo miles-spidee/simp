@@ -1,11 +1,22 @@
+import { apiClient } from './api.client';
 import { ExecutiveMetric, RiskIndicator } from '../types/executive.types';
-import { MOCK_EXECUTIVE_METRICS, MOCK_RISK_INDICATORS } from '../data/mock-executive';
+import {} from '../types/executive.types';
 
 export const ExecutiveApi = {
   getMetrics: async (): Promise<ExecutiveMetric[]> => {
-    return new Promise((resolve) => setTimeout(() => resolve(MOCK_EXECUTIVE_METRICS), 500));
+    try {
+      const res = await apiClient.get('/api/v1/executive');
+      return res.data?.data || [];
+    } catch (error) {
+      return [];
+    }
   },
   getRiskIndicators: async (): Promise<RiskIndicator[]> => {
-    return new Promise((resolve) => setTimeout(() => resolve(MOCK_RISK_INDICATORS), 500));
+    try {
+      const res = await apiClient.get('/api/v1/executive');
+      return res.data?.data || [];
+    } catch (error) {
+      return [];
+    }
   }
 };

@@ -1,11 +1,6 @@
 import { EscalationRule, EscalationLog } from '../types/escalation.types';
 
-export const MOCK_ESCALATION_RULES: EscalationRule[] = [
-  { id: 'rule-1', type: 'Attendance', condition: 'Absent 3 Days', triggerDays: 3, notifyRoles: ['Reporting Manager'], status: 'Active' },
-  { id: 'rule-2', type: 'Attendance', condition: 'Absent 5 Days', triggerDays: 5, notifyRoles: ['HR'], status: 'Active' },
-  { id: 'rule-3', type: 'Assignments', condition: 'Missed Deadline', triggerDays: 1, notifyRoles: ['Mentor', 'Reporting Manager'], status: 'Active' },
-  { id: 'rule-4', type: 'Leave', condition: 'Pending > 2 days', triggerDays: 2, notifyRoles: ['HR'], status: 'Active' },
-];
+export const MOCK_ESCALATION_RULES: EscalationRule[] = [];
 
 export const MOCK_ESCALATIONS: EscalationLog[] = Array.from({ length: 25 }).map((_, i) => {
   const types = ['Attendance', 'Assignments', 'Leave', 'Assessments', 'Performance'];

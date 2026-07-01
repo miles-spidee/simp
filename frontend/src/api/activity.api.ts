@@ -1,16 +1,32 @@
+import { apiClient } from './api.client';
 import { ActivityLog } from '../types/activity.types';
-import { MOCK_ACTIVITIES } from '../data/mock-activities';
+import {} from '../types/activities.types';
 
 export const activityApi = {
   getAllActivities: async (): Promise<ActivityLog[]> => {
-    return Promise.resolve([...MOCK_ACTIVITIES]);
+    try {
+      const res = await apiClient.get('/api/v1/activity');
+      return res.data?.data || [];
+    } catch (error) {
+      return [];
+    }
   },
   
   getActivityById: async (id: string): Promise<ActivityLog | undefined> => {
-    return Promise.resolve(MOCK_ACTIVITIES.find(a => a.id === id));
+    try {
+      const res = await apiClient.get('/api/v1/activity');
+      return res.data?.data || null as any;
+    } catch (error) {
+      return null as any;
+    }
   },
 
   getActivitiesByUser: async (userId: string): Promise<ActivityLog[]> => {
-    return Promise.resolve(MOCK_ACTIVITIES.filter(a => a.userId === userId));
+    try {
+      const res = await apiClient.get('/api/v1/activity');
+      return res.data?.data || [];
+    } catch (error) {
+      return [];
+    }
   }
 };

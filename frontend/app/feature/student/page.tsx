@@ -9,7 +9,7 @@ import {
   UserX, Check, Trash, PlusCircle, LayoutGrid, Eye, Send, Lock
 } from 'lucide-react';
 import { studentService } from '@/src/services/student.service';
-import { Student, StudentDocument, StudentTimelineEvent, StudentBatch } from '@/src/data/mock-students';
+import { Student, StudentDocument, StudentTimelineEvent, StudentBatch } from '@/src/types/students.types';
 import { useAuth } from '@/src/context/AuthContext';
 import { Drawer } from '@/components/feature/ui/Drawer';
 import { PermissionGuard } from '@/components/feature/ui/PermissionGuard';

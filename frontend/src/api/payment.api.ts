@@ -1,36 +1,43 @@
+import { apiClient } from './api.client';
 import { PaymentTransaction } from '../types/payment.types';
-import { MOCK_PAYMENTS } from '../data/mock-payments';
+import {} from '../types/payments.types';
 
 export const paymentApi = {
   getPayments: async (): Promise<PaymentTransaction[]> => {
-    return new Promise((resolve) => setTimeout(() => resolve([...MOCK_PAYMENTS]), 600));
+    try {
+      const res = await apiClient.get('/api/v1/payment');
+      return res.data?.data || [];
+    } catch (error) {
+      return [];
+    }
   },
   getPaymentById: async (id: string): Promise<PaymentTransaction> => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const p = MOCK_PAYMENTS.find(x => x.id === id);
-        if (p) resolve(p);
-        else reject(new Error('Not found'));
-      }, 600);
-    });
+    try {
+      const res = await apiClient.get('/api/v1/payment');
+      return res.data?.data || null as any;
+    } catch (error) {
+      return null as any;
+    }
   },
   createPayment: async (data: Partial<PaymentTransaction>): Promise<PaymentTransaction> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const p = { id: `PAY-${Date.now()}`, ...data } as PaymentTransaction;
-        resolve(p);
-      }, 600);
-    });
+    try {
+      const res = await apiClient.post('/api/v1/payment', data);
+      return res.data?.data || null as any;
+    } catch (error) {
+      return null as any;
+    }
   },
   updatePayment: async (id: string, data: Partial<PaymentTransaction>): Promise<PaymentTransaction> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const p = MOCK_PAYMENTS.find(x => x.id === id) || (data as PaymentTransaction);
-        resolve({ ...p, ...data });
-      }, 600);
-    });
+    try {
+      const res = await apiClient.patch('/api/v1/payment');
+      return res.data?.data || null as any;
+    } catch (error) {
+      return null as any;
+    }
   },
   deletePayment: async (id: string): Promise<void> => {
-    return new Promise((resolve) => setTimeout(() => resolve(), 600));
+    try {
+      await apiClient.delete(`/api/v1/payment/${id}`);
+    } catch (error) {}
   }
 };

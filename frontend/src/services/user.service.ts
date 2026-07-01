@@ -1,7 +1,9 @@
-import { User, MOCK_USERS } from '../data/mock-users';
+import { User } from '../types/api/user.types';
+const MOCK_USERS: any[] = [];
 import { roleService } from './role.service';
 import { moduleService } from './module.service';
-import { Module } from '../data/mock-modules';
+import { Module } from '../types/api/module.types';
+const MOCK_MODULES: any[] = [];
 
 export const userService = {
   async getUsers(): Promise<User[]> {

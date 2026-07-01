@@ -1,0 +1,1 @@
+import { EmailTemplate, EmailTemplateCategory, EmailStatus, EmailHistory } from '../types/email.types';

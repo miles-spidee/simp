@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { AlertTriangle,  HardDrive, File, Clock, Search, Filter, Plus, Upload, Download, Eye, Trash, ArrowRight  } from 'lucide-react';
 import { fileService } from '@/src/services/file.service';
-import { CommonFile } from '@/src/data/mock-common-files';
+import { CommonFile } from '@/src/types/common-files.types';
 import { Drawer } from '@/components/feature/ui/Drawer';
 import { PermissionGuard } from '@/components/feature/ui/PermissionGuard';
 import { EnhancedTable } from '@/components/feature/ui/Table';

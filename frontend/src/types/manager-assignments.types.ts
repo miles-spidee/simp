@@ -1,0 +1,1 @@
+import { ManagerAssignment } from '../types/reporting-manager.types';

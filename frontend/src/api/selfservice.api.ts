@@ -1,23 +1,24 @@
+import { apiClient } from './api.client';
 import { SelfServiceDashboard, UserProfile } from '../types/selfservice.types';
-import { MOCK_SELF_SERVICE } from '../data/mock-self-service';
+import {} from '../types/self-service.types';
 
 const DELAY = 500;
 
 export const SelfServiceAPI = {
   getDashboard: async (): Promise<SelfServiceDashboard> => {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(MOCK_SELF_SERVICE), DELAY);
-    });
+    try {
+      const res = await apiClient.get('/api/v1/selfservice');
+      return res.data?.data || null as any;
+    } catch (error) {
+      return null as any;
+    }
   },
   updateProfile: async (profile: Partial<UserProfile>): Promise<UserProfile> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        MOCK_SELF_SERVICE.profile = {
-          ...MOCK_SELF_SERVICE.profile,
-          ...profile
-        };
-        resolve(MOCK_SELF_SERVICE.profile);
-      }, DELAY);
-    });
+    try {
+      const res = await apiClient.patch('/api/v1/selfservice');
+      return res.data?.data || null as any;
+    } catch (error) {
+      return null as any;
+    }
   }
 };

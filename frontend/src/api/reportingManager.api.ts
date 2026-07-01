@@ -1,22 +1,43 @@
+import { apiClient } from './api.client';
 import { ReportingManager, ManagerAssignment, ManagerEvaluation } from '../types/reporting-manager.types';
-import { MOCK_REPORTING_MANAGERS } from '../data/mock-reporting-managers';
-import { MOCK_MANAGER_ASSIGNMENTS } from '../data/mock-manager-assignments';
-import { MOCK_MANAGER_EVALUATIONS } from '../data/mock-manager-evaluations';
+import {} from '../types/reporting-managers.types';
+import {} from '../types/manager-assignments.types';
+import {} from '../types/manager-evaluations.types';
 
 export const reportingManagerApi = {
   getManagers: async (): Promise<ReportingManager[]> => {
-    return Promise.resolve([...MOCK_REPORTING_MANAGERS]);
+    try {
+      const res = await apiClient.get('/api/v1/reportingManager');
+      return res.data?.data || [];
+    } catch (error) {
+      return [];
+    }
   },
   
   getManagerById: async (id: string): Promise<ReportingManager | undefined> => {
-    return Promise.resolve(MOCK_REPORTING_MANAGERS.find(m => m.id === id));
+    try {
+      const res = await apiClient.get('/api/v1/reportingManager');
+      return res.data?.data || null as any;
+    } catch (error) {
+      return null as any;
+    }
   },
 
   getAssignmentsByManager: async (managerId: string): Promise<ManagerAssignment[]> => {
-    return Promise.resolve(MOCK_MANAGER_ASSIGNMENTS.filter(a => a.managerId === managerId));
+    try {
+      const res = await apiClient.get('/api/v1/reportingManager');
+      return res.data?.data || [];
+    } catch (error) {
+      return [];
+    }
   },
 
   getEvaluationsByManager: async (managerId: string): Promise<ManagerEvaluation[]> => {
-    return Promise.resolve(MOCK_MANAGER_EVALUATIONS.filter(e => e.managerId === managerId));
+    try {
+      const res = await apiClient.get('/api/v1/reportingManager');
+      return res.data?.data || [];
+    } catch (error) {
+      return [];
+    }
   }
 };

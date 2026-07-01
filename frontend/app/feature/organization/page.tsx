@@ -10,7 +10,7 @@ import {
   MoreVertical, RefreshCw, Search
 } from 'lucide-react';
 import { organizationService } from '@/src/services/organization.service';
-import { Organization, OrganizationDepartment, OrganizationCoordinator, OrganizationStudent, OrganizationProgram, OrganizationDocument, OrganizationTimelineEvent } from '@/src/data/mock-organizations';
+import { Organization, OrganizationDepartment, OrganizationCoordinator, OrganizationStudent, OrganizationProgram, OrganizationDocument, OrganizationTimelineEvent } from '@/src/types/organizations.types';
 import { useAuth } from '@/src/context/AuthContext';
 import { Drawer } from '@/components/feature/ui/Drawer';
 import { EnhancedTable } from '@/components/feature/ui/Table';

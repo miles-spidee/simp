@@ -1,8 +1,14 @@
+import { apiClient } from './api.client';
 import { FinanceAnalytics } from '../types/finance-analytics.types';
-import { MOCK_FINANCE_ANALYTICS } from '../data/mock-finance-analytics';
+import {} from '../types/finance-analytics.types';
 
 export const financeAnalyticsApi = {
   getAnalytics: async (): Promise<FinanceAnalytics> => {
-    return new Promise((resolve) => setTimeout(() => resolve(MOCK_FINANCE_ANALYTICS), 600));
+    try {
+      const res = await apiClient.get('/api/v1/finance-analytics');
+      return res.data?.data || null as any;
+    } catch (error) {
+      return null as any;
+    }
   }
 };

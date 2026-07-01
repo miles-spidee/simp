@@ -10,7 +10,7 @@ class BillingService {
   }
 
   async generateInvoice(data: Partial<Invoice>): Promise<Invoice> {
-    return await billingApi.generateInvoice(data);
+    return await billingApi.createInvoice(data);
   }
 
   async getReceipts() {
@@ -22,7 +22,7 @@ class BillingService {
   }
 
   async generateReceipt(data: Partial<Receipt>): Promise<Receipt> {
-    return await billingApi.generateReceipt(data);
+    return await billingApi.createReceipt(data);
   }
   
   async getBillingSummary() {

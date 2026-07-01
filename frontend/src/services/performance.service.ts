@@ -1,36 +1,34 @@
+import { apiClient } from '../api/api.client';
 import { StudentPerformance, BatchPerformance } from '../types/api/performance.types';
-import { MOCK_STUDENT_PERFORMANCE, MOCK_BATCH_PERFORMANCE } from '../data/mock-performance';
+import {} from '../types/performance.types';
 import { performanceApi } from '../api/performance.api';
 
 class PerformanceService {
   async getStudentPerformances(): Promise<StudentPerformance[]> {
     try {
-      const data = await performanceApi.getStudentPerformances();
-      if (data && data.length > 0) return data;
-    } catch (e) {
-      console.debug('Failed to fetch student performances via API, returning mock:', e);
+      const res = await apiClient.get('/api/v1/performance');
+      return res.data?.data || [];
+    } catch (error) {
+      return [];
     }
-    return [...MOCK_STUDENT_PERFORMANCE];
   }
 
   async getBatchPerformances(): Promise<BatchPerformance[]> {
     try {
-      const data = await performanceApi.getBatchPerformances();
-      if (data && data.length > 0) return data;
-    } catch (e) {
-      console.debug('Failed to fetch batch performances via API, returning mock:', e);
+      const res = await apiClient.get('/api/v1/performance');
+      return res.data?.data || [];
+    } catch (error) {
+      return [];
     }
-    return [...MOCK_BATCH_PERFORMANCE];
   }
 
   async getStudentPerformance(studentId: string): Promise<StudentPerformance | undefined> {
     try {
-      const data = await performanceApi.getStudentPerformance(studentId);
-      if (data) return data;
-    } catch (e) {
-      console.debug(`Failed to fetch student performance ${studentId} via API, returning mock:`, e);
+      const res = await apiClient.get('/api/v1/performance');
+      return res.data?.data || null as any;
+    } catch (error) {
+      return null as any;
     }
-    return MOCK_STUDENT_PERFORMANCE.find(p => p.studentId === studentId);
   }
 }
 

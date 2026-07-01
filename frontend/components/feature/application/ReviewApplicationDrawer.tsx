@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { Drawer } from '@/components/feature/ui/Drawer';
-import { Application, ApplicationStatus } from '@/src/data/mock-applications';
-import { Opportunity } from '@/src/data/mock-opportunities';
+import { Application, ApplicationStatus } from '@/src/types/applications.types';
+import { Opportunity } from '@/src/types/opportunities.types';
 import { applicationService } from '@/src/services/application.service';
 import { Mail, Phone, Calendar as CalendarIcon, Briefcase, User, CheckCircle2, XCircle, Clock, FileText, Activity, Download, ExternalLink } from 'lucide-react';
 

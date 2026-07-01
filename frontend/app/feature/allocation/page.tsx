@@ -10,11 +10,11 @@ import {
   PlusSquare, ArrowRight, Layers, Sliders, ShieldAlert, ArrowLeftRight
 } from 'lucide-react';
 import { allocationService } from '@/src/services/allocation.service';
-import { Allocation, AllocationTimelineEvent } from '@/src/data/mock-allocations';
+import { Allocation, AllocationTimelineEvent } from '@/src/types/allocations.types';
 import { studentService } from '@/src/services/student.service';
-import { Student } from '@/src/data/mock-students';
+import { Student } from '@/src/types/students.types';
 import { batchService } from '@/src/services/batch.service';
-import { Batch } from '@/src/data/mock-batches';
+import { Batch } from '@/src/types/batches.types';
 import { useAuth } from '@/src/context/AuthContext';
 import { Drawer } from '@/components/feature/ui/Drawer';
 import { EnhancedTable } from '@/components/feature/ui/Table';

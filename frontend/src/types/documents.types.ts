@@ -1,0 +1,1 @@
+import { GeneratedDocument, DocumentTemplate } from '../types/document.types';

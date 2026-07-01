@@ -1,6 +1,6 @@
 import { organizationApi } from '../api/organization.api';
 import { CollegeCreate, CollegeResponse, DepartmentResponse, CoordinatorResponse } from '../types/api/organization.types';
-import { Organization, MOCK_ORGANIZATIONS } from '../data/mock-organizations';
+import { Organization } from '../types/organizations.types';
 
 export type ExtendedCollege = CollegeResponse & Organization;
 
@@ -58,15 +58,9 @@ export const organizationService = {
         return data.map(col => this.mapToExtended(col));
       }
     } catch (e) {
-      console.debug("Failed to load organizations from API, falling back to mock data:", e);
+      console.error("Failed to load organizations from API", e);
     }
-    return MOCK_ORGANIZATIONS.map((org: any) => ({
-      ...org,
-      college_id: org.id,
-      college_name: org.name,
-      college_code: org.code,
-      designation: 'Organization'
-    })) as ExtendedCollege[];
+    return [];
   },
 
   async getOrganization(id: string): Promise<ExtendedCollege | undefined> {
@@ -80,14 +74,19 @@ export const organizationService = {
   },
 
   async updateOrganization(id: string, updates: Partial<ExtendedCollege>): Promise<ExtendedCollege | undefined> {
-    return undefined;
+    const res = await organizationApi.updateCollege(id, {
+      college_name: updates.name,
+      college_code: updates.code,
+      status: updates.partnershipStatus
+    });
+    return this.mapToExtended(res);
   },
 
   async bulkUpdatePartnership(ids: string[], status: string): Promise<boolean> {
-    return true;
+    return await organizationApi.bulkUpdatePartnership(ids, status);
   },
 
   async bulkAssignCoordinator(ids: string[], coordinatorName: string): Promise<boolean> {
-    return true;
+    return await organizationApi.bulkAssignCoordinator(ids, coordinatorName);
   }
 };

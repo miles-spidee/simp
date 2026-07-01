@@ -1,24 +1,30 @@
+import { apiClient } from './api.client';
 import { ReportRecord, ReportTemplate } from '../types/report.types';
-import { MOCK_REPORTS, MOCK_REPORT_TEMPLATES } from '../data/mock-reports';
+import {} from '../types/reports.types';
 
 export const ReportApi = {
   getTemplates: async (): Promise<ReportTemplate[]> => {
-    return new Promise((resolve) => setTimeout(() => resolve(MOCK_REPORT_TEMPLATES), 500));
+    try {
+      const res = await apiClient.get('/api/v1/report');
+      return res.data?.data || [];
+    } catch (error) {
+      return [];
+    }
   },
   getReports: async (): Promise<ReportRecord[]> => {
-    return new Promise((resolve) => setTimeout(() => resolve(MOCK_REPORTS), 700));
+    try {
+      const res = await apiClient.get('/api/v1/report');
+      return res.data?.data || [];
+    } catch (error) {
+      return [];
+    }
   },
-  generateReport: async (templateId: string): Promise<ReportRecord> => {
-    return new Promise((resolve) => setTimeout(() => resolve({
-      id: `rep_new_${Date.now()}`,
-      name: `Generated_Report_${Date.now()}`,
-      type: 'Custom',
-      generatedBy: 'Current User',
-      generatedDate: new Date().toISOString(),
-      status: 'Processing',
-      format: 'PDF',
-      sizeBytes: 0,
-      downloadUrl: '#'
-    }), 1000));
+  generateReport: async (config: any): Promise<ReportRecord> => {
+    try {
+      const res = await apiClient.post('/api/v1/report/generate', config);
+      return res.data?.data || null as any;
+    } catch (error) {
+      return null as any;
+    }
   }
 };

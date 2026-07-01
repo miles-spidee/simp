@@ -6,7 +6,7 @@ import { AlertTriangle,
   Database, Server, HardDrive, AlertCircle, CheckCircle
  } from 'lucide-react';
 import { superAdminService } from '@/src/services/super-admin.service';
-import { SystemSetting, AuditLog, RolePermission } from '@/src/data/mock-super-admin';
+import { SystemSetting, AuditLog, RolePermission } from '@/src/types/super-admin.types';
 import { EnhancedTable } from '@/components/feature/ui/Table';
 
 export default function SuperAdminPage() {

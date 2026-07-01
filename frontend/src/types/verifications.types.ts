@@ -1,0 +1,1 @@
+import { VerificationRequest } from '../types/verification.types';

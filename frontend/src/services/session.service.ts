@@ -1,24 +1,23 @@
-import { UserSession, MOCK_USER_SESSIONS } from '../data/mock-user-sessions';
+import { apiClient } from '../api/api.client';
+import { UserSession } from '../types/user-sessions.types';
 
 class SessionService {
   async getSessions(): Promise<UserSession[]> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve([...MOCK_USER_SESSIONS]);
-      }, 300);
-    });
+    try {
+      const res = await apiClient.get('/api/v1/session');
+      return res.data?.data || [];
+    } catch (error) {
+      return [];
+    }
   }
 
   async terminateSession(id: string): Promise<void> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const session = MOCK_USER_SESSIONS.find(s => s.id === id);
-        if (session) {
-          session.status = 'Terminated';
-        }
-        resolve();
-      }, 300);
-    });
+    try {
+      const res = await apiClient.get('/api/v1/session');
+      return res.data?.data || null as any;
+    } catch (error) {
+      return null as any;
+    }
   }
 }
 

@@ -1,6 +1,6 @@
 import { programApi } from '../api/program.api';
 import { ProgramCreate, ProgramResponse } from '../types/api/program.types';
-import { Program } from '../data/mock-programs';
+import { Program } from '../types/programs.types';
 
 export type ExtendedProgram = ProgramResponse & Program;
 
