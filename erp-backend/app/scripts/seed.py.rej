@@ -1,0 +1,20 @@
+@@ -502,14 +502,13 @@
+ 
+     roles = seed_rows(session, "rbac_roles", [
+         {"name": "Super Admin", "code": "SUPER_ADMIN", "description": "System administrator", "is_system": True},
+-        {"name": "Administrator", "code": "ADMIN", "description": "Administrator", "is_system": True},
++        {"name": "HR", "code": "HR", "description": "Human Resources", "is_system": True},
++        {"name": "College Coordinator", "code": "COLLEGE_COORDINATOR", "description": "College coordinator", "is_system": True},
++        {"name": "Mentor", "code": "MENTOR", "description": "Mentor", "is_system": True},
+         {"name": "Student", "code": "STUDENT", "description": "Student", "is_system": True},
+-        {"name": "Instructor", "code": "INSTRUCTOR", "description": "Instructor", "is_system": True},
+-        {"name": "Mentor", "code": "MENTOR", "description": "Mentor", "is_system": True},
+-        {"name": "Staff", "code": "STAFF", "description": "Staff", "is_system": True},
+-        {"name": "Department Coordinator", "code": "DEPT_COORDINATOR", "description": "Department coordinator", "is_system": True},
+-        {"name": "Organization Coordinator", "code": "ORG_COORDINATOR", "description": "Organization coordinator", "is_system": True},
++        {"name": "Management", "code": "MANAGEMENT", "description": "Management", "is_system": True},
++        {"name": "Finance Manager", "code": "FINANCE_MANAGER", "description": "Finance Manager", "is_system": True},
+     ], state)
+ 
+     actions = seed_rows(session, "rbac_actions", [
+         {"name": "Create", "code": "CREATE", "description": "Create records"},

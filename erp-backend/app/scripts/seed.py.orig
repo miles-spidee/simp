@@ -469,13 +469,16 @@ def seed_reference_data(session: Session, state: dict[str, list[Any]]):
 
 def seed_rbac_data(session: Session, state: dict[str, list[Any]]):
     roles = seed_rows(session, "rbac_roles", [
-        {"name": "Super Admin", "code": "SUPER_ADMIN", "description": "System administrator", "is_system": True},
-        {"name": "HR", "code": "HR", "description": "Human Resources", "is_system": True},
-        {"name": "College Coordinator", "code": "COLLEGE_COORDINATOR", "description": "College coordinator", "is_system": True},
-        {"name": "Mentor", "code": "MENTOR", "description": "Mentor", "is_system": True},
-        {"name": "Student", "code": "STUDENT", "description": "Student", "is_system": True},
-        {"name": "Management", "code": "MANAGEMENT", "description": "Management", "is_system": True},
-        {"name": "Finance Manager", "code": "FINANCE_MANAGER", "description": "Finance Manager", "is_system": True},
+        {"name": "Super Admin", "code": "SUPER_ADMIN", "description": "Full system access", "is_system": True},
+        {"name": "Admin", "code": "ADMIN", "description": "Administrator with broad access", "is_system": True},
+        {"name": "Mentor", "code": "MENTOR", "description": "Internship mentor", "is_system": True},
+        {"name": "Student", "code": "STUDENT", "description": "Student user", "is_system": True},
+        {"name": "Employee", "code": "EMPLOYEE", "description": "Internal employee", "is_system": True},
+        {"name": "Faculty", "code": "FACULTY", "description": "Academic faculty", "is_system": True},
+        {"name": "HR", "code": "HR", "description": "Human resources user", "is_system": True},
+        {"name": "Recruiter", "code": "RECRUITER", "description": "Company recruiter", "is_system": True},
+        {"name": "Department Coordinator", "code": "DEPT_COORDINATOR", "description": "Department coordinator", "is_system": True},
+        {"name": "Organization Coordinator", "code": "ORG_COORDINATOR", "description": "Organization coordinator", "is_system": True},
     ], state)
 
     modules = seed_rows(session, "rbac_modules", [
@@ -531,18 +534,15 @@ def seed_rbac_data(session: Session, state: dict[str, list[Any]]):
     features = seed_rows(session, "rbac_features", feature_rows, state)
 
     permission_rows = []
-    for feature_obj in features:
-        # For our usecase, let's just use the action as the code suffix for permissions
-        # We need to extract the base module code from the feature code.
-        mod_code = feature_obj.code.replace('_access', '')
-        for action_obj in actions:
-            permission_rows.append({
-                "feature_id": feature_obj.id,
-                "action_id": action_obj.id,
-                "name": f"{mod_code}:{action_obj.code}",
-                "code": f"{mod_code}:{action_obj.code}",
-                "description": f"{action_obj.name} permission for {feature_obj.name}",
-            })
+    for index, feature_obj in enumerate(features):
+        action_obj = pick(actions, index)
+        permission_rows.append({
+            "feature_id": feature_obj.id,
+            "action_id": action_obj.id,
+            "name": f"{feature_obj.name} {action_obj.name}",
+            "code": f"{feature_obj.code}_{action_obj.code}",
+            "description": f"{action_obj.name} permission for {feature_obj.name}",
+        })
     permissions = seed_rows(session, "rbac_permissions", permission_rows, state)
 
     groups = seed_rows(session, "rbac_permission_groups", [
