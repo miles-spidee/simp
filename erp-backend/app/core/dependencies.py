@@ -35,7 +35,7 @@ async def get_current_user(
     if not user:
         raise HTTPException(status_code=401, detail="Not authenticated")
     
-    if user.account_status != StatusEnum.ACTIVE:
+    if user.account_status != StatusEnum.ACTIVE.value:
         raise HTTPException(status_code=403, detail="Account is inactive")
 
     return user

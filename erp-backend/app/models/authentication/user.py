@@ -17,7 +17,7 @@ class User(BaseModel):
     phone: Mapped[str] = mapped_column(String(20), unique=True, index=True, nullable=True)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     
-    account_status: Mapped[str] = mapped_column(String(50), default=StatusEnum.PENDING, index=True, nullable=False)
+    account_status: Mapped[str] = mapped_column(String(50), default=StatusEnum.PENDING.value, index=True, nullable=False)
     email_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     phone_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     

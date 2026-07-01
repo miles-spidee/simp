@@ -20,8 +20,8 @@ class UserService(BaseCRUDService[User, UserCreate, UserUpdate]):
         module_overrides = obj_in_data.pop("moduleOverrides", [])
         
         # Ensure account_status is set since exclude_unset=True drops defaults
-        if "account_status" not in obj_in_data:
-            obj_in_data["account_status"] = obj_in.account_status
+        account_status = obj_in_data.get("account_status", obj_in.account_status)
+        obj_in_data["account_status"] = account_status.value if hasattr(account_status, "value") else account_status
             
         new_user = await super().create(obj_in=obj_in_data, user_id=user_id)
         
@@ -47,6 +47,11 @@ class UserService(BaseCRUDService[User, UserCreate, UserUpdate]):
         if "password" in obj_in_data:
             password = obj_in_data.pop("password")
             obj_in_data["password_hash"] = hash_password(password)
+            
+        if "account_status" in obj_in_data:
+            status = obj_in_data["account_status"]
+            obj_in_data["account_status"] = status.value if hasattr(status, "value") else status
+            
         return await super().update(id=id, obj_in=obj_in_data, user_id=user_id)
         
     async def lock_account(self, id: UUID, user_id: UUID) -> User:

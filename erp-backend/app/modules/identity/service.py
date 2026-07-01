@@ -22,7 +22,7 @@ class IdentityService(BaseService):
         if not user or not verify_password(data.password, user.password_hash):
             raise HTTPException(status_code=401, detail="Invalid email or password")
             
-        if user.account_status != StatusEnum.ACTIVE:
+        if user.account_status != StatusEnum.ACTIVE.value:
             raise HTTPException(status_code=403, detail="Account is inactive")
             
         from app.models.rbac.user_role import UserRole
@@ -63,7 +63,7 @@ class IdentityService(BaseService):
             username=data.email,
             email=data.email,
             password_hash=hash_password(data.password),
-            account_status=StatusEnum.ACTIVE
+            account_status=StatusEnum.ACTIVE.value
         )
         self.db.add(new_user)
         # We must flush to get the ID for audit
