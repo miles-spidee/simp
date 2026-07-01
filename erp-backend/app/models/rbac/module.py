@@ -11,11 +11,7 @@ class Module(BaseModel):
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     code: Mapped[str] = mapped_column(String(100), unique=True, index=True, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(String(500))
-<<<<<<< HEAD
     route_path: Mapped[Optional[str]] = mapped_column(String(255))
-=======
-    path: Mapped[Optional[str]] = mapped_column(String(255))
->>>>>>> 017a11010c773555df5255d3187cdd435440e42a
     
     # Self-referential for submodules
     parent_id: Mapped[Optional[uuid.UUID]] = mapped_column(ForeignKey('rbac_modules.id', ondelete='CASCADE'), index=True)
