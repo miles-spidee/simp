@@ -1,8 +1,12 @@
+from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
 from app.services.base import BaseService
 from app.modules.identity.repository import UserRepository, PermissionRepository
-from app.modules.identity.schemas import LoginRequest, RegisterRequest, Token
+from app.modules.identity.schemas import (
+    LoginRequest, RegisterRequest, Token, LogoutRequest, RefreshRequest,
+    ChangePasswordRequest, ForgotPasswordRequest, ForgotPasswordVerify, ResetPasswordRequest
+)
 from app.core.security import verify_password, hash_password, create_access_token, create_refresh_token
 from app.models.authentication.user import User
 from app.models.core.enums import StatusEnum

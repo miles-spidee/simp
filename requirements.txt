@@ -1,0 +1,6 @@
+fastapi[standard]
+loguru
+sqlalchemy
+asyncpg
+python-jose[cryptography]
+passlib
