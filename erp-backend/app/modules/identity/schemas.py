@@ -47,3 +47,26 @@ class RefreshRequest(BaseModel):
 
 class LogoutRequest(BaseModel):
     refresh_token: str
+
+
+class DigiLockerStartRequest(BaseModel):
+    student_profile_id: UUID
+
+
+class DigiLockerStartResponse(BaseModel):
+    authorization_url: str
+    state: str
+
+
+class DigiLockerCallbackResponse(BaseModel):
+    student_profile_id: UUID
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    mobile_number: Optional[str] = None
+    date_of_birth: Optional[str] = None
+    gender: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    aadhaar_verified: bool
+    aadhaar_number: Optional[str] = None
+    verification_date: str

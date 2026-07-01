@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
@@ -7,9 +7,11 @@ from app.modules.identity.schemas import (
     LoginRequest, RegisterRequest, CurrentUserResponse, 
     RefreshRequest, LogoutRequest, ChangePasswordRequest, 
     ForgotPasswordRequest, ForgotPasswordVerify, ResetPasswordRequest
+    , DigiLockerStartRequest, DigiLockerStartResponse, DigiLockerCallbackResponse
 )
 from app.modules.identity.service import IdentityService
 from app.models.authentication.user import User
+from app.services.digilocker_service import DigiLockerService
 
 router = APIRouter()
 
@@ -92,6 +94,31 @@ async def logout(
     service = IdentityService(db)
     result = await service.logout(data, current_user.id)
     return success_response(data=result, message="Logged out successfully")
+
+
+@router.post("/digilocker/start", response_model=APIResponse[DigiLockerStartResponse])
+async def digilocker_start(
+    data: DigiLockerStartRequest,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    service = DigiLockerService(db)
+    result = service.build_authorization_url(
+        user_id=str(current_user.id),
+        student_profile_id=str(data.student_profile_id),
+    )
+    return success_response(data=result, message="DigiLocker authorization URL generated")
+
+
+@router.get("/digilocker/callback", response_model=APIResponse[DigiLockerCallbackResponse])
+async def digilocker_callback(
+    code: str = Query(...),
+    state: str = Query(...),
+    db: AsyncSession = Depends(get_db),
+):
+    service = DigiLockerService(db)
+    result = await service.handle_callback(code=code, state=state)
+    return success_response(data=result, message="Aadhaar verified successfully")
 
 @router.post("/change-password", response_model=APIResponse[dict])
 async def change_password(

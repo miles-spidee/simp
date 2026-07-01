@@ -18,10 +18,12 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     op.add_column('sys_verification_records', sa.Column('aadhaar_verified', sa.Boolean(), nullable=False, server_default=sa.text('false')))
+    op.add_column('sys_verification_records', sa.Column('aadhaar_number', sa.String(length=32), nullable=True))
     op.add_column('sys_verification_records', sa.Column('verification_date', sa.DateTime(timezone=True), nullable=True))
     op.alter_column('sys_verification_records', 'aadhaar_verified', server_default=None)
 
 
 def downgrade() -> None:
     op.drop_column('sys_verification_records', 'verification_date')
+    op.drop_column('sys_verification_records', 'aadhaar_number')
     op.drop_column('sys_verification_records', 'aadhaar_verified')

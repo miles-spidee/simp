@@ -15,5 +15,6 @@ class VerificationRecord(BaseModel):
     verifier_name: Mapped[Optional[str]] = mapped_column(String(255))
     verifier_email: Mapped[Optional[str]] = mapped_column(String(255))
     aadhaar_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    aadhaar_number: Mapped[Optional[str]] = mapped_column(String(32))
     verification_date: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
     status: Mapped[str] = mapped_column(String(50), default="VERIFIED")

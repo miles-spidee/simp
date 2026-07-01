@@ -28,6 +28,16 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     OTP_EXPIRE_MINUTES: int = 5
 
+    # DigiLocker OAuth / API. These must be set from the official partner onboarding docs.
+    DIGILOCKER_AUTH_BASE_URL: str = ""
+    DIGILOCKER_TOKEN_URL: str = ""
+    DIGILOCKER_USERINFO_URL: str = ""
+    DIGILOCKER_CLIENT_ID: str = ""
+    DIGILOCKER_CLIENT_SECRET: str = ""
+    DIGILOCKER_REDIRECT_URI: str = "http://localhost:8000/api/v1/auth/digilocker/callback"
+    DIGILOCKER_SCOPE: str = "openid profile aadhaar"
+    DIGILOCKER_ISSUER: str = ""
+
     @property
     def is_production(self) -> bool:
         return self.APP_ENV == "production"
