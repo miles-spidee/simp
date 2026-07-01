@@ -38,6 +38,12 @@ class Settings(BaseSettings):
     DIGILOCKER_SCOPE: str = "openid profile aadhaar"
     DIGILOCKER_ISSUER: str = ""
 
+    # Razorpay
+    RAZORPAY_KEY_ID: str = ""
+    RAZORPAY_KEY_SECRET: str = ""
+    RAZORPAY_WEBHOOK_SECRET: str = ""
+    RAZORPAY_CURRENCY: str = "INR"
+
     @property
     def is_production(self) -> bool:
         return self.APP_ENV == "production"
