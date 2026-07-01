@@ -5,8 +5,8 @@ from app.models.core.enums import StatusEnum
 
 class UserCreate(BaseModel):
     username: str
-    email: EmailStr
-    password: str
+    email: str
+    password: str = "ChangeMe@123"
     account_status: StatusEnum = StatusEnum.ACTIVE
 
 class UserUpdate(BaseModel):

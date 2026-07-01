@@ -13,13 +13,17 @@ class UserService(BaseCRUDService[User, UserCreate, UserUpdate]):
 
     async def create(self, *, obj_in: UserCreate, user_id: UUID = None) -> User:
         # Business Workflow: Hash password before saving
-        obj_in.password = hash_password(obj_in.password)
-        return await super().create(obj_in=obj_in, user_id=user_id)
+        obj_in_data = obj_in.model_dump(exclude_unset=True)
+        password = obj_in_data.pop("password", "ChangeMe@123")
+        obj_in_data["password_hash"] = hash_password(password)
+        return await super().create(obj_in=obj_in_data, user_id=user_id)
         
     async def update(self, *, id: UUID, obj_in: UserUpdate, user_id: UUID = None) -> User:
-        if obj_in.password:
-            obj_in.password = hash_password(obj_in.password)
-        return await super().update(id=id, obj_in=obj_in, user_id=user_id)
+        obj_in_data = obj_in.model_dump(exclude_unset=True)
+        if "password" in obj_in_data:
+            password = obj_in_data.pop("password")
+            obj_in_data["password_hash"] = hash_password(password)
+        return await super().update(id=id, obj_in=obj_in_data, user_id=user_id)
         
     async def lock_account(self, id: UUID, user_id: UUID) -> User:
         # Business Workflow: Account Lockout
