@@ -66,7 +66,7 @@ def update_roles():
         session.execute(text("DELETE FROM rbac_roles"))
         
         # Ensure standard actions exist
-        actions = ["read", "create", "update", "delete", "manage", "export"]
+        actions = ["view", "create", "update", "delete", "manage", "export"]
         for action in actions:
             res = session.execute(text("SELECT id FROM rbac_actions WHERE code = :code"), {"code": action})
             if not res.first():
@@ -93,10 +93,10 @@ def update_roles():
             
             module_permission_ids[mod_code] = []
             
-            for action_code in ["read", "create", "update", "delete", "manage", "export"]:
+            for action_code in ["view", "create", "update", "delete", "manage", "export"]:
                 if action_code in action_map:
                     perm_id = uuid.uuid4()
-                    perm_code = f"{mod_code}:{action_code}"
+                    perm_code = f"{mod_code}.{action_code}"
                     perm = Permission(id=perm_id, feature_id=feature_id, action_id=action_map[action_code], name=perm_code, code=perm_code, description="")
                     objects_to_add.append(perm)
                     module_permission_ids[mod_code].append(perm_id)

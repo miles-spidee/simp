@@ -312,15 +312,7 @@ export const WIDGET_REGISTRY: WidgetDefinition[] = [
     supportedRoles: ['Super Admin', 'Finance Manager', 'Management'],
     size: 'medium'
   },
-  {
-    widgetId: 'recent_reports',
-    name: 'Recent Reports',
-    description: 'List of recently generated reports',
-    moduleId: 'reports',
-    permissionKey: 'report.view',
-    supportedRoles: ['Super Admin', 'HR', 'Management'],
-    size: 'medium'
-  },
+
   {
     widgetId: 'kpi_summary',
     name: 'KPI Summary',

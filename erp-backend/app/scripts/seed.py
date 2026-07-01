@@ -504,7 +504,6 @@ def seed_rbac_data(session: Session, state: dict[str, list[Any]]):
         {"name": "Placement", "code": "placement", "description": "Placement", "route_path": "/feature/placement"},
         {"name": "Alumni", "code": "alumni", "description": "Alumni", "route_path": "/feature/alumni"},
         {"name": "Analytics", "code": "analytics", "description": "Analytics", "route_path": "/feature/analytics"},
-        {"name": "Reports", "code": "reports", "description": "Reports", "route_path": "/feature/reports"},
         {"name": "Help Desk", "code": "helpdesk", "description": "Help desk", "route_path": "/feature/helpdesk"},
         {"name": "Digital ID", "code": "idcard", "description": "ID card", "route_path": "/feature/id-card"},
         {"name": "Self Service", "code": "selfservice", "description": "Self service", "route_path": "/feature/self-service"},
@@ -512,12 +511,12 @@ def seed_rbac_data(session: Session, state: dict[str, list[Any]]):
     ], state)
 
     actions = seed_rows(session, "rbac_actions", [
-        {"name": "Create", "code": "CREATE", "description": "Create records"},
-        {"name": "Read", "code": "READ", "description": "Read records"},
-        {"name": "Update", "code": "UPDATE", "description": "Update records"},
-        {"name": "Delete", "code": "DELETE", "description": "Delete records"},
-        {"name": "Approve", "code": "APPROVE", "description": "Approve records"},
-        {"name": "Verify", "code": "VERIFY", "description": "Verify records"},
+        {"name": "Create", "code": "create", "description": "Create records"},
+        {"name": "View", "code": "view", "description": "View records"},
+        {"name": "Update", "code": "update", "description": "Update existing records"},
+        {"name": "Delete", "code": "delete", "description": "Delete records"},
+        {"name": "Manage", "code": "manage", "description": "Full access to records"},
+        {"name": "Export", "code": "export", "description": "Export records to file"},
     ], state)
 
     feature_rows = []
@@ -536,11 +535,12 @@ def seed_rbac_data(session: Session, state: dict[str, list[Any]]):
         # We need to extract the base module code from the feature code.
         mod_code = feature_obj.code.replace('_access', '')
         for action_obj in actions:
+            action_code = "view" if action_obj.code == "read" else action_obj.code
             permission_rows.append({
                 "feature_id": feature_obj.id,
                 "action_id": action_obj.id,
-                "name": f"{mod_code}:{action_obj.code}",
-                "code": f"{mod_code}:{action_obj.code}",
+                "name": f"{mod_code}.{action_code}",
+                "code": f"{mod_code}.{action_code}",
                 "description": f"{action_obj.name} permission for {feature_obj.name}",
             })
     permissions = seed_rows(session, "rbac_permissions", permission_rows, state)

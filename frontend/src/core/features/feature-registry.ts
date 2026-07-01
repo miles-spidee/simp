@@ -101,7 +101,7 @@ export const FEATURE_REGISTRY: FeatureDefinition[] = [
 
   // Phase 6: Analytics & BI
   { moduleId: 'analytics', featureId: 'analytics_dashboard', permissionKey: 'analytics.view', displayName: 'Analytics Dashboard', navigationLabel: 'Analytics', route: '/feature/analytics', icon: LineChart },
-  { moduleId: 'reports', featureId: 'reports_main', permissionKey: 'reports.view', displayName: 'Report Center', navigationLabel: 'Reports', route: '/feature/reports', icon: FileBarChart },
+
   { moduleId: 'kpi', featureId: 'kpi_main', permissionKey: 'kpi.view', displayName: 'KPI Management', navigationLabel: 'KPIs', route: '/feature/kpi', icon: Target },
   { moduleId: 'executive', featureId: 'executive_dashboard', permissionKey: 'executive.view', displayName: 'Executive Dashboard', navigationLabel: 'Executive Dashboard', route: '/feature/executive', icon: BarChart4 },
   { moduleId: 'export', featureId: 'export_main', permissionKey: 'export.view', displayName: 'Data Export Center', navigationLabel: 'Export Center', route: '/feature/export', icon: DownloadCloud },

@@ -63,8 +63,8 @@ class PermissionRepository:
             return True
             
         # Check module overrides (if user has the module assigned explicitly, grant them basic access)
-        if ":" in permission_name:
-            module_code = permission_name.split(":")[0]
+        if "." in permission_name:
+            module_code = permission_name.split(".")[0]
             from app.models.rbac.user_module import UserModule
             from app.models.rbac.module import Module
             module_override_stmt = (
