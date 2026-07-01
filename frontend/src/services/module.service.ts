@@ -6,8 +6,7 @@ import { moduleApi } from '../api/module.api';
 export const moduleService = {
   async getModules(): Promise<Module[]> {
     try {
-      const res = await apiClient.get('/api/v1/module');
-      return res.data?.data || [];
+      return await moduleApi.getModules();
     } catch (error) {
       return [];
     }
@@ -15,17 +14,15 @@ export const moduleService = {
 
   async getModule(id: string): Promise<Module | undefined> {
     try {
-      const res = await apiClient.get('/api/v1/module');
-      return res.data?.data || null as any;
+      return await moduleApi.getModule(id);
     } catch (error) {
-      return null as any;
+      return undefined;
     }
   },
 
   async createModule(mod: Omit<Module, 'active'> & { active?: boolean }): Promise<Module> {
     try {
-      const res = await apiClient.post('/api/v1/module');
-      return res.data?.data || null as any;
+      return await moduleApi.createModule(mod);
     } catch (error) {
       return null as any;
     }
@@ -33,10 +30,9 @@ export const moduleService = {
 
   async updateModule(id: string, updates: Partial<Module>): Promise<Module | undefined> {
     try {
-      const res = await apiClient.patch('/api/v1/module');
-      return res.data?.data || null as any;
+      return await moduleApi.updateModule(id, updates);
     } catch (error) {
-      return null as any;
+      return undefined;
     }
   }
 };

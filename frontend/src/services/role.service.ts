@@ -5,8 +5,7 @@ import { roleApi } from '../api/role.api';
 export const roleService = {
   async getRoles(): Promise<Role[]> {
     try {
-      const res = await apiClient.get('/api/v1/role');
-      return res.data?.data || [];
+      return await roleApi.getRoles();
     } catch (error) {
       return [];
     }
@@ -14,17 +13,15 @@ export const roleService = {
 
   async getRole(id: string): Promise<Role | undefined> {
     try {
-      const res = await apiClient.get('/api/v1/role');
-      return res.data?.data || null as any;
+      return await roleApi.getRoleById(id);
     } catch (error) {
-      return null as any;
+      return undefined;
     }
   },
 
   async createRole(role: Omit<Role, 'id' | 'modulesCount' | 'usersCount' | 'color' | 'bg'> & { color?: string, bg?: string }): Promise<Role> {
     try {
-      const res = await apiClient.post('/api/v1/role');
-      return res.data?.data || null as any;
+      return await roleApi.createRole(role as RoleCreate);
     } catch (error) {
       return null as any;
     }
@@ -32,19 +29,17 @@ export const roleService = {
 
   async updateRole(id: string, updatedData: Partial<Role>): Promise<Role | undefined> {
     try {
-      const res = await apiClient.patch('/api/v1/role');
-      return res.data?.data || null as any;
+      return await roleApi.updateRole(id, updatedData as RoleUpdate);
     } catch (error) {
-      return null as any;
+      return undefined;
     }
   },
 
   async deleteRole(id: string): Promise<boolean> {
     try {
-      const res = await apiClient.delete('/api/v1/role');
-      return res.data?.data || null as any;
+      return await roleApi.deleteRole(id);
     } catch (error) {
-      return null as any;
+      return false;
     }
   }
 };
