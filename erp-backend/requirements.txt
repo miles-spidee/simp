@@ -24,3 +24,5 @@ pytest
 httpx
 
 loguru
+
+razorpay==2.0.1
