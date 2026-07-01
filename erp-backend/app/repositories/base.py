@@ -16,7 +16,10 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self.search_fields = search_fields or []
 
     async def get(self, db: AsyncSession, id: Any) -> ModelType | None:
-        result = await db.execute(select(self.model).filter(self.model.id == id))
+        stmt = select(self.model).filter(self.model.id == id)
+        if hasattr(self.model, 'deleted_at'):
+            stmt = stmt.filter(getattr(self.model, 'deleted_at').is_(None))
+        result = await db.execute(stmt)
         return result.scalars().first()
 
     async def get_multi(
@@ -28,6 +31,9 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         filters: Dict[str, Any] = None
     ) -> Sequence[ModelType]:
         stmt = select(self.model)
+        if hasattr(self.model, 'deleted_at'):
+            stmt = stmt.filter(getattr(self.model, 'deleted_at').is_(None))
+            
         if filters:
             for k, v in filters.items():
                 if hasattr(self.model, k):
@@ -49,6 +55,10 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     ) -> Tuple[Sequence[ModelType], int]:
         stmt = select(self.model)
         
+        # Base filter: Exclude soft-deleted records if applicable
+        if hasattr(self.model, 'deleted_at'):
+            stmt = stmt.filter(getattr(self.model, 'deleted_at').is_(None))
+            
         # Filtering
         if filters:
             for k, v in filters.items():

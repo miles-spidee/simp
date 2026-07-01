@@ -220,9 +220,9 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
       });
 
       const roleData = {
-        name: roleName.trim(),
-        code: roleCode.trim(),
-        desc: description.trim(),
+        name: (roleName || '').trim(),
+        code: (roleCode || '').trim(),
+        desc: (description || '').trim(),
         status: roleStatus,
         moduleIds: assignedModules,
         permissions: flatPermissions,
@@ -238,9 +238,10 @@ export function CreateRoleWizard({ isOpen, onClose, onRoleCreated, roleToEdit, v
         onRoleCreated();
       }
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to save role', err);
-      alert('Error saving role.');
+      const errorMsg = err.response?.data?.detail || err.message || 'Unknown error';
+      alert(`Error saving role: ${errorMsg}`);
     } finally {
       setIsSubmitting(false);
     }

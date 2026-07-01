@@ -6,7 +6,7 @@ class RoleCreate(BaseModel):
     name: str
     code: str
     description: Optional[str] = None
-    is_system_role: bool = False
+    is_system: bool = False
 
 class RoleUpdate(BaseModel):
     name: Optional[str] = None
@@ -17,7 +17,7 @@ class RoleResponse(BaseModel):
     name: str
     code: str
     description: Optional[str]
-    is_system_role: bool
+    is_system: bool
     
 class PermissionAssign(BaseModel):
     role_id: UUID

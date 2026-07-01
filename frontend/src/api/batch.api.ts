@@ -3,23 +3,23 @@ import { BatchCreate, BatchResponse, BatchStudentCreate, BatchStudentResponse } 
 
 export const batchApi = {
   getBatches: async (): Promise<BatchResponse[]> => {
-    const res = await apiClient.get<BatchResponse[]>('/api/v1/batches');
+    const res = await apiClient.get<BatchResponse[]>('/api/v1/batch');
     return res.data;
   },
   createBatch: async (data: BatchCreate): Promise<BatchResponse> => {
-    const res = await apiClient.post<BatchResponse>('/api/v1/batches', data);
+    const res = await apiClient.post<BatchResponse>('/api/v1/batch', data);
     return res.data;
   },
   getBatch: async (id: string): Promise<BatchResponse> => {
-    const res = await apiClient.get<BatchResponse>(`/api/v1/batches/${id}`);
+    const res = await apiClient.get<BatchResponse>(`/api/v1/batch/${id}`);
     return res.data;
   },
   updateBatch: async (id: string, data: BatchCreate): Promise<BatchResponse> => {
-    const res = await apiClient.put<BatchResponse>(`/api/v1/batches/${id}`, data);
+    const res = await apiClient.put<BatchResponse>(`/api/v1/batch/${id}`, data);
     return res.data;
   },
   deleteBatch: async (id: string): Promise<void> => {
-    await apiClient.delete(`/api/v1/batches/${id}`);
+    await apiClient.delete(`/api/v1/batch/${id}`);
   },
   getBatchStudents: async (): Promise<BatchStudentResponse[]> => {
     const res = await apiClient.get<BatchStudentResponse[]>('/api/v1/batch-students');

@@ -1,5 +1,5 @@
 import { apiClient } from '../api/api.client';
-import { Role } from '../types/api/role.types';
+import { Role, RoleCreate, RoleUpdate } from '../types/api/role.types';
 import { roleApi } from '../api/role.api';
 
 export const roleService = {
@@ -21,17 +21,30 @@ export const roleService = {
 
   async createRole(role: Omit<Role, 'id' | 'modulesCount' | 'usersCount' | 'color' | 'bg'> & { color?: string, bg?: string }): Promise<Role> {
     try {
-      return await roleApi.createRole(role as RoleCreate);
+      // Map desc to description for backend
+      const payload: RoleCreate = {
+        name: role.name,
+        code: role.code,
+        description: role.desc,
+        is_system: false
+      };
+      return await roleApi.createRole(payload);
     } catch (error) {
-      return null as any;
+      console.error("Error creating role in service:", error);
+      throw error;
     }
   },
 
   async updateRole(id: string, updatedData: Partial<Role>): Promise<Role | undefined> {
     try {
-      return await roleApi.updateRole(id, updatedData as RoleUpdate);
+      const payload: RoleUpdate = {};
+      if (updatedData.name !== undefined) payload.name = updatedData.name;
+      if (updatedData.desc !== undefined) payload.description = updatedData.desc;
+      
+      return await roleApi.updateRole(id, payload);
     } catch (error) {
-      return undefined;
+      console.error("Error updating role in service:", error);
+      throw error;
     }
   },
 

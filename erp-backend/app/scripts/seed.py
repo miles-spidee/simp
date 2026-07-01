@@ -164,11 +164,28 @@ async def seed_modules(db: AsyncSession):
     await db.commit()
     print("Modules seeded successfully.")
 
+async def seed_roles(db: AsyncSession):
+    roles = [
+        {"name": "Admin", "code": "ADMIN", "description": "Administrator with system access"},
+        {"name": "Student", "code": "STUDENT", "description": "Standard student role"},
+        {"name": "Teacher", "code": "TEACHER", "description": "Standard teacher role"},
+        {"name": "HR", "code": "HR", "description": "Human Resources role"}
+    ]
+    from app.models.rbac.role import Role
+    for r in roles:
+        result = await db.execute(select(Role).where(Role.code == r["code"]))
+        if not result.scalars().first():
+            db.add(Role(name=r["name"], code=r["code"], description=r["description"]))
+            
+    await db.commit()
+    print("Additional roles seeded successfully.")
+
 async def main():
     async with AsyncSessionLocal() as session:
         await seed_reference_data(session)
         await seed_super_admin(session)
         await seed_modules(session)
+        await seed_roles(session)
 
 if __name__ == "__main__":
     asyncio.run(main())

@@ -3,27 +3,27 @@ import { ApplicationCreate, ApplicationResponse, ApplicationReviewRequest } from
 
 export const applicationApi = {
   submitApplication: async (data: ApplicationCreate): Promise<ApplicationResponse> => {
-    const res = await apiClient.post<ApplicationResponse>('/applications/', data);
+    const res = await apiClient.post<ApplicationResponse>('/api/v1/application/', data);
     return res.data;
   },
   getApplication: async (id: string): Promise<ApplicationResponse> => {
-    const res = await apiClient.get<ApplicationResponse>(`/applications/${id}`);
+    const res = await apiClient.get<ApplicationResponse>(`/api/v1/application/${id}`);
     return res.data;
   },
   getMyApplications: async (): Promise<ApplicationResponse[]> => {
-    const res = await apiClient.get<ApplicationResponse[]>('/applications/me/list');
+    const res = await apiClient.get<ApplicationResponse[]>('/api/v1/application/me/list');
     return res.data;
   },
   getAllApplications: async (): Promise<ApplicationResponse[]> => {
-    const res = await apiClient.get<ApplicationResponse[]>('/applications/admin/all');
+    const res = await apiClient.get<ApplicationResponse[]>('/api/v1/application/admin/all');
     return res.data;
   },
   reviewApplication: async (id: string, data: ApplicationReviewRequest): Promise<ApplicationResponse> => {
-    const res = await apiClient.patch<ApplicationResponse>(`/applications/${id}/review`, data);
+    const res = await apiClient.patch<ApplicationResponse>(`/api/v1/application/${id}/review`, data);
     return res.data;
   },
   withdrawApplication: async (id: string): Promise<ApplicationResponse> => {
-    const res = await apiClient.patch<ApplicationResponse>(`/applications/${id}/withdraw`);
+    const res = await apiClient.patch<ApplicationResponse>(`/api/v1/application/${id}/withdraw`);
     return res.data;
   }
 };

@@ -86,3 +86,13 @@ async def lock_user_account(
         account_status=result.account_status
     )
     return success_response(data=user_data.model_dump(), message="Account locked successfully")
+
+@router.delete("/{id}", response_model=APIResponse[dict])
+async def delete_user(
+    id: UUID,
+    current_user: User = Depends(require_permission("users", "delete")),
+    db: AsyncSession = Depends(get_db)
+):
+    service = UserService(db)
+    await service.delete(id=id, user_id=current_user.id)
+    return success_response(data={"deleted": True}, message="User deleted successfully")

@@ -3,22 +3,22 @@ import { Submission, SubmissionCreate, SubmissionUpdate } from '../types/api/sub
 
 export const submissionApi = {
   getSubmissions: async (): Promise<Submission[]> => {
-    const res = await apiClient.get<Submission[]>('/submissions');
+    const res = await apiClient.get<Submission[]>('/api/v1/submission');
     return res.data;
   },
 
   getSubmission: async (id: string): Promise<Submission> => {
-    const res = await apiClient.get<Submission>(`/submissions/${id}`);
+    const res = await apiClient.get<Submission>(`/api/v1/submission/${id}`);
     return res.data;
   },
 
   createSubmission: async (data: SubmissionCreate): Promise<Submission> => {
-    const res = await apiClient.post<Submission>('/submissions', data);
+    const res = await apiClient.post<Submission>('/api/v1/submission', data);
     return res.data;
   },
 
   updateSubmission: async (id: string, updates: SubmissionUpdate): Promise<Submission> => {
-    const res = await apiClient.patch<Submission>(`/submissions/${id}`, updates);
+    const res = await apiClient.patch<Submission>(`/api/v1/submission/${id}`, updates);
     return res.data;
   },
 };
