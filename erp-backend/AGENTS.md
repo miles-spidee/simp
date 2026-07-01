@@ -126,6 +126,7 @@ Verified discoveries
 - 101 SQLAlchemy models are mapped in `app/models/`.
 - 252 modules under `app.models` and `app.modules` were imported during discovery.
 - The live AWS PostgreSQL database was verified with a successful `SELECT 1` connection test.
+- Aadhaar verification metadata should be stored on `sys_verification_records` via `VerificationRecord`.
 
 ---
 

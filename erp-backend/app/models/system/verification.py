@@ -1,7 +1,9 @@
-import uuid
+from datetime import datetime
 from typing import Optional
+
+from sqlalchemy import Boolean, DateTime, String
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String, Text, ForeignKey
+
 from app.models.core.mixins import BaseModel
 
 class VerificationRecord(BaseModel):
@@ -12,4 +14,6 @@ class VerificationRecord(BaseModel):
     entity_type: Mapped[str] = mapped_column(String(100), nullable=False)
     verifier_name: Mapped[Optional[str]] = mapped_column(String(255))
     verifier_email: Mapped[Optional[str]] = mapped_column(String(255))
+    aadhaar_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    verification_date: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
     status: Mapped[str] = mapped_column(String(50), default="VERIFIED")
