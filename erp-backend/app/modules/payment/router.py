@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, Header, Request
 from sqlalchemy.ext.asyncio import AsyncSession
+from typing import Optional
 
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
@@ -75,7 +76,7 @@ async def verify_payment(
 async def razorpay_webhook(
     request: Request,
     db: AsyncSession = Depends(get_db),
-    x_razorpay_signature: str | None = Header(default=None),
+    x_razorpay_signature: Optional[str] = Header(default=None),
 ):
     payload = await request.body()
 

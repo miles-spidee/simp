@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import UTC, date, datetime, timedelta
+from datetime import timezone, date, datetime, timedelta
+UTC = timezone.utc
 from decimal import Decimal, ROUND_HALF_UP
 from typing import Any
 from uuid import UUID
