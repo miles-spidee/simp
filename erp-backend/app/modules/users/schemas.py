@@ -8,6 +8,8 @@ class UserCreate(BaseModel):
     email: str
     password: str = "ChangeMe@123"
     account_status: StatusEnum = StatusEnum.ACTIVE
+    roleId: Optional[UUID] = None
+    moduleOverrides: list[UUID] = []
 
 class UserUpdate(BaseModel):
     username: Optional[str] = None
