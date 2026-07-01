@@ -37,6 +37,23 @@ class Settings(BaseSettings):
     DIGILOCKER_REDIRECT_URI: str = "http://localhost:8000/api/v1/auth/digilocker/callback"
     DIGILOCKER_SCOPE: str = "openid profile aadhaar"
     DIGILOCKER_ISSUER: str = ""
+    
+    # ==================================================
+# TWILIO
+# ==================================================
+
+    TWILIO_ACCOUNT_SID: str = ""
+    TWILIO_AUTH_TOKEN: str = ""
+    TWILIO_PHONE_NUMBER: str = ""
+    TWILIO_WHATSAPP_NUMBER: str = ""
+
+    # ==================================================
+    # RESEND EMAIL
+    # ==================================================
+
+    RESEND_API_KEY: str = ""
+    EMAIL_FROM: str = ""
+
 
     # Razorpay
     RAZORPAY_KEY_ID: str = ""

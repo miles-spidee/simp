@@ -24,3 +24,5 @@ pytest
 httpx
 
 loguru
+
+bcrypt

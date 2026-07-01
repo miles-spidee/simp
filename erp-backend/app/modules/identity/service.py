@@ -100,11 +100,25 @@ class IdentityService(BaseService):
 
     async def forgot_password(self, data: ForgotPasswordRequest) -> dict:
         user = await self.user_repo.get_by_email(self.db, data.email)
+
         if user:
-            # Emit event to send email
-            await self.log_audit_event("FORGOT_PASSWORD_REQUEST", "User", user.id)
+            await self.log_audit_event(
+                "FORGOT_PASSWORD_REQUEST",
+                "User",
+                user.id
+            )
             await self.commit_transaction()
-            
+
+            # TODO:
+            # Generate OTP
+            # Store OTP
+            # Send Email/SMS/WhatsApp
+
+        return {
+            "success": True,
+            "message": "If an account exists, a password reset OTP has been sent."
+        }
+                
         # Always return success to prevent email enumeration
     async def verify_reset_otp(self, data: ForgotPasswordVerify) -> dict:
         # Pseudo-logic: Validate OTP against token in Redis/DB
