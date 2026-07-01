@@ -806,4 +806,15 @@ class PaymentService:
         if receipt:
             response["receipt_number"] = receipt.receipt_number
         return response
+    
+    def _require_configured(self, keys: list[str]) -> None:
+        missing = [key for key in keys if not getattr(settings, key)]
+        
+        if missing:
+            raise HTTPException(
+                status_code=503,
+                detail="Razorpay is not configured. Missing settings: "
+                + ", ".join(missing),
+                )
+            
 
