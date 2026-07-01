@@ -11,7 +11,7 @@ import {
   Lock, CheckSquare
 } from 'lucide-react';
 import { employeeService } from '@/src/services/employee.service';
-import { Employee, EmployeeDocument, TimelineEvent, EmployeeProject } from '@/src/types/employees.types';
+import { Employee, EmployeeDocument, TimelineEvent, EmployeeProject } from '@/src/data/mock-employees';
 import { useAuth } from '@/src/context/AuthContext';
 import { Drawer } from '@/components/feature/ui/Drawer';
 import { useRouter } from 'next/navigation';

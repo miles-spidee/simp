@@ -1,32 +1,16 @@
-import { apiClient } from '../api/api.client';
-import { SystemSetting, AuditLog, RolePermission } from '../types/super-admin.types';
+import { SystemSetting, AuditLog, RolePermission, MOCK_SYSTEM_SETTINGS, MOCK_AUDIT_LOGS, MOCK_ROLE_PERMISSIONS } from '../data/mock-super-admin';
 
 class SuperAdminService {
   async getSystemSettings(): Promise<SystemSetting[]> {
-    try {
-      const res = await apiClient.get('/api/v1/super-admin');
-      return res.data?.data || [];
-    } catch (error) {
-      return [];
-    }
+    return [...MOCK_SYSTEM_SETTINGS];
   }
 
   async getAuditLogs(): Promise<AuditLog[]> {
-    try {
-      const res = await apiClient.get('/api/v1/super-admin');
-      return res.data?.data || [];
-    } catch (error) {
-      return [];
-    }
+    return [...MOCK_AUDIT_LOGS];
   }
 
   async getRolePermissions(): Promise<RolePermission[]> {
-    try {
-      const res = await apiClient.get('/api/v1/super-admin');
-      return res.data?.data || [];
-    } catch (error) {
-      return [];
-    }
+    return [...MOCK_ROLE_PERMISSIONS];
   }
 }
 

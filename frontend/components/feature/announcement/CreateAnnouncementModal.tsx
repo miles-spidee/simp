@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { X, Send, Megaphone, Check } from 'lucide-react';
 import { AnnouncementService } from '@/src/services/announcement.service';
 import { NotificationService } from '@/src/services/notification.service';
-
+import { MOCK_USERS } from '@/src/data/mock-users';
 
 interface CreateAnnouncementModalProps {
   isOpen: boolean;
@@ -84,7 +84,7 @@ export default function CreateAnnouncementModal({ isOpen, onClose, onSuccess }: 
       if (form.targetType === 'roles') {
         audience = form.targetRoles;
       } else {
-        const userObj = ([] as any[]).find((u: any) => u.id === form.targetPersonId);
+        const userObj = MOCK_USERS.find(u => u.id === form.targetPersonId);
         if (userObj) {
           audience = [userObj.roleName];
           targetedUser = userObj.name;
@@ -319,9 +319,9 @@ export default function CreateAnnouncementModal({ isOpen, onClose, onSuccess }: 
                 className="w-full rounded-xl border border-border px-4 py-3 text-sm bg-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-text-primary"
               >
                 <option value="">-- Choose User --</option>
-                {[].map(u => (
-                  <option key={(u as any).id} value={(u as any).id}>
-                    {(u as any).name} ({(u as any).roleName}) - {(u as any).email}
+                {MOCK_USERS.map(u => (
+                  <option key={u.id} value={u.id}>
+                    {u.name} ({u.roleName}) - {u.email}
                   </option>
                 ))}
               </select>

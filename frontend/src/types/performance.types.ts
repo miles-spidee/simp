@@ -1,1 +1,0 @@
-import { StudentPerformance, BatchPerformance } from '../types/api/performance.types';

@@ -1,1 +1,0 @@
-import { ReportingManager } from '../types/reporting-manager.types';

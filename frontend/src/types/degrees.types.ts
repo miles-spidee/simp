@@ -1,1 +1,0 @@
-import { DegreeResponse } from '../types/api/degree.types';

@@ -1,5 +1,4 @@
-import { Permission } from '../types/api/permission.types';
-const MOCK_PERMISSIONS: any[] = [];
+import { MOCK_PERMISSIONS, Permission } from '../data/mock-permissions';
 
 export const permissionService = {
   async getPermissionsForModule(moduleId: string): Promise<string[]> {

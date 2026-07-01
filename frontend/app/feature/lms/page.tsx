@@ -4,9 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { 
   BookOpen, Play, FileText, Award, ChevronRight, Users, UserCheck
 } from 'lucide-react';
-import {  Student } from '@/src/types/students.types';
+import { MOCK_STUDENTS, Student } from '@/src/data/mock-students';
 import { Pagination } from '@/components/common/Pagination';
-const MOCK_STUDENTS: any[] = [];
 
 interface Submodule {
   id: string;

@@ -20,4 +20,9 @@ export const MOCK_ATTENDANCE_TREND: AnalyticsDataPoint[] = Array.from({ length: 
   };
 });
 
-export const MOCK_TOP_PROGRAMS: AnalyticsDimension[] = [];
+export const MOCK_TOP_PROGRAMS: AnalyticsDimension[] = [
+  { id: 'prog_1', name: 'Full Stack Web Development', value: 4500, percentage: 36 },
+  { id: 'prog_2', name: 'Data Science & AI', value: 3200, percentage: 25.6 },
+  { id: 'prog_3', name: 'Cloud Computing', value: 2800, percentage: 22.4 },
+  { id: 'prog_4', name: 'Cyber Security', value: 2000, percentage: 16 }
+];

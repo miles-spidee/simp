@@ -3,19 +3,19 @@ import { InternshipTypeCreate, InternshipTypeResponse, ProgramCreate, ProgramRes
 
 export const programApi = {
   getInternshipTypes: async (): Promise<InternshipTypeResponse[]> => {
-    const res = await apiClient.get<InternshipTypeResponse[]>('/api/v1/program/internship-types');
+    const res = await apiClient.get<InternshipTypeResponse[]>('/programs/internship-types');
     return res.data;
   },
   createInternshipType: async (data: InternshipTypeCreate): Promise<InternshipTypeResponse> => {
-    const res = await apiClient.post<InternshipTypeResponse>('/api/v1/program/internship-types', data);
+    const res = await apiClient.post<InternshipTypeResponse>('/programs/internship-types', data);
     return res.data;
   },
   getPrograms: async (): Promise<ProgramResponse[]> => {
-    const res = await apiClient.get<ProgramResponse[]>('/api/v1/program');
+    const res = await apiClient.get<ProgramResponse[]>('/programs');
     return res.data;
   },
   createProgram: async (data: ProgramCreate): Promise<ProgramResponse> => {
-    const res = await apiClient.post<ProgramResponse>('/api/v1/program', data);
+    const res = await apiClient.post<ProgramResponse>('/programs', data);
     return res.data;
   }
 };

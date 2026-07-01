@@ -1,43 +1,36 @@
-import { apiClient } from './api.client';
 import { FeeStructure } from '../types/fee.types';
-import {} from '../types/fees.types';
+import { MOCK_FEES } from '../data/mock-fees';
 
 export const feeApi = {
   getFees: async (): Promise<FeeStructure[]> => {
-    try {
-      const res = await apiClient.get('/api/v1/fee');
-      return res.data?.data || [];
-    } catch (error) {
-      return [];
-    }
+    return new Promise((resolve) => setTimeout(() => resolve([...MOCK_FEES]), 600));
   },
   getFeeById: async (id: string): Promise<FeeStructure> => {
-    try {
-      const res = await apiClient.get('/api/v1/fee');
-      return res.data?.data || null as any;
-    } catch (error) {
-      return null as any;
-    }
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const f = MOCK_FEES.find(x => x.id === id);
+        if (f) resolve(f);
+        else reject(new Error('Not found'));
+      }, 600);
+    });
   },
   createFee: async (data: Partial<FeeStructure>): Promise<FeeStructure> => {
-    try {
-      const res = await apiClient.post('/api/v1/fee', data);
-      return res.data?.data || null as any;
-    } catch (error) {
-      return null as any;
-    }
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const f = { id: `FEE-${Date.now()}`, ...data } as FeeStructure;
+        resolve(f);
+      }, 600);
+    });
   },
   updateFee: async (id: string, data: Partial<FeeStructure>): Promise<FeeStructure> => {
-    try {
-      const res = await apiClient.patch('/api/v1/fee');
-      return res.data?.data || null as any;
-    } catch (error) {
-      return null as any;
-    }
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const f = MOCK_FEES.find(x => x.id === id) || (data as FeeStructure);
+        resolve({ ...f, ...data });
+      }, 600);
+    });
   },
   deleteFee: async (id: string): Promise<void> => {
-    try {
-      await apiClient.delete(`/api/v1/fee/${id}`);
-    } catch (error) {}
+    return new Promise((resolve) => setTimeout(() => resolve(), 600));
   }
 };

@@ -8,9 +8,9 @@ import {
   Sparkles, MapPin, GraduationCap, Eye, BookOpen, AlertCircle, Layers
 } from 'lucide-react';
 import { applicationService } from '@/src/services/application.service';
-import { Application, ApplicationStatus } from '@/src/types/applications.types';
+import { Application, ApplicationStatus } from '@/src/data/mock-applications';
 import { opportunitiesService } from '@/src/services/opportunities.service';
-import { Opportunity } from '@/src/types/opportunities.types';
+import { Opportunity } from '@/src/data/mock-opportunities';
 import { AddCandidateDrawer } from '@/components/feature/application/AddCandidateDrawer';
 import { Drawer } from '@/components/feature/ui/Drawer';
 import { useRouter } from 'next/navigation';

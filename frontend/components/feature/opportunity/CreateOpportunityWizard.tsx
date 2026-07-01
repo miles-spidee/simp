@@ -7,7 +7,7 @@ import { Button } from '@/components/feature/ui/Button';
 import { Card } from '@/components/feature/ui/Card';
 import { ChevronRight, ChevronLeft, Briefcase, Calendar, MapPin, Users, Info, DollarSign } from 'lucide-react';
 import { opportunitiesService } from '@/src/services/opportunities.service';
-import { Opportunity } from '@/src/types/opportunities.types';
+import { Opportunity } from '@/src/data/mock-opportunities';
 
 interface CreateOpportunityWizardProps {
   isOpen: boolean;

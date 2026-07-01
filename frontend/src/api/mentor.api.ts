@@ -3,42 +3,42 @@ import { MentorProfile, MentorCreate, MentorUpdate, MentorAssignment, MentorAssi
 
 export const mentorApi = {
   getMentorProfiles: async (): Promise<MentorProfile[]> => {
-    const res = await apiClient.get<MentorProfile[]>('/api/v1/mentor/profiles');
+    const res = await apiClient.get<MentorProfile[]>('/mentors/profiles');
     return res.data;
   },
 
   getMentorProfile: async (id: string): Promise<MentorProfile> => {
-    const res = await apiClient.get<MentorProfile>(`/api/v1/mentor/profiles/${id}`);
+    const res = await apiClient.get<MentorProfile>(`/mentors/profiles/${id}`);
     return res.data;
   },
 
   createMentorProfile: async (data: MentorCreate): Promise<MentorProfile> => {
-    const res = await apiClient.post<MentorProfile>('/api/v1/mentor/profiles', data);
+    const res = await apiClient.post<MentorProfile>('/mentors/profiles', data);
     return res.data;
   },
 
   updateMentorProfile: async (id: string, updates: MentorUpdate): Promise<MentorProfile> => {
-    const res = await apiClient.patch<MentorProfile>(`/api/v1/mentor/profiles/${id}`, updates);
+    const res = await apiClient.patch<MentorProfile>(`/mentors/profiles/${id}`, updates);
     return res.data;
   },
 
   getAssignments: async (): Promise<MentorAssignment[]> => {
-    const res = await apiClient.get<MentorAssignment[]>('/api/v1/mentor/assignments');
+    const res = await apiClient.get<MentorAssignment[]>('/mentors/assignments');
     return res.data;
   },
 
   createAssignment: async (data: MentorAssignmentCreate): Promise<MentorAssignment> => {
-    const res = await apiClient.post<MentorAssignment>('/api/v1/mentor/assignments', data);
+    const res = await apiClient.post<MentorAssignment>('/mentors/assignments', data);
     return res.data;
   },
 
   getBatchMappings: async (): Promise<MentorBatchMapping[]> => {
-    const res = await apiClient.get<MentorBatchMapping[]>('/api/v1/mentor/batch-mappings');
+    const res = await apiClient.get<MentorBatchMapping[]>('/mentors/batch-mappings');
     return res.data;
   },
 
   createBatchMapping: async (data: MentorBatchMappingCreate): Promise<MentorBatchMapping> => {
-    const res = await apiClient.post<MentorBatchMapping>('/api/v1/mentor/batch-mappings', data);
+    const res = await apiClient.post<MentorBatchMapping>('/mentors/batch-mappings', data);
     return res.data;
   },
 };

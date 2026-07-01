@@ -20,4 +20,21 @@ export const MOCK_MARKETPLACE: MarketplaceOpportunity[] = Array.from({ length: 5
   applicantsCount: Math.floor(Math.random() * 200)
 }));
 
-export const MOCK_MARKETPLACE_APPLICATIONS: MarketplaceApplication[] = [];
+export const MOCK_MARKETPLACE_APPLICATIONS: MarketplaceApplication[] = [
+  {
+    id: 'APP-1001',
+    opportunityId: 'OPP-5000',
+    studentId: 'STU-123',
+    status: 'Interview',
+    appliedDate: new Date().toISOString(),
+    matchScore: 92
+  },
+  {
+    id: 'APP-1002',
+    opportunityId: 'OPP-5002',
+    studentId: 'STU-123',
+    status: 'Under Review',
+    appliedDate: new Date(Date.now() - 86400000).toISOString(),
+    matchScore: 85
+  }
+];

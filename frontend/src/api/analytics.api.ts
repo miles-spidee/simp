@@ -1,56 +1,14 @@
-import { apiClient } from './api.client';
 import { AnalyticsSummary, AnalyticsDataPoint, AnalyticsDimension } from '../types/analytics.types';
-import {} from '../types/analytics.types';
+import { MOCK_ANALYTICS_SUMMARY, MOCK_ATTENDANCE_TREND, MOCK_TOP_PROGRAMS } from '../data/mock-analytics';
 
 export const AnalyticsApi = {
   getSummary: async (): Promise<AnalyticsSummary> => {
-    try {
-      const res = await apiClient.get('/api/v1/analytics');
-      if (res.data?.data && !Array.isArray(res.data.data) && Object.keys(res.data.data).length > 0) {
-        return res.data.data;
-      }
-      throw new Error("Invalid backend data");
-    } catch (error) {
-      return {
-        totalStudents: 1450,
-        activeInterns: 320,
-        completionRate: 85,
-        attendanceRate: 92,
-        averageScore: 78,
-        placementRate: 65,
-        revenue: 450000,
-        certificatesIssued: 1200
-      };
-    }
+    return new Promise((resolve) => setTimeout(() => resolve(MOCK_ANALYTICS_SUMMARY), 600));
   },
   getAttendanceTrend: async (): Promise<AnalyticsDataPoint[]> => {
-    try {
-      const res = await apiClient.get('/api/v1/analytics');
-      if (res.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
-        return res.data.data;
-      }
-      throw new Error("Invalid backend data");
-    } catch (error) {
-      return Array.from({ length: 30 }, (_, i) => ({
-        date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000).toISOString(),
-        value: 75 + Math.random() * 20
-      }));
-    }
+    return new Promise((resolve) => setTimeout(() => resolve(MOCK_ATTENDANCE_TREND), 600));
   },
   getTopPrograms: async (): Promise<AnalyticsDimension[]> => {
-    try {
-      const res = await apiClient.get('/api/v1/analytics');
-      if (res.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
-        return res.data.data;
-      }
-      throw new Error("Invalid backend data");
-    } catch (error) {
-      return [
-        { id: '1', name: 'Computer Science', value: 450, percentage: 35 },
-        { id: '2', name: 'Business Admin', value: 320, percentage: 25 },
-        { id: '3', name: 'Engineering', value: 280, percentage: 22 },
-        { id: '4', name: 'Data Science', value: 150, percentage: 12 }
-      ];
-    }
+    return new Promise((resolve) => setTimeout(() => resolve(MOCK_TOP_PROGRAMS), 600));
   }
 };

@@ -30,4 +30,8 @@ export const MOCK_TICKETS: Ticket[] = Array.from({ length: 50 }).map((_, i) => (
   ]
 }));
 
-export const MOCK_KB_ARTICLES: KnowledgeBaseArticle[] = [];
+export const MOCK_KB_ARTICLES: KnowledgeBaseArticle[] = [
+  { id: 'KB-1', title: 'How to reset your password', category: 'Login', content: 'Go to the login page and click forgot password.', views: 1250, helpfulCount: 890 },
+  { id: 'KB-2', title: 'Understanding your payslip', category: 'Payment', content: 'Payslips are generated on the 1st of every month.', views: 800, helpfulCount: 450 },
+  { id: 'KB-3', title: 'How to download your certificate', category: 'Certificate', content: 'Navigate to Self-Service > Certificates and click Download.', views: 3200, helpfulCount: 2100 },
+];

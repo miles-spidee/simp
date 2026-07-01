@@ -3,7 +3,7 @@
 import React, { createContext, useMemo } from 'react';
 import { useAuth } from './AuthContext';
 import type { Module } from '../types/api/module.types';
-import { ROUTE_MODULE_MAP } from '../types/permissions.types';
+import { ROUTE_MODULE_MAP } from '../data/mock-permissions';
 
 interface PermissionContextType {
   modules: Module[];

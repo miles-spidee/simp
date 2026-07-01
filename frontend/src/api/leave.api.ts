@@ -3,12 +3,12 @@ import { LeaveRequest } from '../types/leave.types';
 
 export const leaveApi = {
   getAllLeaves: async (): Promise<LeaveRequest[]> => {
-    const res = await apiClient.get<LeaveRequest[]>('/api/v1/leave');
+    const res = await apiClient.get<LeaveRequest[]>('/leaves');
     return res.data;
   },
   
   getLeaveById: async (id: string): Promise<LeaveRequest> => {
-    const res = await apiClient.get<LeaveRequest>(`/api/v1/leave/${id}`);
+    const res = await apiClient.get<LeaveRequest>(`/leaves/${id}`);
     return res.data;
   },
 
@@ -18,7 +18,7 @@ export const leaveApi = {
   },
   
   createLeave: async (leave: Omit<LeaveRequest, 'id'>): Promise<LeaveRequest> => {
-    const res = await apiClient.post<LeaveRequest>('/api/v1/leave', leave);
+    const res = await apiClient.post<LeaveRequest>('/leaves', leave);
     return res.data;
   }
 };

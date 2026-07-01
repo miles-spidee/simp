@@ -5,7 +5,7 @@ import { Badge } from '@/components/feature/ui/Badge';
 import { EnhancedTable } from '@/components/feature/ui/Table';
 import { Plus, Settings, ToggleLeft, ToggleRight } from 'lucide-react';
 import { moduleService } from '@/src/services/module.service';
-import { Module } from '@/src/types/modules.types';
+import { Module } from '@/src/data/mock-modules';
 import { FEATURE_REGISTRY } from '@/src/core/features/feature-registry';
 
 export default function ModuleRegistryPage() {
@@ -23,7 +23,7 @@ export default function ModuleRegistryPage() {
     try {
       setLoading(true);
       const data = await moduleService.getModules();
-      setModules([...data as any]);
+      setModules([...data]);
     } catch (err) {
       console.error('Failed to load modules list', err);
     } finally {
@@ -36,7 +36,7 @@ export default function ModuleRegistryPage() {
   }, []);
 
   const handleToggleStatus = async (module: Module) => {
-    const newStatus = !module.status;
+    const newStatus = !module.active;
     try {
       setModules(prev => prev.map(m => m.id === module.id ? { ...m, active: newStatus } : m));
       await moduleService.updateModule(module.id, { active: newStatus });
@@ -122,7 +122,7 @@ export default function ModuleRegistryPage() {
                 </div>
                 <div>
                   <span className="font-semibold text-text-primary block">{m.name}</span>
-                  <span className="text-[11px] text-text-secondary block max-w-[200px] truncate">{(m as any).description || (m as any).desc || 'No description provided.'}</span>
+                  <span className="text-[11px] text-text-secondary block max-w-[200px] truncate">{m.desc || 'No description provided.'}</span>
                 </div>
               </div>
             )
@@ -133,7 +133,7 @@ export default function ModuleRegistryPage() {
           {
             key: 'active',
             label: 'Status',
-            render: (m) => <Badge variant={(m as any).active ? "success" : "secondary"}>{(m as any).active ? "Enabled" : "Disabled"}</Badge>
+            render: (m) => <Badge variant={m.active ? "success" : "secondary"}>{m.active ? "Enabled" : "Disabled"}</Badge>
           },
           {
             key: 'actions',
@@ -142,10 +142,10 @@ export default function ModuleRegistryPage() {
             render: (m) => (
               <button
                 onClick={() => handleToggleStatus(m)}
-                className={`p-1 transition-colors inline-flex items-center justify-center ${(m as any).active ? 'text-emerald-600 hover:text-red-500' : 'text-text-secondary hover:text-emerald-500'}`}
-                title={(m as any).active ? "Disable Module" : "Enable Module"}
+                className={`p-1 transition-colors inline-flex items-center justify-center ${m.active ? 'text-emerald-600 hover:text-red-500' : 'text-text-secondary hover:text-emerald-500'}`}
+                title={m.active ? "Disable Module" : "Enable Module"}
               >
-                {(m as any).active ? <ToggleRight className="h-6 w-6" /> : <ToggleLeft className="h-6 w-6" />}
+                {m.active ? <ToggleRight className="h-6 w-6" /> : <ToggleLeft className="h-6 w-6" />}
               </button>
             )
           },

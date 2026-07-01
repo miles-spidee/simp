@@ -1,1 +1,0 @@
-import { DigitalIDCard } from '../types/idcard.types';

@@ -1,22 +1,11 @@
-import { apiClient } from './api.client';
 import { ExportJob, ExportSchedule } from '../types/export.types';
-import {} from '../types/exports.types';
+import { MOCK_EXPORT_JOBS, MOCK_EXPORT_SCHEDULES } from '../data/mock-exports';
 
 export const ExportApi = {
   getExportJobs: async (): Promise<ExportJob[]> => {
-    try {
-      const res = await apiClient.get('/api/v1/export');
-      return res.data?.data || [];
-    } catch (error) {
-      return [];
-    }
+    return new Promise((resolve) => setTimeout(() => resolve(MOCK_EXPORT_JOBS), 600));
   },
   getExportSchedules: async (): Promise<ExportSchedule[]> => {
-    try {
-      const res = await apiClient.get('/api/v1/export');
-      return res.data?.data || [];
-    } catch (error) {
-      return [];
-    }
+    return new Promise((resolve) => setTimeout(() => resolve(MOCK_EXPORT_SCHEDULES), 600));
   }
 };

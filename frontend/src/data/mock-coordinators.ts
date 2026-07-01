@@ -1,5 +1,10 @@
 import { Coordinator, CollegeReport } from '../types/api/coordinator.types';
 
-export const MOCK_COORDINATORS: Coordinator[] = [];
+export const MOCK_COORDINATORS: Coordinator[] = [
+  { id: 'coord-1', employeeId: 'emp-5', collegeId: 'col-1', name: 'Alice Smith', email: 'alice.s@example.com', phone: '1234567890', assignedStudentsCount: 150, activeBatchesCount: 3, placementsCount: 45, status: 'Active' },
+  { id: 'coord-2', employeeId: 'emp-6', collegeId: 'col-2', name: 'Bob Johnson', email: 'bob.j@example.com', phone: '0987654321', assignedStudentsCount: 200, activeBatchesCount: 4, placementsCount: 60, status: 'Active' }
+];
 
-export const MOCK_COLLEGE_REPORTS: CollegeReport[] = [];
+export const MOCK_COLLEGE_REPORTS: CollegeReport[] = [
+  { id: 'rep-1', coordinatorId: 'coord-1', collegeId: 'col-1', month: 'November', year: 2023, fileId: 'file-1' },
+];

@@ -1,4 +1,4 @@
-import { User } from '@/src/types/api/user.types';
+import { User } from '@/src/data/mock-users';
 
 export interface ResolvedScope {
   isSuperAdmin: boolean;

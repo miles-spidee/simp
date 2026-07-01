@@ -1,1 +1,0 @@
-import { Ticket, KnowledgeBaseArticle } from '../types/helpdesk.types';

@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/feature/
 import { Button } from '@/components/feature/ui/Button';
 import { Search, Plus, Shield, Users, Edit, Trash, Eye } from 'lucide-react';
 import { CreateRoleWizard } from '../../../components/feature/roles/CreateRoleWizard';
-import { Role } from '@/src/types/api/role.types';
+import { Role } from '@/src/data/mock-roles';
 import { roleService } from '@/src/services/role.service';
 import { Pagination } from '@/components/common/Pagination';
 

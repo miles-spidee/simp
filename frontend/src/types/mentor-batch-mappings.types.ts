@@ -1,1 +1,0 @@
-import { MentorBatchMapping } from '../types/api/mentor.types';

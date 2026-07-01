@@ -10,7 +10,7 @@ import {
   PlusSquare, ArrowRight, Layers
 } from 'lucide-react';
 import { batchService } from '@/src/services/batch.service';
-import { Batch, BatchStudent, BatchTimelineEvent, BatchProject } from '@/src/types/batches.types';
+import { Batch, BatchStudent, BatchTimelineEvent, BatchProject } from '@/src/data/mock-batches';
 import { useAuth } from '@/src/context/AuthContext';
 import { Drawer } from '@/components/feature/ui/Drawer';
 import { EnhancedTable } from '@/components/feature/ui/Table';

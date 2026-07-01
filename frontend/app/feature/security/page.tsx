@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Shield, ShieldAlert, Key, Activity, AlertTriangle, CheckCircle2, Lock, Monitor, Search, Smartphone, Clock, AlertCircle } from 'lucide-react';
 import { sessionService } from '@/src/services/session.service';
-import { UserSession } from '@/src/types/user-sessions.types';
+import { UserSession } from '@/src/data/mock-user-sessions';
 import { EnhancedTable } from '@/components/feature/ui/Table';
 
 export default function SecurityCenterPage() {

@@ -1,6 +1,9 @@
 import { GeneratedDocument, DocumentTemplate } from '../types/document.types';
 
-export const MOCK_DOCUMENT_TEMPLATES: DocumentTemplate[] = [];
+export const MOCK_DOCUMENT_TEMPLATES: DocumentTemplate[] = [
+  { id: 'tpl_1', name: 'Standard Offer Letter', type: 'Offer Letter', description: 'Default offer letter for all interns.', version: 'v1.2', variables: ['{{studentName}}', '{{program}}', '{{startDate}}', '{{stipend}}'], lastUpdated: new Date().toISOString() },
+  { id: 'tpl_2', name: 'Completion Certificate Standard', type: 'Completion Certificate', description: 'Standard completion certificate design.', version: 'v2.0', variables: ['{{studentName}}', '{{program}}', '{{endDate}}', '{{grade}}'], lastUpdated: new Date().toISOString() },
+];
 
 export const MOCK_GENERATED_DOCUMENTS: GeneratedDocument[] = Array.from({ length: 500 }).map((_, i) => {
   const statuses: any[] = ['Draft', 'Generated', 'Sent', 'Signed'];

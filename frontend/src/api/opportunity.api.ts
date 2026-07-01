@@ -3,33 +3,33 @@ import { OpeningCreate, OpeningResponse, OpeningMentorCreate, OpeningMentorRespo
 
 export const opportunityApi = {
   getOpenings: async (): Promise<OpeningResponse[]> => {
-    const res = await apiClient.get<OpeningResponse[]>('/api/v1/opportunity');
+    const res = await apiClient.get<OpeningResponse[]>('/openings');
     return res.data;
   },
   createOpening: async (data: OpeningCreate): Promise<OpeningResponse> => {
-    const res = await apiClient.post<OpeningResponse>('/api/v1/opportunity', data);
+    const res = await apiClient.post<OpeningResponse>('/openings', data);
     return res.data;
   },
   getOpening: async (id: string): Promise<OpeningResponse> => {
-    const res = await apiClient.get<OpeningResponse>(`/api/v1/opportunity/${id}`);
+    const res = await apiClient.get<OpeningResponse>(`/openings/${id}`);
     return res.data;
   },
   updateOpening: async (id: string, data: OpeningCreate): Promise<OpeningResponse> => {
-    const res = await apiClient.put<OpeningResponse>(`/api/v1/opportunity/${id}`, data);
+    const res = await apiClient.put<OpeningResponse>(`/openings/${id}`, data);
     return res.data;
   },
   deleteOpening: async (id: string): Promise<void> => {
-    await apiClient.delete(`/api/v1/opportunity/${id}`);
+    await apiClient.delete(`/openings/${id}`);
   },
   getOpeningMentors: async (openingId: string): Promise<OpeningMentorResponse[]> => {
-    const res = await apiClient.get<OpeningMentorResponse[]>(`/api/v1/opportunity/${openingId}/mentors`);
+    const res = await apiClient.get<OpeningMentorResponse[]>(`/openings/${openingId}/mentors`);
     return res.data;
   },
   assignMentor: async (openingId: string, data: OpeningMentorCreate): Promise<OpeningMentorResponse> => {
-    const res = await apiClient.post<OpeningMentorResponse>(`/api/v1/opportunity/${openingId}/mentors`, data);
+    const res = await apiClient.post<OpeningMentorResponse>(`/openings/${openingId}/mentors`, data);
     return res.data;
   },
   removeMentor: async (openingId: string, employeeId: string): Promise<void> => {
-    await apiClient.delete(`/api/v1/opportunity/${openingId}/mentors/${employeeId}`);
+    await apiClient.delete(`/openings/${openingId}/mentors/${employeeId}`);
   }
 };

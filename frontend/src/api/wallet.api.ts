@@ -1,22 +1,11 @@
-import { apiClient } from './api.client';
 import { WalletTransaction, WalletSummary } from '../types/wallet.types';
-import {} from '../types/wallet.types';
+import { MOCK_WALLET_TRANSACTIONS, MOCK_WALLET_SUMMARY } from '../data/mock-wallet';
 
 export const walletApi = {
   getTransactions: async (): Promise<WalletTransaction[]> => {
-    try {
-      const res = await apiClient.get('/api/v1/wallet');
-      return res.data?.data || [];
-    } catch (error) {
-      return [];
-    }
+    return new Promise((resolve) => setTimeout(() => resolve([...MOCK_WALLET_TRANSACTIONS]), 600));
   },
   getSummary: async (): Promise<WalletSummary> => {
-    try {
-      const res = await apiClient.get('/api/v1/wallet');
-      return res.data?.data || null as any;
-    } catch (error) {
-      return null as any;
-    }
+    return new Promise((resolve) => setTimeout(() => resolve(MOCK_WALLET_SUMMARY), 600));
   }
 };

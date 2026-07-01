@@ -1,6 +1,11 @@
 import { ReportRecord, ReportTemplate } from '../types/report.types';
 
-export const MOCK_REPORT_TEMPLATES: ReportTemplate[] = [];
+export const MOCK_REPORT_TEMPLATES: ReportTemplate[] = [
+  { id: 'tpl_1', name: 'Monthly Attendance Summary', category: 'Attendance', description: 'Aggregated attendance for all batches.' },
+  { id: 'tpl_2', name: 'Placement Success Rate', category: 'Placement', description: 'Placement statistics by program.' },
+  { id: 'tpl_3', name: 'Financial Revenue Report', category: 'Finance', description: 'Monthly revenue and fee collection.' },
+  { id: 'tpl_4', name: 'Student Performance Evaluation', category: 'Performance', description: 'Detailed performance metrics per student.' },
+];
 
 export const MOCK_REPORTS: ReportRecord[] = Array.from({ length: 50 }).map((_, i) => ({
   id: `rep_${i + 1}`,

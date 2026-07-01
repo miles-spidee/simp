@@ -1,1 +1,0 @@
-import { Certificate } from '../types/certificate.types';

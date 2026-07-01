@@ -10,9 +10,9 @@ import {
   RefreshCw, CheckSquare, MessageSquare, BookOpen, FileDown
 } from 'lucide-react';
 import { programService } from '@/src/services/program.service';
-import { Program, CurriculumModule, ProgramEnrollment, ProgramMentor, ProgramTimelineEvent, ProgramMetadata } from '@/src/types/programs.types';
+import { Program, CurriculumModule, ProgramEnrollment, ProgramMentor, ProgramTimelineEvent, ProgramMetadata } from '@/src/data/mock-programs';
 import { organizationService } from '@/src/services/organization.service';
-import { Organization } from '@/src/types/organizations.types';
+import { Organization } from '@/src/data/mock-organizations';
 import { useAuth } from '@/src/context/AuthContext';
 import { Drawer } from '@/components/feature/ui/Drawer';
 import { PermissionGuard } from '@/components/feature/ui/PermissionGuard';

@@ -1,41 +1,24 @@
-import { apiClient } from './api.client';
 import { EscalationRule, EscalationLog } from '../types/escalation.types';
-import {} from '../types/escalations.types';
+import { MOCK_ESCALATION_RULES, MOCK_ESCALATIONS } from '../data/mock-escalations';
 
 export const escalationApi = {
   getRules: async (): Promise<EscalationRule[]> => {
-    try {
-      const res = await apiClient.get('/api/v1/escalation');
-      return res.data?.data || [];
-    } catch (error) {
-      return [];
-    }
+    return Promise.resolve([...MOCK_ESCALATION_RULES]);
   },
   
   getEscalations: async (): Promise<EscalationLog[]> => {
-    try {
-      const res = await apiClient.get('/api/v1/escalation');
-      return res.data?.data || [];
-    } catch (error) {
-      return [];
-    }
+    return Promise.resolve([...MOCK_ESCALATIONS]);
   },
   
   getEscalationById: async (id: string): Promise<EscalationLog | undefined> => {
-    try {
-      const res = await apiClient.get('/api/v1/escalation');
-      return res.data?.data || null as any;
-    } catch (error) {
-      return null as any;
-    }
+    return Promise.resolve(MOCK_ESCALATIONS.find(e => e.id === id));
   },
   
   updateEscalationStatus: async (id: string, status: 'Pending' | 'Resolved' | 'Ignored'): Promise<void> => {
-    try {
-      const res = await apiClient.patch('/api/v1/escalation');
-      return res.data?.data || null as any;
-    } catch (error) {
-      return null as any;
+    const index = MOCK_ESCALATIONS.findIndex(e => e.id === id);
+    if (index !== -1) {
+      MOCK_ESCALATIONS[index].status = status;
     }
+    return Promise.resolve();
   }
 };
