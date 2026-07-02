@@ -132,11 +132,11 @@ def string_value(table_name: str, column_name: str, index: int) -> str:
         return f"{humanize(table_name)} {humanize(column_name)} {index + 1}"
     if column_name in {"description", "content", "content_html", "html_body", "message", "answer", "feedback", "comments", "mitigation"}:
         return f"Sample {humanize(table_name)} {index + 1} {humanize(column_name)}."
-    if column_name in {"code", "username", "enrollment_number", "employee_code", "transaction_id", "receipt_number", "invoice_number", "certificate_number"}:
+    if column_name in {"code", "username", "enrollment_number", "employee_code", "transaction_id", "receipt_number", "invoice_number", "certificate_number", "razorpay_order_id", "razorpay_payment_id", "razorpay_signature", "receipt", "customer_name"}:
         return f"{prefix}-{column_name}-{index + 1:03d}"
-    if column_name in {"email", "verifier_email", "recipient_email"}:
+    if column_name in {"email", "customer_email", "verifier_email", "recipient_email"}:
         return f"{prefix}.{index + 1}@example.com"
-    if column_name == "phone":
+    if column_name in {"phone", "customer_contact"}:
         return f"+91-90000{index + 100:04d}"
     if column_name in {"website", "file_url", "logo_url", "profile_image_url", "front_design_url", "back_design_url", "video_url", "push_notification_token"}:
         return f"https://example.com/{prefix}/{index + 1}"
@@ -183,7 +183,7 @@ def string_value(table_name: str, column_name: str, index: int) -> str:
             "alum_interviews": "SCHEDULED",
             "analytics_summaries": "ACTIVE",
             "fin_invoices": "UNPAID",
-            "fin_payment_transactions": "SUCCESS",
+            "fin_payment_transactions": ["created", "authorized", "captured", "failed", "refunded"][index % 5],
             "fin_receipts": "PAID",
             "intern_applications": "PENDING",
             "intern_assessments": "DRAFT",
@@ -211,7 +211,7 @@ def string_value(table_name: str, column_name: str, index: int) -> str:
     if column_name == "module_name":
         return ["dashboard", "users", "attendance", "reports", "notifications"][index % 5]
     if column_name == "payment_method":
-        return ["UPI", "CARD", "NETBANKING", "CASH"][index % 4]
+        return ["upi", "card", "netbanking", "wallet"][index % 4]
     if column_name == "change_type":
         return ["increase", "decrease", "neutral"][index % 3]
     if column_name == "risk_level":
@@ -224,6 +224,8 @@ def string_value(table_name: str, column_name: str, index: int) -> str:
         return "student_profile"
     if column_name == "aadhaar_number":
         return f"{100000000000 + index:012d}"
+    if column_name == "currency":
+        return "INR"
     if column_name == "graduation_year":
         return date.today().year - 1
     if column_name == "country":
@@ -240,7 +242,7 @@ def string_value(table_name: str, column_name: str, index: int) -> str:
 def numeric_value(column_name: str, index: int) -> Any:
     if column_name in {"version_id"}:
         return 1
-    if column_name in {"is_active", "email_verified", "phone_verified", "is_trusted", "is_verified", "is_system"}:
+    if column_name in {"is_active", "email_verified", "phone_verified", "is_trusted", "is_verified", "is_system", "refund"}:
         return True
     if column_name in {"is_pinned", "is_revoked"}:
         return index % 2 == 1
@@ -258,7 +260,7 @@ def numeric_value(column_name: str, index: int) -> Any:
 
 
 def temporal_value(column_name: str, index: int) -> Any:
-    if column_name in {"created_at", "updated_at", "login_time", "last_activity_at", "publish_date", "scheduled_time", "payment_date", "verification_date", "expiry_date", "expires_at", "end_date", "logout_time", "account_locked_until", "issue_date", "drive_date", "joining_date", "start_date", "due_date"}:
+    if column_name in {"created_at", "updated_at", "login_time", "last_activity_at", "publish_date", "scheduled_time", "payment_date", "verification_date", "expiry_date", "expires_at", "end_date", "logout_time", "account_locked_until", "issue_date", "drive_date", "joining_date", "start_date", "due_date", "razorpay_created_at"}:
         if column_name in {"issue_date", "drive_date", "joining_date", "start_date", "due_date"}:
             return date.today() - timedelta(days=30 - index)
         if column_name == "end_date":
@@ -272,7 +274,7 @@ def temporal_value(column_name: str, index: int) -> Any:
 
 
 def json_value(column_name: str, index: int) -> Any:
-    if column_name in {"variables", "skills", "notification_preferences", "accessibility_settings", "dashboard_layout"}:
+    if column_name in {"variables", "skills", "notification_preferences", "accessibility_settings", "dashboard_layout", "notes"}:
         return {"sample": True, "index": index}
     return None
 
@@ -305,7 +307,7 @@ def build_generic_rows(table, state: dict[str, list[Any]], desired_count: int = 
                 value = resolve_fk_value(column, index, state)
             elif column.name in {"description", "content", "content_html", "html_body", "message", "answer", "feedback", "comments", "mitigation"}:
                 value = string_value(table.name, column.name, index)
-            elif column.name in {"name", "title", "subject", "question", "code", "username", "enrollment_number", "employee_code", "transaction_id", "receipt_number", "invoice_number", "certificate_number", "email", "verifier_email", "recipient_email", "phone", "website", "file_url", "logo_url", "profile_image_url", "front_design_url", "back_design_url", "video_url", "push_notification_token", "ip_address", "user_agent", "browser", "operating_system", "platform", "category", "theme", "purpose", "result", "type", "priority", "status", "action", "module_name", "payment_method", "change_type", "risk_level", "format", "account_status", "entity_type", "aadhaar_number", "country", "state", "city", "postal_code"}:
+            elif column.name in {"name", "title", "subject", "question", "code", "username", "enrollment_number", "employee_code", "transaction_id", "razorpay_order_id", "razorpay_payment_id", "razorpay_signature", "receipt", "customer_name", "receipt_number", "invoice_number", "certificate_number", "email", "customer_email", "verifier_email", "recipient_email", "phone", "customer_contact", "website", "file_url", "logo_url", "profile_image_url", "front_design_url", "back_design_url", "video_url", "push_notification_token", "ip_address", "user_agent", "browser", "operating_system", "platform", "category", "theme", "purpose", "result", "type", "priority", "status", "action", "module_name", "payment_method", "change_type", "risk_level", "format", "account_status", "entity_type", "aadhaar_number", "country", "state", "city", "postal_code", "currency"}:
                 value = string_value(table.name, column.name, index)
             elif column.name in {"is_active", "email_verified", "phone_verified", "is_trusted", "is_verified", "is_system", "is_pinned", "is_revoked", "is_current", "is_mentoring", "is_primary_contact", "is_available"}:
                 value = numeric_value(column.name, index)
@@ -315,7 +317,7 @@ def build_generic_rows(table, state: dict[str, list[Any]], desired_count: int = 
                 value = numeric_value(column.name, index)
             elif column.name in {"created_at", "updated_at", "login_time", "last_activity_at", "publish_date", "scheduled_time", "payment_date", "verification_date", "expires_at", "expiry_date", "end_date", "logout_time", "account_locked_until", "issue_date", "drive_date", "joining_date", "start_date", "due_date", "date"}:
                 value = temporal_value(column.name, index)
-            elif column.name in {"variables", "skills", "notification_preferences", "accessibility_settings", "dashboard_layout"}:
+            elif column.name in {"variables", "skills", "notification_preferences", "accessibility_settings", "dashboard_layout", "notes"}:
                 value = json_value(column.name, index)
             elif column.name == "graduation_year":
                 value = date.today().year - 1

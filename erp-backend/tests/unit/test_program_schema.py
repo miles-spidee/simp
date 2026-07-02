@@ -1,4 +1,7 @@
+from uuid import UUID
+
 from app.modules.program.schemas import ProgramCreate
+from app.modules.application.schemas import ApplicationCreate
 
 
 def test_program_create_accepts_frontend_payload_and_normalizes_fields():
