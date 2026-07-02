@@ -1,9 +1,19 @@
-from sqlalchemy.ext.asyncio import AsyncSession
 from app.repositories.base import BaseRepository
-from app.modules.mentor.schemas import MentorCreate, MentorUpdate
-# TODO: Import correct Model
-# from app.models... import Model
+from app.models.profiles.mentor_profile import MentorProfile
+from app.modules.mentor.schemas import MentorProfileCreate, MentorProfileUpdate
 
-class MentorRepository(BaseRepository): # Pass generic types Model, Create, Update
-    def __init__(self, db: AsyncSession):
-        pass # super().__init__(Model)
+
+class MentorProfileRepository(
+    BaseRepository[
+        MentorProfile,
+        MentorProfileCreate,
+        MentorProfileUpdate,
+    ]
+):
+    def __init__(self):
+        super().__init__(
+            MentorProfile,
+            search_fields=[
+                "expertise",
+            ],
+        )

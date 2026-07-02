@@ -1,9 +1,24 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.services.base import BaseService
-from app.modules.mentor.repository import MentorRepository
-from app.modules.mentor.schemas import MentorCreate, MentorUpdate
 
-class MentorService(BaseService):
+from app.models.profiles.mentor_profile import MentorProfile
+from app.modules.mentor.repository import MentorProfileRepository
+from app.modules.mentor.schemas import (
+    MentorProfileCreate,
+    MentorProfileUpdate,
+)
+from app.services.base import BaseCRUDService
+
+
+class MentorProfileService(
+    BaseCRUDService[
+        MentorProfile,
+        MentorProfileCreate,
+        MentorProfileUpdate,
+    ]
+):
+
     def __init__(self, db: AsyncSession):
-        repo = MentorRepository(db)
-        super().__init__(repo)
+        super().__init__(
+            db=db,
+            repository=MentorProfileRepository(),
+        )

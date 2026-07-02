@@ -1,9 +1,22 @@
-from sqlalchemy.ext.asyncio import AsyncSession
 from app.repositories.base import BaseRepository
-from app.modules.allocation.schemas import AllocationCreate, AllocationUpdate
-# TODO: Import correct Model
-# from app.models... import Model
+from app.models.internships.mentor_assignment import MentorAssignment
+from app.modules.allocation.schemas import (
+    AllocationCreate,
+    AllocationUpdate,
+)
 
-class AllocationRepository(BaseRepository): # Pass generic types Model, Create, Update
-    def __init__(self, db: AsyncSession):
-        pass # super().__init__(Model)
+
+class AllocationRepository(
+    BaseRepository[
+        MentorAssignment,
+        AllocationCreate,
+        AllocationUpdate,
+    ]
+):
+    def __init__(self):
+        super().__init__(
+            MentorAssignment,
+            search_fields=[
+                "status",
+            ],
+        )
