@@ -1,31 +1,32 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter
 
 router = APIRouter()
 
 @router.get("/")
-async def list_wallet():
-    return {"success": True, "message": "wallet listing", "data": []}
-
-@router.get("/{path:path}")
-async def get_all_wallet(path: str):
-    return {"success": True, "message": f"wallet get {path}", "data": []}
-
-@router.post("/")
-async def create_wallet_root():
-    return {"success": True, "message": "wallet created", "data": {}}
-
-@router.post("/{path:path}")
-async def post_all_wallet(path: str):
-    return {"success": True, "message": f"wallet post {path}", "data": {}}
-
-@router.put("/{path:path}")
-async def put_all_wallet(path: str):
-    return {"success": True, "message": f"wallet put {path}", "data": {}}
-
-@router.patch("/{path:path}")
-async def patch_all_wallet(path: str):
-    return {"success": True, "message": f"wallet patch {path}", "data": {}}
-
-@router.delete("/{path:path}")
-async def delete_all_wallet(path: str):
-    return {"success": True, "message": f"wallet delete {path}", "data": {}}
+async def get_wallet():
+    return {"data": [
+        {
+            "id": "txn-1",
+            "walletId": "W-ALL",
+            "studentId": "STU-001",
+            "studentName": "John Doe",
+            "type": "Credit",
+            "amount": 5000,
+            "source": "Refund",
+            "reference": "REF-12345",
+            "status": "Completed",
+            "date": "2026-07-01"
+        },
+        {
+            "id": "txn-2",
+            "walletId": "W-ALL",
+            "studentId": "STU-002",
+            "studentName": "Jane Smith",
+            "type": "Debit",
+            "amount": 1500,
+            "source": "Fee Payment",
+            "reference": "REF-67890",
+            "status": "Completed",
+            "date": "2026-07-02"
+        }
+    ]}
