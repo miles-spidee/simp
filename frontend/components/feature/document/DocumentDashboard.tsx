@@ -164,9 +164,26 @@ export default function DocumentDashboard() {
               <div className="pt-2">
                 <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Dynamic Variables:</span>
                 <div className="flex flex-wrap gap-1.5 mt-1.5">
-                  {tpl.variables.map(v => (
-                    <code key={v} className="bg-white border border-border px-2 py-0.5 rounded text-[10px] text-text-primary font-mono">{v}</code>
-                  ))}
+                  {(() => {
+                    const vars = tpl.variables as any;
+                    if (Array.isArray(vars)) {
+                      return vars.map(v => (
+                        <code key={v} className="bg-white border border-border px-2 py-0.5 rounded text-[10px] text-text-primary font-mono">{v}</code>
+                      ));
+                    }
+                    if (typeof vars === 'object' && vars !== null) {
+                      return Object.keys(vars).map(v => (
+                        <code key={v} className="bg-white border border-border px-2 py-0.5 rounded text-[10px] text-text-primary font-mono">{v}</code>
+                      ));
+                    }
+                    if (typeof vars === 'string' && vars.trim() !== '') {
+                      const list = vars.startsWith('[') ? JSON.parse(vars) : vars.split(',');
+                      return list.map((v: string) => v.trim()).map((v: string) => (
+                        <code key={v} className="bg-white border border-border px-2 py-0.5 rounded text-[10px] text-text-primary font-mono">{v}</code>
+                      ));
+                    }
+                    return null;
+                  })()}
                 </div>
               </div>
             </div>

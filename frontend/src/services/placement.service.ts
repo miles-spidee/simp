@@ -33,5 +33,17 @@ export const PlacementService = {
 
   createCompany: async (company: Partial<Company>) => {
     return await PlacementApi.createCompany(company);
+  },
+  
+  getOpportunities: async (studentId?: string) => {
+    return await PlacementApi.getOpportunities(studentId);
+  },
+
+  createOpportunity: async (opp: any) => {
+    return await PlacementApi.createOpportunity(opp);
+  },
+
+  deleteOpportunity: async (id: string) => {
+    return await PlacementApi.deleteOpportunity(id);
   }
 };

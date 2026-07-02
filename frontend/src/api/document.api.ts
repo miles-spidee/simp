@@ -15,7 +15,7 @@ export const DocumentApi = {
   
   getTemplates: async (): Promise<DocumentTemplate[]> => {
     try {
-      const res = await apiClient.get('/api/v1/document');
+      const res = await apiClient.get('/api/v1/document/templates');
       return res.data?.data || [];
     } catch (error) {
       return [];
@@ -24,7 +24,7 @@ export const DocumentApi = {
 
   createGeneratedDocument: async (doc: Partial<GeneratedDocument>): Promise<GeneratedDocument> => {
     try {
-      const res = await apiClient.post('/api/v1/document');
+      const res = await apiClient.post('/api/v1/document', doc);
       return res.data?.data || null as any;
     } catch (error) {
       return null as any;
@@ -33,7 +33,7 @@ export const DocumentApi = {
 
   updateDocumentStatus: async (id: string, status: 'Draft' | 'Generated' | 'Sent' | 'Signed'): Promise<GeneratedDocument> => {
     try {
-      const res = await apiClient.patch('/api/v1/document');
+      const res = await apiClient.patch(`/api/v1/document/${id}/status`, { status });
       return res.data?.data || null as any;
     } catch (error) {
       return null as any;

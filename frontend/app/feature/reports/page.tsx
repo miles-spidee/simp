@@ -127,7 +127,29 @@ export default function ReportCenterPage() {
             className: 'text-right',
             render: (report: ReportRecord) => (
               report.status === 'Completed' && hasPermission('report.export') ? (
-                <button className="text-blue-600 hover:text-blue-800 cursor-pointer">
+                <button 
+                  onClick={async () => {
+                    try {
+                      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+                      const response = await fetch(`${baseUrl}/api/v1/report/${report.id}/download`);
+                      if (!response.ok) throw new Error('Download failed');
+                      
+                      const blob = await response.blob();
+                      const url = window.URL.createObjectURL(blob);
+                      const link = document.createElement('a');
+                      link.href = url;
+                      link.download = `${report.name.toLowerCase().replace(/ /g, '_')}.pdf`;
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                      window.URL.revokeObjectURL(url);
+                    } catch (e) {
+                      console.error('Download error:', e);
+                    }
+                  }}
+                  className="text-blue-600 hover:text-blue-800 cursor-pointer"
+                  title="Download PDF"
+                >
                   <DownloadCloud className="w-4 h-4" />
                 </button>
               ) : null

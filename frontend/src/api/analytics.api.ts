@@ -5,7 +5,7 @@ import {} from '../types/analytics.types';
 export const AnalyticsApi = {
   getSummary: async (): Promise<AnalyticsSummary> => {
     try {
-      const res = await apiClient.get('/api/v1/analytics');
+      const res = await apiClient.get('/api/v1/analytics/summary');
       if (res.data?.data && !Array.isArray(res.data.data) && Object.keys(res.data.data).length > 0) {
         return res.data.data;
       }
@@ -25,7 +25,7 @@ export const AnalyticsApi = {
   },
   getAttendanceTrend: async (): Promise<AnalyticsDataPoint[]> => {
     try {
-      const res = await apiClient.get('/api/v1/analytics');
+      const res = await apiClient.get('/api/v1/analytics/attendance-trend');
       if (res.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
         return res.data.data;
       }
@@ -39,7 +39,7 @@ export const AnalyticsApi = {
   },
   getTopPrograms: async (): Promise<AnalyticsDimension[]> => {
     try {
-      const res = await apiClient.get('/api/v1/analytics');
+      const res = await apiClient.get('/api/v1/analytics/top-programs');
       if (res.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
         return res.data.data;
       }

@@ -230,7 +230,7 @@ export default function EmployeeManagementPage() {
     e.preventDefault();
     if (!activeActionModal) return;
     const { type, empId } = activeActionModal;
-    const targetId = empId || activeProfile?.id;
+    const targetId = (empId || activeProfile?.id) as string;
     if (!targetId && type !== 'onboard') return;
 
     try {

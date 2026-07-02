@@ -14,7 +14,7 @@ export const KPIApi = {
 
   createKPI: async (kpi: Partial<KPIMetric>): Promise<KPIMetric> => {
     try {
-      const res = await apiClient.post('/api/v1/kpi');
+      const res = await apiClient.post('/api/v1/kpi', kpi);
       return res.data?.data || null as any;
     } catch (error) {
       return null as any;
@@ -23,7 +23,7 @@ export const KPIApi = {
 
   updateKPI: async (id: string, updates: Partial<KPIMetric>): Promise<KPIMetric> => {
     try {
-      const res = await apiClient.patch('/api/v1/kpi');
+      const res = await apiClient.patch(`/api/v1/kpi/${id}`, updates);
       return res.data?.data || null as any;
     } catch (error) {
       return null as any;

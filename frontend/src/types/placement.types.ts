@@ -28,3 +28,16 @@ export interface PlacementRecord {
   remarks: string;
   lastUpdated: string;
 }
+
+export interface PlacementOpportunity {
+  id: string;
+  companyId: string;
+  companyName: string;
+  title: string;
+  description: string;
+  packageLpa: number;
+  location: string;
+  tier: string;
+  requirements: string;
+  status: string;
+}

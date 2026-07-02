@@ -50,3 +50,18 @@ class InterviewFeedback(BaseModel):
     recruiter_profile_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('profile_recruiters.id', ondelete='CASCADE'), index=True, nullable=False)
     rating: Mapped[float] = mapped_column(Numeric(5, 2), nullable=False)
     comments: Mapped[Optional[str]] = mapped_column(Text)
+
+
+class PlacementOpportunity(BaseModel):
+    __tablename__ = 'alum_placement_opportunities'
+    __table_args__ = {'comment': 'Corporate job placement opportunities'}
+
+    company_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('comp_companies.id', ondelete='CASCADE'), index=True, nullable=False)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=False)
+    package_lpa: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
+    location: Mapped[str] = mapped_column(String(255), nullable=False)
+    tier: Mapped[str] = mapped_column(String(50), default="MID")  # TOP, MID, SMALL
+    requirements: Mapped[Optional[str]] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(String(50), default="OPEN")  # OPEN, CLOSED
+

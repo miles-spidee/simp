@@ -12,5 +12,9 @@ export const AlumniService = {
 
   createAlumni: async (alumni: any) => {
     return await AlumniApi.createAlumni(alumni);
+  },
+
+  deleteAlumni: async (id: string) => {
+    return await AlumniApi.deleteAlumni(id);
   }
 };

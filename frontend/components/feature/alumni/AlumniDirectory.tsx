@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { AlumniProfile } from '@/src/types/alumni.types';
 import { AlumniService } from '@/src/services/alumni.service';
-import { GraduationCap, Link, Briefcase, MapPin, Search, Filter, Plus, Loader2, Mail, CheckCircle } from 'lucide-react';
+import { GraduationCap, Link, Briefcase, MapPin, Search, Filter, Plus, Loader2, Mail, CheckCircle, Trash2 } from 'lucide-react';
 import { Drawer } from '../ui/Drawer';
 
 export default function AlumniDirectory() {
@@ -79,6 +79,16 @@ export default function AlumniDirectory() {
       console.error(err);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleDeleteAlumni = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this alumni profile? This action will permanently remove the record from the database.")) return;
+    try {
+      await AlumniService.deleteAlumni(id);
+      await loadAlumni();
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -176,11 +186,20 @@ export default function AlumniDirectory() {
                     <h3 className="font-bold text-text-primary leading-tight truncate group-hover:text-indigo-650 transition-colors">{al.name}</h3>
                     <p className="text-[10px] text-indigo-650 font-bold mt-0.5 uppercase tracking-wider">{al.batch} • Class of {al.graduationYear}</p>
                   </div>
-                  {al.linkedInUrl && (
-                    <a href={al.linkedInUrl} target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-indigo-650 transition-colors">
-                      <Link className="h-4.5 w-4.5" />
-                    </a>
-                  )}
+                  <div className="flex gap-2">
+                    {al.linkedInUrl && (
+                      <a href={al.linkedInUrl} target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-indigo-650 transition-colors">
+                        <Link className="h-4.5 w-4.5" />
+                      </a>
+                    )}
+                    <button 
+                      onClick={() => handleDeleteAlumni(al.id)}
+                      className="text-text-secondary hover:text-rose-600 transition-colors cursor-pointer"
+                      title="Delete Profile"
+                    >
+                      <Trash2 className="h-4.5 w-4.5" />
+                    </button>
+                  </div>
                 </div>
                 
                 <div className="mt-4 space-y-2.5">

@@ -5,7 +5,7 @@ import {} from '../types/reports.types';
 export const ReportApi = {
   getTemplates: async (): Promise<ReportTemplate[]> => {
     try {
-      const res = await apiClient.get('/api/v1/report');
+      const res = await apiClient.get('/api/v1/report/templates');
       return res.data?.data || [];
     } catch (error) {
       return [];
@@ -19,9 +19,9 @@ export const ReportApi = {
       return [];
     }
   },
-  generateReport: async (config: any): Promise<ReportRecord> => {
+  generateReport: async (templateId: string): Promise<ReportRecord> => {
     try {
-      const res = await apiClient.post('/api/v1/report/generate', config);
+      const res = await apiClient.post('/api/v1/report/generate', { templateId });
       return res.data?.data || null as any;
     } catch (error) {
       return null as any;
