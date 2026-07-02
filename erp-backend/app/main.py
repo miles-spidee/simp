@@ -90,6 +90,7 @@ from app.modules.reporting_manager.router import router as reporting_manager_rou
 from app.modules.selfservice.router import router as selfservice_router
 from app.modules.verification.router import router as verification_router
 from app.modules.wallet.router import router as wallet_router
+from app.modules.calendar.router import router as calendar_router
 
 app.include_router(employee_router, prefix='/api/v1/employee', tags=['Employee'])
 app.include_router(organization_router, prefix='/api/v1/organization', tags=['Organization'])
@@ -140,6 +141,7 @@ app.include_router(reporting_manager_router, prefix='/api/v1/reportingManager', 
 app.include_router(selfservice_router, prefix='/api/v1/selfservice', tags=['Selfservice'])
 app.include_router(verification_router, prefix='/api/v1/verification', tags=['Verification'])
 app.include_router(wallet_router, prefix='/api/v1/wallet', tags=['Wallet'])
+app.include_router(calendar_router, prefix='/api/v1/calendar', tags=['Calendar'])
 
 @app.get("/", tags=["Health"])
 async def health_check():

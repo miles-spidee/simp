@@ -337,7 +337,7 @@ export default function EmailDashboard() {
                     <td className="px-5 py-4 font-mono font-medium text-text-secondary">{item.templateId}</td>
                     <td className="px-5 py-4">
                       <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
-                        item.status === 'Delivered' || item.status === 'Opened' || item.status === 'Clicked'
+                        ['Delivered', 'Opened', 'Clicked', 'SENT', 'Sent'].includes(item.status)
                           ? 'bg-emerald-50 text-emerald-700'
                           : 'bg-rose-50 text-rose-700'
                       }`}>

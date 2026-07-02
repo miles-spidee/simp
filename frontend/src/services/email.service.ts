@@ -18,7 +18,7 @@ export class EmailService {
   static async getDeliveryStats(): Promise<{ delivered: number, bounced: number }> {
     const history = await emailApi.getHistory();
     return {
-      delivered: history.filter(h => h.status === 'Delivered' || h.status === 'Opened' || h.status === 'Clicked').length,
+      delivered: history.filter(h => ['Delivered', 'Opened', 'Clicked', 'SENT', 'Sent'].includes(h.status)).length,
       bounced: history.filter(h => h.status === 'Bounced').length
     };
   }

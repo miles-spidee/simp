@@ -13,7 +13,8 @@ class EmailTemplate(BaseModel):
     category: Mapped[str] = mapped_column(String(100))
     subject: Mapped[str] = mapped_column(String(500), nullable=False)
     html_body: Mapped[str] = mapped_column(Text, nullable=False)
-    variables: Mapped[Optional[dict]] = mapped_column(JSONB, comment="List of dynamic placeholders")
+    status: Mapped[str] = mapped_column(String(50), default='Active', server_default='Active')
+    variables: Mapped[Optional[list]] = mapped_column(JSONB, comment="List of dynamic placeholders")
 
 class EmailHistory(BaseModel):
     __tablename__ = 'comm_email_history'
