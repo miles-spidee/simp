@@ -1,9 +1,12 @@
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 from datetime import datetime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Boolean, Integer, DateTime, ForeignKey, CheckConstraint, Date
 from app.models.core.mixins import BaseModel
 from app.models.core.enums.status import StatusEnum
+
+if TYPE_CHECKING:
+    from app.models.files.models import CommonFile
 
 class User(BaseModel):
     __tablename__ = 'auth_users'
@@ -37,3 +40,15 @@ class User(BaseModel):
     login_history: Mapped[List["LoginHistory"]] = relationship("LoginHistory", back_populates="user", cascade="all, delete-orphan")
     preference: Mapped[Optional["UserPreference"]] = relationship("UserPreference", back_populates="user", uselist=False, cascade="all, delete-orphan")
     payment_transactions: Mapped[List["PaymentTransaction"]] = relationship("PaymentTransaction", back_populates="user")
+    
+    # Common Files relationships
+    uploaded_files: Mapped[List["CommonFile"]] = relationship(
+        "CommonFile",
+        foreign_keys="[CommonFile.uploaded_by]",
+        back_populates="uploaded_by_user"
+    )
+    approved_files: Mapped[List["CommonFile"]] = relationship(
+        "CommonFile",
+        foreign_keys="[CommonFile.approved_by]",
+        back_populates="approved_by_user"
+    )
