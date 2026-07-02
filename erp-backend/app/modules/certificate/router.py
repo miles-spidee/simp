@@ -1,31 +1,72 @@
-from fastapi import APIRouter, Request
+import uuid
+from typing import List
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+from sqlalchemy import desc
+from app.core.database import get_db
+from app.models.certificate.certificate import Certificate
+from .schemas import CertificateCreate, CertificateUpdateStatus, CertificateResponse
 
 router = APIRouter()
 
 @router.get("/")
-async def list_certificate():
-    return {"success": True, "message": "certificate listing", "data": []}
-
-@router.get("/{path:path}")
-async def get_all_certificate(path: str):
-    return {"success": True, "message": f"certificate get {path}", "data": []}
+async def list_certificates(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Certificate).order_by(desc(Certificate.created_at)))
+    certificates = result.scalars().all()
+    serialized = [CertificateResponse.model_validate(c).model_dump(by_alias=True, mode='json') for c in certificates]
+    return {"data": serialized}
 
 @router.post("/")
-async def create_certificate_root():
-    return {"success": True, "message": "certificate created", "data": {}}
+async def create_certificate(cert: CertificateCreate, db: AsyncSession = Depends(get_db)):
+    from datetime import datetime
+    import random
+    import string
+    
+    # Generate unique certificate number
+    random_suffix = ''.join(random.choices(string.digits, k=5))
+    cert_number = f"PS-CERT-2026-{random_suffix}"
+    
+    # Generate other missing fields
+    digital_signature = f"DSIG-{uuid.uuid4().hex[:8].upper()}"
+    qr_url = f"https://pinesphere.com/verify/{cert_number}/qr"
+    verify_url = f"https://pinesphere.com/verify/{cert_number}"
 
-@router.post("/{path:path}")
-async def post_all_certificate(path: str):
-    return {"success": True, "message": f"certificate post {path}", "data": {}}
+    new_cert = Certificate(
+        certificate_number=cert_number,
+        student_id=cert.student_id,
+        student_name=cert.student_name,
+        program=cert.program,
+        batch=cert.batch,
+        mentor_name=cert.mentor_name,
+        type=cert.type,
+        issue_date=cert.issue_date or datetime.now(),
+        expiry_date=None,
+        status=cert.status,
+        generated_by="System",
+        approved_by=None,
+        qr_code_url=qr_url,
+        verification_url=verify_url,
+        digital_signature_id=digital_signature
+    )
+    db.add(new_cert)
+    await db.commit()
+    await db.refresh(new_cert)
+    serialized = CertificateResponse.model_validate(new_cert).model_dump(by_alias=True, mode='json')
+    return {"success": True, "message": "Certificate created", "data": serialized}
 
-@router.put("/{path:path}")
-async def put_all_certificate(path: str):
-    return {"success": True, "message": f"certificate put {path}", "data": {}}
-
-@router.patch("/{path:path}")
-async def patch_all_certificate(path: str):
-    return {"success": True, "message": f"certificate patch {path}", "data": {}}
-
-@router.delete("/{path:path}")
-async def delete_all_certificate(path: str):
-    return {"success": True, "message": f"certificate delete {path}", "data": {}}
+@router.patch("/{cert_id}")
+async def patch_certificate(cert_id: uuid.UUID, cert_update: CertificateUpdateStatus, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Certificate).where(Certificate.id == cert_id))
+    db_cert = result.scalar_one_or_none()
+    if not db_cert:
+        raise HTTPException(status_code=404, detail="Certificate not found")
+    
+    db_cert.status = cert_update.status
+    if cert_update.approved_by:
+        db_cert.approved_by = cert_update.approved_by
+        
+    await db.commit()
+    await db.refresh(db_cert)
+    serialized = CertificateResponse.model_validate(db_cert).model_dump(by_alias=True, mode='json')
+    return {"success": True, "message": "Certificate updated", "data": serialized}

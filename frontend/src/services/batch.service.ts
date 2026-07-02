@@ -8,13 +8,13 @@ export const batchService = {
   async getBatches(): Promise<ExtendedBatch[]> {
     try {
       const data = await batchApi.getBatches();
-      if (data && data.length > 0) {
+      if (Array.isArray(data)) {
         return data.map(b => this.mapToExtended(b));
       }
     } catch (e) {
-      console.warn('Backend API unavailable, falling back to mock batches.');
+      console.warn('Backend API unavailable or failed.', e);
     }
-    return MOCK_BATCHES as unknown as ExtendedBatch[];
+    return [];
   },
 
   async getBatch(id: string): Promise<ExtendedBatch | undefined> {

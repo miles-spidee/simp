@@ -15,7 +15,7 @@ export const CertificateApi = {
   
   getCertificateById: async (id: string): Promise<Certificate | undefined> => {
     try {
-      const res = await apiClient.get('/api/v1/certificate');
+      const res = await apiClient.get(`/api/v1/certificate/${id}`);
       return res.data?.data || null as any;
     } catch (error) {
       return null as any;
@@ -24,7 +24,7 @@ export const CertificateApi = {
 
   createCertificate: async (cert: Partial<Certificate>): Promise<Certificate> => {
     try {
-      const res = await apiClient.post('/api/v1/certificate');
+      const res = await apiClient.post('/api/v1/certificate', cert);
       return res.data?.data || null as any;
     } catch (error) {
       return null as any;
@@ -33,7 +33,7 @@ export const CertificateApi = {
 
   updateCertificateStatus: async (id: string, status: 'Draft' | 'Pending Approval' | 'Approved' | 'Issued' | 'Revoked', approvedBy?: string): Promise<Certificate> => {
     try {
-      const res = await apiClient.patch('/api/v1/certificate');
+      const res = await apiClient.patch(`/api/v1/certificate/${id}`, { status, approvedBy });
       return res.data?.data || null as any;
     } catch (error) {
       return null as any;
