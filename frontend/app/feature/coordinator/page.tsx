@@ -17,6 +17,8 @@ export default function CoordinatorManagementPage() {
   const [selectedCoordinator, setSelectedCoordinator] = useState<Coordinator | null>(null);
   const [reports, setReports] = useState<CollegeReport[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [newCoordinator, setNewCoordinator] = useState({ name: '', email: '', collegeId: '', phone: '' });
   const [activeTab, setActiveTab] = useState<'overview' | 'students' | 'reports' | 'communication'>('overview');
   const [loading, setLoading] = useState(true);
 
@@ -38,6 +40,24 @@ export default function CoordinatorManagementPage() {
     setActiveTab('overview');
     setIsDrawerOpen(true);
   };
+
+  const handleAddCoordinator = async () => {
+    if (!newCoordinator.name || !newCoordinator.email) {
+      alert("Name and Email are required");
+      return;
+    }
+    await coordinatorService.createCoordinator({
+      name: newCoordinator.name,
+      email: newCoordinator.email,
+      collegeId: newCoordinator.collegeId || 'COL-99',
+      phone: newCoordinator.phone,
+      employeeId: 'EMP-' + Math.floor(Math.random() * 1000)
+    });
+    setIsAddModalOpen(false);
+    setNewCoordinator({ name: '', email: '', collegeId: '', phone: '' });
+    loadData();
+  };
+
 
   // KPIs
   const totalCoordinators = coordinators.length;
@@ -133,7 +153,10 @@ export default function CoordinatorManagementPage() {
         {activeView === 'directory' && (
           <div className="max-w-7xl mx-auto">
             <div className="flex justify-end mb-4">
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 flex items-center gap-2 shadow-sm">
+              <button 
+                onClick={() => setIsAddModalOpen(true)}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 flex items-center gap-2 shadow-sm"
+              >
                 <Plus className="h-4 w-4" /> Add Coordinator
               </button>
             </div>
@@ -173,9 +196,22 @@ export default function CoordinatorManagementPage() {
                   label: '',
                   className: 'text-right',
                   render: (c: Coordinator) => (
-                    <button className="p-1 text-text-secondary hover:text-blue-600 transition-colors">
-                      <Eye className="h-4 w-4" />
-                    </button>
+                    <div className="flex justify-end gap-2">
+                      <button onClick={() => handleCoordinatorClick(c)} className="p-1 text-text-secondary hover:text-blue-600 transition-colors">
+                        <Eye className="h-4 w-4" />
+                      </button>
+                      <button 
+                        onClick={async () => {
+                          if (confirm('Are you sure you want to delete this coordinator?')) {
+                            await coordinatorService.deleteCoordinator(c.id);
+                            loadData();
+                          }
+                        }}
+                        className="p-1 text-text-secondary hover:text-red-600 transition-colors"
+                      >
+                        <span className="text-xs font-semibold">Delete</span>
+                      </button>
+                    </div>
                   ),
                 },
               ]}
@@ -249,7 +285,23 @@ export default function CoordinatorManagementPage() {
               {activeTab === 'reports' && (
                 <div className="space-y-4">
                   <div className="flex justify-end mb-4">
-                    <button className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-700 flex items-center gap-2">
+                    <button 
+                      onClick={async () => {
+                        const month = prompt("Enter report month (e.g., July):");
+                        if (!month) return;
+                        const year = prompt("Enter report year (e.g., 2026):");
+                        if (!year) return;
+                        await coordinatorService.uploadReport(selectedCoordinator.id, {
+                          id: `rep-${Math.floor(Math.random() * 1000)}`,
+                          month,
+                          year,
+                          fileId: `file-${Math.floor(Math.random() * 1000)}`
+                        });
+                        const updatedRpts = await coordinatorService.getReports(selectedCoordinator.id);
+                        setReports(updatedRpts);
+                      }}
+                      className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-700 flex items-center gap-2"
+                    >
                       <Plus className="h-4 w-4" /> Upload Report
                     </button>
                   </div>
@@ -264,7 +316,20 @@ export default function CoordinatorManagementPage() {
                           <div className="text-xs text-text-secondary">File ID: {r.fileId}</div>
                         </div>
                       </div>
-                      <button className="text-xs font-bold text-blue-600 hover:underline">Download</button>
+                      <button 
+                        onClick={() => {
+                          const element = document.createElement("a");
+                          const file = new Blob([`Dummy report content for ${r.month} ${r.year}`], { type: 'text/plain' });
+                          element.href = URL.createObjectURL(file);
+                          element.download = `Report_${r.month}_${r.year}.txt`;
+                          document.body.appendChild(element);
+                          element.click();
+                          document.body.removeChild(element);
+                        }}
+                        className="text-xs font-bold text-blue-600 hover:underline"
+                      >
+                        Download
+                      </button>
                     </div>
                   ))}
                   {reports.length === 0 && <p className="text-sm text-text-secondary text-center">No reports available.</p>}
@@ -286,6 +351,67 @@ export default function CoordinatorManagementPage() {
           </div>
         )}
       </Drawer>
+
+      {/* Add Coordinator Modal */}
+      {isAddModalOpen && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl w-full max-w-md p-6 space-y-4">
+            <h2 className="text-xl font-bold text-text-primary">Add New Coordinator</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-bold text-label block mb-1">Name *</label>
+                <input 
+                  type="text" 
+                  className="w-full border rounded p-2 text-sm"
+                  value={newCoordinator.name}
+                  onChange={e => setNewCoordinator(prev => ({ ...prev, name: e.target.value }))}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-bold text-label block mb-1">Email *</label>
+                <input 
+                  type="email" 
+                  className="w-full border rounded p-2 text-sm"
+                  value={newCoordinator.email}
+                  onChange={e => setNewCoordinator(prev => ({ ...prev, email: e.target.value }))}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-bold text-label block mb-1">College ID</label>
+                <input 
+                  type="text" 
+                  className="w-full border rounded p-2 text-sm"
+                  value={newCoordinator.collegeId}
+                  onChange={e => setNewCoordinator(prev => ({ ...prev, collegeId: e.target.value }))}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-bold text-label block mb-1">Phone</label>
+                <input 
+                  type="text" 
+                  className="w-full border rounded p-2 text-sm"
+                  value={newCoordinator.phone}
+                  onChange={e => setNewCoordinator(prev => ({ ...prev, phone: e.target.value }))}
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-3 pt-4 border-t border-border mt-6">
+              <button 
+                onClick={() => setIsAddModalOpen(false)}
+                className="px-4 py-2 border rounded-lg text-sm font-semibold hover:bg-slate-50"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleAddCoordinator}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700"
+              >
+                Add Coordinator
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
