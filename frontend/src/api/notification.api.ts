@@ -22,7 +22,7 @@ export const notificationApi = {
   },
   markAsRead: async (id: string): Promise<Notification> => {
     try {
-      const res = await apiClient.patch('/api/v1/notification');
+      const res = await apiClient.patch(`/api/v1/notification/${id}`, { status: 'Read', readStatus: true });
       return res.data?.data || null as any;
     } catch (error) {
       return null as any;
@@ -30,7 +30,7 @@ export const notificationApi = {
   },
   createNotification: async (data: Partial<Notification>): Promise<Notification> => {
     try {
-      const res = await apiClient.post('/api/v1/notification');
+      const res = await apiClient.post('/api/v1/notification', data);
       return res.data?.data || null as any;
     } catch (error) {
       return null as any;
