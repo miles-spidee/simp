@@ -98,6 +98,7 @@ MODULE_ALIASES = {
     "calendar": "communication",
     "finance": "finance",
     "payment": "finance",
+    "payments": "finance",
     "fee": "finance",
     "invoice": "finance",
     "receipt": "finance",

@@ -2,8 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import timezone, date, datetime, timedelta
-UTC = timezone.utc
+from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal, ROUND_HALF_UP
 from typing import Any
 from uuid import UUID
@@ -17,6 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from app.core.config import settings
+from app.models.authentication.user import User
 from app.models.academic.batch import Batch
 from app.models.core.reference.localization import Currency
 from app.models.finance.fee import FeeStructure
@@ -50,19 +50,22 @@ class PaymentService:
                 enforce_payment_eligibility=True,
                 reject_existing_payment=True,
             )
+            user = await self.db.get(User, student_profile.user_id)
+            if user is None:
+                raise HTTPException(status_code=404, detail="Student user not found")
             fee = await self._resolve_application_fee(student_profile=student_profile)
             currency = await self._resolve_currency(code=settings.RAZORPAY_CURRENCY)
 
             existing_success = await self._find_application_transaction(
                 application_id=str(application.id),
-                statuses=["SUCCESS"],
+                statuses=["captured", "SUCCESS"],
             )
             if existing_success:
                 raise HTTPException(status_code=409, detail="Application has already been paid")
 
             existing_pending = await self._find_application_transaction(
                 application_id=str(application.id),
-                statuses=["PENDING"],
+                statuses=["created", "authorized", "PENDING"],
             )
             if existing_pending:
                 existing_payload = self._load_gateway_response(existing_pending.gateway_response)
@@ -91,9 +94,26 @@ class PaymentService:
 
             transaction = PaymentTransaction(
                 transaction_id=str(order.get("id")),
+                user_id=user.id,
+                order_id=application.id,
+                razorpay_order_id=str(order.get("id")),
+                razorpay_payment_id=None,
+                razorpay_signature=None,
                 amount=self._to_decimal(fee.amount),
                 currency_id=currency.id,
-                status="PENDING",
+                currency=currency.code,
+                status="created",
+                payment_method=None,
+                receipt=str(order.get("receipt") or f"app_{application.id}"),
+                customer_email=user.email,
+                customer_contact=user.phone,
+                customer_name=user.username,
+                notes={
+                    "application_id": str(application.id),
+                    "student_profile_id": str(student_profile.id),
+                },
+                razorpay_created_at=self._to_datetime(order.get("created_at")),
+                refund=False,
                 gateway_response=self._serialize_gateway_response(
                     {
                         "application_id": str(application.id),
@@ -160,7 +180,7 @@ class PaymentService:
             if transaction is None:
                 raise HTTPException(status_code=404, detail="Pending payment transaction not found")
 
-            if transaction.status == "SUCCESS":
+            if transaction.status in {"captured", "SUCCESS"}:
                 return await self._build_success_response(transaction=transaction, payment=payment)
 
             transaction_data = self._load_gateway_response(transaction.gateway_response)
@@ -174,6 +194,7 @@ class PaymentService:
                 transaction=transaction,
                 razorpay_order_id=razorpay_order_id,
                 razorpay_payment_id=razorpay_payment_id,
+                razorpay_signature=razorpay_signature,
                 payment=payment,
             )
             await self.db.commit()
@@ -236,8 +257,8 @@ class PaymentService:
                 payment_id = str(payment_entity.get("id") or "")
 
                 transaction = await self._find_transaction_by_order_id(order_id=order_id) if order_id else None
-                if transaction and transaction.status != "SUCCESS":
-                    transaction.status = "FAILED"
+                if transaction and transaction.status not in {"captured", "SUCCESS"}:
+                    transaction.status = "failed"
                     transaction.gateway_response = self._serialize_gateway_response(
                         self._merge_gateway_response(
                             transaction.gateway_response,
@@ -264,7 +285,7 @@ class PaymentService:
                 return {"processed": True, "event": event_type, "ignored": True}
 
             transaction = await self._find_transaction_by_order_id(order_id=order_id)
-            if transaction and transaction.status == "SUCCESS":
+            if transaction and transaction.status in {"captured", "SUCCESS"}:
                 return {"processed": True, "event": event_type, "payload": event_payload}
 
             payment = self._fetch_payment(razorpay_payment_id=payment_id)
@@ -285,6 +306,7 @@ class PaymentService:
                 transaction=transaction,
                 razorpay_order_id=order_id,
                 razorpay_payment_id=payment_id,
+                razorpay_signature=payment.get("signature") or "",
                 payment=payment,
             )
             await self.db.commit()
@@ -316,7 +338,7 @@ class PaymentService:
         application, _ = await self._validate_application(application_id=application_id)
         transaction = await self._find_application_transaction(
             application_id=str(application.id),
-            statuses=["SUCCESS", "PENDING", "FAILED"],
+            statuses=["captured", "created", "authorized", "failed", "refunded", "SUCCESS", "PENDING", "FAILED"],
         )
         if not transaction:
             raise HTTPException(status_code=404, detail="Application payment details not found")
@@ -481,7 +503,7 @@ class PaymentService:
         if not lock:
             existing_success = await self._find_application_transaction(
                 application_id=str(application.id),
-                statuses=["SUCCESS"],
+                statuses=["captured", "SUCCESS"],
             )
             if existing_success:
                 raise HTTPException(status_code=409, detail="Application is already paid")
@@ -691,6 +713,24 @@ class PaymentService:
     def _to_paise(self, amount_rupees: Decimal) -> int:
         return int((amount_rupees * Decimal("100")).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
+    def _to_datetime(self, value: Any) -> datetime | None:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            return value
+        try:
+            if isinstance(value, (int, float)):
+                return datetime.fromtimestamp(value, tz=UTC)
+            if isinstance(value, str):
+                try:
+                    return datetime.fromtimestamp(float(value), tz=UTC)
+                except ValueError:
+                    parsed = datetime.fromisoformat(value)
+                    return parsed if parsed.tzinfo else parsed.replace(tzinfo=UTC)
+        except Exception:
+            return None
+        return None
+
     def _serialize_gateway_response(self, payload: dict[str, Any]) -> str:
         encoded = json.dumps(payload, separators=(",", ":"), default=str)
         if len(encoded) <= self._GATEWAY_RESPONSE_LIMIT:
@@ -745,6 +785,7 @@ class PaymentService:
         transaction: PaymentTransaction,
         razorpay_order_id: str,
         razorpay_payment_id: str,
+        razorpay_signature: str,
         payment: dict[str, Any],
     ) -> tuple[Invoice, Receipt]:
         amount = self._to_decimal(transaction.amount)
@@ -757,7 +798,12 @@ class PaymentService:
         if str(payment.get("currency", "")).upper() != currency.code.upper():
             raise HTTPException(status_code=409, detail="Payment currency mismatch")
 
-        transaction.status = "SUCCESS"
+        transaction.status = "captured"
+        transaction.razorpay_order_id = razorpay_order_id
+        transaction.razorpay_payment_id = razorpay_payment_id
+        transaction.razorpay_signature = razorpay_signature
+        transaction.payment_method = str(payment.get("method") or "razorpay")
+        transaction.razorpay_created_at = self._to_datetime(payment.get("created_at"))
         transaction.gateway_response = self._serialize_gateway_response(
             {
                 **self._load_gateway_response(transaction.gateway_response),
