@@ -1,35 +1,43 @@
-import { apiClient } from '../api/api.client';
-import {} from '../types/learning-modules.types';
-import { LearningModule } from '../types/api/lms.types';
-import { lmsApi } from '../api/lms.api';
+import { lmsApi, CourseItem, CourseCreatePayload } from '../api/lms.api';
 
 class LMSService {
-  async getModules(): Promise<LearningModule[]> {
+  async getCourses(): Promise<CourseItem[]> {
     try {
-      const res = await apiClient.get('/api/v1/lms');
-      return res.data?.data || [];
+      return await lmsApi.getCourses();
     } catch (error) {
+      console.error('Failed to fetch LMS courses:', error);
       return [];
     }
   }
 
-  async getModule(id: string): Promise<LearningModule | undefined> {
+  async createCourse(payload: CourseCreatePayload): Promise<CourseItem | null> {
     try {
-      const res = await apiClient.get('/api/v1/lms');
-      return res.data?.data || null as any;
+      return await lmsApi.createCourse(payload);
     } catch (error) {
-      return null as any;
+      console.error('Failed to create course:', error);
+      return null;
     }
   }
 
-  async getModulesForProgram(programId: string): Promise<LearningModule[]> {
+  async updateCourse(courseId: string, payload: CourseCreatePayload): Promise<CourseItem | null> {
     try {
-      const res = await apiClient.get('/api/v1/lms');
-      return res.data?.data || [];
+      return await lmsApi.updateCourse(courseId, payload);
     } catch (error) {
-      return [];
+      console.error('Failed to update course:', error);
+      return null;
+    }
+  }
+
+  async deleteCourse(courseId: string): Promise<boolean> {
+    try {
+      await lmsApi.deleteCourse(courseId);
+      return true;
+    } catch (error) {
+      console.error('Failed to delete course:', error);
+      return false;
     }
   }
 }
+
 
 export const lmsService = new LMSService();

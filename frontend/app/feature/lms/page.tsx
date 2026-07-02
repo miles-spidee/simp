@@ -2,10 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { 
-  BookOpen, Play, FileText, Award, ChevronRight, Users, UserCheck
+  BookOpen, Play, FileText, Award, ChevronRight, Users, UserCheck, Loader2
 } from 'lucide-react';
 import {  Student } from '@/src/types/students.types';
 import { Pagination } from '@/components/common/Pagination';
+import { lmsService } from '@/src/services/lms.service';
+import { CourseItem } from '@/src/api/lms.api';
+
 const MOCK_STUDENTS: any[] = [];
 
 interface Submodule {
@@ -24,18 +27,6 @@ interface Module {
   submodules: Submodule[];
 }
 
-interface CourseItem {
-  id: string;
-  title: string;
-  program: string;
-  description: string;
-  thumbnail: string;
-  progressRate: number; // overall global progress
-  studentsCompleted: number;
-  modules: Module[];
-  studentProgress?: { studentId: string; completionRate: number }[]; // Track individual progress
-}
-
 interface BatchLms {
   id: string;
   name: string;
@@ -45,74 +36,9 @@ interface BatchLms {
   courses: CourseItem[];
 }
 
-const INITIAL_BATCH_LMS: BatchLms[] = [
-  {
-    id: 'batch-ai-2026',
-    name: 'AI Batch 2026',
-    coursesCount: 2,
-    resourcesCount: 58,
-    completedRate: 81,
-    courses: [
-      {
-        id: 'CRS-501',
-        title: 'Python Programming Basics',
-        program: 'Software Engineering',
-        description: 'Master core Python variables, flow control, tuples, dictionaries, and functional patterns.',
-        thumbnail: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&auto=format&fit=crop',
-        progressRate: 92,
-        studentsCompleted: 38,
-        studentProgress: [
-          { studentId: 'stu-1', completionRate: 100 },
-          { studentId: 'stu-2', completionRate: 100 },
-          { studentId: 'stu-3', completionRate: 80 },
-          { studentId: 'stu-4', completionRate: 95 }
-        ],
-        modules: [
-          {
-            id: 'MOD-501-1',
-            title: 'Module 1: Introduction',
-            description: 'Introduction to standard interpreter setups and scripting.',
-            submodules: [
-              {
-                id: 'SUB-501-1-1',
-                title: 'Python Notes Specification',
-                type: 'PDF',
-                url: 'python_basics_notes.pdf',
-                minReadingTime: 120
-              },
-              {
-                id: 'SUB-501-1-2',
-                title: 'Installing Python & First Script',
-                type: 'Video',
-                url: 'https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4',
-                videoDuration: 600
-              }
-            ]
-          }
-        ]
-      },
-      {
-        id: 'CRS-502',
-        title: 'AI Fundamentals & Neural Networks',
-        program: 'Artificial Intelligence',
-        description: 'Explore machine learning layers, convolutional layers, perceptrons, and backpropagation calculations.',
-        thumbnail: 'https://images.unsplash.com/photo-1677442136019-21780efad99a?w=500&auto=format&fit=crop',
-        progressRate: 75,
-        studentsCompleted: 28,
-        studentProgress: [
-          { studentId: 'stu-1', completionRate: 85 },
-          { studentId: 'stu-2', completionRate: 100 },
-          { studentId: 'stu-3', completionRate: 40 },
-          { studentId: 'stu-4', completionRate: 75 }
-        ],
-        modules: []
-      }
-    ]
-  }
-];
-
 export default function LMSDashboardPage() {
-  const [batches, setBatches] = useState<BatchLms[]>(INITIAL_BATCH_LMS);
+  const [batches, setBatches] = useState<BatchLms[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // Drill-down states
   const [selectedBatch, setSelectedBatch] = useState<BatchLms | null>(null);
@@ -128,32 +54,62 @@ export default function LMSDashboardPage() {
     setCurrentPage(1);
   }, [selectedBatch?.id]);
 
+  // Fetch courses from the database on mount
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('pinesphere_courses');
-      if (stored) {
-        setBatches(prev => prev.map(b => {
-          if (b.id === 'batch-ai-2026') {
-            return {
-              ...b,
-              courses: JSON.parse(stored)
-            };
-          }
-          return b;
-        }));
+    async function loadCourses() {
+      setLoading(true);
+      try {
+        const courses = await lmsService.getCourses();
+        
+        // Build batch structure dynamically from courses
+        const totalResources = courses.reduce((sum, c) => 
+          sum + c.modules.reduce((mSum, m) => mSum + m.submodules.length, 0), 0
+        );
+
+        const batch: BatchLms = {
+          id: 'batch-all',
+          name: 'All Courses',
+          coursesCount: courses.length,
+          resourcesCount: totalResources,
+          completedRate: courses.length > 0 
+            ? Math.round(courses.reduce((sum, c) => sum + c.progressRate, 0) / courses.length) 
+            : 0,
+          courses,
+        };
+
+        setBatches(courses.length > 0 ? [batch] : []);
+      } catch (err) {
+        console.error('Failed to load LMS courses:', err);
+        setBatches([]);
+      } finally {
+        setLoading(false);
       }
     }
+    loadCourses();
   }, []);
 
   const totalCourses = batches.reduce((sum, b) => sum + b.courses.length, 0);
   const totalResources = batches.reduce((sum, b) => sum + b.resourcesCount, 0);
-  const avgCompletionRate = 81;
+  const avgCompletionRate = batches.length > 0 
+    ? Math.round(batches.reduce((sum, b) => sum + b.completedRate, 0) / batches.length) 
+    : 0;
 
   const getStudentCourseProgress = (course: CourseItem, studentId: string) => {
-    if (!course.studentProgress) return 0;
-    const progress = course.studentProgress.find(p => p.studentId === studentId);
+    if (!(course as any).studentProgress) return 0;
+    const progress = (course as any).studentProgress.find((p: any) => p.studentId === studentId);
     return progress ? progress.completionRate : 0;
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-8 w-8 text-indigo-600 animate-spin" />
+          <span className="text-sm font-semibold text-text-secondary">Loading LMS data...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-slide-in select-none">
@@ -183,7 +139,7 @@ export default function LMSDashboardPage() {
             <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex items-center justify-between">
               <div>
                 <span className="text-[10px] font-bold text-slate-405 uppercase tracking-widest">Certificates Issued</span>
-                <h3 className="text-3xl font-black text-amber-600 mt-1">42</h3>
+                <h3 className="text-3xl font-black text-amber-600 mt-1">0</h3>
               </div>
               <Award className="h-9 w-9 text-amber-500 shrink-0" />
             </div>
@@ -192,30 +148,37 @@ export default function LMSDashboardPage() {
           {/* Batch list cards */}
           <div className="space-y-4">
             <h3 className="font-bold text-xs text-text-secondary uppercase tracking-widest">Curriculum Progress by Batch</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {batches.map(b => (
-                <div 
-                  key={b.id}
-                  onClick={() => setSelectedBatch(b)}
-                  className="bg-white p-6 rounded-2xl border border-border hover:border-secondary transition-all duration-300 cursor-pointer shadow-sm hover:shadow-lg flex flex-col justify-between space-y-4"
-                >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <span className="text-[9px] font-bold text-text-secondary uppercase">COHORT</span>
-                      <h4 className="text-lg font-black text-text-primary mt-1">{b.name}</h4>
+            {batches.length === 0 ? (
+              <div className="bg-white p-12 rounded-2xl border border-border shadow-sm text-center">
+                <BookOpen className="h-12 w-12 mx-auto text-slate-300 mb-3" />
+                <p className="text-sm text-text-secondary">No courses found in the database. Create courses from LMS Management.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {batches.map(b => (
+                  <div 
+                    key={b.id}
+                    onClick={() => setSelectedBatch(b)}
+                    className="bg-white p-6 rounded-2xl border border-border hover:border-secondary transition-all duration-300 cursor-pointer shadow-sm hover:shadow-lg flex flex-col justify-between space-y-4"
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <span className="text-[9px] font-bold text-text-secondary uppercase">COHORT</span>
+                        <h4 className="text-lg font-black text-text-primary mt-1">{b.name}</h4>
+                      </div>
+                      <span className="bg-indigo-55/15 text-indigo-650 font-black px-3 py-1 rounded-full text-xs">
+                        {b.courses.length} Tracks
+                      </span>
                     </div>
-                    <span className="bg-indigo-55/15 text-indigo-650 font-black px-3 py-1 rounded-full text-xs">
-                      {b.courses.length} Tracks
-                    </span>
-                  </div>
 
-                  <div className="flex justify-between items-center text-xs font-bold text-text-secondary pt-2 border-t border-border">
-                    <span>Resources Count: <strong className="text-text-primary">{b.resourcesCount}</strong></span>
-                    <span>Completed Rate: <strong className="text-indigo-600">{b.completedRate}%</strong></span>
+                    <div className="flex justify-between items-center text-xs font-bold text-text-secondary pt-2 border-t border-border">
+                      <span>Resources Count: <strong className="text-text-primary">{b.resourcesCount}</strong></span>
+                      <span>Completed Rate: <strong className="text-indigo-600">{b.completedRate}%</strong></span>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </>
       ) : !selectedStudent ? (
@@ -234,31 +197,38 @@ export default function LMSDashboardPage() {
           </div>
 
           <div className="grid grid-cols-1 gap-4">
-            {MOCK_STUDENTS.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(student => (
-              <div 
-                key={student.id}
-                onClick={() => setSelectedStudent(student)}
-                className="p-5 border border-border hover:border-secondary hover:shadow-md rounded-2xl transition-all cursor-pointer bg-slate-50/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-lg">
-                    {student.personalInfo.avatar}
-                  </div>
-                  <div>
-                    <h4 className="text-base font-black text-text-primary">{student.personalInfo.name}</h4>
-                    <p className="text-xs text-text-secondary">{student.academicInfo.college} • {student.academicInfo.department}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-6 shrink-0 text-xs font-bold text-text-secondary">
-                  <div className="text-right">
-                    <span>Overall Performance: <strong className="text-indigo-600">{student.performance.overallPerformance}%</strong></span>
-                  </div>
-                  <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-750 text-white font-bold text-xs uppercase tracking-wider rounded-xl">
-                    View LMS Progress
-                  </button>
-                </div>
+            {MOCK_STUDENTS.length === 0 ? (
+              <div className="text-center py-10 text-sm text-text-secondary">
+                <Users className="h-10 w-10 mx-auto text-slate-300 mb-3" />
+                No students enrolled yet.
               </div>
-            ))}
+            ) : (
+              MOCK_STUDENTS.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(student => (
+                <div 
+                  key={student.id}
+                  onClick={() => setSelectedStudent(student)}
+                  className="p-5 border border-border hover:border-secondary hover:shadow-md rounded-2xl transition-all cursor-pointer bg-slate-50/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-lg">
+                      {student.personalInfo.avatar}
+                    </div>
+                    <div>
+                      <h4 className="text-base font-black text-text-primary">{student.personalInfo.name}</h4>
+                      <p className="text-xs text-text-secondary">{student.academicInfo.college} • {student.academicInfo.department}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-6 shrink-0 text-xs font-bold text-text-secondary">
+                    <div className="text-right">
+                      <span>Overall Performance: <strong className="text-indigo-600">{student.performance.overallPerformance}%</strong></span>
+                    </div>
+                    <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-750 text-white font-bold text-xs uppercase tracking-wider rounded-xl">
+                      View LMS Progress
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
           {MOCK_STUDENTS.length > itemsPerPage && (
             <div className="mt-4">

@@ -3,8 +3,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   AlertTriangle, BookOpen, Play, CheckCircle2, Lock, Clock, Calendar, 
-  ChevronRight, FileText, Link, File, Award, HelpCircle, AlertCircle, RefreshCw, Download
+  ChevronRight, FileText, Link, File, Award, HelpCircle, AlertCircle, RefreshCw, Download, Loader2, ExternalLink
 } from 'lucide-react';
+import { lmsService } from '@/src/services/lms.service';
+import { CourseItem } from '@/src/api/lms.api';
 
 interface Submodule {
   id: string;
@@ -22,34 +24,15 @@ interface Submodule {
   };
 }
 
-interface Module {
-  id: string;
-  title: string;
-  description: string;
-  submodules: Submodule[];
-}
-
-interface CourseItem {
-  id: string;
-  title: string;
-  program: string;
-  description: string;
-  thumbnail: string;
-  progressRate: number;
-  studentsCompleted: number;
-  modules: Module[];
-}
-
 export default function MyLearningPage() {
   const [courses, setCourses] = useState<CourseItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedCourse, setSelectedCourse] = useState<CourseItem | null>(null);
   const [activeSub, setActiveSub] = useState<Submodule | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Completion registry: Maps submoduleId -> boolean
-  const [completedSubmodules, setCompletedSubmodules] = useState<Record<string, boolean>>({
-    'SUB-501-1-1': true // Mark first notes as done initially
-  });
+  const [completedSubmodules, setCompletedSubmodules] = useState<Record<string, boolean>>({});
 
   // PDF reading timer state
   const [pdfTimer, setPdfTimer] = useState(0);
@@ -78,25 +61,28 @@ export default function MyLearningPage() {
     setTimeout(() => setToastMessage(null), 3000);
   };
 
+  // Fetch courses from the database
   useEffect(() => {
-    const loadCourses = () => {
-      if (typeof window !== 'undefined') {
-        const storedStr = localStorage.getItem('pinesphere_courses');
-        if (storedStr) {
-          const parsed = JSON.parse(storedStr) as CourseItem[];
-          setCourses(parsed);
-          
-          // Load submodule progress if any
+    async function loadCourses() {
+      setLoading(true);
+      try {
+        const data = await lmsService.getCourses();
+        setCourses(data);
+        
+        // Load submodule progress from localStorage (user-specific)
+        if (typeof window !== 'undefined') {
           const progressStr = localStorage.getItem('pinesphere_user_course_progress');
           if (progressStr) {
             setCompletedSubmodules(JSON.parse(progressStr));
           }
         }
+      } catch (err) {
+        console.error('Failed to load courses:', err);
+      } finally {
+        setLoading(false);
       }
-    };
+    }
     loadCourses();
-    window.addEventListener('storage', loadCourses);
-    return () => window.removeEventListener('storage', loadCourses);
   }, []);
 
   // Update localStorage when completed submodules list changes
@@ -113,13 +99,12 @@ export default function MyLearningPage() {
           );
           const newRate = Math.round((completedCount / totalSubs) * 100);
           
-          // Update selected course and local storage
+          // Update selected course locally
           const updatedCourse = { ...selectedCourse, progressRate: newRate };
           setSelectedCourse(updatedCourse);
           
           const updatedCourses = courses.map(c => c.id === selectedCourse.id ? updatedCourse : c);
           setCourses(updatedCourses);
-          localStorage.setItem('pinesphere_courses', JSON.stringify(updatedCourses));
         }
       }
     }
@@ -300,6 +285,17 @@ export default function MyLearningPage() {
     return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-8 w-8 text-indigo-600 animate-spin" />
+          <span className="text-sm font-semibold text-text-secondary">Loading your courses...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div 
       className="space-y-6 animate-slide-in select-none" 
@@ -331,63 +327,71 @@ export default function MyLearningPage() {
 
       {!selectedCourse ? (
         /* Course Grid View */
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {courses.map(crs => {
-            const isCertified = crs.progressRate === 100;
-            return (
-              <div 
-                key={crs.id} 
-                className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden flex flex-col md:flex-row hover:border-secondary transition-all duration-300"
-              >
-                <div className="md:w-56 h-44 md:h-auto shrink-0 relative bg-slate-100">
-                  <img src={crs.thumbnail} alt={crs.title} className="w-full h-full object-cover" />
-                  <div className="absolute top-3 left-3">
-                    <span className="px-2 py-1 bg-white/95 backdrop-blur-sm rounded-lg text-[9px] font-extrabold text-slate-850 shadow-sm uppercase tracking-wide">
-                      {crs.program}
-                    </span>
+        courses.length === 0 ? (
+          <div className="bg-white p-16 rounded-2xl border border-border shadow-sm text-center">
+            <BookOpen className="h-12 w-12 mx-auto text-slate-300 mb-3" />
+            <h3 className="text-base font-bold text-text-primary mb-1">No courses available</h3>
+            <p className="text-sm text-text-secondary">Courses will appear here once they are published by your organization.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {courses.map(crs => {
+              const isCertified = crs.progressRate === 100;
+              return (
+                <div 
+                  key={crs.id} 
+                  className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden flex flex-col md:flex-row hover:border-secondary transition-all duration-300"
+                >
+                  <div className="md:w-56 h-44 md:h-auto shrink-0 relative bg-slate-100">
+                    <img src={crs.thumbnail} alt={crs.title} className="w-full h-full object-cover" />
+                    <div className="absolute top-3 left-3">
+                      <span className="px-2 py-1 bg-white/95 backdrop-blur-sm rounded-lg text-[9px] font-extrabold text-slate-850 shadow-sm uppercase tracking-wide">
+                        {crs.program}
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                <div className="p-5 flex-1 flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-base font-black text-text-primary leading-tight">{crs.title}</h3>
-                    <p className="text-[11px] text-text-secondary line-clamp-2 mt-1 leading-snug">{crs.description}</p>
-                  </div>
-
-                  <div className="space-y-4 pt-3 border-t border-border mt-4">
-                    <div className="flex justify-between items-center text-xs font-bold text-text-primary">
-                      <span>Track Progress</span>
-                      <span className="text-indigo-650">{crs.progressRate}%</span>
+                  <div className="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-base font-black text-text-primary leading-tight">{crs.title}</h3>
+                      <p className="text-[11px] text-text-secondary line-clamp-2 mt-1 leading-snug">{crs.description}</p>
                     </div>
 
-                    <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                      <div className="bg-indigo-600 h-2 rounded-full transition-all duration-500" style={{ width: `${crs.progressRate}%` }}></div>
-                    </div>
+                    <div className="space-y-4 pt-3 border-t border-border mt-4">
+                      <div className="flex justify-between items-center text-xs font-bold text-text-primary">
+                        <span>Track Progress</span>
+                        <span className="text-indigo-650">{crs.progressRate}%</span>
+                      </div>
 
-                    <div className="flex gap-2">
-                      <button 
-                        onClick={() => setSelectedCourse(crs)}
-                        className="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-750 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors cursor-pointer text-center"
-                      >
-                        Enter Course
-                      </button>
-                      
-                      {isCertified && (
+                      <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                        <div className="bg-indigo-600 h-2 rounded-full transition-all duration-500" style={{ width: `${crs.progressRate}%` }}></div>
+                      </div>
+
+                      <div className="flex gap-2">
                         <button 
-                          onClick={() => triggerToast("Downloading course certificate PDF...")}
-                          className="px-3 bg-emerald-50 border border-emerald-200 text-emerald-650 rounded-xl hover:bg-emerald-100 transition-colors flex items-center justify-center shadow-sm"
-                          title="Download Certificate"
+                          onClick={() => setSelectedCourse(crs)}
+                          className="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-750 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors cursor-pointer text-center"
                         >
-                          <Award className="h-4.5 w-4.5" />
+                          Enter Course
                         </button>
-                      )}
+                        
+                        {isCertified && (
+                          <button 
+                            onClick={() => triggerToast("Downloading course certificate PDF...")}
+                            className="px-3 bg-emerald-50 border border-emerald-200 text-emerald-650 rounded-xl hover:bg-emerald-100 transition-colors flex items-center justify-center shadow-sm"
+                            title="Download Certificate"
+                          >
+                            <Award className="h-4.5 w-4.5" />
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )
       ) : (
         /* Course Workspace Player */
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -415,7 +419,7 @@ export default function MyLearningPage() {
                         return (
                           <div 
                             key={sub.id}
-                            onClick={() => handleSelectSubmodule(sub)}
+                            onClick={() => handleSelectSubmodule(sub as Submodule)}
                             className={`p-2.5 rounded-lg border text-[11px] font-semibold flex items-center justify-between cursor-pointer transition-all ${
                               isPlaying 
                                 ? 'bg-indigo-600 border-indigo-500 text-white shadow-sm font-bold' 
@@ -438,6 +442,9 @@ export default function MyLearningPage() {
                     </div>
                   </div>
                 ))}
+                {selectedCourse.modules.length === 0 && (
+                  <div className="text-xs text-text-secondary text-center py-6">No modules available for this course.</div>
+                )}
               </div>
             </div>
           </div>
@@ -462,8 +469,72 @@ export default function MyLearningPage() {
                   )}
                 </div>
 
-                {/* Video Player Restrictions Canvas */}
-                {activeSub.type === 'Video' && (
+                {/* Resource Viewer Frame (Real interactive view!) */}
+                {activeSub.url ? (
+                  <div className="w-full bg-slate-50 border border-border rounded-2xl overflow-hidden p-4 space-y-3">
+                    <div className="flex items-center justify-between text-xs border-b pb-2">
+                      <span className="font-bold text-text-primary flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-indigo-600" />
+                        Interactive Resource Window
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <a 
+                          href={activeSub.url} 
+                          target="_blank" 
+                          rel="noreferrer"
+                          className="px-2.5 py-1 bg-white border text-text-primary hover:bg-slate-50 rounded-lg font-bold flex items-center gap-1.5 shadow-sm text-[10px]"
+                        >
+                          <ExternalLink className="h-3 w-3" /> View Fullscreen
+                        </a>
+                        <a 
+                          href={activeSub.url} 
+                          download
+                          className="px-2.5 py-1 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg font-bold flex items-center gap-1.5 shadow-sm text-[10px]"
+                        >
+                          <Download className="h-3 w-3" /> Download Resource
+                        </a>
+                      </div>
+                    </div>
+
+                    {activeSub.type === 'Video' ? (
+                      <div className="aspect-video bg-black rounded-xl overflow-hidden relative shadow-inner">
+                        <video 
+                          src={activeSub.url} 
+                          controls 
+                          className="w-full h-full object-contain"
+                          onTimeUpdate={(e) => {
+                            const video = e.currentTarget;
+                            setVideoCurrentTime(video.currentTime);
+                            const duration = video.duration || activeSub.videoDuration || 600;
+                            const pct = Math.min(100, Math.round((video.currentTime / duration) * 100));
+                            setVideoProgress(pct);
+
+                            if (video.currentTime >= duration) {
+                              setIsVideoCompleteEnabled(true);
+                            }
+                          }}
+                        />
+                      </div>
+                    ) : (activeSub.type === 'PDF' || activeSub.url.toLowerCase().endsWith('.pdf') || activeSub.url.toLowerCase().includes('pdf') || activeSub.url.startsWith('/mock-storage/')) ? (
+                      <div className="h-[450px] border border-slate-200 rounded-xl overflow-hidden bg-white shadow-inner">
+                        <iframe 
+                          src={`${activeSub.url}#toolbar=1`} 
+                          className="w-full h-full border-none"
+                        />
+                      </div>
+                    ) : (
+                      <div className="p-8 text-center bg-white border rounded-xl space-y-3">
+                        <FileText className="h-10 w-10 text-slate-400 mx-auto" />
+                        <h5 className="font-bold text-text-primary text-sm">{activeSub.title}</h5>
+                        <p className="text-xs text-text-secondary">Click the download button or open in a fullscreen window to review this resource.</p>
+                      </div>
+                    )}
+                  </div>
+                ) : null}
+
+
+                {/* Video Playback restrictions overlay (If url is not present, render simulated player) */}
+                {!activeSub.url && activeSub.type === 'Video' && (
                   <div className="flex-1 flex flex-col justify-between py-6 relative">
                     
                     {/* Simulated Player Box */}
@@ -572,8 +643,8 @@ export default function MyLearningPage() {
                   </div>
                 )}
 
-                {/* PDF/Reading Timer restriction console */}
-                {(activeSub.type === 'PDF' || activeSub.type === 'Reading') && (
+                {/* PDF/Reading Timer restriction console (Simulated only when no url is supplied) */}
+                {!activeSub.url && (activeSub.type === 'PDF' || activeSub.type === 'Reading') && (
                   <div className="flex-1 flex flex-col justify-between py-6">
                     <div className="bg-slate-50 border border-border rounded-2xl p-8 text-center space-y-4 h-64 flex flex-col items-center justify-center">
                       <FileText className="h-12 w-12 text-text-secondary mb-1" />

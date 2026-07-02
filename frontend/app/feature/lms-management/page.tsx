@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
-  Plus, Play, FileText, Trash2, Save, CheckCircle2, GripVertical, ChevronLeft, Image, FolderOpen, UploadCloud
+  Plus, Play, FileText, Trash2, Edit3, Save, CheckCircle2, ChevronLeft, Image, FolderOpen, UploadCloud, Loader2, AlertTriangle, X
 } from 'lucide-react';
 import { CommonFile } from '@/src/types/common-files.types';
 import { fileService } from '@/src/services/file.service';
+import { lmsService } from '@/src/services/lms.service';
+import { CourseItem } from '@/src/api/lms.api';
 
 interface Submodule {
   id: string;
@@ -30,64 +32,23 @@ interface Module {
   submodules: Submodule[];
 }
 
-interface CourseItem {
-  id: string;
-  title: string;
-  program: string;
-  description: string;
-  thumbnail: string;
-  progressRate: number;
-  studentsCompleted: number;
-  modules: Module[];
-}
-
-interface BatchLms {
-  id: string;
-  name: string;
-  coursesCount: number;
-  resourcesCount: number;
-  completedRate: number;
-  courses: CourseItem[];
-}
-
-const INITIAL_COURSES: CourseItem[] = [
-  {
-    id: 'CRS-501',
-    title: 'Python Programming Basics',
-    program: 'Software Engineering',
-    description: 'Master core Python variables, flow control, tuples, dictionaries, and functional patterns.',
-    thumbnail: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&auto=format&fit=crop',
-    progressRate: 92,
-    studentsCompleted: 38,
-    modules: [
-      {
-        id: 'MOD-501-1',
-        title: 'Module 1: Introduction',
-        description: 'Introduction to standard interpreter setups and scripting.',
-        submodules: [
-          {
-            id: 'SUB-501-1-1',
-            title: 'Python Notes Specification',
-            type: 'PDF',
-            url: 'python_basics_notes.pdf',
-            minReadingTime: 120
-          }
-        ]
-      }
-    ]
-  }
-];
-
 export default function LMSManagementPage() {
-  const [viewMode, setViewMode] = useState<'list' | 'create'>('list');
-  const [courses, setCourses] = useState<CourseItem[]>(INITIAL_COURSES);
+  const [viewMode, setViewMode] = useState<'list' | 'create' | 'edit'>('list');
+  const [courses, setCourses] = useState<CourseItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+  const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
   
-  // Course creator states
+  // File input reference
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Course creator/editor states
   const [courseName, setCourseName] = useState('');
   const [courseProgram, setCourseProgram] = useState('Software Engineering');
   const [courseDesc, setCourseDesc] = useState('');
   const [courseThumbnail, setCourseThumbnail] = useState('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&auto=format&fit=crop');
-  const [targetBatchId, setTargetBatchId] = useState('batch-ai-2026');
+  const [creating, setCreating] = useState(false);
 
   // Modules Builder states
   const [modules, setModules] = useState<Module[]>([]);
@@ -123,56 +84,163 @@ export default function LMSManagementPage() {
 
   const [commonFiles, setCommonFiles] = useState<CommonFile[]>([]);
 
-  useEffect(() => {
-    async function loadFiles() {
-      try {
-        const files = await fileService.getFiles();
-        setCommonFiles(files as any);
-      } catch (err) {
-        console.error("Failed to load files", err);
-      }
+  const loadFiles = async () => {
+    try {
+      const files = await fileService.getFiles();
+      setCommonFiles(files as any);
+    } catch (err) {
+      console.error("Failed to load files", err);
     }
+  };
+
+  useEffect(() => {
     loadFiles();
   }, []);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('pinesphere_courses');
-      if (stored) {
-        setCourses(JSON.parse(stored));
-      }
+  // Fetch courses from DB on mount
+  const loadCourses = async () => {
+    setLoading(true);
+    try {
+      const data = await lmsService.getCourses();
+      setCourses(data);
+    } catch (err) {
+      console.error('Failed to load courses:', err);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    loadCourses();
   }, []);
 
-  const handleCreateCourse = (e: React.FormEvent) => {
+  const handleCreateCourse = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!courseName || !courseDesc) {
       triggerToast("Please complete the course details.");
       return;
     }
 
-    const newCourse: CourseItem = {
-      id: `CRS-${Date.now().toString().slice(-3)}`,
-      title: courseName,
-      program: courseProgram,
-      description: courseDesc,
-      thumbnail: courseThumbnail,
-      progressRate: 0,
-      studentsCompleted: 0,
-      modules: modules
-    };
+    setCreating(true);
+    try {
+      const payload = {
+        title: courseName,
+        program: courseProgram,
+        description: courseDesc,
+        thumbnail: courseThumbnail,
+        modules: modules.map(m => ({
+          title: m.title,
+          description: m.description,
+          submodules: m.submodules.map(s => ({
+            title: s.title,
+            type: s.type,
+            url: s.url,
+            minReadingTime: s.minReadingTime,
+            videoDuration: s.videoDuration,
+          })),
+        })),
+      };
 
-    const updated = [newCourse, ...courses];
-    setCourses(updated);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('pinesphere_courses', JSON.stringify(updated));
+      let result;
+      if (viewMode === 'edit' && editingCourseId) {
+        result = await lmsService.updateCourse(editingCourseId, payload);
+        if (result) {
+          triggerToast(`Course "${courseName}" updated successfully!`);
+        }
+      } else {
+        result = await lmsService.createCourse(payload);
+        if (result) {
+          triggerToast(`Course "${courseName}" published successfully!`);
+        }
+      }
+
+      if (result) {
+        setCourseName('');
+        setCourseDesc('');
+        setModules([]);
+        setEditingCourseId(null);
+        setViewMode('list');
+        await loadCourses(); // Refresh from DB
+      } else {
+        triggerToast("Failed to save course. Please try again.");
+      }
+    } catch (err) {
+      triggerToast("Failed to save course. Please try again.");
+    } finally {
+      setCreating(false);
     }
+  };
 
-    triggerToast(`Course "${courseName}" published successfully!`);
-    setCourseName('');
-    setCourseDesc('');
-    setModules([]);
-    setViewMode('list');
+  const handleEditCourseClick = (course: CourseItem) => {
+    setEditingCourseId(course.id);
+    setCourseName(course.title);
+    setCourseProgram(course.program);
+    setCourseDesc(course.description);
+    setCourseThumbnail(course.thumbnail);
+    setModules(course.modules.map(m => ({
+      id: m.id,
+      title: m.title,
+      description: m.description,
+      submodules: m.submodules.map(s => ({
+        id: s.id,
+        title: s.title,
+        type: s.type,
+        url: s.url,
+        minReadingTime: s.minReadingTime,
+        videoDuration: s.videoDuration,
+      }))
+    })));
+    setViewMode('edit');
+  };
+
+  const handleDeleteCourse = async (courseId: string) => {
+    setDeletingId(courseId);
+    try {
+      const success = await lmsService.deleteCourse(courseId);
+      if (success) {
+        triggerToast("Course deleted successfully!");
+        setShowDeleteConfirm(null);
+        await loadCourses(); // Refresh from DB
+      } else {
+        triggerToast("Failed to delete course. Please try again.");
+      }
+    } catch (err) {
+      triggerToast("Failed to delete course. Please try again.");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      // Extract file type from extension
+      const ext = file.name.split('.').pop()?.toUpperCase() || 'DOCUMENT';
+      let fileType: any = 'DOCUMENT';
+      if (['JPG', 'JPEG', 'PNG', 'WEBP', 'GIF'].includes(ext)) fileType = 'IMAGE';
+      else if (['MP4', 'WEBM', 'MOV', 'AVI'].includes(ext)) fileType = 'VIDEO';
+      else if (['PDF'].includes(ext)) fileType = 'PDF';
+      else if (['PPT', 'PPTX'].includes(ext)) fileType = 'PPT';
+      else if (['ZIP', 'RAR'].includes(ext)) fileType = 'ZIP';
+
+      const uploaded = await fileService.uploadFile({
+        file_name: file.name,
+        mime_type: file.type || 'application/octet-stream',
+        file_type: fileType,
+        file_size: file.size,
+        storage_url: `/mock-storage/${file.name}`,
+      });
+
+      triggerToast(`File "${file.name}" uploaded successfully!`);
+      await loadFiles();
+      setSelectedFileId(uploaded.file_id);
+      setSubUrl(uploaded.storage_url);
+    } catch (err) {
+      console.error(err);
+      triggerToast("Failed to upload file.");
+    }
   };
 
   const handleAddModule = () => {
@@ -228,6 +296,7 @@ export default function LMSManagementPage() {
 
     setSubTitle('');
     setSubUrl('');
+    setSelectedFileId('');
     setActiveModIdForSub(null);
     triggerToast("Sub-module added to drafting layout!");
   };
@@ -247,12 +316,81 @@ export default function LMSManagementPage() {
     setModules(prev => prev.filter(m => m.id !== modId));
   };
 
+  const handleDeleteSubmodule = (modId: string, subId: string) => {
+    setModules(prev => prev.map(m => {
+      if (m.id === modId) {
+        return {
+          ...m,
+          submodules: m.submodules.filter(s => s.id !== subId)
+        };
+      }
+      return m;
+    }));
+    triggerToast("Submodule deleted!");
+  };
+
   return (
     <div className="space-y-6 animate-slide-in select-none">
       {toastMessage && (
         <div className="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 bg-slate-900 border border-border text-white rounded-xl shadow-2xl animate-bounce-in">
           <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
           <div className="text-xs font-semibold">{toastMessage}</div>
+        </div>
+      )}
+
+      {/* Hidden file input for uploads */}
+      <input 
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileUpload}
+        className="hidden"
+        accept=".pdf,.ppt,.pptx,.zip,.mp4,.png,.jpg,.jpeg"
+      />
+
+      {/* Delete Confirmation Modal - viewport-relative centered overlay */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl border border-border shadow-2xl p-6 max-w-md w-full space-y-4 animate-slide-in">
+            <div className="flex items-center justify-between border-b pb-2">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-rose-100 flex items-center justify-center">
+                  <AlertTriangle className="h-5 w-5 text-rose-600" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-text-primary">Delete Course</h3>
+                  <p className="text-xs text-text-secondary">This action cannot be undone.</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setShowDeleteConfirm(null)}
+                className="text-text-secondary hover:text-text-primary p-1"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <p className="text-sm text-text-secondary">
+              Are you sure you want to delete this course? All associated modules and lessons will also be removed.
+            </p>
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                onClick={() => setShowDeleteConfirm(null)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-text-primary font-bold text-xs rounded-xl transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleDeleteCourse(showDeleteConfirm)}
+                disabled={deletingId === showDeleteConfirm}
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl transition-colors flex items-center gap-2 disabled:opacity-50"
+              >
+                {deletingId === showDeleteConfirm ? (
+                  <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Deleting...</>
+                ) : (
+                  <><Trash2 className="h-3.5 w-3.5" /> Delete Course</>
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -264,7 +402,13 @@ export default function LMSManagementPage() {
         </div>
         {viewMode === 'list' && (
           <button 
-            onClick={() => setViewMode('create')}
+            onClick={() => {
+              setEditingCourseId(null);
+              setCourseName('');
+              setCourseDesc('');
+              setModules([]);
+              setViewMode('create');
+            }}
             className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-sm transition-all"
           >
             <Plus className="h-4 w-4" />
@@ -274,46 +418,75 @@ export default function LMSManagementPage() {
       </div>
 
       {viewMode === 'list' ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-          {courses.map((course) => (
-            <div key={course.id} className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-              <div className="h-32 bg-slate-100 relative">
-                {course.thumbnail ? (
-                  <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Image className="h-8 w-8 text-slate-300" />
-                  </div>
-                )}
-                <div className="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded text-[10px] font-bold text-text-primary">
-                  {course.modules.length} Modules
-                </div>
-              </div>
-              <div className="p-4 space-y-3">
+        loading ? (
+          <div className="flex items-center justify-center min-h-[300px]">
+            <div className="flex flex-col items-center gap-3">
+              <Loader2 className="h-8 w-8 text-indigo-600 animate-spin" />
+              <span className="text-sm font-semibold text-text-secondary">Loading courses...</span>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+            {courses.map((course) => (
+              <div key={course.id} className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group flex flex-col justify-between">
                 <div>
-                  <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded uppercase tracking-wider">
-                    {course.program}
-                  </span>
-                  <h3 className="font-bold text-text-primary mt-2 line-clamp-1">{course.title}</h3>
-                  <p className="text-xs text-helper mt-1 line-clamp-2">{course.description}</p>
+                  <div className="h-32 bg-slate-100 relative">
+                    {course.thumbnail ? (
+                      <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Image className="h-8 w-8 text-slate-300" />
+                      </div>
+                    )}
+                    <div className="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded text-[10px] font-bold text-text-primary">
+                      {course.modules.length} Modules
+                    </div>
+                  </div>
+                  <div className="p-4 space-y-3">
+                    <div>
+                      <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded uppercase tracking-wider">
+                        {course.program}
+                      </span>
+                      <h3 className="font-bold text-text-primary mt-2 line-clamp-1">{course.title}</h3>
+                      <p className="text-xs text-helper mt-1 line-clamp-2">{course.description}</p>
+                    </div>
+                    <div className="pt-3 border-t border-border flex justify-between items-center text-xs text-text-secondary font-medium">
+                      <span>{course.studentsCompleted} Completions</span>
+                      <span>{course.progressRate}% Avg</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="pt-3 border-t border-border flex justify-between items-center text-xs text-text-secondary font-medium">
-                  <span>{course.studentsCompleted} Completions</span>
-                  <span>{course.progressRate}% Avg</span>
+                
+                {/* Actions container */}
+                <div className="px-4 pb-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    onClick={() => handleEditCourseClick(course)}
+                    className="flex-1 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-150 text-indigo-650 font-bold text-xs uppercase tracking-wider rounded-xl transition-colors flex items-center justify-center gap-1.5"
+                  >
+                    <Edit3 className="h-3.5 w-3.5" />
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => setShowDeleteConfirm(course.id)}
+                    className="flex-1 py-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 font-bold text-xs uppercase tracking-wider rounded-xl transition-colors flex items-center justify-center gap-1.5"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                    Delete
+                  </button>
                 </div>
               </div>
-            </div>
-          ))}
-          {courses.length === 0 && (
-            <div className="col-span-full py-12 text-center text-text-secondary">
-              <FolderOpen className="h-12 w-12 mx-auto text-slate-300 mb-3" />
-              <p>No courses published yet.</p>
-            </div>
-          )}
-        </div>
+            ))}
+            {courses.length === 0 && (
+              <div className="col-span-full py-12 text-center text-text-secondary">
+                <FolderOpen className="h-12 w-12 mx-auto text-slate-300 mb-3" />
+                <p>No courses published yet.</p>
+              </div>
+            )}
+          </div>
+        )
       ) : (
       <div className="bg-white border border-border rounded-2xl p-6 shadow-sm max-w-4xl space-y-6">
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center justify-between mb-2">
           <button 
             onClick={() => setViewMode('list')}
             className="flex items-center gap-1 text-xs font-bold text-text-secondary hover:text-text-primary"
@@ -321,20 +494,13 @@ export default function LMSManagementPage() {
             <ChevronLeft className="h-4 w-4" />
             Back to Courses
           </button>
+          <span className="text-xs font-black text-indigo-650 uppercase bg-indigo-50 px-3 py-1 rounded-full">
+            {viewMode === 'edit' ? 'Edit Mode' : 'Create Mode'}
+          </span>
         </div>
         <form onSubmit={handleCreateCourse} className="space-y-6">
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-[10px] font-bold text-slate-455 uppercase mb-1.5">Target Batch</label>
-              <select 
-                value={targetBatchId}
-                onChange={(e) => setTargetBatchId(e.target.value)}
-                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-2.5 text-xs text-text-primary outline-none cursor-pointer font-bold"
-              >
-                <option value="batch-ai-2026">AI Batch 2026</option>
-              </select>
-            </div>
             <div>
               <label className="block text-[10px] font-bold text-slate-455 uppercase mb-1.5">Program Category</label>
               <select 
@@ -347,7 +513,7 @@ export default function LMSManagementPage() {
                 <option value="Cloud Infrastructure">Cloud Infrastructure</option>
               </select>
             </div>
-            <div>
+            <div className="md:col-span-2">
               <label className="block text-[10px] font-bold text-slate-455 uppercase mb-1.5">Thumbnail Link</label>
               <input 
                 type="text"
@@ -367,7 +533,7 @@ export default function LMSManagementPage() {
                 value={courseName}
                 onChange={(e) => setCourseName(e.target.value)}
                 placeholder="e.g. Master Advanced Neural Architectures"
-                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-2.5 text-xs text-text-primary outline-none"
+                className="w-full bg-slate-50 border border-border rounded-xl px-4 py-2.5 text-xs text-text-primary outline-none font-bold"
               />
             </div>
             <div>
@@ -390,14 +556,23 @@ export default function LMSManagementPage() {
             <div className="space-y-4">
               {modules.map((mod, mIdx) => (
                 <div key={mod.id} className="p-4 border border-border rounded-xl bg-slate-50/50 space-y-3">
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center bg-white p-2.5 rounded-xl border">
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-mono font-bold text-text-secondary bg-slate-200/50 px-2 py-0.5 rounded">Module #{mIdx + 1}</span>
-                      <span className="font-bold text-xs text-text-primary">{mod.title}</span>
+                      <span className="text-[10px] font-mono font-bold text-text-secondary bg-slate-100 px-2 py-0.5 rounded border">Module #{mIdx + 1}</span>
+                      <input 
+                        type="text"
+                        value={mod.title}
+                        onChange={(e) => {
+                          const updatedTitle = e.target.value;
+                          setModules(prev => prev.map(m => m.id === mod.id ? { ...m, title: updatedTitle } : m));
+                        }}
+                        className="font-bold text-xs text-text-primary bg-transparent border-b border-dashed border-slate-300 focus:border-indigo-500 focus:outline-none px-1"
+                        placeholder="Module Title"
+                      />
                     </div>
                     <div className="flex items-center gap-2">
-                      <button type="button" onClick={() => handleMoveModuleUp(mIdx)} className="text-[10px] font-bold text-text-secondary hover:text-indigo-650 bg-white border px-2 py-0.5 rounded">Move Up</button>
-                      <button type="button" onClick={() => setActiveModIdForSub(mod.id)} className="text-[10px] font-bold text-indigo-650 bg-indigo-50 border border-indigo-100 px-2.5 py-0.5 rounded">Add Submodule</button>
+                      <button type="button" onClick={() => handleMoveModuleUp(mIdx)} className="text-[10px] font-bold text-text-secondary hover:text-indigo-650 bg-white border px-2 py-0.5 rounded shadow-sm">Move Up</button>
+                      <button type="button" onClick={() => setActiveModIdForSub(mod.id)} className="text-[10px] font-bold text-indigo-650 bg-indigo-50 border border-indigo-100 px-2.5 py-0.5 rounded shadow-sm">Add Submodule</button>
                       <button type="button" onClick={() => handleDeleteModule(mod.id)} className="text-rose-600 hover:text-rose-800 p-1"><Trash2 className="h-4 w-4" /></button>
                     </div>
                   </div>
@@ -406,18 +581,30 @@ export default function LMSManagementPage() {
                     {mod.submodules.map((sub, sIdx) => (
                       <div key={sub.id} className="flex justify-between items-center text-[11px] p-2 bg-white rounded border border-border">
                         <span className="font-semibold text-text-secondary">{sIdx + 1}. {sub.title} ({sub.type})</span>
-                        <span className="text-[10px] text-text-secondary font-bold">
-                          {sub.minReadingTime ? `Timer: ${sub.minReadingTime}s` : ''} {sub.videoDuration ? `Video: ${sub.videoDuration}s` : ''}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] text-text-secondary font-bold mr-2">
+                            {sub.minReadingTime ? `Timer: ${sub.minReadingTime}s` : ''} {sub.videoDuration ? `Video: ${sub.videoDuration}s` : ''}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteSubmodule(mod.id, sub.id)}
+                            className="text-rose-600 hover:text-rose-800 p-0.5"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
                       </div>
                     ))}
+                    {mod.submodules.length === 0 && (
+                      <p className="text-[10px] text-text-secondary italic">No submodules added yet.</p>
+                    )}
                   </div>
 
                   {activeModIdForSub === mod.id && (
                     <div className="bg-white border border-border rounded-xl p-4 space-y-4">
                       <div className="flex items-center justify-between border-b pb-2">
                         <span className="text-[10px] font-bold text-text-secondary uppercase">Submodule Parameter Locks</span>
-                        <button type="button" onClick={() => setActiveModIdForSub(null)} className="text-text-secondary hover:text-text-secondary">Close</button>
+                        <button type="button" onClick={() => setActiveModIdForSub(null)} className="text-text-secondary hover:text-text-primary font-bold text-xs">Close</button>
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -469,7 +656,7 @@ export default function LMSManagementPage() {
                               </select>
                               <button
                                 type="button"
-                                onClick={() => triggerToast("Upload Modal Opened")}
+                                onClick={() => fileInputRef.current?.click()}
                                 className="bg-indigo-50 border border-indigo-200 text-indigo-650 hover:bg-indigo-100 px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors flex items-center gap-1.5"
                               >
                                 <UploadCloud className="h-3.5 w-3.5" />
@@ -653,9 +840,14 @@ export default function LMSManagementPage() {
           <div className="flex justify-end gap-3 pt-3 border-t">
             <button 
               type="submit"
-              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-750 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all cursor-pointer"
+              disabled={creating}
+              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-750 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all cursor-pointer flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Publish Course Track
+              {creating ? (
+                <><Loader2 className="h-4 w-4 animate-spin" /> Saving...</>
+              ) : (
+                viewMode === 'edit' ? 'Save Changes' : 'Publish Course Track'
+              )}
             </button>
           </div>
         </form>
