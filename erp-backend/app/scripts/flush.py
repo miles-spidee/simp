@@ -62,6 +62,7 @@ MODULE_PREFIXES = {
     "support": ("sup_",),
     "analytics": ("analytics_",),
     "alumni_placements": ("alum_",),
+    "files": ("file_",),
 }
 
 MODULE_ALIASES = {
@@ -107,6 +108,10 @@ MODULE_ALIASES = {
     "document": "system",
     "idcard": "system",
     "verification": "system",
+    "file": "files",
+    "files": "files",
+    "common_file": "files",
+    "common_files": "files",
     "support": "support",
     "helpdesk": "support",
     "ticket": "support",
@@ -319,6 +324,7 @@ async def run_flush(
 
     async with AsyncSessionLocal() as session:
         protected_super_admin_ids = await get_protected_super_admin_ids(session)
+        await session.rollback()
 
         row_counts: dict[str, int] = {}
 

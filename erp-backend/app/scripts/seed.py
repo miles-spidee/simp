@@ -19,14 +19,17 @@ import app.models  # noqa: F401 - register every mapped model
 from app.core.config import settings
 from app.core.security import hash_password
 from app.models.core.mixins import BaseModel as Base
+from app.models.files.enums import FileStatusEnum, AccessLevelEnum
 
 
 random.seed(42)
 UTC = timezone.utc
 NOW = datetime.now(timezone.utc)
+import re
 SYNC_DATABASE_URL = settings.DATABASE_URL.replace("+asyncpg", "+psycopg2")
+SYNC_DATABASE_URL = re.sub(r"\?ssl=require", "", SYNC_DATABASE_URL)
 
-engine = create_engine(SYNC_DATABASE_URL, future=True)
+engine = create_engine(SYNC_DATABASE_URL, connect_args={"sslmode": "require"}, future=True)
 SessionLocal = sessionmaker(bind=engine, expire_on_commit=False)
 MODEL_BY_TABLE = {mapper.local_table.name: mapper.class_ for mapper in Base.registry.mappers}
 
@@ -115,15 +118,30 @@ def existing_rows(session: Session, table_name: str) -> list[Any]:
 def seed_rows(session: Session, table_name: str, rows: list[dict[str, Any]], state: dict[str, list[Any]]):
     existing = existing_rows(session, table_name)
     if existing:
-        state[table_name] = existing
-        return existing
+        if table_name == "auth_users" and len(existing) == 1:
+            pass
+        elif table_name == "rbac_user_roles" and len(existing) == 1:
+            pass
+        else:
+            state[table_name] = existing
+            return existing
 
     table_model = model(table_name)
+    if table_name == "auth_users" and existing:
+        existing_emails = {u.email for u in existing}
+        existing_usernames = {u.username for u in existing}
+        rows = [r for r in rows if r["email"] not in existing_emails and r["username"] not in existing_usernames]
+    elif table_name == "rbac_user_roles" and existing:
+        existing_pairs = {(r_obj.user_id, r_obj.role_id) for r_obj in existing}
+        rows = [r for r in rows if (r["user_id"], r["role_id"]) not in existing_pairs]
+
     objects = [table_model(**row) for row in rows]
     session.add_all(objects)
     session.flush()
-    state[table_name] = objects
-    return objects
+    
+    combined = list(existing) + objects if existing else objects
+    state[table_name] = combined
+    return combined
 
 
 def string_value(table_name: str, column_name: str, index: int) -> str:
@@ -214,6 +232,8 @@ def string_value(table_name: str, column_name: str, index: int) -> str:
         return ["upi", "card", "netbanking", "wallet"][index % 4]
     if column_name == "change_type":
         return ["increase", "decrease", "neutral"][index % 3]
+    if column_name == "trend":
+        return ["up", "down", "flat"][index % 3]
     if column_name == "risk_level":
         return ["Low", "Medium", "High", "Critical"][index % 4]
     if column_name == "format":
@@ -317,7 +337,7 @@ def build_generic_rows(table, state: dict[str, list[Any]], desired_count: int = 
                 value = numeric_value(column.name, index)
             elif column.name in {"created_at", "updated_at", "login_time", "last_activity_at", "publish_date", "scheduled_time", "payment_date", "verification_date", "expires_at", "expiry_date", "end_date", "logout_time", "account_locked_until", "issue_date", "drive_date", "joining_date", "start_date", "due_date", "date"}:
                 value = temporal_value(column.name, index)
-            elif column.name in {"variables", "skills", "notification_preferences", "accessibility_settings", "dashboard_layout", "notes"}:
+            elif column.name in {"variables", "skills", "notification_preferences", "accessibility_settings", "dashboard_layout", "notes"} and type(column.type).__name__ == "JSONB":
                 value = json_value(column.name, index)
             elif column.name == "graduation_year":
                 value = date.today().year - 1
@@ -848,6 +868,261 @@ def seed_users_and_profiles(session: Session, state: dict[str, list[Any]]):
     state["profile_recruiters"] = recruiter_profiles
 
 
+def seed_file_records(session: Session, state: dict[str, list[Any]]):
+    existing = existing_rows(session, "file_records")
+    if existing:
+        state["file_records"] = existing
+        return existing
+
+    users = state.get("auth_users", [])
+    if not users:
+        return []
+
+    # Get UUIDs for uploaded_by / approved_by
+    admin_id = users[0].id
+    mentor_id = users[1].id
+    student_id = users[6].id
+
+    # Create realistic files
+    files_data = [
+        # Certificate v1 (Archived)
+        {
+            "file_name": "Certificate_v1.pdf",
+            "display_name": "Certificate (Initial)",
+            "unique_file_name": "cert-12345-v1.pdf",
+            "description": "Student internship certificate draft version",
+            "file_type": "application/pdf",
+            "file_extension": "pdf",
+            "file_size": 150000,
+            "checksum": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "storage_provider": "S3",
+            "storage_path": "s3://erp-bucket/certificates/cert-12345-v1.pdf",
+            "public_url": "https://s3.amazonaws.com/erp-bucket/certificates/cert-12345-v1.pdf",
+            "thumbnail_url": None,
+            "preview_url": "https://s3.amazonaws.com/erp-bucket/certificates/cert-12345-v1.pdf?preview=1",
+            "category": "Certificate",
+            "module_name": "certificate",
+            "entity_name": "intern_certificates",
+            "entity_id": uuid.uuid4(),
+            "folder_name": "certificates",
+            "tags": ["student", "certificate"],
+            "version": 1,
+            "is_latest": False,
+            "status": FileStatusEnum.ARCHIVED,
+            "uploaded_by": student_id,
+            "approved_by": admin_id,
+            "approved_at": NOW - timedelta(days=10),
+            "expires_at": None,
+            "download_count": 5,
+            "last_downloaded_at": NOW - timedelta(days=2),
+            "is_public": False,
+            "is_downloadable": True,
+            "is_editable": False,
+            "is_confidential": False,
+            "access_level": AccessLevelEnum.RESTRICTED,
+            "remarks": "Replaced by version 2",
+            "file_metadata": {"student_name": "Alice Smith", "completion_date": "2026-05-01"}
+        },
+        # Certificate v2 (Latest, Active)
+        {
+            "file_name": "Certificate_v2.pdf",
+            "display_name": "Certificate (Final)",
+            "unique_file_name": "cert-12345-v2.pdf",
+            "description": "Student internship certificate final version",
+            "file_type": "application/pdf",
+            "file_extension": "pdf",
+            "file_size": 152000,
+            "checksum": "8f4384a51e600570b777a8360f7e1b5fa4277c44df3866d03d0cf3b2f5df8b56",
+            "storage_provider": "S3",
+            "storage_path": "s3://erp-bucket/certificates/cert-12345-v2.pdf",
+            "public_url": "https://s3.amazonaws.com/erp-bucket/certificates/cert-12345-v2.pdf",
+            "thumbnail_url": None,
+            "preview_url": "https://s3.amazonaws.com/erp-bucket/certificates/cert-12345-v2.pdf?preview=1",
+            "category": "Certificate",
+            "module_name": "certificate",
+            "entity_name": "intern_certificates",
+            "entity_id": uuid.uuid4(),
+            "folder_name": "certificates",
+            "tags": ["student", "certificate"],
+            "version": 2,
+            "is_latest": True,
+            "status": FileStatusEnum.ACTIVE,
+            "uploaded_by": student_id,
+            "approved_by": admin_id,
+            "approved_at": NOW - timedelta(days=5),
+            "expires_at": None,
+            "download_count": 12,
+            "last_downloaded_at": NOW - timedelta(hours=3),
+            "is_public": False,
+            "is_downloadable": True,
+            "is_editable": False,
+            "is_confidential": False,
+            "access_level": AccessLevelEnum.RESTRICTED,
+            "remarks": "Final approved certificate",
+            "file_metadata": {"student_name": "Alice Smith", "completion_date": "2026-05-01"}
+        },
+        # Student Report (Active)
+        {
+            "file_name": "Student_Report.xlsx",
+            "display_name": "Student Report",
+            "unique_file_name": "report-student-2026.xlsx",
+            "description": "Comprehensive student progress report for academic year 2026",
+            "file_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "file_extension": "xlsx",
+            "file_size": 2500000,
+            "checksum": "3b29c8789bc8e560f7e1b5fa4277c44df3866d03d0cf3b2f5df8b56f8f4384a5",
+            "storage_provider": "GCS",
+            "storage_path": "gcs://erp-bucket/reports/report-student-2026.xlsx",
+            "public_url": None,
+            "thumbnail_url": None,
+            "preview_url": None,
+            "category": "Report",
+            "module_name": "report",
+            "entity_name": "student_profile",
+            "entity_id": uuid.uuid4(),
+            "folder_name": "reports",
+            "tags": ["student", "report"],
+            "version": 1,
+            "is_latest": True,
+            "status": FileStatusEnum.ACTIVE,
+            "uploaded_by": mentor_id,
+            "approved_by": None,
+            "approved_at": None,
+            "expires_at": None,
+            "download_count": 45,
+            "last_downloaded_at": NOW - timedelta(days=1),
+            "is_public": False,
+            "is_downloadable": True,
+            "is_editable": True,
+            "is_confidential": False,
+            "access_level": AccessLevelEnum.INTERNAL,
+            "remarks": "Weekly update report",
+            "file_metadata": {"academic_year": 2026, "student_count": 30}
+        },
+        # Employee Profile (Active)
+        {
+            "file_name": "Employee_Profile.png",
+            "display_name": "Employee Profile Image",
+            "unique_file_name": "profile-emp-001.png",
+            "description": "Profile picture of employee EMP001",
+            "file_type": "image/png",
+            "file_extension": "png",
+            "file_size": 450000,
+            "checksum": "a51e600570b777a8360f7e1b5fa4277c44df3866d03d0cf3b2f5df8b56f8f4384",
+            "storage_provider": "Local",
+            "storage_path": "/var/www/uploads/profiles/profile-emp-001.png",
+            "public_url": "http://localhost:8000/uploads/profiles/profile-emp-001.png",
+            "thumbnail_url": "http://localhost:8000/uploads/profiles/profile-emp-001_thumb.png",
+            "preview_url": "http://localhost:8000/uploads/profiles/profile-emp-001.png",
+            "category": "Profile",
+            "module_name": "profile",
+            "entity_name": "profile_employees",
+            "entity_id": uuid.uuid4(),
+            "folder_name": "profiles",
+            "tags": ["employee", "profile"],
+            "version": 1,
+            "is_latest": True,
+            "status": FileStatusEnum.ACTIVE,
+            "uploaded_by": admin_id,
+            "approved_by": None,
+            "approved_at": None,
+            "expires_at": None,
+            "download_count": 0,
+            "last_downloaded_at": None,
+            "is_public": True,
+            "is_downloadable": True,
+            "is_editable": False,
+            "is_confidential": False,
+            "access_level": AccessLevelEnum.PUBLIC,
+            "remarks": "Profile image uploaded during onboarding",
+            "file_metadata": {"dimensions": "512x512"}
+        },
+        # Attendance Report (Active)
+        {
+            "file_name": "Attendance_Report.pdf",
+            "display_name": "Attendance Report June",
+            "unique_file_name": "attn-report-june.pdf",
+            "description": "Monthly attendance verification report for June",
+            "file_type": "application/pdf",
+            "file_extension": "pdf",
+            "file_size": 650000,
+            "checksum": "b856f8f4384a51e600570b777a8360f7e1b5fa4277c44df3866d03d0cf3b2f5d",
+            "storage_provider": "Azure",
+            "storage_path": "azure://erp-bucket/attendance/attn-report-june.pdf",
+            "public_url": None,
+            "thumbnail_url": None,
+            "preview_url": None,
+            "category": "Report",
+            "module_name": "attendance",
+            "entity_name": "intern_attendance",
+            "entity_id": uuid.uuid4(),
+            "folder_name": "attendance",
+            "tags": ["attendance", "report"],
+            "version": 1,
+            "is_latest": True,
+            "status": FileStatusEnum.ACTIVE,
+            "uploaded_by": mentor_id,
+            "approved_by": admin_id,
+            "approved_at": NOW - timedelta(days=2),
+            "expires_at": None,
+            "download_count": 8,
+            "last_downloaded_at": NOW - timedelta(hours=12),
+            "is_public": False,
+            "is_downloadable": True,
+            "is_editable": False,
+            "is_confidential": True,
+            "access_level": AccessLevelEnum.INTERNAL,
+            "remarks": "Validated by Mentor",
+            "file_metadata": {"month": "June", "year": 2026}
+        },
+        # Training Material (Draft)
+        {
+            "file_name": "Training_Material.docx",
+            "display_name": "LMS Training Guide",
+            "unique_file_name": "lms-training-guide-draft.docx",
+            "description": "Draft training guide for the new LMS modules",
+            "file_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "file_extension": "docx",
+            "file_size": 1800000,
+            "checksum": "cb2f5d8f4384a51e600570b777a8360f7e1b5fa4277c44df3866d03d0cf3b2f5",
+            "storage_provider": "Local",
+            "storage_path": "/var/www/uploads/documents/lms-training-guide-draft.docx",
+            "public_url": None,
+            "thumbnail_url": None,
+            "preview_url": None,
+            "category": "Document",
+            "module_name": "lms",
+            "entity_name": "lms_course_modules",
+            "entity_id": uuid.uuid4(),
+            "folder_name": "documents",
+            "tags": ["training", "material"],
+            "version": 1,
+            "is_latest": True,
+            "status": FileStatusEnum.DRAFT,
+            "uploaded_by": mentor_id,
+            "approved_by": None,
+            "approved_at": None,
+            "expires_at": None,
+            "download_count": 1,
+            "last_downloaded_at": NOW - timedelta(days=4),
+            "is_public": False,
+            "is_downloadable": True,
+            "is_editable": True,
+            "is_confidential": False,
+            "access_level": AccessLevelEnum.INTERNAL,
+            "remarks": "Work in progress",
+            "file_metadata": {"author": "John Doe"}
+        }
+    ]
+
+    from app.models.files.models import CommonFile
+    objects = [CommonFile(**row) for row in files_data]
+    session.add_all(objects)
+    session.flush()
+    state["file_records"] = objects
+    return objects
+
+
 def seed_remaining_tables(session: Session, state: dict[str, list[Any]]):
     for table in Base.metadata.sorted_tables:
         table_name = table.name
@@ -881,6 +1156,7 @@ def main() -> None:
         seed_rbac_data(session, state)
         seed_org_and_academic_data(session, state)
         seed_users_and_profiles(session, state)
+        seed_file_records(session, state)
         seed_remaining_tables(session, state)
         validate_seed(session)
         session.commit()
