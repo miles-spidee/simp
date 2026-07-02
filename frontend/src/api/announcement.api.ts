@@ -14,7 +14,7 @@ export const announcementApi = {
   },
   createAnnouncement: async (data: Partial<Announcement>): Promise<Announcement> => {
     try {
-      const res = await apiClient.post('/api/v1/announcement');
+      const res = await apiClient.post('/api/v1/announcement', data);
       return res.data?.data || null as any;
     } catch (error) {
       return null as any;

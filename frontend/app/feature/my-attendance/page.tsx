@@ -29,7 +29,8 @@ interface LocalAppeal {
   newStatus: 'Present';
   reason: string;
   attachment: string;
-  status: 'Pending' | 'Approved' | 'Rejected';
+  status: string;
+  reviewStatus?: 'Pending' | 'Approved' | 'Rejected';
 }
 
 export default function MyAttendancePage() {
@@ -138,6 +139,14 @@ export default function MyAttendancePage() {
     triggerToast(`Attached simulated file: ${randFile}`);
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setAppealFile(file.name);
+      triggerToast(`Attached file: ${file.name}`);
+    }
+  };
+
   const handleSubmitAppeal = (e: React.FormEvent) => {
     e.preventDefault();
     if (!appealReason) {
@@ -160,7 +169,8 @@ export default function MyAttendancePage() {
       newStatus: 'Present',
       reason: appealReason,
       attachment: appealFile,
-      status: 'Pending'
+      status: appealStatus, // old status for the review list
+      reviewStatus: 'Pending' // review status for the review list
     };
 
     // Save to localStorage
@@ -270,14 +280,14 @@ export default function MyAttendancePage() {
             {isCheckedIn ? (
               <button
                 onClick={handleCheckOut}
-                className="w-full py-3 bg-rose-600 hover:bg-rose-750 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors cursor-pointer text-center shadow-lg shadow-rose-500/10"
+                className="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors cursor-pointer text-center shadow-lg shadow-rose-500/10"
               >
                 Check Out Session
               </button>
             ) : (
               <button
                 onClick={handleCheckIn}
-                className="w-full py-3 bg-blue-650 hover:bg-blue-750 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors cursor-pointer text-center flex items-center justify-center gap-2 shadow-lg shadow-blue-500/10"
+                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors cursor-pointer text-center flex items-center justify-center gap-2 shadow-lg shadow-blue-500/10"
               >
                 <MapPin className="h-3.5 w-3.5" />
                 <span>Check In Daily</span>
@@ -404,24 +414,39 @@ export default function MyAttendancePage() {
 
             <div>
               <label className="block text-[10px] font-bold text-slate-455 uppercase mb-1.5">Attachment Evidence</label>
+              <input 
+                type="file" 
+                id="appeal-file-upload" 
+                onChange={handleFileChange} 
+                className="hidden" 
+              />
               <div 
-                onClick={handleSimulateAttachment}
+                onClick={() => document.getElementById('appeal-file-upload')?.click()}
                 className="border-2 border-dashed border-border hover:border-secondary rounded-xl p-4 bg-slate-50/50 flex flex-col items-center justify-center text-center cursor-pointer transition-colors"
               >
                 <FileText className="h-6 w-6 text-text-secondary mb-1" />
-                <span className="text-[10px] font-bold text-text-secondary">Simulate Document Attachment</span>
-                <span className="text-[8px] text-text-secondary font-semibold mt-0.5">Click to simulate attaching certificate/letter</span>
+                <span className="text-[10px] font-bold text-text-secondary">Upload Document Evidence</span>
+                <span className="text-[8px] text-text-secondary font-semibold mt-0.5">Click to browse and attach certificate/letter</span>
                 {appealFile && (
                   <span className="mt-2 text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 border border-emerald-100 rounded">
                     📎 {appealFile}
                   </span>
                 )}
               </div>
+              <div className="flex justify-end mt-1.5">
+                <button 
+                  type="button" 
+                  onClick={handleSimulateAttachment} 
+                  className="text-[9px] text-indigo-600 hover:underline font-bold"
+                >
+                  Simulate Attachment Instead
+                </button>
+              </div>
             </div>
 
             <button 
               type="submit"
-              className="w-full py-3 bg-blue-650 hover:bg-blue-750 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-lg shadow-blue-500/10 flex items-center justify-center gap-1.5"
+              className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-lg shadow-blue-500/10 flex items-center justify-center gap-1.5"
             >
               <Send className="h-3 w-3" /> Submit Correction Appeal
             </button>
@@ -440,11 +465,11 @@ export default function MyAttendancePage() {
                 <div className="flex justify-between items-center text-[10px]">
                   <span className="font-bold text-text-secondary">Date: {a.date}</span>
                   <span className={`font-extrabold uppercase px-2 py-0.5 rounded border text-[9px] ${
-                    a.status === 'Pending' ? 'bg-amber-50 border-amber-100 text-amber-600' :
-                    a.status === 'Approved' ? 'bg-emerald-50 border-emerald-100 text-emerald-600' :
+                    (a.reviewStatus || a.status) === 'Pending' ? 'bg-amber-50 border-amber-100 text-amber-600' :
+                    (a.reviewStatus || a.status) === 'Approved' ? 'bg-emerald-50 border-emerald-100 text-emerald-600' :
                     'bg-rose-50 border-rose-100 text-rose-600'
                   }`}>
-                    {a.status}
+                    {a.reviewStatus || a.status}
                   </span>
                 </div>
                 <div className="text-xs font-semibold text-text-primary leading-snug">
@@ -452,7 +477,7 @@ export default function MyAttendancePage() {
                 </div>
                 <p className="text-[11px] text-text-secondary leading-snug">"{a.reason}"</p>
                 <div className="text-[9px] font-bold text-text-secondary flex items-center gap-1">
-                  📎 File: <span className="text-indigo-650">{a.attachment}</span>
+                  📎 File: <span className="text-indigo-600">{a.attachment}</span>
                 </div>
               </div>
             ))}
