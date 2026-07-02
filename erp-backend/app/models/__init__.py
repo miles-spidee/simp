@@ -16,3 +16,4 @@ import app.models.support
 import app.models.analytics
 import app.models.alumni_placements
 import app.models.files
+import app.models.certificate

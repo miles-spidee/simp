@@ -4,7 +4,6 @@ from app.core.database import AsyncSessionLocal
 from app.modules.program.repository import ProgramRepository
 from app.modules.program.schemas import ProgramCreate
 
-
 async def main():
     payload = ProgramCreate(
         program_name='sfgh',

@@ -74,4 +74,36 @@ export interface Batch {
   timeline: BatchTimelineEvent[];
 }
 
-export const MOCK_BATCHES: Batch[] = [];
+export const MOCK_BATCHES: Batch[] = [
+  {
+    id: 'batch-001',
+    name: 'Summer 2026 Engineering Cohort',
+    code: 'B-ENG-26',
+    programId: 'prog-1',
+    programName: 'Software Engineering',
+    internshipType: 'Paid Internship',
+    startDate: '2026-06-01',
+    endDate: '2026-08-31',
+    capacity: 50,
+    status: 'Active',
+    completionRate: 85,
+    students: [
+      { id: 'st-001', name: 'Student 1', internId: 'INT-001', college: 'Stanford University', department: 'CS', performanceScore: 92, status: 'Active' },
+      { id: 'st-002', name: 'Student 2', internId: 'INT-002', college: 'MIT', department: 'IT', performanceScore: 88, status: 'Active' },
+      { id: 'st-003', name: 'Student 3', internId: 'INT-003', college: 'Stanford University', department: 'SE', performanceScore: 95, status: 'Active' },
+      { id: 'st-021', name: 'Student 21', internId: 'INT-021', college: 'IIT Madras', department: 'ECE', performanceScore: 89, status: 'Active' },
+    ],
+    mentor: {
+      id: 'm-01', name: 'Alice Mentor', department: 'Engineering', expertise: 'Fullstack', rating: 4.8, sessionsConducted: 12, studentSatisfaction: 4.9, successRate: 98, completionContribution: 100
+    },
+    projects: [],
+    performance: {
+      attendanceRate: 95, assessmentAverage: 90, placementConversion: 80, satisfactionScore: 4.5,
+      attendanceTrend: [], assessmentTrend: [], performanceTrend: [], completionTrend: []
+    },
+    metadata: {
+      type: 'Technical', category: 'Engineering', domain: 'Web', techStack: ['React', 'Python'], tags: [], priority: 'High', academicYear: '2026'
+    },
+    timeline: []
+  }
+];
