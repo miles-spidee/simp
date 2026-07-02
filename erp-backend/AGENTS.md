@@ -129,6 +129,8 @@ Verified discoveries
 - Aadhaar verification metadata should be stored on `sys_verification_records` via `VerificationRecord`.
 - Seeding completed successfully and a live count check confirmed 0 empty tables.
 - `app/scripts/seed.py` is the current full-table mock-data seeder for the live AWS database.
+- `fin_payment_transactions` is the existing payment record table and now carries Razorpay payment metadata.
+- `order_id` in `fin_payment_transactions` is anchored to `intern_applications.id` because the repository does not define a separate order table.
 
 ---
 

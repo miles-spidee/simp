@@ -1,9 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.services.base import BaseService
+
+from app.models.academic.program import Program
 from app.modules.program.repository import ProgramRepository
 from app.modules.program.schemas import ProgramCreate, ProgramUpdate
+from app.services.base import BaseCRUDService
 
-class ProgramService(BaseService):
+
+class ProgramService(BaseCRUDService[Program, ProgramCreate, ProgramUpdate]):
     def __init__(self, db: AsyncSession):
-        repo = ProgramRepository(db)
-        super().__init__(repo)
+        super().__init__(db, ProgramRepository())

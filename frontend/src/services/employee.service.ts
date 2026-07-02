@@ -9,9 +9,9 @@ export const employeeService = {
     return {
       ...emp,
       id: emp.employee_id,
+      organizationId: (emp as any).organization_code || (emp as any).organization_id || '',
       userId: `usr-${emp.employee_id}`,
-      organizationId: '',
-      joinDate: new Date().toISOString(),
+      joinDate: (emp as any).joining_date || new Date().toISOString(),
       name: `${emp.first_name} ${emp.last_name}`,
       email: emp.official_email,
       avatar: '',
@@ -66,24 +66,54 @@ export const employeeService = {
     return this.mapToExtended(res);
   },
 
+  async updateEmployee(id: string, updates: Partial<ExtendedEmployee>): Promise<ExtendedEmployee | undefined> {
+    try {
+      const current = await this.getEmployee(id);
+      const res = await employeeApi.updateEmployee(id, updates as any);
+      const mapped = this.mapToExtended(res);
+      return {
+        ...(current || {} as ExtendedEmployee),
+        ...mapped,
+        ...updates,
+      } as ExtendedEmployee;
+    } catch (e) {
+      console.debug('Failed to update employee via API:', e);
+      return undefined;
+    }
+  },
+
   async getEmployeesByOrg(orgId: string): Promise<ExtendedEmployee[]> {
     const all = await this.getEmployees();
     return all.filter(e => e.organizationId === orgId);
   },
-  
-  async updateEmployee(id: string, updates: Partial<ExtendedEmployee>): Promise<ExtendedEmployee | undefined> {
-    return undefined;
-  },
 
   async bulkAssignMentor(ids: string[], mentorId: string): Promise<boolean> {
-    return true;
+    try {
+      await employeeApi.bulkAssignMentor(ids, mentorId);
+      return true;
+    } catch (e) {
+      console.debug('Failed bulk mentor update:', e);
+      return false;
+    }
   },
 
   async bulkChangeStatus(ids: string[], status: string): Promise<boolean> {
-    return true;
+    try {
+      await employeeApi.bulkChangeStatus(ids, status);
+      return true;
+    } catch (e) {
+      console.debug('Failed bulk status update:', e);
+      return false;
+    }
   },
 
   async bulkTransferDepartment(ids: string[], department: string): Promise<boolean> {
-    return true;
+    try {
+      await employeeApi.bulkTransferDepartment(ids, department);
+      return true;
+    } catch (e) {
+      console.debug('Failed bulk department update:', e);
+      return false;
+    }
   }
 };

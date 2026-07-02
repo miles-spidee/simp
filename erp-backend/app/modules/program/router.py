@@ -1,42 +1,59 @@
-from fastapi import APIRouter, Depends, Body
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
-from app.core.database import get_db
-from uuid import uuid4
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.academic.program import Program
+from app.core.database import get_db
+from app.models.organizations.department import Department
+from app.modules.program.service import ProgramService
+from app.modules.program.schemas import ProgramCreate
 
 router = APIRouter()
 
-
 @router.get("/")
-async def get_program_list(db: AsyncSession = Depends(get_db)):
-    # DB-backed listing: map Program model to frontend API shape
-    result = await db.execute(select(Program).order_by(Program.created_at.desc()))
-    progs = result.scalars().all()
+async def get_programs(
+    db: AsyncSession = Depends(get_db)
+):
+    service = ProgramService(db)
 
-    def map_prog(p: Program):
-        return {
-            "program_id": str(getattr(p, 'id', '')),
-            "internship_type_id": getattr(p, 'program_type', '') or '',
-            "program_code": getattr(p, 'code', ''),
-            "program_name": getattr(p, 'name', ''),
-            "program_description": getattr(p, 'description', '') or '',
-            "duration_weeks": (getattr(p, 'duration_months', 0) or 0) * 4,
+    programs = await service.get_multi()
+
+    return [
+        {
+            "program_id": str(p.id),
+            "internship_type_id": p.program_type,
+            "program_code": p.code,
+            "program_name": p.name,
+            "program_description": p.description,
+            "duration_weeks": p.duration_months * 4,
             "certificate_available": False,
             "status": "Active",
         }
-
-    return [map_prog(p) for p in progs]
-
+        for p in programs
+    ]
 
 @router.post("/", status_code=201)
-async def create_program(payload: dict = Body(...), db: AsyncSession = Depends(get_db)):
-    """
-    Temporary endpoint: accept program create payload and return created object
-    with a generated `program_id`. Replace with repository-backed creation later.
-    """
-    program_id = str(uuid4())
-    # echo back the payload with program_id to match frontend `ProgramResponse` shape
-    response = {"program_id": program_id, **payload}
-    return response
+async def create_program(
+    payload: ProgramCreate,
+    db: AsyncSession = Depends(get_db),
+):
+    if payload.department_id is None:
+        result = await db.execute(select(Department.id).limit(1))
+        department_id = result.scalar_one_or_none()
+        if department_id is None:
+            raise HTTPException(status_code=400, detail="No department is available to assign to this program")
+        payload.department_id = department_id
+
+    service = ProgramService(db)
+
+    program = await service.create(obj_in=payload)
+
+    return {
+        "program_id": str(program.id),
+        "internship_type_id": program.program_type,
+        "program_code": program.code,
+        "program_name": program.name,
+        "program_description": program.description,
+        "duration_weeks": program.duration_months * 4,
+        "certificate_available": False,
+        "status": "Active",
+    }

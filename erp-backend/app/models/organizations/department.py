@@ -10,6 +10,7 @@ class Department(BaseModel):
         UniqueConstraint('organization_id', 'code', name='uq_org_department_code'),
         {'comment': 'Departments within an organization'}
     )
+    
 
     organization_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('org_organizations.id', ondelete='CASCADE'), index=True, nullable=False)
     campus_id: Mapped[Optional[uuid.UUID]] = mapped_column(ForeignKey('org_campuses.id', ondelete='RESTRICT'), index=True)

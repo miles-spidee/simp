@@ -39,7 +39,7 @@ class BaseService:
             return await coro
         except IntegrityError as e:
             await self.db.rollback()
-            raise HTTPException(status_code=400, detail="Database integrity error: This record already exists or violates a constraint.")
+            raise HTTPException(status_code=400, detail=f"Database integrity error: {str(e)}")
         except HTTPException:
             raise
         except Exception as e:

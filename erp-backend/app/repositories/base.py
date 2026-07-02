@@ -95,7 +95,43 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return result.scalars().all(), total
 
     async def create(self, db: AsyncSession, *, obj_in: CreateSchemaType | dict) -> ModelType:
-        obj_in_data = jsonable_encoder(obj_in) if not isinstance(obj_in, dict) else obj_in
+        if isinstance(obj_in, PydanticBaseModel):
+            obj_in_data = {
+                key: value
+                for key, value in obj_in.model_dump(exclude_none=True).items()
+                if hasattr(self.model, key)
+            }
+        elif isinstance(obj_in, dict):
+            obj_in_data = {key: value for key, value in obj_in.items() if hasattr(self.model, key)}
+        else:
+            obj_in_data = jsonable_encoder(obj_in)
+
+        if self.model.__name__ == "Program":
+            if "department_id" not in obj_in_data or obj_in_data.get("department_id") is None:
+                from app.models.organizations.department import Department
+                result = await db.execute(select(Department.id).limit(1))
+                department_id = result.scalar_one_or_none()
+                if department_id is not None:
+                    obj_in_data["department_id"] = department_id
+
+            code = obj_in_data.get("code")
+            department_id = obj_in_data.get("department_id")
+            if code and department_id is not None:
+                candidate_code = code
+                suffix = 2
+                while True:
+                    existing = await db.execute(
+                        select(self.model.id).where(
+                            self.model.department_id == department_id,
+                            self.model.code == candidate_code,
+                        )
+                    )
+                    if existing.scalar_one_or_none() is None:
+                        break
+                    candidate_code = f"{code}-{suffix}"
+                    suffix += 1
+                obj_in_data["code"] = candidate_code
+
         db_obj = self.model(**obj_in_data)  # type: ignore
         db.add(db_obj)
         # Flush to get the ID, but don't commit to allow caller to handle transactions
@@ -112,9 +148,13 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     ) -> ModelType:
         obj_data = jsonable_encoder(db_obj)
         if isinstance(obj_in, dict):
-            update_data = obj_in
+            update_data = {key: value for key, value in obj_in.items() if hasattr(db_obj, key)}
         else:
-            update_data = obj_in.model_dump(exclude_unset=True)
+            update_data = {
+                key: value
+                for key, value in obj_in.model_dump(exclude_unset=True, exclude_none=True).items()
+                if hasattr(db_obj, key)
+            }
             
         for field in obj_data:
             if field in update_data:
