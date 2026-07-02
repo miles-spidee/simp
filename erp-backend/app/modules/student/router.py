@@ -11,12 +11,13 @@ import uuid
 router = APIRouter()
 
 class StudentCreate(BaseModel):
-    first_name: str
-    last_name: str
+    first_name: str = None
+    last_name: str = None
     email: str = None
     enrollment_number: str = None
     program_id: str = None
     batch_id: str = None
+    application_id: str = None
 
 @router.get("/", response_model=APIResponse[List[dict]])
 async def get_student_list(db: AsyncSession = Depends(get_db)):
@@ -63,9 +64,12 @@ async def create_student(data: StudentCreate, db: AsyncSession = Depends(get_db)
     except Exception as e:
         res_data = {
             "student_id": str(uuid.uuid4()),
-            "first_name": data.first_name,
-            "last_name": data.last_name,
-            "email": data.email,
-            "enrollment_number": data.enrollment_number
+            "first_name": data.first_name or "",
+            "last_name": data.last_name or "",
+            "email": data.email or "",
+            "enrollment_number": data.enrollment_number or "",
+            "program_id": data.program_id or "",
+            "batch_id": data.batch_id or "",
+            "application_id": data.application_id or ""
         }
         return success_response(data=res_data, message="Mock student created")

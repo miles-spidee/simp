@@ -6,10 +6,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 from app.models.core.mixins import BaseModel
 from app.models.authentication.user import User
 from typing import List
-user: Mapped["User"] = relationship(
-    "User",
-    lazy="joined"
-)
+
 class StudentProfile(BaseModel):
     __tablename__ = 'profile_students'
     __table_args__ = (
