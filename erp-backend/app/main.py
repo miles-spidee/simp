@@ -143,6 +143,7 @@ app.include_router(selfservice_router, prefix='/api/v1/selfservice', tags=['Self
 app.include_router(verification_router, prefix='/api/v1/verification', tags=['Verification'])
 app.include_router(wallet_router, prefix='/api/v1/wallet', tags=['Wallet'])
 app.include_router(billing_router, prefix='/api/v1/billing', tags=['Billing'])
+app.include_router(calendar_router, prefix='/api/v1/calendar', tags=['Calendar'])
 
 @app.on_event("startup")
 async def startup_event():

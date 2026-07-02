@@ -16,7 +16,7 @@ export const VerificationApi = {
 
   verifyCertificate: async (certNumber: string): Promise<VerificationResult> => {
     try {
-      const res = await apiClient.get('/api/v1/verification');
+      const res = await apiClient.get(`/api/v1/verification/verify/${certNumber}`);
       return res.data?.data || null as any;
     } catch (error) {
       return null as any;

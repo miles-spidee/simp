@@ -15,3 +15,4 @@ import app.models.system
 import app.models.support
 import app.models.analytics
 import app.models.alumni_placements
+import app.models.certificate
