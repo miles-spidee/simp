@@ -80,8 +80,8 @@ export default function AssessmentManagementPage() {
       return;
     }
 
-    const newAsm: AssessmentItem = {
-      id: `ASM-${Date.now().toString().slice(-3)}`,
+    const newAsm = {
+      batchId: targetBatchId,
       title: asmTitle,
       type: asmType,
       duration: asmDuration,
@@ -99,13 +99,20 @@ export default function AssessmentManagementPage() {
       questions: questions
     };
 
-    // Save to localStorage
-    if (typeof window !== 'undefined') {
-      const storedStr = localStorage.getItem('pinesphere_created_assessments') || '[]';
-      const stored = JSON.parse(storedStr);
-      stored.push({ batchId: targetBatchId, assessment: newAsm });
-      localStorage.setItem('pinesphere_created_assessments', JSON.stringify(stored));
-    }
+    fetch('http://localhost:8000/api/v1/assessment/quizzes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newAsm)
+    }).then(res => {
+      if(res.ok) {
+        triggerToast(`Published assessment "${asmTitle}" for batch ${targetBatchId}!`);
+        setAsmTitle('');
+      } else {
+        triggerToast(`Error publishing assessment`);
+      }
+    }).catch(err => {
+      triggerToast(`Network error`);
+    });
 
     triggerToast(`Published assessment "${asmTitle}" for batch ${targetBatchId}!`);
     setAsmTitle('');
@@ -280,7 +287,7 @@ export default function AssessmentManagementPage() {
                       onClick={() => setQuestionCount(num)}
                       className={`px-3 py-1 rounded text-xs font-bold border transition-all ${
                         questionCount === num 
-                          ? 'bg-indigo-650 text-white border-indigo-600 shadow-sm' 
+                          ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' 
                           : 'bg-white text-text-secondary border-border hover:border-secondary'
                       }`}
                     >
@@ -347,7 +354,7 @@ export default function AssessmentManagementPage() {
           <div className="flex justify-end gap-3 pt-3 border-t">
             <button 
               type="submit"
-              className="px-6 py-3 bg-indigo-650 hover:bg-indigo-750 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all cursor-pointer"
+              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all cursor-pointer"
             >
               Publish Assessment
             </button>

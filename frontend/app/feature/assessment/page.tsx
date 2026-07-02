@@ -181,43 +181,39 @@ export default function AssessmentDashboardPage() {
 
   // Sync candidate score records
   useEffect(() => {
-    const syncSubmissions = () => {
-      if (typeof window !== 'undefined') {
-        const storedStr = localStorage.getItem('pinesphere_quiz_submissions');
-        if (storedStr) {
-          const parsed = JSON.parse(storedStr) as { asmId: string; attempt: StudentAttempt }[];
-          setBatches(prev => prev.map(b => {
-            const updatedAsms = b.assessments.map(a => {
-              const matches = parsed.filter(p => p.asmId === a.id).map(p => p.attempt);
-              if (matches.length > 0) {
-                const merged = [...a.attempts];
-                matches.forEach(newAttempt => {
-                  const idx = merged.findIndex(x => x.studentId === newAttempt.studentId);
-                  if (idx >= 0) {
-                    merged[idx] = { ...merged[idx], ...newAttempt };
-                  } else {
-                    merged.push(newAttempt);
-                  }
-                });
-                return { ...a, attempts: merged };
-              }
-              return a;
-            });
-            return {
-              ...b,
-              assessments: updatedAsms
-            };
-          }));
+    const fetchAssessments = async () => {
+      try {
+        const res = await fetch('http://localhost:8000/api/v1/assessment/quizzes');
+        if (res.ok) {
+          const data = await res.json();
+          // The API returns the exact structure expected by the batches state
+          setBatches(data);
         }
+      } catch (err) {
+        console.error('Error fetching assessments', err);
       }
     };
-    syncSubmissions();
-    window.addEventListener('storage', syncSubmissions);
-    return () => window.removeEventListener('storage', syncSubmissions);
+    fetchAssessments();
+    const interval = setInterval(fetchAssessments, 15000); // Poll every 15s
+    return () => clearInterval(interval);
   }, []);
 
   const activeCount = batches.reduce((sum, b) => sum + b.assessments.length, 0);
   const totalSubCount = batches.reduce((sum, b) => sum + b.assessments.reduce((s, a) => s + a.attempts.length, 0), 0);
+
+  let totalScoreSum = 0;
+  let totalPassed = 0;
+  batches.forEach(b => {
+    b.assessments.forEach(a => {
+      a.attempts.forEach(att => {
+        totalScoreSum += att.score;
+        if (att.passed) totalPassed += 1;
+      });
+    });
+  });
+  
+  const globalAverage = totalSubCount > 0 ? Math.round(totalScoreSum / totalSubCount) : 0;
+  const globalPassRate = totalSubCount > 0 ? Math.round((totalPassed / totalSubCount) * 100) : 0;
 
   // Derive students for the selected batch
   let batchStudents: ComputedStudent[] = [];
@@ -285,11 +281,11 @@ export default function AssessmentDashboardPage() {
             </div>
             <div className="bg-white p-5 rounded-2xl border border-border shadow-sm">
               <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Pass Rate Avg</span>
-              <h3 className="text-3xl font-black text-indigo-650 mt-1">94%</h3>
+              <h3 className="text-3xl font-black text-indigo-650 mt-1">{totalSubCount > 0 ? `${globalPassRate}%` : 'N/A'}</h3>
             </div>
             <div className="bg-white p-5 rounded-2xl border border-border shadow-sm">
               <span className="text-[10px] font-bold text-slate-405 uppercase tracking-widest">Class Average</span>
-              <h3 className="text-3xl font-black text-amber-600 mt-1">84%</h3>
+              <h3 className="text-3xl font-black text-amber-600 mt-1">{totalSubCount > 0 ? `${globalAverage}%` : 'N/A'}</h3>
             </div>
           </div>
 

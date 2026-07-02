@@ -95,50 +95,37 @@ export default function MyAssessmentsPage() {
   };
 
   useEffect(() => {
-    const loadQuizzes = () => {
-      let combined = [...DEFAULT_QUIZZES];
-      if (typeof window !== 'undefined') {
-        const storedStr = localStorage.getItem('pinesphere_created_assessments');
-        if (storedStr) {
-          const parsed = JSON.parse(storedStr) as { batchId: string; assessment: any }[];
-          const filtered = parsed
-            .filter(x => x.batchId === 'batch-ai-2026')
-            .map(x => ({
-              ...x.assessment,
-              status: 'Active' as const
-            }));
-          
-          filtered.forEach(cq => {
-            if (!combined.some(t => t.id === cq.id)) {
-              combined.push(cq);
-            }
-          });
+    const loadQuizzes = async () => {
+      try {
+        const res = await fetch('http://localhost:8000/api/v1/assessment/quizzes');
+        if (res.ok) {
+          const data = await res.json();
+          const batch = data.find((b: any) => b.id === 'batch-ai-2026');
+          if (batch) {
+            const mapped = batch.assessments.map((a: any) => {
+              const myAttempt = a.attempts.find((att: any) => att.studentId === 'stu-12');
+              if (myAttempt) {
+                return {
+                  ...a,
+                  status: 'Completed',
+                  score: myAttempt.score,
+                  passed: myAttempt.passed,
+                  attempts: myAttempt.attempts
+                };
+              }
+              return { ...a, status: 'Active' };
+            });
+            setQuizzes(mapped);
+          }
         }
-
-        // Load quiz submissions statuses
-        const submissionsStr = localStorage.getItem('pinesphere_quiz_submissions');
-        if (submissionsStr) {
-          const parsed = JSON.parse(submissionsStr) as { asmId: string; attempt: any }[];
-          combined = combined.map(q => {
-            const match = parsed.find(x => x.asmId === q.id && x.attempt.studentId === 'stu-12');
-            if (match) {
-              return {
-                ...q,
-                status: 'Completed',
-                score: match.attempt.score,
-                passed: match.attempt.passed
-              };
-            }
-            return q;
-          });
-        }
+      } catch (err) {
+        console.error('Error fetching quizzes', err);
       }
-      setQuizzes(combined);
     };
 
     loadQuizzes();
-    window.addEventListener('storage', loadQuizzes);
-    return () => window.removeEventListener('storage', loadQuizzes);
+    const interval = setInterval(loadQuizzes, 15000); // Poll every 15s
+    return () => clearInterval(interval);
   }, []);
 
   // Timer effect during exam
@@ -231,7 +218,7 @@ export default function MyAssessmentsPage() {
     if (selectedQuiz) {
       let correct = 0;
       let wrong = 0;
-      selectedQuiz.questions.forEach((q, idx) => {
+      selectedQuiz?.questions?.forEach((q, idx) => {
         const studentAns = selectedAnswers[idx];
         if (studentAns === q.answer) {
           correct++;
@@ -247,33 +234,32 @@ export default function MyAssessmentsPage() {
       const isPassed = score >= selectedQuiz.passingMarks;
 
       const submissionAttempt = {
+        asmId: selectedQuiz.id,
         studentId: 'stu-12',
         studentName: 'Ananya Desai',
         attempts: 1,
         score: score,
-        status: 'Completed' as const,
+        status: 'Completed',
         passed: isPassed,
         questionAnalysis: {
           correctCount: correct,
           wrongCount: wrong,
-          skippedCount: selectedQuiz.questions.length - (correct + wrong),
+          skippedCount: (selectedQuiz?.questions?.length || 0) - (correct + wrong),
           negativeMarks: penalty,
-          detailed: selectedQuiz.questions.map((q, idx) => ({
-            question: q.text,
-            correct: selectedAnswers[idx] === q.answer,
+          detailed: selectedQuiz?.questions?.map((q, idx) => ({
+            question: q?.text,
+            correct: selectedAnswers[idx] === q?.answer,
             skipped: !selectedAnswers[idx],
-            marksGained: selectedAnswers[idx] === q.answer ? q.marks : selectedAnswers[idx] ? -1 : 0
+            marksGained: selectedAnswers[idx] === q?.answer ? q?.marks : selectedAnswers[idx] ? -1 : 0
           }))
         }
       };
 
-      // Save to localStorage
-      if (typeof window !== 'undefined') {
-        const storedStr = localStorage.getItem('pinesphere_quiz_submissions') || '[]';
-        const stored = JSON.parse(storedStr);
-        stored.push({ asmId: selectedQuiz.id, attempt: submissionAttempt });
-        localStorage.setItem('pinesphere_quiz_submissions', JSON.stringify(stored));
-      }
+      fetch('http://localhost:8000/api/v1/assessment/submissions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(submissionAttempt)
+      }).catch(err => console.error("Error saving submission", err));
 
       setQuizzes(prev => prev.map(q => q.id === selectedQuiz.id ? { ...q, status: 'Completed', score, passed: isPassed } : q));
     }
@@ -471,7 +457,7 @@ export default function MyAssessmentsPage() {
                 <span className="block text-[9px] font-bold text-text-secondary uppercase tracking-widest border-b border-[#334155] pb-2">Questions map</span>
                 
                 <div className="grid grid-cols-4 gap-2">
-                  {selectedQuiz?.questions.map((_, idx) => (
+                  {selectedQuiz?.questions?.map((_, idx) => (
                     <button
                       key={idx}
                       onClick={() => setCurrentQuestionIdx(idx)}
@@ -496,17 +482,17 @@ export default function MyAssessmentsPage() {
               {/* Question container */}
               <div className="space-y-6">
                 <div className="flex items-center justify-between text-xs font-semibold text-indigo-400">
-                  <span className="flex items-center gap-1.5"><HelpCircle className="h-4 w-4" /> Question {currentQuestionIdx + 1} of {selectedQuiz?.questions.length}</span>
+                  <span className="flex items-center gap-1.5"><HelpCircle className="h-4 w-4" /> Question {currentQuestionIdx + 1} of {selectedQuiz?.questions?.length || 0}</span>
                   <span className="font-mono">5 Marks</span>
                 </div>
 
                 <h3 className="text-lg font-bold text-white leading-relaxed">
-                  {selectedQuiz?.questions[currentQuestionIdx]?.text}
+                  {selectedQuiz?.questions?.[currentQuestionIdx]?.text}
                 </h3>
 
                 {/* Options list */}
                 <div className="grid grid-cols-1 gap-3.5 pt-2">
-                  {selectedQuiz?.questions[currentQuestionIdx]?.options.map((opt, oIdx) => {
+                  {selectedQuiz?.questions?.[currentQuestionIdx]?.options?.map((opt, oIdx) => {
                     const optionChar = String.fromCharCode(65 + oIdx);
                     const isSelected = selectedAnswers[currentQuestionIdx] === optionChar;
 
@@ -544,7 +530,7 @@ export default function MyAssessmentsPage() {
                   Previous
                 </button>
 
-                {currentQuestionIdx < (selectedQuiz?.questions.length || 0) - 1 ? (
+                {currentQuestionIdx < (selectedQuiz?.questions?.length || 0) - 1 ? (
                   <button
                     onClick={() => setCurrentQuestionIdx(prev => prev + 1)}
                     className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors cursor-pointer"
