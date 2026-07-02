@@ -1,22 +1,16 @@
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
-from app.modules.leave.router import router
+import pytest
+from httpx import AsyncClient
 
-app = FastAPI()
-app.include_router(router)
-
-client = TestClient(app)
-
-def test_leave_routes():
-    # GET list
-    response = client.get("/")
+@pytest.mark.anyio
+async def test_leave_routes(client: AsyncClient):
+    # 1. GET list (might be empty or have seeded leaves)
+    response = await client.get("/api/v1/leave/")
     assert response.status_code == 200
     leaves = response.json()
     assert isinstance(leaves, list)
-    assert len(leaves) >= 2
-    assert leaves[0]["leaveType"] == "Medical"
+    initial_count = len(leaves)
     
-    # POST create
+    # 2. POST create
     payload = {
         "userId": "user-1",
         "userName": "Ananya Desai",
@@ -28,15 +22,15 @@ def test_leave_routes():
         "status": "Pending",
         "appliedOn": "2026-07-02T15:00:00.000Z"
     }
-    response = client.post("/", json=payload)
+    response = await client.post("/api/v1/leave/", json=payload)
     assert response.status_code == 200
     created = response.json()
     assert "id" in created
     assert created["leaveType"] == "Casual"
     
-    # Verify it got added to the list
-    response = client.get("/")
+    # 3. Verify it got added to the list
+    response = await client.get("/api/v1/leave/")
     assert response.status_code == 200
     leaves = response.json()
-    assert len(leaves) == 3
-    assert leaves[0]["leaveType"] == "Casual"
+    assert len(leaves) == initial_count + 1
+    assert any(x["leaveType"] == "Casual" for x in leaves)

@@ -174,11 +174,11 @@ export default function MyAssessmentsPage() {
     setWarningCount(newCount);
 
     if (newCount === 1) {
-      alert("⚠️ WARNING 1: Alt+Tab or page focus loss detected! Please keep window focus locked on the assessment environment.");
+      triggerToast("⚠️ WARNING 1: Alt+Tab or page focus loss detected! Please keep window focus locked on the assessment environment.");
     } else if (newCount === 2) {
-      alert("🚨 WARNING 2: Final Warning! Alt+Tab switch detected. Another tab switch will trigger automated paper submission.");
+      triggerToast("🚨 WARNING 2: Final Warning! Alt+Tab switch detected. Another tab switch will trigger automated paper submission.");
     } else if (newCount >= 3) {
-      alert("🚫 CRITICAL COMPLIANCE BREACH: Automated grading triggered.");
+      triggerToast("🚫 CRITICAL COMPLIANCE BREACH: Automated grading triggered.");
       handleAutoSubmit("Automated submission due to multiple focus switch events.");
     }
   };
@@ -264,7 +264,7 @@ export default function MyAssessmentsPage() {
       setQuizzes(prev => prev.map(q => q.id === selectedQuiz.id ? { ...q, status: 'Completed', score, passed: isPassed } : q));
     }
 
-    alert(`Quiz Submitted! ${reason}\nScore: ${score}%`);
+    triggerToast(`Quiz Submitted! ${reason} - Score: ${score}%`);
     setSelectedQuiz(null);
   };
 
