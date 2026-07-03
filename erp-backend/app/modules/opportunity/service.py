@@ -69,6 +69,25 @@ class OpportunityService(BaseService):
         await self.commit_transaction()
         await self.db.refresh(opportunity)
 
+        # Send Opportunity Published notifications to students
+        try:
+            from sqlalchemy import select
+            from app.models.authentication.user import User as DBUser
+            from app.models.profiles.student_profile import StudentProfile
+            from app.services.notification_service import notification_service
+            
+            res_users = await self.db.execute(select(DBUser).join(StudentProfile, StudentProfile.user_id == DBUser.id))
+            students = res_users.scalars().all()
+            
+            for s in students:
+                await notification_service.send_opportunity_published(
+                    title=opportunity.title,
+                    description=opportunity.description or "",
+                    recipient_email=s.email
+                )
+        except Exception as e:
+            print("Error notifying students of opportunity:", e)
+
         return opportunity
 
     async def update(

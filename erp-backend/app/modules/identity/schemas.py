@@ -12,15 +12,21 @@ class LoginRequest(BaseModel):
     password: str
     
 class ForgotPasswordRequest(BaseModel):
-    email: EmailStr
+    email: Optional[str] = None
+    username: Optional[str] = None
 
 class ForgotPasswordVerify(BaseModel):
-    token: str
+    token: Optional[str] = None
+    username: Optional[str] = None
+    email: Optional[str] = None
     otp: str
 
 class ResetPasswordRequest(BaseModel):
-    token: str
-    new_password: str
+    token: Optional[str] = None
+    username: Optional[str] = None
+    otp: Optional[str] = None
+    newPassword: Optional[str] = None
+    new_password: Optional[str] = None
 
 class CurrentUserResponse(BaseModel):
     user_id: UUID

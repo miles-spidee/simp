@@ -829,6 +829,28 @@ class PaymentService:
             # Assumption: OPEN is the only explicitly documented internship opportunity state that permits payment.
             application.status = "UNDER_REVIEW"
 
+        # Send Payment Success notification (Email, SMS, In-App)
+        try:
+            from sqlalchemy import select
+            from app.models.authentication.user import User as DBUser
+            from app.models.profiles.student_profile import StudentProfile
+            from app.services.notification_service import notification_service
+            
+            user_stmt = select(DBUser).join(StudentProfile, StudentProfile.user_id == DBUser.id).where(StudentProfile.id == application.student_profile_id)
+            user_res = await self.db.execute(user_stmt)
+            user_obj = user_res.scalars().first()
+            
+            if user_obj:
+                await notification_service.send_payment_success(
+                    username=user_obj.username.title(),
+                    email=user_obj.email,
+                    phone=user_obj.phone or "+919876543210",
+                    amount=str(amount),
+                    tx_id=razorpay_payment_id
+                )
+        except Exception as e:
+            print("Error sending payment success notification:", e)
+
         return invoice, receipt
 
     async def _build_success_response(

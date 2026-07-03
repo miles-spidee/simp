@@ -54,6 +54,12 @@ class Settings(BaseSettings):
     RESEND_API_KEY: str = ""
     EMAIL_FROM: str = ""
 
+    # SMTP Configuration
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+    SMTP_USER: str = "joshpinkayalvizhi1247@gmail.com"
+    SMTP_PASSWORD: str = ""
+
 
     # Razorpay
     RAZORPAY_KEY_ID: str = ""

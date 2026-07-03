@@ -258,6 +258,36 @@ class ApplicationService(BaseService):
 
         await self.db.refresh(application)
 
+        # Send notification if selected!
+        if application.status.upper() in ["SELECTED", "APPROVED", "HIRED"]:
+            try:
+                from sqlalchemy import select
+                from app.models.authentication.user import User as DBUser
+                from app.models.profiles.student_profile import StudentProfile
+                from app.models.internships.opportunity import Opportunity
+                from app.services.notification_service import notification_service
+                
+                # Fetch user details
+                user_stmt = select(DBUser).join(StudentProfile, StudentProfile.user_id == DBUser.id).where(StudentProfile.id == application.student_profile_id)
+                user_res = await self.db.execute(user_stmt)
+                user_obj = user_res.scalars().first()
+                
+                # Fetch opportunity details
+                opp_stmt = select(Opportunity).where(Opportunity.id == application.opportunity_id)
+                opp_res = await self.db.execute(opp_stmt)
+                opp_obj = opp_res.scalars().first()
+                opp_title = opp_obj.title if opp_obj else "Opportunity"
+                
+                if user_obj:
+                    await notification_service.send_application_selected(
+                        username=user_obj.username.title(),
+                        email=user_obj.email,
+                        phone=user_obj.phone or "+919876543210",
+                        opportunity_title=opp_title
+                    )
+            except Exception as e:
+                print("Error sending application selected notification:", e)
+
         return await self.get(application.id)
 
     # -------------------------------------------------------

@@ -25,11 +25,25 @@ class WhatsAppService:
             to="+919876543210"
         """
 
+        sender = settings.TWILIO_WHATSAPP_NUMBER
+        if not sender.startswith("whatsapp:"):
+            sender = f"whatsapp:{sender}"
+            
+        recipient = to
+        # Development Redirect Mode - only redirect mock seed phone numbers
+        cleaned = recipient.replace("-", "").replace(" ", "").replace("whatsapp:", "").replace("+91", "")
+        if cleaned.startswith("900000"):
+            message = f"[{recipient}] {message}"
+            recipient = "+918248930835"
+
+        if not recipient.startswith("whatsapp:"):
+            recipient = f"whatsapp:{recipient}"
+
         whatsapp = await asyncio.to_thread(
             self.client.messages.create,
             body=message,
-            from_=f"whatsapp:{settings.TWILIO_WHATSAPP_NUMBER}",
-            to=f"whatsapp:{to}",
+            from_=sender,
+            to=recipient,
         )
 
         return whatsapp.sid

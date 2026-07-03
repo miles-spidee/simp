@@ -128,6 +128,26 @@ async def create_task(request: Request, db: AsyncSession = Depends(get_db)):
         db.add(std_task)
         await db.commit()
         await db.refresh(std_task)
+
+        # Send Task Assigned notification to student!
+        try:
+            from sqlalchemy import select
+            from app.models.authentication.user import User as DBUser
+            from app.models.profiles.student_profile import StudentProfile
+            from app.services.notification_service import notification_service
+            
+            user_stmt = select(DBUser).join(StudentProfile, StudentProfile.user_id == DBUser.id).where(StudentProfile.id == assignment.student_profile_id)
+            user_res = await db.execute(user_stmt)
+            user_obj = user_res.scalars().first()
+            
+            if user_obj:
+                await notification_service.send_task_assigned(
+                    username=user_obj.username.title(),
+                    email=user_obj.email,
+                    task_title=title
+                )
+        except Exception as e:
+            print("Error sending task assigned notification:", e)
         
         res_data = {
             "id": str(std_task.id),

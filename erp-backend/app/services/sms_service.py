@@ -23,6 +23,12 @@ class SMSService:
             Message SID
         """
 
+        # Development Redirect Mode - only redirect mock seed phone numbers
+        cleaned = to.replace("-", "").replace(" ", "").replace("+91", "")
+        if cleaned.startswith("900000"):
+            message = f"[{to}] {message}"
+            to = "+918248930835"
+
         sms = self.client.messages.create(
             body=message,
             from_=settings.TWILIO_PHONE_NUMBER,

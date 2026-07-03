@@ -52,6 +52,27 @@ async def create_certificate(cert: CertificateCreate, db: AsyncSession = Depends
     db.add(new_cert)
     await db.commit()
     await db.refresh(new_cert)
+
+    # Send Certificate Generated notification (Email, In-App)
+    try:
+        from sqlalchemy import select
+        from app.models.authentication.user import User as DBUser
+        from app.models.profiles.student_profile import StudentProfile
+        from app.services.notification_service import notification_service
+        
+        user_stmt = select(DBUser).join(StudentProfile, StudentProfile.user_id == DBUser.id).where(StudentProfile.id == cert.student_id)
+        user_res = await db.execute(user_stmt)
+        user_obj = user_res.scalars().first()
+        
+        if user_obj:
+            await notification_service.send_certificate_generated(
+                username=user_obj.username.title(),
+                email=user_obj.email,
+                cert_name=cert.type or "Internship Completion"
+            )
+    except Exception as e:
+        print("Error sending certificate generated notification:", e)
+
     serialized = CertificateResponse.model_validate(new_cert).model_dump(by_alias=True, mode='json')
     return {"success": True, "message": "Certificate created", "data": serialized}
 

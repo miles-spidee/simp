@@ -41,6 +41,15 @@ class IdentityService(BaseService):
         
         # Log audit event for login
         await self.log_audit_event("LOGIN", "User", user.id, new_value={"ip": "127.0.0.1"})
+        
+        # Send Login OTP notification (SMS only)
+        if user.phone:
+            try:
+                from app.services.notification_service import notification_service
+                await notification_service.send_login_otp(user.phone, "123456")
+            except Exception:
+                pass
+                
         await self.commit_transaction()
         
         return {
@@ -72,6 +81,13 @@ class IdentityService(BaseService):
         # Audit creation
         await self.log_audit_event("REGISTER", "User", new_user.id)
         
+        # Send Welcome notification (Email, In-App)
+        try:
+            from app.services.notification_service import notification_service
+            await notification_service.send_welcome_notif(new_user.username, new_user.email)
+        except Exception:
+            pass
+            
         # Finalize transaction
         await self.commit_transaction()
         
@@ -99,7 +115,13 @@ class IdentityService(BaseService):
         return {"success": True}
 
     async def forgot_password(self, data: ForgotPasswordRequest) -> dict:
-        user = await self.user_repo.get_by_email(self.db, data.email)
+        target = data.email or data.username
+        if not target:
+            return {
+                "success": False,
+                "message": "Username or email is required."
+            }
+        user = await self.user_repo.get_by_email_or_username(self.db, target)
 
         if user:
             await self.log_audit_event(
@@ -107,12 +129,15 @@ class IdentityService(BaseService):
                 "User",
                 user.id
             )
+            
+            # Send Password Reset notification (Email, SMS)
+            try:
+                from app.services.notification_service import notification_service
+                await notification_service.send_password_reset_otp(user.email, user.phone or "+919876543210", "654321")
+            except Exception:
+                pass
+                
             await self.commit_transaction()
-
-            # TODO:
-            # Generate OTP
-            # Store OTP
-            # Send Email/SMS/WhatsApp
 
         return {
             "success": True,
@@ -125,5 +150,21 @@ class IdentityService(BaseService):
         return {"success": True, "message": "OTP verified successfully. Proceed to reset password."}
 
     async def reset_password(self, data: ResetPasswordRequest) -> dict:
-        # Pseudo-logic: Validate token, find user, update password
+        target = data.username or data.token
+        if not target:
+            return {"success": False, "message": "Username or reset token is required."}
+            
+        user = await self.user_repo.get_by_email_or_username(self.db, target)
+        if not user:
+            return {"success": False, "message": "User not found."}
+            
+        new_pass = data.newPassword or data.new_password
+        if not new_pass:
+            return {"success": False, "message": "New password is required."}
+            
+        user.password_hash = hash_password(new_pass)
+        self.db.add(user)
+        await self.log_audit_event("PASSWORD_RESET", "User", user.id)
+        await self.commit_transaction()
+        
         return {"success": True, "message": "Password has been successfully reset."}

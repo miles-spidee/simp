@@ -26,7 +26,29 @@ class QuizAssessmentService(BaseService):
             "created_by": user_id,
             "updated_by": user_id
         }
-        return await self.execute_with_integrity_check(self.repo.create(self.db, obj_in=db_data))
+        quiz = await self.execute_with_integrity_check(self.repo.create(self.db, obj_in=db_data))
+
+        # Send Assessment Assigned notifications to students in the batch!
+        try:
+            from sqlalchemy import select
+            from uuid import UUID
+            from app.models.authentication.user import User as DBUser
+            from app.models.profiles.student_profile import StudentProfile
+            from app.services.notification_service import notification_service
+            
+            res_users = await self.db.execute(select(DBUser).join(StudentProfile, StudentProfile.user_id == DBUser.id).where(StudentProfile.batch_id == UUID(str(db_data["batch_id"]))))
+            students = res_users.scalars().all()
+            
+            for s in students:
+                await notification_service.send_assessment_assigned(
+                    username=s.username.title(),
+                    email=s.email,
+                    assessment_title=db_data["title"]
+                )
+        except Exception as e:
+            print("Error sending assessment assigned notifications:", e)
+
+        return quiz
 
     async def get_all_quizzes(self):
         quizzes = await self.repo.get_all_with_submissions()
