@@ -3,7 +3,7 @@ import { Role, RoleCreate, RoleUpdate } from '../types/api/role.types';
 
 export const roleApi = {
   getRoles: async (): Promise<Role[]> => {
-    const res = await apiClient.post<{data: {items: Role[]}}>('/api/v1/rbac/roles/search', { page: 1, size: 1000 });
+    const res = await apiClient.post<{data: {items: Role[]}}>('/api/v1/rbac/roles/search', { page: 1, page_size: 1000 });
     return (res.data as any)?.data?.items || [];
   },
 

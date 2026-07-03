@@ -10,7 +10,7 @@ const MOCK_MODULES: any[] = [];
 export const userService = {
   async getUsers(): Promise<User[]> {
     try {
-      const res = await apiClient.post('/api/v1/users/search', { page: 1, size: 1000 });
+      const res = await apiClient.post('/api/v1/users/search', { page: 1, page_size: 1000 });
       const items = (res.data as any)?.data?.items || res.data?.items || [];
       return items.map((u: any) => ({
         ...u,
