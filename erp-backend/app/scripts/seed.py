@@ -172,6 +172,8 @@ def string_value(table_name: str, column_name: str, index: int) -> str:
         return ["General", "Academic", "Technical", "Placement"][index % 4]
     if column_name == "theme":
         return ["system", "light", "dark"][index % 3]
+    if column_name == "color":
+        return ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7"][index % 5]
     if column_name == "purpose":
         return ["MFA", "EMAIL_VERIFY", "PASSWORD_RESET"][index % 3]
     if column_name == "result":
@@ -776,6 +778,10 @@ def seed_users_and_profiles(session: Session, state: dict[str, list[Any]]):
             "user_id": user_obj.id,
             "organization_id": organizations[index % len(organizations)].id,
             "department_id": departments[index % len(departments)].id,
+            "first_name": ["Alice", "Bob", "Carol", "David", "Eve"][index % 5],
+            "last_name": f"Employee{index + 1}",
+            "email": f"employee-{index + 1}@pinesphere.example.com",
+            "phone": f"+91-90001{index + 1:04d}",
             "employee_code": f"EMP{index + 1:03d}",
             "designation": ["Coordinator", "Assistant Manager", "Analyst", "Officer", "Executive"][index % 5],
             "date_of_joining": date(2023, 1, 1) + timedelta(days=index * 30),
