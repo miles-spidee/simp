@@ -292,14 +292,16 @@ export default function BatchManagementPage() {
   const handleCreateBatch = async (e: React.FormEvent) => {
     e.preventDefault();
     const newB = await batchService.createBatch({
-      batch_name: editForm.name,
-      batch_code: `BATCH-${Date.now()}`,
-      program_id: editForm.programId || 'prog-1',
+      program_id: editForm.programId,
+
+      name: editForm.name,
+      code: `BATCH-${Date.now()}`,
+
       start_date: editForm.startDate || '2026-05-01',
       end_date: editForm.endDate || '2026-08-01',
-      max_capacity: Number(editForm.capacity) || 30,
-      batch_status: editForm.status || 'Draft'
-    } as any);
+
+      max_capacity: Number(editForm.capacity) || 30
+    });
 
     if (newB) {
       setBatches([...batches, newB]);

@@ -1,13 +1,15 @@
 export interface BatchCreate {
   program_id: string;
-  batch_code: string;
-  batch_name: string;
-  max_capacity: number;
+  semester_id?: string;
+
+  name: string;
+  code: string;
+
   start_date: string;
   end_date: string;
-  batch_status: string;
-}
 
+  max_capacity: number;
+}
 export interface BatchResponse {
   batch_id: string;
   program_id: string;
