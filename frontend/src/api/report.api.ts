@@ -19,9 +19,9 @@ export const ReportApi = {
       return [];
     }
   },
-  generateReport: async (templateId: string): Promise<ReportRecord> => {
+  generateReport: async (templateId: string, format: string = 'PDF'): Promise<ReportRecord> => {
     try {
-      const res = await apiClient.post('/api/v1/report/generate', { templateId });
+      const res = await apiClient.post('/api/v1/report/generate', { templateId, format });
       return res.data?.data || null as any;
     } catch (error) {
       return null as any;

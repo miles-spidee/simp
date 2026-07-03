@@ -1,6 +1,8 @@
 import sys
-from sqlalchemy import create_engine, text
+import asyncio
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import text
 from app.models.rbac.role import Role
 from app.models.rbac.action import Action
 from app.models.rbac.module import Module
@@ -10,17 +12,10 @@ from app.models.rbac.role_permission import RolePermission
 from app.models.rbac.user_role import UserRole
 import os
 import uuid
-from dotenv import load_dotenv
+from app.core.config import settings
 
-load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL")
-if DATABASE_URL and DATABASE_URL.startswith("postgresql+asyncpg://"):
-    DATABASE_URL = DATABASE_URL.replace("postgresql+asyncpg://", "postgresql://", 1)
-if "?ssl=" in DATABASE_URL:
-    DATABASE_URL = DATABASE_URL.split("?")[0]
-
-engine = create_engine(DATABASE_URL, echo=False)
-SessionLocal = sessionmaker(engine, expire_on_commit=False)
+engine = create_async_engine(settings.DATABASE_URL, echo=False)
+AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 ROLE_MODULES = {
     "SUPER_ADMIN": ["*"],
@@ -46,53 +41,53 @@ ROLE_MODULES = {
         "student_management", "batch_management", "allocation", "mentor_profile", 
         "alumni_management", "analytics_dashboard", "kpi_management", "help_desk", 
         "digital_id_card", "self_service_portal", "productivity", "announcement", 
-        "notification", "calendar"
+        "notification", "calendar", "reports"
     ],
     "REPORTING_MANAGER": [
         "dashboard", "analytics_dashboard", "kpi_management", "executive_dashboard", 
         "help_desk", "digital_id_card", "self_service_portal", "productivity", 
         "announcement", "notification", "leave_management", "reporting_manager", 
-        "activity_tracking", "escalation_engine", "message", "calendar", "email"
+        "activity_tracking", "escalation_engine", "message", "calendar", "email", "reports"
     ],
     "FINANCE_MANAGER": [
         "dashboard", "kpi_management", "help_desk", "digital_id_card", "self_service_portal", 
         "productivity", "payment_management", "message", "calendar", "email", 
         "fee_structure", "invoice_and_receipt", "internship_wallet", "finance_dashboard", 
-        "revenue_analytics"
+        "revenue_analytics", "reports"
     ]
 }
 
-def update_roles():
-    with SessionLocal() as session:
+async def update_roles():
+    async with AsyncSessionLocal() as session:
         # Fetch existing users linked to SUPER_ADMIN so we can re-link them
-        res = session.execute(text("SELECT user_id FROM rbac_user_roles ur JOIN rbac_roles r ON r.id = ur.role_id WHERE r.code = 'SUPER_ADMIN'"))
+        res = await session.execute(text("SELECT user_id FROM rbac_user_roles ur JOIN rbac_roles r ON r.id = ur.role_id WHERE r.code = 'SUPER_ADMIN'"))
         super_admin_user_ids = [row[0] for row in res.fetchall()]
 
         # Drop everything except modules and actions
-        session.execute(text("DELETE FROM rbac_role_permissions"))
-        session.execute(text("DELETE FROM rbac_role_permission_groups"))
-        session.execute(text("DELETE FROM rbac_permission_group_permissions"))
-        session.execute(text("DELETE FROM rbac_permissions"))
-        session.execute(text("DELETE FROM rbac_permission_groups"))
-        session.execute(text("DELETE FROM rbac_features"))
-        session.execute(text("DELETE FROM rbac_user_roles"))
-        session.execute(text("DELETE FROM rbac_roles"))
+        await session.execute(text("DELETE FROM rbac_role_permissions"))
+        await session.execute(text("DELETE FROM rbac_role_permission_groups"))
+        await session.execute(text("DELETE FROM rbac_permission_group_permissions"))
+        await session.execute(text("DELETE FROM rbac_permissions"))
+        await session.execute(text("DELETE FROM rbac_permission_groups"))
+        await session.execute(text("DELETE FROM rbac_features"))
+        await session.execute(text("DELETE FROM rbac_user_roles"))
+        await session.execute(text("DELETE FROM rbac_roles"))
         
         # Ensure standard actions exist
         actions = ["view", "create", "update", "delete", "manage", "export"]
         for action in actions:
-            res = session.execute(text("SELECT id FROM rbac_actions WHERE code = :code"), {"code": action})
+            res = await session.execute(text("SELECT id FROM rbac_actions WHERE code = :code"), {"code": action})
             if not res.first():
                 new_action = Action(id=uuid.uuid4(), name=action.capitalize(), code=action, description=f"{action.capitalize()} records")
                 session.add(new_action)
-        session.commit()
+        await session.commit()
         
         # Get all actions
-        res = session.execute(text("SELECT id, code FROM rbac_actions"))
+        res = await session.execute(text("SELECT id, code FROM rbac_actions"))
         action_map = {row[1]: row[0] for row in res.fetchall()}
 
         # Create Features and Permissions for every module
-        res = session.execute(text("SELECT id, code, name FROM rbac_modules"))
+        res = await session.execute(text("SELECT id, code, name FROM rbac_modules"))
         modules = res.fetchall()
         
         module_permission_ids = {} # mod_code -> list of perm_ids
@@ -150,8 +145,8 @@ def update_roles():
                 objects_to_add.append(ur)
 
         session.add_all(objects_to_add)
-        session.commit()
+        await session.commit()
         print("Updated roles and permissions successfully.")
 
 if __name__ == "__main__":
-    update_roles()
+    asyncio.run(update_roles())
