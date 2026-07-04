@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import UTC, date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal, ROUND_HALF_UP
 from typing import Any
 from uuid import UUID
@@ -69,7 +69,9 @@ class PaymentService:
             )
             if existing_pending:
                 existing_payload = self._load_gateway_response(existing_pending.gateway_response)
-                existing_order_id = str(existing_payload.get("order_id") or existing_pending.transaction_id)
+                existing_order_id = str(
+                    existing_payload.get("order_id") or existing_pending.transaction_id
+                )
                 logger.info(
                     "payment.order.reused",
                     extra={"application_id": application_id, "order_id": existing_order_id},
@@ -143,11 +145,18 @@ class PaymentService:
             raise
         except SQLAlchemyError as exc:
             await self.db.rollback()
-            logger.error("payment.order.db_failure", extra={"application_id": application_id, "error": str(exc)})
-            raise HTTPException(status_code=503, detail="Database error while creating payment order") from exc
+            logger.error(
+                "payment.order.db_failure",
+                extra={"application_id": application_id, "error": str(exc)},
+            )
+            raise HTTPException(
+                status_code=503, detail="Database error while creating payment order"
+            ) from exc
         except Exception as exc:
             await self.db.rollback()
-            logger.error("payment.order.failure", extra={"application_id": application_id, "error": str(exc)})
+            logger.error(
+                "payment.order.failure", extra={"application_id": application_id, "error": str(exc)}
+            )
             raise HTTPException(status_code=503, detail="Unable to create payment order") from exc
 
     async def verify_payment(
@@ -171,7 +180,9 @@ class PaymentService:
             )
             payment = self._fetch_payment(razorpay_payment_id=razorpay_payment_id)
             if str(payment.get("order_id")) != razorpay_order_id:
-                raise HTTPException(status_code=409, detail="Payment does not belong to the provided order")
+                raise HTTPException(
+                    status_code=409, detail="Payment does not belong to the provided order"
+                )
 
             if str(payment.get("status", "")).lower() != "captured":
                 raise HTTPException(status_code=409, detail="Payment is not captured")
@@ -186,7 +197,9 @@ class PaymentService:
             transaction_data = self._load_gateway_response(transaction.gateway_response)
             application_id = str(transaction_data.get("application_id") or "")
             if not application_id:
-                raise HTTPException(status_code=404, detail="Application mapping not found for transaction")
+                raise HTTPException(
+                    status_code=404, detail="Application mapping not found for transaction"
+                )
 
             application, _ = await self._validate_application(application_id=application_id)
             invoice, receipt = await self._finalize_successful_payment(
@@ -220,14 +233,24 @@ class PaymentService:
             await self.db.rollback()
             logger.error(
                 "payment.verification.db_failure",
-                extra={"order_id": razorpay_order_id, "payment_id": razorpay_payment_id, "error": str(exc)},
+                extra={
+                    "order_id": razorpay_order_id,
+                    "payment_id": razorpay_payment_id,
+                    "error": str(exc),
+                },
             )
-            raise HTTPException(status_code=503, detail="Database error during payment verification") from exc
+            raise HTTPException(
+                status_code=503, detail="Database error during payment verification"
+            ) from exc
         except Exception as exc:
             await self.db.rollback()
             logger.error(
                 "payment.verification.failure",
-                extra={"order_id": razorpay_order_id, "payment_id": razorpay_payment_id, "error": str(exc)},
+                extra={
+                    "order_id": razorpay_order_id,
+                    "payment_id": razorpay_payment_id,
+                    "error": str(exc),
+                },
             )
             raise HTTPException(status_code=503, detail="Unable to verify payment") from exc
 
@@ -256,7 +279,11 @@ class PaymentService:
                 order_id = str(payment_entity.get("order_id") or "")
                 payment_id = str(payment_entity.get("id") or "")
 
-                transaction = await self._find_transaction_by_order_id(order_id=order_id) if order_id else None
+                transaction = (
+                    await self._find_transaction_by_order_id(order_id=order_id)
+                    if order_id
+                    else None
+                )
                 if transaction and transaction.status not in {"captured", "SUCCESS"}:
                     transaction.status = "failed"
                     transaction.gateway_response = self._serialize_gateway_response(
@@ -272,7 +299,9 @@ class PaymentService:
                     )
                     await self.db.commit()
 
-                logger.info("payment.webhook.failed", extra={"order_id": order_id, "payment_id": payment_id})
+                logger.info(
+                    "payment.webhook.failed", extra={"order_id": order_id, "payment_id": payment_id}
+                )
                 return {"processed": True, "event": event_type, "payload": event_payload}
 
             payment_entity = event_payload.get("payment", {}).get("entity", {})
@@ -290,15 +319,22 @@ class PaymentService:
 
             payment = self._fetch_payment(razorpay_payment_id=payment_id)
             if str(payment.get("order_id")) != order_id:
-                raise HTTPException(status_code=409, detail="Payment does not belong to the provided order")
+                raise HTTPException(
+                    status_code=409, detail="Payment does not belong to the provided order"
+                )
             if str(payment.get("status", "")).lower() != "captured":
                 raise HTTPException(status_code=409, detail="Payment is not captured")
             if transaction is None:
                 raise HTTPException(status_code=404, detail="Pending payment transaction not found")
 
-            application_id = str(self._load_gateway_response(transaction.gateway_response).get("application_id") or "")
+            application_id = str(
+                self._load_gateway_response(transaction.gateway_response).get("application_id")
+                or ""
+            )
             if not application_id:
-                raise HTTPException(status_code=404, detail="Application mapping not found for transaction")
+                raise HTTPException(
+                    status_code=404, detail="Application mapping not found for transaction"
+                )
 
             application, _ = await self._validate_application(application_id=application_id)
             await self._finalize_successful_payment(
@@ -311,7 +347,9 @@ class PaymentService:
             )
             await self.db.commit()
 
-            logger.info("payment.webhook.success", extra={"event": event_type, "order_id": order_id})
+            logger.info(
+                "payment.webhook.success", extra={"event": event_type, "order_id": order_id}
+            )
             return {"processed": True, "event": event_type, "payload": event_payload}
         except HTTPException:
             await self.db.rollback()
@@ -338,7 +376,16 @@ class PaymentService:
         application, _ = await self._validate_application(application_id=application_id)
         transaction = await self._find_application_transaction(
             application_id=str(application.id),
-            statuses=["captured", "created", "authorized", "failed", "refunded", "SUCCESS", "PENDING", "FAILED"],
+            statuses=[
+                "captured",
+                "created",
+                "authorized",
+                "failed",
+                "refunded",
+                "SUCCESS",
+                "PENDING",
+                "FAILED",
+            ],
         )
         if not transaction:
             raise HTTPException(status_code=404, detail="Application payment details not found")
@@ -437,9 +484,13 @@ class PaymentService:
                 }
             )
         except SignatureVerificationError as exc:
-            raise HTTPException(status_code=401, detail="Invalid Razorpay payment signature") from exc
+            raise HTTPException(
+                status_code=401, detail="Invalid Razorpay payment signature"
+            ) from exc
         except Exception as exc:
-            raise HTTPException(status_code=503, detail="Unable to verify payment signature") from exc
+            raise HTTPException(
+                status_code=503, detail="Unable to verify payment signature"
+            ) from exc
 
     def _verify_webhook_signature(self, *, payload: bytes, signature: str) -> None:
         """Verify webhook signature using configured Razorpay webhook secret."""
@@ -450,7 +501,9 @@ class PaymentService:
                 secret=settings.RAZORPAY_WEBHOOK_SECRET,
             )
         except SignatureVerificationError as exc:
-            raise HTTPException(status_code=401, detail="Invalid Razorpay webhook signature") from exc
+            raise HTTPException(
+                status_code=401, detail="Invalid Razorpay webhook signature"
+            ) from exc
         except Exception as exc:
             raise HTTPException(status_code=400, detail="Invalid webhook payload") from exc
 
@@ -513,7 +566,9 @@ class PaymentService:
     async def _resolve_application_fee(self, *, student_profile: StudentProfile) -> FeeStructure:
         """Resolve fee from student's batch/program linked fee structure."""
         if student_profile.batch_id is None:
-            raise HTTPException(status_code=404, detail="Student batch not found for fee calculation")
+            raise HTTPException(
+                status_code=404, detail="Student batch not found for fee calculation"
+            )
 
         batch = await self.db.get(Batch, student_profile.batch_id)
         if batch is None:
@@ -549,7 +604,9 @@ class PaymentService:
             raise HTTPException(status_code=404, detail=f"Active currency {code} not found")
         return currency
 
-    async def _find_application_transaction(self, *, application_id: str, statuses: list[str]) -> PaymentTransaction | None:
+    async def _find_application_transaction(
+        self, *, application_id: str, statuses: list[str]
+    ) -> PaymentTransaction | None:
         """Find latest transaction for an application from stored gateway metadata."""
         like_value = f'%"application_id":"{application_id}"%'
         stmt = (
@@ -666,7 +723,7 @@ class PaymentService:
             invoice_id=invoice.id,
             amount_paid=amount,
             payment_method=payment_method.upper(),
-            payment_date=datetime.now(UTC),
+            payment_date=datetime.now(timezone.utc),
             transaction_id=transaction_id,
         )
         self.db.add(receipt)
@@ -681,7 +738,9 @@ class PaymentService:
         result = await self.db.execute(stmt)
         return result.scalars().first()
 
-    async def _find_receipt_for_transaction(self, *, transaction: PaymentTransaction) -> Receipt | None:
+    async def _find_receipt_for_transaction(
+        self, *, transaction: PaymentTransaction
+    ) -> Receipt | None:
         payload = self._load_gateway_response(transaction.gateway_response)
         payment_id = str(payload.get("payment_id") or "")
         if payment_id:
@@ -696,7 +755,8 @@ class PaymentService:
 
         by_receipt_number_stmt = select(Receipt).where(
             Receipt.deleted_at.is_(None),
-            Receipt.receipt_number == self._receipt_number(transaction_id=transaction.transaction_id),
+            Receipt.receipt_number
+            == self._receipt_number(transaction_id=transaction.transaction_id),
         )
         by_receipt_number_result = await self.db.execute(by_receipt_number_stmt)
         return by_receipt_number_result.scalars().first()
@@ -720,13 +780,13 @@ class PaymentService:
             return value
         try:
             if isinstance(value, (int, float)):
-                return datetime.fromtimestamp(value, tz=UTC)
+                return datetime.fromtimestamp(value, tz=timezone.utc)
             if isinstance(value, str):
                 try:
-                    return datetime.fromtimestamp(float(value), tz=UTC)
+                    return datetime.fromtimestamp(float(value), tz=timezone.utc)
                 except ValueError:
                     parsed = datetime.fromisoformat(value)
-                    return parsed if parsed.tzinfo else parsed.replace(tzinfo=UTC)
+                    return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
         except Exception:
             return None
         return None
@@ -762,7 +822,9 @@ class PaymentService:
             if payload.get(key) is not None
         }
 
-    def _merge_gateway_response(self, existing_payload: str | None, updates: dict[str, Any]) -> dict[str, Any]:
+    def _merge_gateway_response(
+        self, existing_payload: str | None, updates: dict[str, Any]
+    ) -> dict[str, Any]:
         merged = self._load_gateway_response(existing_payload)
         merged.update({key: value for key, value in updates.items() if value is not None})
         return self._compact_gateway_response(merged)
@@ -860,12 +922,18 @@ class PaymentService:
         payment: dict[str, Any],
     ) -> dict[str, Any]:
         payload = self._load_gateway_response(transaction.gateway_response)
-        invoice = await self._find_invoice_by_application(application_id=str(payload.get("application_id") or ""))
+        invoice = await self._find_invoice_by_application(
+            application_id=str(payload.get("application_id") or "")
+        )
         receipt = await self._find_receipt_for_transaction(transaction=transaction)
         response: dict[str, Any] = {
             "verified": True,
-            "payment_id": str(payment.get("id") or payload.get("payment_id") or transaction.transaction_id),
-            "order_id": str(payment.get("order_id") or payload.get("order_id") or transaction.transaction_id),
+            "payment_id": str(
+                payment.get("id") or payload.get("payment_id") or transaction.transaction_id
+            ),
+            "order_id": str(
+                payment.get("order_id") or payload.get("order_id") or transaction.transaction_id
+            ),
             "status": payment.get("status"),
             "amount": payment.get("amount"),
             "currency": payment.get("currency"),
@@ -875,15 +943,12 @@ class PaymentService:
         if receipt:
             response["receipt_number"] = receipt.receipt_number
         return response
-    
+
     def _require_configured(self, keys: list[str]) -> None:
         missing = [key for key in keys if not getattr(settings, key)]
-        
+
         if missing:
             raise HTTPException(
                 status_code=503,
-                detail="Razorpay is not configured. Missing settings: "
-                + ", ".join(missing),
-                )
-            
-
+                detail="Razorpay is not configured. Missing settings: " + ", ".join(missing),
+            )

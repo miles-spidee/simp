@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import date, datetime
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,14 +17,15 @@ from pydantic import BaseModel
 
 router = APIRouter()
 
+
 class EmployeeCreate(BaseModel):
     first_name: str
     last_name: str
     official_email: str
-    designation: str = None
-    phone_number: str = None
-    employee_code: str | None = None
-    joining_date: str | None = None
+    designation: Optional[str] = None
+    phone_number: Optional[str] = None
+    employee_code: Optional[str] = None
+    joining_date: Optional[str] = None
 
 
 class EmployeeUpdate(BaseModel):
@@ -53,7 +56,7 @@ class BulkMentorRequest(BaseModel):
     mentorId: str
 
 
-def _frontend_status(value: str | None) -> str:
+def _frontend_status(value: Optional[str]) -> str:
     mapping = {
         StatusEnum.ACTIVE.value: "Active",
         StatusEnum.INACTIVE.value: "Inactive",
@@ -64,7 +67,7 @@ def _frontend_status(value: str | None) -> str:
     return mapping.get(value or StatusEnum.ACTIVE.value, value or "Active")
 
 
-def _backend_status(value: str | None) -> str:
+def _backend_status(value: Optional[str]) -> str:
     if not value:
         return StatusEnum.ACTIVE.value
     normalized = value.strip().lower()
@@ -103,6 +106,7 @@ def _employee_payload(profile, user, organization=None, department=None):
 
 async def _resolve_organization(db: AsyncSession, value: str):
     from app.models.organizations.organization import Organization
+
     uuid_value = None
     try:
         uuid_value = UUID(value)
@@ -133,6 +137,7 @@ async def _resolve_department(db: AsyncSession, organization_id, value: str):
     result = await db.execute(select(Department).where(*conditions))
     return result.scalars().first()
 
+
 @router.get("/", response_model=APIResponse[List[dict]])
 async def get_employee_list(db: AsyncSession = Depends(get_db)):
     try:
@@ -140,6 +145,7 @@ async def get_employee_list(db: AsyncSession = Depends(get_db)):
         from app.models.organizations.organization import Organization
         from app.models.organizations.department import Department
         from app.models.authentication.user import User
+
         result = await db.execute(
             select(EmployeeProfile, User, Organization, Department)
             .join(User, User.id == EmployeeProfile.user_id)
@@ -148,7 +154,10 @@ async def get_employee_list(db: AsyncSession = Depends(get_db)):
             .order_by(EmployeeProfile.created_at.desc())
         )
         rows = result.all()
-        data = [_employee_payload(profile, user, organization, department) for profile, user, organization, department in rows]
+        data = [
+            _employee_payload(profile, user, organization, department)
+            for profile, user, organization, department in rows
+        ]
         return success_response(data=data)
     except Exception:
         return success_response(data=[])
@@ -159,7 +168,7 @@ async def update_employee(
     id: UUID,
     data: EmployeeUpdate,
     current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
 ):
     from app.models.profiles.employee_profile import EmployeeProfile
     from app.models.organizations.organization import Organization
@@ -182,7 +191,9 @@ async def update_employee(
     if update_data.get("name"):
         user.username = update_data["name"]
     if update_data.get("email"):
-        existing_email = await db.execute(select(User).where(User.email == update_data["email"], User.id != user.id))
+        existing_email = await db.execute(
+            select(User).where(User.email == update_data["email"], User.id != user.id)
+        )
         if existing_email.scalars().first():
             raise HTTPException(status_code=409, detail="Employee email already exists")
         user.email = update_data["email"]
@@ -194,7 +205,9 @@ async def update_employee(
         profile.employee_code = update_data["employee_code"]
     if update_data.get("joining_date"):
         try:
-            profile.date_of_joining = datetime.fromisoformat(update_data["joining_date"].replace("Z", "+00:00")).date()
+            profile.date_of_joining = datetime.fromisoformat(
+                update_data["joining_date"].replace("Z", "+00:00")
+            ).date()
         except ValueError:
             try:
                 profile.date_of_joining = date.fromisoformat(update_data["joining_date"])
@@ -208,7 +221,9 @@ async def update_employee(
             profile.organization_id = organization_obj.id
             organization = organization_obj
     if update_data.get("departmentId"):
-        department_obj = await _resolve_department(db, profile.organization_id, update_data["departmentId"])
+        department_obj = await _resolve_department(
+            db, profile.organization_id, update_data["departmentId"]
+        )
         if department_obj:
             profile.department_id = department_obj.id
             department = department_obj
@@ -219,13 +234,17 @@ async def update_employee(
     await db.refresh(profile)
     await db.refresh(user)
 
-    return success_response(data=_employee_payload(profile, user, organization, department), message="Employee updated successfully")
+    return success_response(
+        data=_employee_payload(profile, user, organization, department),
+        message="Employee updated successfully",
+    )
+
 
 @router.post("/", response_model=APIResponse[dict])
 async def create_employee(
     data: EmployeeCreate,
     current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
 ):
     from app.models.authentication.user import User
     from app.models.organizations.organization import Organization
@@ -276,7 +295,9 @@ async def create_employee(
     joining_date_value = None
     if data.joining_date:
         try:
-            joining_date_value = datetime.fromisoformat(data.joining_date.replace("Z", "+00:00")).date()
+            joining_date_value = datetime.fromisoformat(
+                data.joining_date.replace("Z", "+00:00")
+            ).date()
         except ValueError:
             try:
                 joining_date_value = date.fromisoformat(data.joining_date)
@@ -307,7 +328,7 @@ async def create_employee(
 async def bulk_update_status(
     data: BulkStatusRequest,
     current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
 ):
     from app.models.profiles.employee_profile import EmployeeProfile
 
@@ -329,7 +350,7 @@ async def bulk_update_status(
 async def bulk_update_department(
     data: BulkDepartmentRequest,
     current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
 ):
     from app.models.profiles.employee_profile import EmployeeProfile
 
@@ -350,8 +371,11 @@ async def bulk_update_department(
 async def bulk_update_mentor(
     data: BulkMentorRequest,
     current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
 ):
     # The current schema does not persist a mentor_id on employee profiles.
     # Keep the action successful so the employee module workflow remains usable.
-    return success_response(data={"updated": len(data.ids), "mentorId": data.mentorId}, message="Mentor assignment recorded")
+    return success_response(
+        data={"updated": len(data.ids), "mentorId": data.mentorId},
+        message="Mentor assignment recorded",
+    )
