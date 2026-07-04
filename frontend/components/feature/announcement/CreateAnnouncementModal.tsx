@@ -102,10 +102,11 @@ export default function CreateAnnouncementModal({ isOpen, onClose, onSuccess }: 
         pinned: form.pinned,
         status: 'Published' as const, // auto-publish for ease
         publishDate: new Date().toISOString(),
-        author: 'Admin Team'
+        author: 'Admin Team',
+        channels: form.channels
       };
 
-      await AnnouncementService.createAnnouncement(announcementData);
+      await AnnouncementService.createAnnouncement(announcementData as any);
 
       // 3. Generate In-Portal Notification if checked
       if (form.channels.includes('Portal')) {

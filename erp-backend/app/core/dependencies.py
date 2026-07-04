@@ -30,7 +30,7 @@ async def get_current_user(
             pass
 
     if not user and settings.APP_ENV == "development":
-        user = await UserRepository(db).get_by_email(db, "admin@pinesphere.com")
+        user = await UserRepository(db).get_by_email(db, "admin@pinesphere.example.com")
 
     if not user:
         raise HTTPException(status_code=401, detail="Not authenticated")

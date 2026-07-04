@@ -23,11 +23,11 @@ class SMSService:
             Message SID
         """
 
-        # Development Redirect Mode - only redirect mock seed phone numbers
+        # Skip mock seed/test phone numbers containing '900000' to avoid hitting Twilio limits
         cleaned = to.replace("-", "").replace(" ", "").replace("+91", "")
         if cleaned.startswith("900000"):
-            message = f"[{to}] {message}"
-            to = "+918248930835"
+            print(f"| TWILIO MOCK SMS BYPASSED | Target: {to} | Message: {message[:60]}... |")
+            return "skipped_mock_sms"
 
         sms = self.client.messages.create(
             body=message,

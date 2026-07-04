@@ -30,11 +30,11 @@ class WhatsAppService:
             sender = f"whatsapp:{sender}"
             
         recipient = to
-        # Development Redirect Mode - only redirect mock seed phone numbers
+        # Skip mock seed/test phone numbers containing '900000' to avoid hitting Twilio limits
         cleaned = recipient.replace("-", "").replace(" ", "").replace("whatsapp:", "").replace("+91", "")
         if cleaned.startswith("900000"):
-            message = f"[{recipient}] {message}"
-            recipient = "+918248930835"
+            print(f"| TWILIO MOCK WHATSAPP BYPASSED | Target: {recipient} | Message: {message[:60]}... |")
+            return "skipped_mock_whatsapp"
 
         if not recipient.startswith("whatsapp:"):
             recipient = f"whatsapp:{recipient}"

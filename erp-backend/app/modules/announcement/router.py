@@ -107,6 +107,69 @@ async def create_announcement(request: Request, db: AsyncSession = Depends(get_d
         await db.commit()
         await db.refresh(new_ann)
         
+        # Resolve recipient users based on audience
+        audience = body.get("audience", ["All"])
+        target_users = []
+        try:
+            from app.models.rbac.role import Role
+            from app.models.rbac.user_role import UserRole
+
+            if not audience or "All" in audience or "ALL" in audience:
+                stmt = select(User)
+                res = await db.execute(stmt)
+                target_users = res.scalars().all()
+            else:
+                # Map frontend roles to backend role codes
+                role_mappings = {
+                    "Student": "STUDENT",
+                    "Mentor": "MENTOR",
+                    "HR": "HR",
+                    "College Coordinator": "ORG_COORDINATOR"
+                }
+                codes = [role_mappings[r] for r in audience if r in role_mappings]
+                if codes:
+                    stmt = select(User).join(UserRole, UserRole.user_id == User.id).join(Role, Role.id == UserRole.role_id).where(Role.code.in_(codes))
+                    res = await db.execute(stmt)
+                    target_users = res.scalars().all()
+        except Exception as err:
+            print("Error resolving audience users:", err)
+
+        # Trigger notification channels based on checklist
+        channels = body.get("channels", [])
+        from app.services.email_service import email_service
+        from app.services.sms_service import sms_service
+        from app.services.whatsapp_service import whatsapp_service
+
+        # Collect email recipients and send as a single BCC broadcast
+        email_recipients = [u.email for u in target_users if u.email]
+        if "Email" in channels and email_recipients:
+            try:
+                await email_service.send_email(
+                    email_recipients,
+                    f"Announcement: {title}",
+                    f"<h2>{title}</h2><p>{description}</p>"
+                )
+            except Exception as err:
+                print("Error sending announcement email broadcast:", err)
+
+        for u in target_users:
+            if "SMS" in channels and u.phone:
+                try:
+                    await sms_service.send_sms(
+                        u.phone,
+                        f"Announcement: {title}. {description[:100]}"
+                    )
+                except Exception as err:
+                    print("Error sending announcement SMS:", err)
+            if "WhatsApp" in channels and u.phone:
+                try:
+                    await whatsapp_service.send_message(
+                        u.phone,
+                        f"Announcement: {title}. {description[:100]}"
+                    )
+                except Exception as err:
+                    print("Error sending announcement WhatsApp:", err)
+
         res_data = {
             "id": str(new_ann.id),
             "title": new_ann.title,
