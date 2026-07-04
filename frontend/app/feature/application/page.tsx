@@ -53,6 +53,16 @@ export default function ApplicationPage() {
   const [bulkReviewerName, setBulkReviewerName] = useState('');
   const [showBulkReviewerInput, setShowBulkReviewerInput] = useState(false);
 
+  // Interview Scheduling Modal State
+  const [showInterviewModal, setShowInterviewModal] = useState(false);
+  const [interviewDate, setInterviewDate] = useState('');
+  const [interviewTime, setInterviewTime] = useState('');
+  const [interviewAppId, setInterviewAppId] = useState<string | null>(null);
+
+  // Kanban Drag State
+  const [draggedAppId, setDraggedAppId] = useState<string | null>(null);
+  const [dragOverCol, setDragOverCol] = useState<string | null>(null);
+
   // Toast State
   const [toast, setToast] = useState<{ show: boolean; title: string; message: string; type: 'success' | 'info' | 'warning' | 'error' } | null>(null);
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -75,6 +85,82 @@ export default function ApplicationPage() {
     } else {
       triggerToast('Download Error', `Could not download ${reviewApp?.resumeUrl}.`, 'error');
     }
+  };
+
+  const openInterviewModal = (appId: string) => {
+    setInterviewAppId(appId);
+    setInterviewDate('');
+    setInterviewTime('');
+    setShowInterviewModal(true);
+  };
+
+  const handleConfirmInterview = async () => {
+    if (!interviewAppId || !interviewDate || !interviewTime) {
+      triggerToast('Missing Info', 'Please select both a date and a time.', 'warning');
+      return;
+    }
+    setShowInterviewModal(false);
+    setActionLoading('Interview Scheduled');
+    try {
+      const updated = await applicationService.updateApplicationStatus(interviewAppId, 'Interview Scheduled');
+      if (updated) {
+        setApplications(applications.map(a => a.id === interviewAppId ? updated : a));
+        if (reviewApp && reviewApp.id === interviewAppId) setReviewApp(updated);
+        triggerToast('Interview Scheduled', `Interview set for ${interviewDate} at ${interviewTime}.`, 'success');
+      }
+    } catch (err) {
+      console.error(err);
+      triggerToast('Error', 'Failed to schedule interview.', 'warning');
+    } finally {
+      setActionLoading(null);
+      setInterviewAppId(null);
+    }
+  };
+
+  const handleKanbanDrop = (targetStatus: ApplicationStatus) => {
+    if (!draggedAppId) return;
+    const appId = draggedAppId;
+    const app = applications.find(a => a.id === appId);
+    if (!app || app.status === targetStatus) {
+      setDraggedAppId(null);
+      setDragOverCol(null);
+      return;
+    }
+    const previousStatus = app.status;
+    const isTerminal = previousStatus === 'Selected' || previousStatus === 'Accepted' || previousStatus === 'Rejected';
+    if (isTerminal) {
+      setDraggedAppId(null);
+      setDragOverCol(null);
+      triggerToast(
+        'Action Not Allowed',
+        `${app.candidateName} is already ${previousStatus} and cannot be moved.`,
+        'error'
+      );
+      return;
+    }
+    setDraggedAppId(null);
+    setDragOverCol(null);
+
+    // Optimistic update — move card in UI instantly
+    setApplications(prev => prev.map(a => a.id === appId ? { ...a, status: targetStatus } : a));
+    if (reviewApp && reviewApp.id === appId) setReviewApp(prev => prev ? { ...prev, status: targetStatus } : prev);
+
+    // Sync with backend in background
+    applicationService.updateApplicationStatus(appId, targetStatus)
+      .then(updated => {
+        if (updated) {
+          setApplications(prev => prev.map(a => a.id === appId ? updated : a));
+          if (reviewApp && reviewApp.id === appId) setReviewApp(updated);
+          triggerToast('Stage Updated', `Moved to ${targetStatus}.`, 'success');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        // Revert on failure
+        setApplications(prev => prev.map(a => a.id === appId ? { ...a, status: previousStatus } : a));
+        if (reviewApp && reviewApp.id === appId) setReviewApp(prev => prev ? { ...prev, status: previousStatus } : prev);
+        triggerToast('Error', 'Failed to move card. Reverted.', 'error');
+      });
   };
 
   // Load Data
@@ -792,11 +878,20 @@ export default function ApplicationPage() {
 
       {/* VIEW 3: KANBAN WORKFLOW PIPELINE */}
       {activeTab === 'pipeline' && (
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 overflow-x-auto pb-6 animate-slide-in">
+        <div className="flex gap-4 overflow-x-auto pb-6 animate-slide-in">
           {(['New', 'Under Review', 'Shortlisted', 'Interview Scheduled', 'Selected', 'Rejected'] as ApplicationStatus[]).map((col) => {
             const colApps = applications.filter(a => a.status === col);
+            const isDragOver = dragOverCol === col;
             return (
-              <div key={col} className="bg-slate-100/60 rounded-xl p-3 border border-border/50 flex flex-col min-w-[200px] h-[550px]">
+              <div
+                key={col}
+                className={`bg-slate-100/60 rounded-xl p-3 border-2 flex flex-col min-w-[210px] w-[210px] h-[550px] transition-all ${
+                  isDragOver ? 'border-blue-400 bg-blue-50/40 scale-[1.01]' : 'border-border/50'
+                }`}
+                onDragOver={(e) => { e.preventDefault(); setDragOverCol(col); }}
+                onDragLeave={() => setDragOverCol(null)}
+                onDrop={() => handleKanbanDrop(col)}
+              >
                 {/* Column Title */}
                 <div className="flex items-center justify-between pb-3.5 border-b border-border">
                   <span className="text-[10px] font-black text-text-primary uppercase tracking-widest truncate">{col}</span>
@@ -810,8 +905,16 @@ export default function ApplicationPage() {
                   {colApps.length > 0 ? (
                     colApps.map(app => (
                       <div 
-                        key={app.id} 
-                        className="bg-white border border-border rounded-xl p-3.5 shadow-sm space-y-3 hover:border-secondary hover:shadow transition-all group"
+                        key={app.id}
+                        draggable={app.status !== 'Selected' && app.status !== 'Accepted' && app.status !== 'Rejected'}
+                        onDragStart={() => setDraggedAppId(app.id)}
+                        onDragEnd={() => { setDraggedAppId(null); setDragOverCol(null); }}
+                        title={app.status === 'Selected' || app.status === 'Accepted' || app.status === 'Rejected' ? `${app.candidateName} is locked (${app.status})` : undefined}
+                        className={`bg-white border rounded-xl p-3.5 shadow-sm space-y-3 transition-all group ${
+                          app.status === 'Selected' || app.status === 'Accepted' || app.status === 'Rejected'
+                            ? 'border-border opacity-70 cursor-not-allowed'
+                            : `border-border hover:border-secondary hover:shadow cursor-grab active:cursor-grabbing ${draggedAppId === app.id ? 'opacity-40 ring-2 ring-blue-400' : ''}`
+                        }`}
                       >
                         <div className="flex items-center justify-between">
                           <span className="text-[9px] bg-slate-100 text-text-secondary font-mono px-1 rounded">{app.id}</span>
@@ -902,10 +1005,10 @@ export default function ApplicationPage() {
             <div className="grid grid-cols-1 md:grid-cols-5 gap-3 pt-3">
               {[
                 { stage: 'Total Apps', count: stats.total, color: 'bg-slate-900 text-white', pct: 100 },
-                { stage: 'Under Review', count: applications.filter(a => a.status !== 'New').length, color: 'bg-blue-600 text-white', pct: Math.round((applications.filter(a => a.status !== 'New').length / stats.total) * 100) },
-                { stage: 'Shortlisted', count: stats.shortlisted, color: 'bg-purple-600 text-white', pct: Math.round((stats.shortlisted / stats.total) * 100) },
-                { stage: 'Interviewed', count: stats.interviews, color: 'bg-indigo-600 text-white', pct: Math.round((stats.interviews / stats.total) * 100) },
-                { stage: 'Offers Extended', count: stats.selected, color: 'bg-emerald-600 text-white', pct: Math.round((stats.selected / stats.total) * 100) }
+                { stage: 'Under Review', count: applications.filter(a => a.status === 'Under Review').length, color: 'bg-blue-600 text-white', pct: stats.total > 0 ? Math.round((applications.filter(a => a.status === 'Under Review').length / stats.total) * 100) : 0 },
+                { stage: 'Shortlisted', count: stats.shortlisted, color: 'bg-purple-600 text-white', pct: stats.total > 0 ? Math.round((stats.shortlisted / stats.total) * 100) : 0 },
+                { stage: 'Interviewed', count: stats.interviews, color: 'bg-indigo-600 text-white', pct: stats.total > 0 ? Math.round((stats.interviews / stats.total) * 100) : 0 },
+                { stage: 'Offers Extended', count: stats.selected, color: 'bg-emerald-600 text-white', pct: stats.total > 0 ? Math.round((stats.selected / stats.total) * 100) : 0 }
               ].map((step, idx) => (
                 <div key={step.stage} className="relative flex flex-col justify-between border border-border rounded-xl p-4 h-32 hover:border-secondary">
                   <div>
@@ -1015,7 +1118,7 @@ export default function ApplicationPage() {
                         {actionLoading === 'Shortlisted' ? 'Processing...' : 'Shortlist'}
                       </button>
                       <button 
-                        onClick={() => handleQuickStatus(reviewApp.id, 'Interview Scheduled')}
+                        onClick={() => openInterviewModal(reviewApp.id)}
                         disabled={reviewApp.status === 'Interview Scheduled' || actionLoading !== null || isTerminal}
                         className="px-3.5 py-1.5 bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 rounded-lg text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                       >
@@ -1548,6 +1651,60 @@ export default function ApplicationPage() {
         onCandidateAdded={() => loadData(false)}
         opportunities={opportunities}
       />
+
+      {/* Interview Scheduling Modal */}
+      {showInterviewModal && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-6 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl w-full max-w-sm shadow-2xl animate-slide-in">
+            <div className="p-5 border-b border-border flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-black text-text-primary">Schedule Interview</h3>
+                <p className="text-[11px] text-text-secondary mt-0.5">Set the date and time for the candidate's interview</p>
+              </div>
+              <button onClick={() => setShowInterviewModal(false)} className="p-1 text-text-secondary hover:text-text-primary bg-slate-100 rounded-lg">
+                <XCircle className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="p-5 space-y-4">
+              <div>
+                <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest block mb-1.5">Interview Date</label>
+                <input
+                  type="date"
+                  value={interviewDate}
+                  min={new Date().toISOString().split('T')[0]}
+                  onChange={(e) => setInterviewDate(e.target.value)}
+                  className="w-full border border-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest block mb-1.5">Interview Time</label>
+                <input
+                  type="time"
+                  value={interviewTime}
+                  onChange={(e) => setInterviewTime(e.target.value)}
+                  className="w-full border border-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+            <div className="p-5 border-t border-border flex gap-2 justify-end">
+              <button
+                onClick={() => setShowInterviewModal(false)}
+                className="px-4 py-2 bg-slate-100 text-text-secondary rounded-lg text-xs font-bold hover:bg-slate-200 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmInterview}
+                disabled={!interviewDate || !interviewTime}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-xs font-bold hover:bg-indigo-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Confirm Interview
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 }

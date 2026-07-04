@@ -53,6 +53,7 @@ export interface Application {
 
   // Motivation & Document
   resumeUrl: string;
+  resumeBase64?: string;
   whyInternship: string;
 
   // Internship Type
