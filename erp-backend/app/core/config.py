@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "postgresql+asyncpg://user:pass@localhost:5432/pinesphere_erp"
     DATABASE_POOL_SIZE: int = 20
     DATABASE_MAX_OVERFLOW: int = 10
+    DB_CREATE_TABLES_ON_STARTUP: bool = False
 
     # JWT
     JWT_ALGORITHM: str = "HS256"

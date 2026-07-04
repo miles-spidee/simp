@@ -148,10 +148,26 @@ app.include_router(calendar_router, prefix='/api/v1/calendar', tags=['Calendar']
 @app.on_event("startup")
 async def startup_event():
     from app.core.database import engine
-    from app.models.core.base import Base
-    import app.models
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    from sqlalchemy import text
+    import logging
+
+    logger = logging.getLogger("app")
+    logger.info("Verifying database connection...")
+    try:
+        async with engine.connect() as conn:
+            await conn.execute(text("SELECT 1"))
+        logger.info("Database connection verified successfully.")
+    except Exception as e:
+        logger.error(f"Database connection failed: {e}")
+        raise e
+
+    if settings.DB_CREATE_TABLES_ON_STARTUP:
+        logger.info("Running Base.metadata.create_all (DB_CREATE_TABLES_ON_STARTUP is True)...")
+        from app.models.core.base import Base
+        import app.models
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        logger.info("Database tables verified/created.")
 
 @app.get("/", tags=["Health"])
 async def health_check():
