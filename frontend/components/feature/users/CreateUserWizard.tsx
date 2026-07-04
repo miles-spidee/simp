@@ -385,7 +385,8 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
         sendEmail: sendEmail,
         entityType: entityType,
         entityId: entityId,
-        forcePasswordChange: forcePasswordChange
+        forcePasswordChange: forcePasswordChange,
+        accountValidationPeriod: accountValidationPeriod ? parseInt(accountValidationPeriod, 10) : undefined
       };
       
       if (userToEdit) {

@@ -34,6 +34,7 @@ class User(BaseModel):
     
     mfa_enabled: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     force_password_change: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    account_expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
     profile_image_url: Mapped[Optional[str]] = mapped_column(String(500))
     
     # Relationships

@@ -25,6 +25,10 @@ class IdentityService(BaseService):
         if user.account_status != StatusEnum.ACTIVE.value:
             raise HTTPException(status_code=403, detail="Account is inactive")
             
+        from datetime import datetime, timezone
+        if user.account_expires_at and user.account_expires_at < datetime.now(timezone.utc):
+            raise HTTPException(status_code=401, detail="User not found")
+            
         from app.models.rbac.user_role import UserRole
         from app.models.rbac.role import Role
         from sqlalchemy import select

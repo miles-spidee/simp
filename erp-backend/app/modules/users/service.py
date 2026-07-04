@@ -27,6 +27,10 @@ class UserService(BaseCRUDService[User, UserCreate, UserUpdate]):
         force_password_change = obj_in_data.pop("forcePasswordChange", False)
         obj_in_data["force_password_change"] = force_password_change
         
+        account_validation_period = obj_in_data.pop("accountValidationPeriod", None)
+        if account_validation_period:
+            from datetime import datetime, timedelta, timezone
+            obj_in_data["account_expires_at"] = datetime.now(timezone.utc) + timedelta(days=account_validation_period)
         # Explicit check for existing email or username
         from sqlalchemy import select
         existing_user = await self.db.scalar(

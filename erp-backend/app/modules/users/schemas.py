@@ -14,6 +14,7 @@ class UserCreate(BaseModel):
     entityId: Optional[UUID] = None
     sendEmail: Optional[bool] = None
     forcePasswordChange: Optional[bool] = False
+    accountValidationPeriod: Optional[int] = None
 
 class UserUpdate(BaseModel):
     username: Optional[str] = None
