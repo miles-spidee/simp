@@ -449,7 +449,7 @@ export default function OpportunityPage() {
                             <option value="">-- Choose Mentor --</option>
                             {availableMentors.map(m => (
                               <option key={m.mentor_profile_id} value={m.mentor_profile_id}>
-                                {m.employeeName} ({m.employee_id})
+                                {m.employeeName || 'Unknown Mentor'} ({m.employee_id || m.mentor_profile_id.substring(0, 8)})
                               </option>
                             ))}
                           </select>
@@ -500,7 +500,13 @@ export default function OpportunityPage() {
                               <div className="text-xs text-text-secondary">{mentor.role} • Max {mentor.workload} students</div>
                             </div>
                           </div>
-                          <button className="text-text-secondary hover:text-red-500">
+                          <button 
+                            className="text-text-secondary hover:text-red-500"
+                            onClick={async () => {
+                              await openingMentorsService.removeMentor(selectedOpportunity.id, mentor.mentorId);
+                              await loadMentorsForOpp(selectedOpportunity.id);
+                            }}
+                          >
                             <XCircle className="h-5 w-5" />
                           </button>
                         </div>

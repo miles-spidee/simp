@@ -49,6 +49,13 @@ export interface ApplicationMotivation {
 }
 
 export interface ApplicationCreate {
+  opening_id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  mobile_number: string;
+  resume_url?: string;
+  
   internshipType: string;
   personalInformation: ApplicationPersonalInformation;
   academicInformation: ApplicationAcademicInformation;
@@ -70,9 +77,18 @@ export interface ApplicationResponse {
   reviewed_by: string;
   remarks: string;
   profile?: ApplicationProfileResponse;
+  application_data?: any;
+  review_data?: any;
 }
 
 export interface ApplicationReviewRequest {
   application_status: string;
   remarks: string;
+  technical_score?: number;
+  communication_score?: number;
+  academic_score?: number;
+  culture_fit_score?: number;
+  overall_recommendation?: string;
+  reviewer_notes?: string;
+  reviewer_feedback?: string;
 }

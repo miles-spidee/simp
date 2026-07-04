@@ -3,6 +3,7 @@ from typing import Optional, List
 
 from sqlalchemy import String, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.dialects.postgresql import JSONB
 
 from app.models.core.mixins import BaseModel
 
@@ -41,6 +42,16 @@ class Application(BaseModel):
 
     feedback: Mapped[Optional[str]] = mapped_column(
         String(1000)
+    )
+
+    application_data: Mapped[Optional[dict]] = mapped_column(
+        JSONB,
+        nullable=True
+    )
+
+    review_data: Mapped[Optional[dict]] = mapped_column(
+        JSONB,
+        nullable=True
     )
 
     # -------------------------

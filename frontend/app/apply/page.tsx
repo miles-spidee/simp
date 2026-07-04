@@ -225,13 +225,22 @@ function ApplicationFormContent() {
         const { organizationApi } = await import('@/src/api/organization.api');
         const { degreeService } = await import('@/src/services/degree.service');
         const [cols, depts, degs] = await Promise.all([
-          organizationApi.getColleges(),
-          organizationApi.getDepartments(),
-          degreeService.getDegrees()
+          organizationApi.getColleges().catch(() => []),
+          organizationApi.getDepartments().catch(() => []),
+          degreeService.getDegrees().catch(() => [])
         ]);
         setColleges(cols || []);
         setDepartments(depts || []);
-        setDegrees(degs || []);
+        
+        const defaultDegrees = [
+          { degree_id: '1', degree_name: 'B.E. / B.Tech' },
+          { degree_id: '2', degree_name: 'B.Sc' },
+          { degree_id: '3', degree_name: 'BCA' },
+          { degree_id: '4', degree_name: 'M.E. / M.Tech' },
+          { degree_id: '5', degree_name: 'M.Sc' },
+          { degree_id: '6', degree_name: 'MCA' },
+        ];
+        setDegrees(degs && degs.length > 0 ? degs : defaultDegrees);
       } catch (err) {
         console.error("Failed to load academic data", err);
       }
@@ -701,6 +710,21 @@ function ApplicationFormContent() {
   const executeSubmit = async () => {
     setIsSubmitting(true);
     try {
+      let currentOpeningId = searchParams.get('id');
+      if (!currentOpeningId || currentOpeningId === 'undefined') {
+        try {
+          const { opportunitiesService } = await import('@/src/services/opportunities.service');
+          const opps = await opportunitiesService.getOpportunities();
+          if (opps && opps.length > 0) {
+            currentOpeningId = opps[0].id;
+          } else {
+            currentOpeningId = '00000000-0000-0000-0000-000000000000';
+          }
+        } catch (e) {
+          currentOpeningId = '00000000-0000-0000-0000-000000000000';
+        }
+      }
+
       const payload = {
         internshipType,
         personalInformation: {
@@ -748,6 +772,13 @@ function ApplicationFormContent() {
         motivation: {
           whyInternship: sanitizeText(formState.motivation.whyInternship),
         },
+        
+        opening_id: currentOpeningId,
+        first_name: sanitizeText(formState.personalInformation.firstName),
+        last_name: sanitizeText(formState.personalInformation.lastName),
+        email: sanitizeText(formState.personalInformation.email),
+        mobile_number: sanitizeText(formState.personalInformation.mobileNumber),
+        resume_url: '',
       };
 
       // removed extra try {
@@ -2397,19 +2428,23 @@ function ApplicationFormContent() {
               ← Previous
             </button>
 
-            {currentStep < steps.length - 1 ? (
+            <div className="flex gap-4">
               <button
                 type="button"
                 onClick={handleNext}
-                className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 px-8 py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/10 hover:shadow-lg transition-all duration-200 active:scale-[0.98]"
+                className={`flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 px-8 py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/10 hover:shadow-lg transition-all duration-200 active:scale-[0.98] ${
+                  currentStep < steps.length - 1 ? "flex" : "hidden"
+                }`}
               >
                 Next Step →
               </button>
-            ) : (
+
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-8 py-3 text-sm font-bold text-white shadow-md shadow-emerald-500/10 hover:shadow-lg transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-8 py-3 text-sm font-bold text-white shadow-md shadow-emerald-500/10 hover:shadow-lg transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed ${
+                  currentStep === steps.length - 1 ? "flex" : "hidden"
+                }`}
               >
                 {isSubmitting ? (
                   <span className="flex items-center gap-2">
@@ -2423,7 +2458,7 @@ function ApplicationFormContent() {
                   <>Submit Application ✓</>
                 )}
               </button>
-            )}
+            </div>
           </div>
 
         </form>

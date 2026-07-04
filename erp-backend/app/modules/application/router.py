@@ -65,15 +65,19 @@ async def get_application(
 )
 async def create_application(
     data: ApplicationCreate,
-    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     service = ApplicationService(db)
 
-    application = await service.create(
-        obj_in=data,
-        user_id=current_user.id,
-    )
+    try:
+        application = await service.create(
+            obj_in=data,
+            user_id=None,
+        )
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise e
 
     return success_response(
         data=application,
@@ -108,6 +112,27 @@ async def get_all_admin(
     return success_response(data=applications)
 
 
+
+@router.patch(
+    "/{application_id}/review",
+    response_model=APIResponse[ApplicationResponse]
+)
+async def review_application(
+    application_id: UUID,
+    data: ApplicationReviewRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    service = ApplicationService(db)
+
+    application = await service.review(
+        application_id=application_id,
+        data=data,
+    )
+
+    return success_response(
+        data=application,
+        message="Application reviewed successfully",
+    )
 
 @router.patch(
     "/{application_id}/withdraw",

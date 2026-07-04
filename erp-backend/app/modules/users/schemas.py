@@ -12,6 +12,7 @@ class UserCreate(BaseModel):
     moduleOverrides: list[UUID] = []
     entityType: Optional[str] = None # 'employee', 'student', 'organization'
     entityId: Optional[UUID] = None
+    sendEmail: Optional[bool] = None
 
 class UserUpdate(BaseModel):
     username: Optional[str] = None

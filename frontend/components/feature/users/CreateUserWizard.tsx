@@ -369,13 +369,14 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
           const defaultModuleIds = roleObj?.moduleIds || [];
           return !defaultModuleIds.includes(id);
         }),
-        avatar: avatar || fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+        avatar: avatar || fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2),
+        sendEmail: sendEmail
       };
       
       if (userToEdit) {
-        await userService.updateUser(userToEdit.id, userData);
+        await userService.updateUser(userToEdit.id, userData as any);
       } else {
-        await userService.createUser(userData);
+        await userService.createUser(userData as any);
       }
       
       if (onUserCreated) {

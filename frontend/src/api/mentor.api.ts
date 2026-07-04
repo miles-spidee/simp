@@ -3,22 +3,22 @@ import { MentorProfile, MentorCreate, MentorUpdate, MentorAssignment, MentorAssi
 
 export const mentorApi = {
   getMentorProfiles: async (): Promise<MentorProfile[]> => {
-    const res = await apiClient.get<MentorProfile[]>('/api/v1/mentor/profiles');
-    return res.data;
+    const res = await apiClient.get('/api/v1/mentor');
+    return res.data?.data || [];
   },
 
   getMentorProfile: async (id: string): Promise<MentorProfile> => {
-    const res = await apiClient.get<MentorProfile>(`/api/v1/mentor/profiles/${id}`);
-    return res.data;
+    const res = await apiClient.get(`/api/v1/mentor/${id}`);
+    return res.data?.data || res.data;
   },
 
   createMentorProfile: async (data: MentorCreate): Promise<MentorProfile> => {
-    const res = await apiClient.post<MentorProfile>('/api/v1/mentor/profiles', data);
+    const res = await apiClient.post<MentorProfile>('/api/v1/mentor', data);
     return res.data;
   },
 
   updateMentorProfile: async (id: string, updates: MentorUpdate): Promise<MentorProfile> => {
-    const res = await apiClient.patch<MentorProfile>(`/api/v1/mentor/profiles/${id}`, updates);
+    const res = await apiClient.patch<MentorProfile>(`/api/v1/mentor/${id}`, updates);
     return res.data;
   },
 

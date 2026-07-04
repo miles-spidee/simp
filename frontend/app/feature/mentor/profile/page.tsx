@@ -152,9 +152,9 @@ export default function MentorProfilePage() {
                   <div>
                     <div className="flex items-center gap-2 font-medium text-text-primary">
                       <User className="h-4 w-4 text-text-secondary" />
-                      {p.employeeName}
+                      {p.employeeName || 'Unknown Mentor'}
                     </div>
-                    <span className="text-xs text-text-secondary font-mono">{p.mentor_profile_id}</span>
+                    <span className="text-xs text-text-secondary font-mono">{p.employee_id || p.mentor_profile_id.substring(0, 8)}</span>
                   </div>
                 ),
               },
@@ -167,31 +167,40 @@ export default function MentorProfilePage() {
               {
                 key: 'mentor_expertise',
                 label: 'Expertise',
-                render: (p: MentorProfile) => (
+                render: (p: MentorProfile) => {
+                  const expertiseStr = (p as any).expertise || '';
+                  const expertiseList = expertiseStr ? expertiseStr.split(',').map((e: string) => e.trim()) : (p.mentor_expertise || []);
+                  return (
                   <div className="flex flex-wrap gap-1 max-w-xs">
-                    {p.mentor_expertise.slice(0, 2).map(exp => (
+                    {expertiseList.slice(0, 2).map((exp: string) => (
                       <span key={exp} className="px-2 py-0.5 bg-slate-100 text-text-secondary rounded text-xs font-semibold">{exp}</span>
                     ))}
-                    {p.mentor_expertise.length > 2 && (
-                      <span className="text-xs text-text-secondary">+{p.mentor_expertise.length - 2}</span>
+                    {expertiseList.length > 2 && (
+                      <span className="text-xs text-text-secondary">+{expertiseList.length - 2}</span>
                     )}
                   </div>
-                ),
+                  );
+                },
               },
               {
                 key: 'current_student_count',
                 label: 'Capacity',
-                render: (p: MentorProfile) => (
+                render: (p: MentorProfile) => {
+                  const maxCap = (p as any).max_capacity ?? p.max_student_capacity ?? 0;
+                  const currentCap = p.current_student_count ?? 0;
+                  const ratio = maxCap > 0 ? (currentCap / maxCap) * 100 : 0;
+                  return (
                   <div>
-                    <span className="text-text-secondary">{p.current_student_count} / {p.max_student_capacity}</span>
+                    <span className="text-text-secondary">{currentCap} / {maxCap}</span>
                     <div className="w-20 h-1.5 bg-slate-100 rounded-full mt-1 overflow-hidden">
                       <div
-                        className={`h-full ${p.current_student_count >= p.max_student_capacity ? 'bg-red-500' : 'bg-emerald-500'}`}
-                        style={{ width: `${(p.current_student_count / p.max_student_capacity) * 100}%` }}
+                        className={`h-full ${currentCap >= maxCap && maxCap > 0 ? 'bg-red-500' : 'bg-emerald-500'}`}
+                        style={{ width: `${ratio}%` }}
                       />
                     </div>
                   </div>
-                ),
+                  );
+                },
               },
               {
                 key: 'is_available',
@@ -231,11 +240,11 @@ export default function MentorProfilePage() {
             <div className="bg-white border-b border-border px-6 py-4 shrink-0 flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="h-12 w-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xl font-bold">
-                  {selected.employeeName.charAt(0)}
+                  {(selected.employeeName || 'U').charAt(0)}
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-text-primary">{selected.employeeName}</h2>
-                  <p className="text-sm text-text-secondary">Employee: {selected.employee_id} · Profile: {selected.mentor_profile_id}</p>
+                  <h2 className="text-lg font-bold text-text-primary">{selected.employeeName || 'Unknown Mentor'}</h2>
+                  <p className="text-sm text-text-secondary">Employee: {selected.employee_id || selected.mentor_profile_id.substring(0, 8)} · Profile: {selected.mentor_profile_id.substring(0, 8)}</p>
                 </div>
               </div>
               <button
@@ -251,13 +260,13 @@ export default function MentorProfilePage() {
                 <h3 className="text-sm font-semibold text-text-primary border-b border-border pb-2 mb-4 flex items-center gap-2">
                   <Briefcase className="h-4 w-4 text-blue-500" /> Bio
                 </h3>
-                <p className="text-text-secondary text-sm">{selected.mentor_bio}</p>
+                <p className="text-text-secondary text-sm">{selected.mentor_bio || 'No bio provided.'}</p>
               </div>
 
               <div className="bg-white p-5 rounded-xl border border-border shadow-sm">
                 <h3 className="text-sm font-semibold text-text-primary border-b border-border pb-2 mb-4">Expertise</h3>
                 <div className="flex flex-wrap gap-2">
-                  {selected.mentor_expertise.map(exp => (
+                  {((selected as any).expertise ? (selected as any).expertise.split(',').map((e: string) => e.trim()) : (selected.mentor_expertise || [])).map((exp: string) => (
                     <span key={exp} className="px-2.5 py-1 bg-slate-100 text-text-primary rounded-lg text-xs font-semibold">{exp}</span>
                   ))}
                 </div>

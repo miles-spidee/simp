@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 
 
 # ----------------------------
@@ -25,9 +25,19 @@ class ApplicationCreate(BaseModel):
     opening_id: UUID
 
     resume_url: str | None = None
+
+    model_config = ConfigDict(extra='allow')
+
 class ApplicationReviewRequest(BaseModel):
     application_status: str
     remarks: str | None = None
+    technical_score: int | None = None
+    communication_score: int | None = None
+    academic_score: int | None = None
+    culture_fit_score: int | None = None
+    overall_recommendation: str | None = None
+    reviewer_notes: str | None = None
+    reviewer_feedback: str | None = None
 
 
 
@@ -65,6 +75,9 @@ class ApplicationResponse(BaseModel):
     remarks: str | None
 
     profile: ApplicationProfileResponse
+
+    application_data: dict | None = None
+    review_data: dict | None = None
 
     class Config:
         from_attributes = True

@@ -39,6 +39,12 @@ class ApplicationService(BaseService):
         user: User,
     ) -> ApplicationResponse:
 
+        ad = application.application_data or {}
+        pi = ad.get("personalInformation", {})
+        
+        first_name = ad.get("first_name") or pi.get("firstName") or user.username
+        last_name = ad.get("last_name") or pi.get("lastName") or ""
+
         return ApplicationResponse(
             application_id=application.id,
             opening_id=application.opportunity_id,
@@ -46,14 +52,16 @@ class ApplicationService(BaseService):
             application_status=application.status,
             applied_at=application.created_at,
             reviewed_at=application.updated_at,
-            reviewed_by="",
+            reviewed_by="System" if not application.feedback else "Reviewer",
             remarks=application.feedback,
             profile=ApplicationProfileResponse(
-                first_name=user.username,
-                last_name="",
+                first_name=first_name,
+                last_name=last_name,
                 email=user.email,
                 mobile_number=user.phone or "",
             ),
+            application_data=application.application_data,
+            review_data=application.review_data,
         )
 
     # -------------------------------------------------------
@@ -151,6 +159,8 @@ class ApplicationService(BaseService):
         obj_in: ApplicationCreate,
         user_id=None,
     ):
+        import uuid
+        from app.models.organizations.organization import Organization
 
         # Find user by email
         stmt = (
@@ -159,14 +169,21 @@ class ApplicationService(BaseService):
         )
 
         result = await self.db.execute(stmt)
-
         user = result.scalars().first()
 
         if not user:
-            raise HTTPException(
-                status_code=404,
-                detail="User not found",
+            # Auto-create user for application
+            user = User(
+                username=obj_in.email.split('@')[0] + "_" + str(uuid.uuid4())[:8],
+                email=obj_in.email,
+                phone=obj_in.mobile_number,
+                password_hash="auto-generated-placeholder",
+                account_status="ACTIVE",
+                email_verified=False,
+                phone_verified=False,
             )
+            self.db.add(user)
+            await self.db.flush()
 
         # Find student profile
         stmt = (
@@ -176,14 +193,29 @@ class ApplicationService(BaseService):
         )
 
         result = await self.db.execute(stmt)
-
         student = result.scalars().first()
 
         if not student:
-            raise HTTPException(
-                status_code=404,
-                detail="Student profile not found",
+            # Auto-create student profile
+            # First, find or create a default organization
+            stmt_org = select(Organization).limit(1)
+            result_org = await self.db.execute(stmt_org)
+            org = result_org.scalars().first()
+            if not org:
+                org = Organization(
+                    name="Default Pinesphere Organization",
+                    code="DEFAULT",
+                )
+                self.db.add(org)
+                await self.db.flush()
+
+            student = StudentProfile(
+                user_id=user.id,
+                organization_id=org.id,
+                enrollment_number="ENR_" + str(uuid.uuid4())[:8],
             )
+            self.db.add(student)
+            await self.db.flush()
 
         # Ensure logged-in user matches
         # if user_id and user.id != user_id:
@@ -217,6 +249,7 @@ class ApplicationService(BaseService):
             obj_in={
                 "opportunity_id": obj_in.opening_id,
                 "student_profile_id": student.id,
+                "application_data": obj_in.model_dump(exclude={"opening_id", "resume_url"}, exclude_unset=True)
             },
         )
 
@@ -253,6 +286,7 @@ class ApplicationService(BaseService):
 
         application.status = data.application_status
         application.feedback = data.remarks
+        application.review_data = data.model_dump(exclude={"application_status", "remarks"}, exclude_unset=True)
 
         await self.commit_transaction()
 

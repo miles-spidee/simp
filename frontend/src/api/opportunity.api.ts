@@ -3,11 +3,11 @@ import { OpeningCreate, OpeningResponse, OpeningMentorCreate, OpeningMentorRespo
 
 export const opportunityApi = {
   getOpenings: async (): Promise<OpeningResponse[]> => {
-    const res = await apiClient.get<OpeningResponse[]>('/api/v1/opportunity');
+    const res = await apiClient.get<OpeningResponse[]>('/api/v1/opportunity/');
     return res.data;
   },
   createOpening: async (data: OpeningCreate): Promise<OpeningResponse> => {
-    const res = await apiClient.post<OpeningResponse>('/api/v1/opportunity', data);
+    const res = await apiClient.post<OpeningResponse>('/api/v1/opportunity/', data);
     return res.data;
   },
   getOpening: async (id: string): Promise<OpeningResponse> => {

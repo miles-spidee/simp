@@ -48,3 +48,12 @@ class OpportunityResponse(BaseModel):
     requirements: Optional[str]
     status: str
     deadline: Optional[date]
+
+class OpportunityMentorCreate(BaseModel):
+    mentor_profile_id: UUID
+
+class OpportunityMentorResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: UUID
+    opportunity_id: UUID
+    mentor_profile_id: UUID

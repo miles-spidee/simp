@@ -628,5 +628,22 @@ class NotificationService:
         cls._send_push("Escalation Level 2", msg, email)
         cls._add_in_app("Escalation Level 2", msg, email, "Escalation")
 
+    @classmethod
+    async def send_credentials_email(cls, email: str, username: str, password: str):
+        try:
+            subject = "Your Pinesphere ERP Account Credentials"
+            html = f"""
+            <h2>Pinesphere ERP Account Created</h2>
+            <p>An account has been created for you by the Super Admin.</p>
+            <p><strong>Login URL:</strong> <a href="http://localhost:3000/login">http://localhost:3000/login</a></p>
+            <p><strong>Username:</strong> {username}</p>
+            <p><strong>Password:</strong> {password}</p>
+            <br/>
+            <p>Please log in and change your password immediately.</p>
+            """
+            await email_service.send_email(email, subject, html)
+        except Exception as e:
+            print("Failed to send credentials email:", e)
+
 
 notification_service = NotificationService()

@@ -131,7 +131,6 @@ async def create_task(request: Request, db: AsyncSession = Depends(get_db)):
 
         # Send Task Assigned notification to student!
         try:
-            from sqlalchemy import select
             from app.models.authentication.user import User as DBUser
             from app.models.profiles.student_profile import StudentProfile
             from app.services.notification_service import notification_service

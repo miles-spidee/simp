@@ -423,7 +423,7 @@ export default function LandingPage() {
                       setIsVerifying(false);
                       setVerifyModalOpen(false);
                       if (selectedOpp) {
-                        router.push(`/apply?type=${selectedOpp.value}`);
+                        router.push(`/apply?type=${selectedOpp.internshipType || selectedOpp.value || 'stipend'}&id=${selectedOpp.id}`);
                       }
                     }, 2000);
                   }}

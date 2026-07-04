@@ -30,6 +30,7 @@ export default function ApplicationPage() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
   
   // Selection State
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -110,6 +111,7 @@ export default function ApplicationPage() {
   // Handle Scorecard submission
   const handleSaveEvaluation = async () => {
     if (!reviewApp) return;
+    setActionLoading('save');
     try {
       const avgScore = Math.round((techScore + commScore + acadScore + cultureScore) * 2.5); // normalized to 100
       const updates = {
@@ -133,11 +135,14 @@ export default function ApplicationPage() {
     } catch (err) {
       console.error(err);
       triggerToast('Error', 'Failed to save candidate evaluation details.', 'warning');
+    } finally {
+      setActionLoading(null);
     }
   };
 
   // Quick Action Buttons
   const handleQuickStatus = async (id: string, status: ApplicationStatus) => {
+    setActionLoading(status);
     try {
       const updated = await applicationService.updateApplicationStatus(id, status);
       if (updated) {
@@ -150,10 +155,13 @@ export default function ApplicationPage() {
     } catch (err) {
       console.error(err);
       triggerToast('Error', 'Failed to update pipeline stage.', 'warning');
+    } finally {
+      setActionLoading(null);
     }
   };
 
   const handleApproveAndCreateUser = async (app: Application) => {
+    setActionLoading('Approve');
     try {
       const updated = await applicationService.updateApplicationStatus(app.id, 'Selected');
       if (updated) {
@@ -167,6 +175,8 @@ export default function ApplicationPage() {
     } catch (err) {
       console.error(err);
       triggerToast('Error', 'Failed to approve candidate application.', 'warning');
+    } finally {
+      setActionLoading(null);
     }
   };
 
@@ -971,36 +981,42 @@ export default function ApplicationPage() {
                 </div>
               </div>
 
-              {/* Status transition fast click actions */}
               <div className="flex items-center gap-1.5">
-                <button 
-                  onClick={() => handleQuickStatus(reviewApp.id, 'Shortlisted')}
-                  disabled={reviewApp.status === 'Shortlisted'}
-                  className="px-3.5 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 rounded-lg text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-                >
-                  Shortlist
-                </button>
-                <button 
-                  onClick={() => handleQuickStatus(reviewApp.id, 'Interview Scheduled')}
-                  disabled={reviewApp.status === 'Interview Scheduled'}
-                  className="px-3.5 py-1.5 bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 rounded-lg text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-                >
-                  Schedule Interview
-                </button>
-                <button 
-                  onClick={() => handleApproveAndCreateUser(reviewApp)}
-                  disabled={reviewApp.status === 'Selected' || reviewApp.status === 'Accepted'}
-                  className="px-3.5 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 rounded-lg text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-                >
-                  Approve / Select
-                </button>
-                <button 
-                  onClick={() => handleQuickStatus(reviewApp.id, 'Rejected')}
-                  disabled={reviewApp.status === 'Rejected'}
-                  className="px-3.5 py-1.5 bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 rounded-lg text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-                >
-                  Reject
-                </button>
+                {(() => {
+                  const isTerminal = reviewApp.status === 'Rejected' || reviewApp.status === 'Selected' || reviewApp.status === 'Accepted';
+                  return (
+                    <>
+                      <button 
+                        onClick={() => handleQuickStatus(reviewApp.id, 'Shortlisted')}
+                        disabled={reviewApp.status === 'Shortlisted' || actionLoading !== null || isTerminal}
+                        className="px-3.5 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 rounded-lg text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                      >
+                        {actionLoading === 'Shortlisted' ? 'Processing...' : 'Shortlist'}
+                      </button>
+                      <button 
+                        onClick={() => handleQuickStatus(reviewApp.id, 'Interview Scheduled')}
+                        disabled={reviewApp.status === 'Interview Scheduled' || actionLoading !== null || isTerminal}
+                        className="px-3.5 py-1.5 bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 rounded-lg text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                      >
+                        {actionLoading === 'Interview Scheduled' ? 'Processing...' : 'Schedule Interview'}
+                      </button>
+                      <button 
+                        onClick={() => handleApproveAndCreateUser(reviewApp)}
+                        disabled={isTerminal || actionLoading !== null}
+                        className="px-3.5 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 rounded-lg text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                      >
+                        {actionLoading === 'Approve' ? 'Processing...' : 'Approve / Select'}
+                      </button>
+                      <button 
+                        onClick={() => handleQuickStatus(reviewApp.id, 'Rejected')}
+                        disabled={isTerminal || actionLoading !== null}
+                        className="px-3.5 py-1.5 bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 rounded-lg text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                      >
+                        {actionLoading === 'Rejected' ? 'Processing...' : 'Reject'}
+                      </button>
+                    </>
+                  );
+                })()}
               </div>
             </div>
 
@@ -1489,10 +1505,11 @@ export default function ApplicationPage() {
 
                   <button 
                     onClick={handleSaveEvaluation}
-                    className="w-full py-2 bg-slate-900 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+                    disabled={actionLoading !== null}
+                    className="w-full py-2 bg-slate-900 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Check className="h-4 w-4" />
-                    <span>Save Evaluation Details</span>
+                    <span>{actionLoading === 'save' ? 'Saving...' : 'Save Evaluation Details'}</span>
                   </button>
                 </div>
               </div>

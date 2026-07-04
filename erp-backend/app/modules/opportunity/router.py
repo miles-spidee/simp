@@ -11,6 +11,8 @@ from app.modules.opportunity.schemas import (
     OpportunityCreate,
     OpportunityUpdate,
     OpportunityResponse,
+    OpportunityMentorCreate,
+    OpportunityMentorResponse,
 )
 
 router = APIRouter()
@@ -80,3 +82,33 @@ async def delete_opportunity(
     return success_response(
         message="Opportunity deleted successfully",
     )
+
+@router.get("/{opportunity_id}/mentors")
+async def get_opportunity_mentors(
+    opportunity_id: UUID,
+    db: AsyncSession = Depends(get_db),
+):
+    service = OpportunityService(db)
+    mentors = await service.get_mentors(opportunity_id)
+    return [OpportunityMentorResponse.model_validate(m) for m in mentors]
+
+@router.post("/{opportunity_id}/mentors")
+async def assign_opportunity_mentor(
+    opportunity_id: UUID,
+    data: OpportunityMentorCreate,
+    db: AsyncSession = Depends(get_db),
+):
+    service = OpportunityService(db)
+    mentor = await service.assign_mentor(opportunity_id, data.mentor_profile_id)
+    return OpportunityMentorResponse.model_validate(mentor)
+
+@router.delete("/{opportunity_id}/mentors/{employee_id}")
+async def remove_opportunity_mentor(
+    opportunity_id: UUID,
+    employee_id: UUID,
+    db: AsyncSession = Depends(get_db),
+):
+    service = OpportunityService(db)
+    from app.core.responses import success_response
+    await service.remove_mentor(opportunity_id, employee_id)
+    return success_response(message="Mentor removed successfully")

@@ -15,6 +15,7 @@ class UserService(BaseCRUDService[User, UserCreate, UserUpdate]):
         # Business Workflow: Hash password before saving
         obj_in_data = obj_in.model_dump(exclude_unset=True)
         password = obj_in_data.pop("password", "ChangeMe@123")
+        send_email = obj_in_data.pop("sendEmail", False)
         obj_in_data["password_hash"] = hash_password(password)
         role_id = obj_in_data.pop("roleId", None)
         module_overrides = obj_in_data.pop("moduleOverrides", [])
@@ -69,6 +70,14 @@ class UserService(BaseCRUDService[User, UserCreate, UserUpdate]):
             self.db.add(profile)
             
         await self.commit_transaction()
+        
+        # Send credentials via email if requested
+        if send_email:
+            try:
+                from app.services.notification_service import notification_service
+                await notification_service.send_credentials_email(new_user.email, new_user.username, password)
+            except Exception as e:
+                print("Error sending credentials email:", e)
             
         return new_user
     async def update(self, *, id: UUID, obj_in: UserUpdate, user_id: UUID = None) -> User:
