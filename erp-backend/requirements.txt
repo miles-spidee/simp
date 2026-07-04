@@ -2,6 +2,10 @@ fastapi[standard]
 loguru
 sqlalchemy
 asyncpg
+pydantic-settings
+alembic
+psycopg2-binary
+greenlet
 python-jose[cryptography]
 passlib
 razorpay==2.0.1

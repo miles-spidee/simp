@@ -5,7 +5,7 @@ import { Badge } from '@/components/feature/ui/Badge';
 import { EnhancedTable } from '@/components/feature/ui/Table';
 import { Plus, Settings, ToggleLeft, ToggleRight } from 'lucide-react';
 import { moduleService } from '@/src/services/module.service';
-import { Module } from '@/src/types/modules.types';
+import { Module } from '@/src/types/api/module.types';
 import { FEATURE_REGISTRY } from '@/src/core/features/feature-registry';
 
 export default function ModuleRegistryPage() {
@@ -13,7 +13,6 @@ export default function ModuleRegistryPage() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [modId, setModId] = useState('');
   const [modCode, setModCode] = useState('');
   const [modName, setModName] = useState('');
   const [modRoute, setModRoute] = useState('');
@@ -23,7 +22,7 @@ export default function ModuleRegistryPage() {
     try {
       setLoading(true);
       const data = await moduleService.getModules();
-      setModules([...data as any]);
+      setModules(data);
     } catch (err) {
       console.error('Failed to load modules list', err);
     } finally {
@@ -32,11 +31,11 @@ export default function ModuleRegistryPage() {
   };
 
   useEffect(() => {
-    loadModules();
+    void Promise.resolve().then(loadModules);
   }, []);
 
   const handleToggleStatus = async (module: Module) => {
-    const newStatus = !module.status;
+    const newStatus = !module.active;
     try {
       setModules(prev => prev.map(m => m.id === module.id ? { ...m, active: newStatus } : m));
       await moduleService.updateModule(module.id, { active: newStatus });
@@ -49,27 +48,26 @@ export default function ModuleRegistryPage() {
 
   const handleCreateModule = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!modId.trim() || !modCode.trim() || !modName.trim() || !modRoute.trim()) {
-      alert('Please fill in Module ID, Code, Name, and Route.');
+    if (!modCode.trim() || !modName.trim() || !modRoute.trim()) {
+      alert('Please fill in Module Code, Name, and Route.');
       return;
     }
 
     try {
-      const exists = modules.some(m => m.id.toLowerCase() === modId.trim().toLowerCase());
+      const exists = modules.some(m => m.code.toLowerCase() === modCode.trim().toLowerCase());
       if (exists) {
-        alert('A module with this ID already exists.');
+        alert('A module with this code already exists.');
         return;
       }
 
       await moduleService.createModule({
-        id: modId.trim(),
-        code: modCode.trim().toUpperCase(),
+        code: modCode.trim().toLowerCase(),
         name: modName.trim(),
         route: modRoute.trim(),
-        desc: modDesc.trim()
+        desc: modDesc.trim(),
+        description: modDesc.trim(),
       });
 
-      setModId('');
       setModCode('');
       setModName('');
       setModRoute('');
@@ -112,7 +110,7 @@ export default function ModuleRegistryPage() {
               <div className="flex items-center gap-3">
                 <div className="h-8 w-8 rounded bg-slate-100 flex items-center justify-center font-bold text-text-primary">
                   {(() => {
-                    const feature = FEATURE_REGISTRY.find(f => f.moduleId === m.id);
+                    const feature = FEATURE_REGISTRY.find(f => f.moduleId === m.code);
                     if (feature && feature.icon) {
                       const Icon = feature.icon;
                       return <Icon className="h-4 w-4 text-primary" />;
@@ -122,18 +120,18 @@ export default function ModuleRegistryPage() {
                 </div>
                 <div>
                   <span className="font-semibold text-text-primary block">{m.name}</span>
-                  <span className="text-[11px] text-text-secondary block max-w-[200px] truncate">{(m as any).description || (m as any).desc || 'No description provided.'}</span>
+                  <span className="text-[11px] text-text-secondary block max-w-[200px] truncate">{m.description || m.desc || 'No description provided.'}</span>
                 </div>
               </div>
             )
           },
-          { key: 'id', label: 'Module ID', render: (m) => <span className="font-mono text-xs text-text-primary">{m.id}</span> },
+          { key: 'displayId', label: 'Module ID', render: (m) => <span className="font-mono text-xs text-text-primary">{m.displayId || 'MID---'}</span> },
           { key: 'code', label: 'Code', render: (m) => <Badge variant="secondary">{m.code}</Badge> },
           { key: 'route', label: 'Route Path', render: (m) => <span className="font-mono text-xs text-text-secondary">{m.route}</span> },
           {
             key: 'active',
             label: 'Status',
-            render: (m) => <Badge variant={(m as any).active ? "success" : "secondary"}>{(m as any).active ? "Enabled" : "Disabled"}</Badge>
+            render: (m) => <Badge variant={m.active ? "success" : "secondary"}>{m.active ? "Enabled" : "Disabled"}</Badge>
           },
           {
             key: 'actions',
@@ -142,10 +140,10 @@ export default function ModuleRegistryPage() {
             render: (m) => (
               <button
                 onClick={() => handleToggleStatus(m)}
-                className={`p-1 transition-colors inline-flex items-center justify-center ${(m as any).active ? 'text-emerald-600 hover:text-red-500' : 'text-text-secondary hover:text-emerald-500'}`}
-                title={(m as any).active ? "Disable Module" : "Enable Module"}
+                className={`p-1 transition-colors inline-flex items-center justify-center ${m.active ? 'text-emerald-600 hover:text-red-500' : 'text-text-secondary hover:text-emerald-500'}`}
+                title={m.active ? "Disable Module" : "Enable Module"}
               >
-                {(m as any).active ? <ToggleRight className="h-6 w-6" /> : <ToggleLeft className="h-6 w-6" />}
+                {m.active ? <ToggleRight className="h-6 w-6" /> : <ToggleLeft className="h-6 w-6" />}
               </button>
             )
           },
@@ -159,62 +157,50 @@ export default function ModuleRegistryPage() {
               <h3 className="font-bold text-text-primary text-lg flex items-center gap-2">
                 <Settings className="h-5 w-5 text-blue-600 animate-spin" /> Register New Module
               </h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-text-secondary hover:text-text-primary font-bold text-xl">×</button>
+              <button onClick={() => setIsModalOpen(false)} className="text-text-secondary hover:text-text-primary font-bold text-xl">x</button>
             </div>
-            
+
             <form onSubmit={handleCreateModule}>
               <div className="p-6 space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-xs font-semibold text-label">Module ID (Unique) *</label>
-                    <input 
-                      type="text" 
-                      value={modId}
-                      onChange={e => setModId(e.target.value)}
-                      className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" 
-                      placeholder="e.g. settings"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-semibold text-label">Module Code *</label>
-                    <input 
-                      type="text" 
-                      value={modCode}
-                      onChange={e => setModCode(e.target.value)}
-                      className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" 
-                      placeholder="e.g. SETTINGS"
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-label">Module Code *</label>
+                  <input
+                    type="text"
+                    value={modCode}
+                    onChange={e => setModCode(e.target.value)}
+                    className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                    placeholder="e.g. settings"
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-xs font-semibold text-label">Module Name *</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={modName}
                     onChange={e => setModName(e.target.value)}
-                    className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" 
+                    className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     placeholder="e.g. System Settings"
                   />
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-xs font-semibold text-label">Route Path *</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={modRoute}
                     onChange={e => setModRoute(e.target.value)}
-                    className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" 
+                    className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     placeholder="e.g. /feature/settings"
                   />
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-xs font-semibold text-label">Description</label>
-                  <textarea 
+                  <textarea
                     value={modDesc}
                     onChange={e => setModDesc(e.target.value)}
-                    className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" 
+                    className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     rows={3}
                     placeholder="Brief description of the module's target scope..."
                   />

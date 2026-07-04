@@ -217,6 +217,20 @@ Verified initialization result
 - Final live database counts: 102 tables total in `public` including `alembic_version`, 582 indexes, 0 sequences.
 - Every discovered model has a corresponding table.
 
+Latest redo attempt on 2026-07-04
+
+- Local virtual environment recreated under `erp-backend/.venv` for verification.
+- 275 modules under `app.models` and `app.modules` imported successfully during redo discovery.
+- 115 SQLAlchemy tables are currently mapped in ORM metadata.
+- 143 SQLAlchemy foreign keys were discovered in ORM metadata.
+- Metadata validation passed: 0 missing foreign-key target tables and all 115 tables dependency-sort successfully.
+- Alembic previously had two heads: `ab85451a53b4` and `e5f6g7h8i9j0`.
+- Added merge revision `f0a1b2c3d4e5` so `alembic upgrade head` resolves to one head again.
+- Offline Alembic SQL generation for `upgrade head --sql` completed successfully through `f0a1b2c3d4e5`.
+- Online migration/table creation could not complete because no repository `.env` or `DATABASE_URL` is configured; the backend falls back to `postgresql+asyncpg://user:pass@localhost:5432/pinesphere_erp`.
+- The async create path reaches localhost PostgreSQL but fails with `password authentication failed for user "user"`.
+- The Alembic sync migration path reaches localhost PostgreSQL but fails because `app/migrations/env.py` forces `sslmode=require` and the local server reports that SSL is unsupported.
+
 Migration notes
 
 - `alembic upgrade head` via the async path stalled in a long transaction in this environment.
