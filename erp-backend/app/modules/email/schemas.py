@@ -31,7 +31,6 @@ class EmailTemplateResponse(EmailTemplateBase):
     version: Optional[int] = 1
 
     class Config(EmailTemplateBase.Config):
-        orm_mode = True
         from_attributes = True
 
 class EmailHistoryBase(BaseModel):
@@ -50,5 +49,4 @@ class EmailHistoryResponse(EmailHistoryBase):
     created_at: datetime = Field(alias='sentAt')
 
     class Config(EmailHistoryBase.Config):
-        orm_mode = True
         from_attributes = True

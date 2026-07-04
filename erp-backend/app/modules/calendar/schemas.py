@@ -51,5 +51,4 @@ class CalendarEventResponse(CalendarEventBase):
     updated_at: datetime
 
     class Config(CalendarEventBase.Config):
-        orm_mode = True
         from_attributes = True
