@@ -73,13 +73,20 @@ async def upload_modules():
                 await db.flush()
             
             # 3. Create Permissions
-            for act_code, act_obj in actions_map.items():
-                if act_code == "read":
-                    perm_action = "view"
-                else:
-                    perm_action = act_code
+            # We only want to generate view, create, update, delete, manage, export
+            target_actions = ["view", "create", "update", "delete", "manage", "export"]
+            
+            for act_code in target_actions:
+                act_obj = actions_map.get(act_code)
+                if not act_obj:
+                    # Try fallback to 'read' if 'view' doesn't exist
+                    if act_code == "view":
+                        act_obj = actions_map.get("read")
+                
+                if not act_obj:
+                    continue
                     
-                perm_code = f"{module_id}.{perm_action}"
+                perm_code = f"{module_id}.{act_code}"
                 perm_obj = (await db.execute(select(Permission).where(Permission.code == perm_code))).scalars().first()
                 if not perm_obj:
                     perm_obj = Permission(
@@ -91,6 +98,7 @@ async def upload_modules():
                         description=f"{act_obj.name} permission for {feat_obj.name}"
                     )
                     db.add(perm_obj)
+                    await db.flush()
         
         await db.commit()
         print("Upload complete!")

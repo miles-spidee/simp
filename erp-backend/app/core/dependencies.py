@@ -55,7 +55,9 @@ def require_permission(module: str, action: str):
         db: AsyncSession = Depends(get_db),
     ):
         from app.modules.identity.repository import PermissionRepository
-        permission_name = f"{module}:{action}"
+        # Map read to view to match DB seed scripts
+        mapped_action = "view" if action == "read" else action
+        permission_name = f"{module}.{mapped_action}"
         has_perm = await PermissionRepository(db).user_has_permission(
             db=db,
             user_id=current_user.id,
