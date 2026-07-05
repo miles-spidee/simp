@@ -149,7 +149,7 @@ export default function CommonFilePage() {
                   <Filter className="h-4 w-4" />
                 </button>
               </div>
-              <PermissionGuard required="common_file.upload">
+              <PermissionGuard required="common_file.create">
                 <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 flex items-center gap-2 shadow-sm">
                   <Upload className="h-4 w-4" /> Upload File
                 </button>

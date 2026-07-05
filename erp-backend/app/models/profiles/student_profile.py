@@ -24,6 +24,9 @@ class StudentProfile(BaseModel):
     github_url: Mapped[Optional[str]] = mapped_column(String(500))
     linkedin_url: Mapped[Optional[str]] = mapped_column(String(500))
     
+    blood_group_id: Mapped[Optional[uuid.UUID]] = mapped_column(ForeignKey('ref_blood_groups.id', ondelete='SET NULL'), index=True)
+    emergency_contact: Mapped[Optional[str]] = mapped_column(String(50))
+
     # Unstructured skills data, or migrate to a junction table later if queryability is required
     skills: Mapped[Optional[dict]] = mapped_column(JSONB)
     user: Mapped[Optional["User"]] = relationship("User", back_populates="student_profile")

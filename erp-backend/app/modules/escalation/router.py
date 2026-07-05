@@ -29,18 +29,46 @@ def map_type(db_type: str) -> str:
 
 @router.get("/rules", response_model=APIResponse[List[dict]])
 async def get_escalation_rules(db: AsyncSession = Depends(get_db)):
+    fallback_rules = [
+        {
+            "id": "rule-1",
+            "type": "Attendance",
+            "condition": "Consecutive absent days > 3",
+            "triggerDays": 3,
+            "notifyRoles": ["Mentor", "Super Admin"],
+            "status": "Active"
+        },
+        {
+            "id": "rule-2",
+            "type": "Assignments",
+            "condition": "Overdue deliverables > 2",
+            "triggerDays": 5,
+            "notifyRoles": ["Mentor"],
+            "status": "Active"
+        }
+    ]
     try:
         stmt = select(EscalationRule)
         result = await db.execute(stmt)
         rules = result.scalars().all()
         
+        if not rules:
+            return success_response(data=fallback_rules)
+            
         data = []
         for r in rules:
-            notify_roles = ["Mentor", "Super Admin"]
+            notify_roles = []
             if isinstance(r.notify_role_ids, list):
-                notify_roles = r.notify_role_ids
+                notify_roles = [str(x) for x in r.notify_role_ids if x is not None]
             elif isinstance(r.notify_role_ids, dict) and "roles" in r.notify_role_ids:
-                notify_roles = r.notify_role_ids["roles"]
+                val = r.notify_role_ids["roles"]
+                if isinstance(val, list):
+                    notify_roles = [str(x) for x in val if x is not None]
+                elif val is not None:
+                    notify_roles = [str(val)]
+            
+            if not notify_roles:
+                notify_roles = ["Mentor", "Super Admin"]
                 
             data.append({
                 "id": str(r.id),
@@ -52,24 +80,6 @@ async def get_escalation_rules(db: AsyncSession = Depends(get_db)):
             })
         return success_response(data=data)
     except Exception as e:
-        fallback_rules = [
-            {
-                "id": "rule-1",
-                "type": "Attendance",
-                "condition": "Consecutive absent days > 3",
-                "triggerDays": 3,
-                "notifyRoles": ["Mentor", "Super Admin"],
-                "status": "Active"
-            },
-            {
-                "id": "rule-2",
-                "type": "Assignments",
-                "condition": "Overdue deliverables > 2",
-                "triggerDays": 5,
-                "notifyRoles": ["Mentor"],
-                "status": "Active"
-            }
-        ]
         return success_response(data=fallback_rules)
 
 @router.get("/logs", response_model=APIResponse[List[dict]])

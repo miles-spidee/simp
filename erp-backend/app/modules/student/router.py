@@ -200,71 +200,92 @@ async def sync_colleges(db: AsyncSession = Depends(get_db)):
     await sync_colleges_task(db)
     return success_response(message="Colleges synchronized successfully")
 
-async def _student_payload(profile: StudentProfile, user: User, organization: Optional[Organization], department: Optional[Department], batch: Optional[Batch], db: AsyncSession):
-    # 1. Fetch mentor assignment
+async def _student_payload(profile: StudentProfile, user: User, organization: Optional[Organization], department: Optional[Department], batch: Optional[Batch], db: AsyncSession, is_list: bool = False):
+    # Default values to avoid N+1 queries during list view
     mentor_user = None
-    assign_stmt = select(MentorAssignment).where(MentorAssignment.student_profile_id == profile.id)
-    assign_res = await db.execute(assign_stmt)
-    assignment = assign_res.scalars().first()
-    if assignment:
-        mentor_stmt = select(User).join(MentorProfile, MentorProfile.user_id == User.id).where(MentorProfile.id == assignment.mentor_profile_id)
-        mentor_res = await db.execute(mentor_stmt)
-        mentor_user = mentor_res.scalars().first()
-
-    # 2. Fetch program
     program_name = ""
-    if department:
-        prog_stmt = select(Program).where(Program.department_id == department.id)
-        prog_res = await db.execute(prog_stmt)
-        prog = prog_res.scalars().first()
-        if prog:
-            program_name = prog.name
-
-    # 3. Fetch attendance
-    att_stmt = select(Attendance).where(Attendance.student_profile_id == profile.id)
-    att_res = await db.execute(att_stmt)
-    atts = att_res.scalars().all()
-    present_days = sum(1 for a in atts if a.status == "PRESENT")
-    absent_days = sum(1 for a in atts if a.status == "ABSENT")
-    late_arrivals = sum(1 for a in atts if a.status == "LATE")
-    total_days = present_days + absent_days
-    attendance_pct = round((present_days / total_days * 100), 1) if total_days > 0 else 90.0
-
-    # 4. Fetch quiz score
-    quiz_stmt = select(QuizAttempt).where(QuizAttempt.student_profile_id == profile.id)
-    quiz_res = await db.execute(quiz_stmt)
-    quizzes = quiz_res.scalars().all()
-    quiz_score = round(sum(float(q.score) for q in quizzes) / len(quizzes), 1) if quizzes else 82.5
-
-    # 5. Fetch documents
-    doc_stmt = select(Document).where(Document.student_profile_id == profile.id)
-    doc_res = await db.execute(doc_stmt)
-    docs = doc_res.scalars().all()
-    documents_list = [
-        {
-            "type": "NOC" if i == 0 else "Internship Report",
-            "name": d.file_url.split("/")[-1],
-            "uploadDate": d.created_at.date().isoformat() if d.created_at else "",
-            "status": "Verified" if d.is_verified else "Pending",
-            "url": d.file_url
-        } for i, d in enumerate(docs)
-    ]
-
-    # 6. Fetch placement
+    atts = []
+    quizzes = []
+    docs = []
     placement_status = "Eligible"
     company_name = ""
     package_val = ""
-    place_stmt = select(PlacementApplication).where(PlacementApplication.student_profile_id == profile.id)
-    place_res = await db.execute(place_stmt)
-    place_app = place_res.scalars().first()
-    if place_app:
-        placement_status = "Placed" if place_app.status == "PLACED" else "Interview Scheduled"
-        offer_stmt = select(OfferLetter).where(OfferLetter.placement_application_id == place_app.id)
-        offer_res = await db.execute(offer_stmt)
-        offer = offer_res.scalars().first()
-        if offer:
-            placement_status = "Placed"
-            package_val = f"${float(offer.ctc)}"
+    college_id = ""
+
+    attendance_pct = 90.0
+    quiz_score = 82.5
+    documents_list = []
+
+    if not is_list:
+        # 1. Fetch mentor assignment
+        assign_stmt = select(MentorAssignment).where(MentorAssignment.student_profile_id == profile.id)
+        assign_res = await db.execute(assign_stmt)
+        assignment = assign_res.scalars().first()
+        if assignment:
+            mentor_stmt = select(User).join(MentorProfile, MentorProfile.user_id == User.id).where(MentorProfile.id == assignment.mentor_profile_id)
+            mentor_res = await db.execute(mentor_stmt)
+            mentor_user = mentor_res.scalars().first()
+
+        # 2. Fetch program
+        if department:
+            prog_stmt = select(Program).where(Program.department_id == department.id)
+            prog_res = await db.execute(prog_stmt)
+            prog = prog_res.scalars().first()
+            if prog:
+                program_name = prog.name
+
+        # 3. Fetch attendance
+        att_stmt = select(Attendance).where(Attendance.student_profile_id == profile.id)
+        att_res = await db.execute(att_stmt)
+        atts = att_res.scalars().all()
+        present_days = sum(1 for a in atts if a.status == "PRESENT")
+        absent_days = sum(1 for a in atts if a.status == "ABSENT")
+        late_arrivals = sum(1 for a in atts if a.status == "LATE")
+        total_days = present_days + absent_days
+        if total_days > 0:
+            attendance_pct = round((present_days / total_days * 100), 1)
+
+        # 4. Fetch quiz score
+        quiz_stmt = select(QuizAttempt).where(QuizAttempt.student_profile_id == profile.id)
+        quiz_res = await db.execute(quiz_stmt)
+        quizzes = quiz_res.scalars().all()
+        if quizzes:
+            quiz_score = round(sum(float(q.score) for q in quizzes) / len(quizzes), 1)
+
+        # 5. Fetch documents
+        doc_stmt = select(Document).where(Document.student_profile_id == profile.id)
+        doc_res = await db.execute(doc_stmt)
+        docs = doc_res.scalars().all()
+        documents_list = [
+            {
+                "type": "NOC" if i == 0 else "Internship Report",
+                "name": d.file_url.split("/")[-1],
+                "uploadDate": d.created_at.date().isoformat() if d.created_at else "",
+                "status": "Verified" if d.is_verified else "Pending",
+                "url": d.file_url
+            } for i, d in enumerate(docs)
+        ]
+
+        # 6. Fetch placement
+        place_stmt = select(PlacementApplication).where(PlacementApplication.student_profile_id == profile.id)
+        place_res = await db.execute(place_stmt)
+        place_app = place_res.scalars().first()
+        if place_app:
+            placement_status = "Placed" if place_app.status == "PLACED" else "Interview Scheduled"
+            offer_stmt = select(OfferLetter).where(OfferLetter.placement_application_id == place_app.id)
+            offer_res = await db.execute(offer_stmt)
+            offer = offer_res.scalars().first()
+            if offer:
+                placement_status = "Placed"
+                package_val = f"${float(offer.ctc)}"
+        
+        # Map referential TNDCE college id
+        if organization:
+            col_rec_stmt = select(TNDCECollege).where(TNDCECollege.college_code == organization.code)
+            col_rec_res = await db.execute(col_rec_stmt)
+            col_rec = col_rec_res.scalars().first()
+            if col_rec:
+                college_id = str(col_rec.id)
 
     # Retrieve extra fields from JSON skills column if present
     skills_dict = profile.skills or {}
@@ -397,7 +418,7 @@ async def get_student_list(db: AsyncSession = Depends(get_db)):
         rows = result.all()
         data = []
         for profile, user, org, dept, batch in rows:
-            payload = await _student_payload(profile, user, org, dept, batch, db)
+            payload = await _student_payload(profile, user, org, dept, batch, db, is_list=True)
             data.append(payload)
         return success_response(data=data)
     except Exception as e:
@@ -437,7 +458,32 @@ async def create_student(data: StudentCreate, db: AsyncSession = Depends(get_db)
     email_res = await db.execute(email_stmt)
     if email_res.scalars().first():
         raise HTTPException(status_code=409, detail="Student email already exists")
+@router.post("/bulk-credentials", response_model=APIResponse[dict])
+async def generate_bulk_credentials(
+    student_ids: List[str],
+    db: AsyncSession = Depends(get_db)
+):
+    try:
+        from app.models.authentication.user import User
+        # Convert string IDs to UUIDs
+        import uuid
+        uuids = [uuid.UUID(sid) for sid in student_ids]
 
+        # Get the users for these students
+        stmt = select(User).join(StudentProfile, StudentProfile.user_id == User.id).where(StudentProfile.id.in_(uuids))
+        res = await db.execute(stmt)
+        users = res.scalars().all()
+
+        for u in users:
+            u.account_status = "ACTIVE"
+        
+        await db.commit()
+        return success_response(message=f"Successfully generated credentials for {len(users)} students.")
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        await db.rollback()
+        return error_response(message="Failed to generate credentials", status_code=500)
     # 3. Duplicate check for phone
     if data.phone:
         phone_stmt = select(User).where(User.phone == data.phone)

@@ -24,5 +24,8 @@ class EmployeeProfile(BaseModel):
     employee_code: Mapped[str] = mapped_column(String(100), nullable=False)
     designation: Mapped[str] = mapped_column(String(150), nullable=False)
     date_of_joining: Mapped[Optional[date]] = mapped_column(Date)
+
+    blood_group_id: Mapped[Optional[uuid.UUID]] = mapped_column(ForeignKey('ref_blood_groups.id', ondelete='SET NULL'), index=True)
+    emergency_contact: Mapped[Optional[str]] = mapped_column(String(50))
     
     user: Mapped[Optional["User"]] = relationship("User", back_populates="employee_profile")

@@ -6,7 +6,7 @@ import {
   GraduationCap, CheckCircle2, XCircle, AlertCircle, Calendar, Award, 
   FileText, Building, Clock, TrendingUp, Download, RefreshCw, UserCheck, 
   MapPin, Activity, Mail, Phone, Shield, Printer, QrCode, Briefcase, 
-  UserX, Check, Trash, PlusCircle, LayoutGrid, Eye, Send, Lock, Search, ChevronDown, X
+  UserX, Check, Trash, PlusCircle, LayoutGrid, Eye, Send, Lock, Search, ChevronDown, X, Edit3, UserPlus, Trash2
 } from 'lucide-react';
 import { studentService } from '@/src/services/student.service';
 import { TndceCollege } from '@/src/types/api/student.types';
@@ -1523,42 +1523,46 @@ export default function StudentLifecycleManagementPage() {
           <div className="space-y-6 pb-20">
             
             {/* Drawer Master Sticky Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900 text-white p-5 -mx-6 -mt-6 sticky top-0 z-30 shadow-md">
-              <div className="flex items-center gap-3">
-                <div className="h-11 w-11 rounded-full bg-blue-600 text-white flex items-center justify-center font-black text-sm border border-border shrink-0">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 text-white p-6 -mx-6 -mt-6 sticky top-0 z-30 shadow-[0_10px_30px_rgba(0,0,0,0.2)] border-b border-white/5 backdrop-blur-2xl">
+              <div className="flex items-center gap-4">
+                <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-black text-xl shadow-[0_0_15px_rgba(79,70,229,0.4)] border border-white/20 shrink-0 transform transition-all hover:scale-105 hover:rotate-3">
                   {activeProfile.personalInfo.avatar}
                 </div>
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <h3 className="font-extrabold text-sm tracking-tight">{activeProfile.personalInfo.name}</h3>
-                    <span className="text-[10px] font-bold bg-slate-800 border border-border px-2 py-0.5 rounded text-blue-400">{activeProfile.internId}</span>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-extrabold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-200">{activeProfile.personalInfo.name}</h3>
+                    <span className="text-[10px] font-bold bg-white/10 backdrop-blur-sm border border-white/10 px-2 py-0.5 rounded text-blue-300 shadow-inner">{activeProfile.internId}</span>
                   </div>
-                  <div className="text-[10.5px] text-text-secondary font-medium">
-                    {activeProfile.academicInfo.college} | {activeProfile.academicInfo.department}
+                  <div className="text-[11px] text-slate-300 font-medium flex items-center gap-2">
+                    <Building className="w-3.5 h-3.5 text-blue-400" />
+                    {activeProfile.academicInfo.college} <span className="text-slate-500">•</span> {activeProfile.academicInfo.department}
                   </div>
                 </div>
               </div>
 
               {/* Header Actions */}
-              <div className="flex flex-wrap items-center gap-1.5">
+              <div className="flex flex-wrap items-center gap-2 mt-4 md:mt-0">
                 <PermissionGuard required="student.update">
                   <button
                     onClick={() => openEditModal(activeProfile)}
-                    className="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded transition"
+                    className="px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-slate-200 rounded-lg transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5 backdrop-blur-sm"
                   >
+                    <Edit3 className="w-3.5 h-3.5 text-blue-400" />
                     Edit Profile
                   </button>
                   <button
                     onClick={() => setActiveActionModal({ type: 'batch' })}
-                    className="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded transition"
+                    className="px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-slate-200 rounded-lg transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5 backdrop-blur-sm"
                   >
+                    <Users className="w-3.5 h-3.5 text-blue-400" />
                     Transfer Batch
                   </button>
                 </PermissionGuard>
                 <button
                   onClick={() => setActiveActionModal({ type: 'mentor' })}
-                  className="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded transition"
+                  className="px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-slate-200 rounded-lg transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5 backdrop-blur-sm"
                 >
+                  <UserPlus className="w-3.5 h-3.5 text-blue-400" />
                   Map Mentor
                 </button>
                 <button
@@ -1566,21 +1570,24 @@ export default function StudentLifecycleManagementPage() {
                     setStatusForm(activeProfile.status);
                     setActiveActionModal({ type: 'status' });
                   }}
-                  className="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded transition"
+                  className="px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-slate-200 rounded-lg transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5 backdrop-blur-sm"
                 >
+                  <Activity className="w-3.5 h-3.5 text-blue-400" />
                   Shift Status
                 </button>
                 <button
                   onClick={() => handleGenerateCertificate(activeProfile.id)}
-                  className="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-xs font-bold text-white rounded transition"
+                  className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 border border-blue-400/30 text-xs font-bold text-white rounded-lg transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5 shadow-[0_0_15px_rgba(79,70,229,0.3)]"
                 >
+                  <Award className="w-3.5 h-3.5 text-blue-200" />
                   Generate Cert
                 </button>
                 <PermissionGuard required="student.delete">
                   <button
                     onClick={() => handleDeleteStudent(activeProfile.id)}
-                    className="px-2 py-1 bg-red-600 hover:bg-red-700 text-xs font-bold text-white rounded transition"
+                    className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-xs font-bold text-red-400 rounded-lg transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5 backdrop-blur-sm"
                   >
+                    <Trash2 className="w-3.5 h-3.5" />
                     Delete Student
                   </button>
                 </PermissionGuard>
@@ -1588,39 +1595,58 @@ export default function StudentLifecycleManagementPage() {
             </div>
 
             {/* Profile Workspace Status Ribbon */}
-            <div className="bg-slate-50 border border-border rounded-lg p-3 flex flex-wrap justify-between items-center text-xs font-semibold text-text-secondary gap-2">
-              <div className="flex items-center gap-2">
-                <span>Roster Status:</span>
-                <span className="font-extrabold text-blue-700 bg-blue-50 px-2 py-0.5 rounded">{activeProfile.status}</span>
+            <div className="bg-white border border-slate-200/60 rounded-2xl p-4 flex flex-wrap justify-between items-center text-xs font-semibold text-slate-500 gap-4 shadow-sm backdrop-blur-sm mx-1 mt-4">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center">
+                  <Activity className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <span className="block text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-0.5">Roster Status</span>
+                  <span className="font-extrabold text-blue-700 bg-blue-50/50 border border-blue-100 px-2.5 py-1 rounded-md shadow-sm">{activeProfile.status}</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <span>Current Batch:</span>
-                <span className="font-extrabold text-text-primary">{activeProfile.internshipInfo.batchName || 'TBA'}</span>
+              <div className="h-8 w-px bg-slate-200 hidden md:block"></div>
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center">
+                  <Users className="w-5 h-5 text-indigo-600" />
+                </div>
+                <div>
+                  <span className="block text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-0.5">Current Batch</span>
+                  <span className="font-extrabold text-slate-700 text-sm">{activeProfile.internshipInfo.batchName || 'TBA'}</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <span>Mentor:</span>
-                <span className="font-extrabold text-text-primary">{activeProfile.internshipInfo.mentorName || 'Unassigned'}</span>
+              <div className="h-8 w-px bg-slate-200 hidden md:block"></div>
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center">
+                  <UserCheck className="w-5 h-5 text-emerald-600" />
+                </div>
+                <div>
+                  <span className="block text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-0.5">Assigned Mentor</span>
+                  <span className="font-extrabold text-slate-700 text-sm">{activeProfile.internshipInfo.mentorName || 'Unassigned'}</span>
+                </div>
               </div>
             </div>
 
             {/* Drawer 9 Tabs Selector */}
-            <div className="border-b border-border flex flex-wrap gap-1">
+            {/* Drawer 9 Tabs Selector */}
+            <div className="flex flex-wrap gap-2 px-1">
               {[
-                { id: 'overview', label: 'Overview' },
-                { id: 'documents', label: 'Documents' },
-                { id: 'id_credentials', label: 'Credentials' },
-                { id: 'batch', label: 'Batch' },
-                { id: 'mentor', label: 'Mentor Hub' },
-                { id: 'performance', label: 'Performance' },
-                { id: 'placement', label: 'Placement' },
-                { id: 'lifecycle', label: 'Journey' },
-                { id: 'timeline', label: 'Audit Timeline' }
+                { id: 'overview', label: 'Overview', icon: <LayoutGrid className="w-3.5 h-3.5" /> },
+                { id: 'documents', label: 'Documents', icon: <FileText className="w-3.5 h-3.5" /> },
+                { id: 'id_credentials', label: 'Credentials', icon: <Lock className="w-3.5 h-3.5" /> },
+                { id: 'batch', label: 'Batch', icon: <Users className="w-3.5 h-3.5" /> },
+                { id: 'mentor', label: 'Mentor Hub', icon: <UserPlus className="w-3.5 h-3.5" /> },
+                { id: 'performance', label: 'Performance', icon: <TrendingUp className="w-3.5 h-3.5" /> },
+                { id: 'placement', label: 'Placement', icon: <Briefcase className="w-3.5 h-3.5" /> },
+                { id: 'lifecycle', label: 'Journey', icon: <Activity className="w-3.5 h-3.5" /> },
+                { id: 'timeline', label: 'Audit Timeline', icon: <Clock className="w-3.5 h-3.5" /> }
               ].map(tab => (
                 <button
                   key={tab.id}
                   onClick={() => setProfileTab(tab.id as any)}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-t-lg transition border-b-2 ${profileTab === tab.id ? 'border-blue-600 text-blue-600 bg-blue-50/20' : 'border-transparent text-text-secondary hover:text-text-primary hover:bg-slate-50'}`}
+                  className={`px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-2 border ${profileTab === tab.id ? 'bg-blue-600 text-white border-blue-600 shadow-md transform scale-105' : 'bg-white text-slate-500 border-slate-200 hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50/30'}`}
                 >
+                  {tab.icon}
                   {tab.label}
                 </button>
               ))}
@@ -1630,72 +1656,74 @@ export default function StudentLifecycleManagementPage() {
 
             {/* TAB 1: OVERVIEW */}
             {profileTab === 'overview' && (
-              <div className="space-y-6">
+              <div className="space-y-6 px-1">
                 
                 {/* Personal */}
-                <div className="bg-white border border-border rounded-lg p-4 space-y-3">
-                  <h4 className="text-xs font-black uppercase text-text-secondary flex items-center gap-1">
-                    <Users className="h-4.5 w-4.5 text-text-secondary" />
+                <div className="bg-white border border-slate-200/60 rounded-2xl p-6 space-y-5 shadow-sm transition-all hover:shadow-md">
+                  <h4 className="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-3">
+                    <div className="bg-blue-100 p-1.5 rounded-lg"><Users className="h-4 w-4 text-blue-600" /></div>
                     Personal Information
                   </h4>
-                  <div className="grid grid-cols-2 gap-4 text-xs font-semibold text-text-primary">
-                    <div>
-                      <span className="text-[10px] uppercase text-text-secondary block">Full Legal Name</span>
-                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.personalInfo.name}</span>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-4 text-xs font-semibold text-slate-700">
+                    <div className="bg-slate-50/50 p-3 rounded-xl border border-slate-100">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Full Legal Name</span>
+                      <span className="text-slate-800 font-extrabold text-sm">{activeProfile.personalInfo.name}</span>
                     </div>
-                    <div>
-                      <span className="text-[10px] uppercase text-text-secondary block">Email Address</span>
-                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.personalInfo.email}</span>
+                    <div className="bg-slate-50/50 p-3 rounded-xl border border-slate-100">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Email Address</span>
+                      <span className="text-slate-800 font-extrabold text-sm">{activeProfile.personalInfo.email}</span>
                     </div>
-                    <div>
-                      <span className="text-[10px] uppercase text-text-secondary block">Mobile Contact</span>
-                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.personalInfo.phone}</span>
+                    <div className="bg-slate-50/50 p-3 rounded-xl border border-slate-100">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Mobile Contact</span>
+                      <span className="text-slate-800 font-extrabold text-sm">{activeProfile.personalInfo.phone}</span>
                     </div>
-                    <div>
-                      <span className="text-[10px] uppercase text-text-secondary block">Date of Birth</span>
-                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.personalInfo.dob}</span>
+                    <div className="bg-slate-50/50 p-3 rounded-xl border border-slate-100">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Date of Birth</span>
+                      <span className="text-slate-800 font-extrabold text-sm">{activeProfile.personalInfo.dob}</span>
                     </div>
-                    <div>
-                      <span className="text-[10px] uppercase text-text-secondary block">Gender Identity</span>
-                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.personalInfo.gender}</span>
+                    <div className="bg-slate-50/50 p-3 rounded-xl border border-slate-100">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Gender Identity</span>
+                      <span className="text-slate-800 font-extrabold text-sm">{activeProfile.personalInfo.gender}</span>
                     </div>
-                    <div>
-                      <span className="text-[10px] uppercase text-text-secondary block">Mailing Address</span>
-                      <span className="text-text-primary font-extrabold text-xs truncate" title={activeProfile.personalInfo.address}>{activeProfile.personalInfo.address}</span>
+                    <div className="bg-slate-50/50 p-3 rounded-xl border border-slate-100">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Mailing Address</span>
+                      <span className="text-slate-800 font-extrabold text-sm truncate" title={activeProfile.personalInfo.address}>{activeProfile.personalInfo.address}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Academic */}
-                <div className="bg-white border border-border rounded-lg p-4 space-y-3">
-                  <h4 className="text-xs font-black uppercase text-text-secondary flex items-center gap-1">
-                    <Building className="h-4.5 w-4.5 text-text-secondary" />
+                <div className="bg-white border border-slate-200/60 rounded-2xl p-6 space-y-5 shadow-sm transition-all hover:shadow-md">
+                  <h4 className="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-3">
+                    <div className="bg-indigo-100 p-1.5 rounded-lg"><Building className="h-4 w-4 text-indigo-600" /></div>
                     Academic Credentials
                   </h4>
-                  <div className="grid grid-cols-2 gap-4 text-xs font-semibold text-text-primary">
-                    <div>
-                      <span className="text-[10px] uppercase text-text-secondary block">Institution / College</span>
-                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.academicInfo.college}</span>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-4 text-xs font-semibold text-slate-700">
+                    <div className="bg-slate-50/50 p-3 rounded-xl border border-slate-100">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Institution / College</span>
+                      <span className="text-slate-800 font-extrabold text-sm">{activeProfile.academicInfo.college}</span>
                     </div>
-                    <div>
-                      <span className="text-[10px] uppercase text-text-secondary block">Academic Department</span>
-                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.academicInfo.department}</span>
+                    <div className="bg-slate-50/50 p-3 rounded-xl border border-slate-100">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Academic Department</span>
+                      <span className="text-slate-800 font-extrabold text-sm">{activeProfile.academicInfo.department}</span>
                     </div>
-                    <div>
-                      <span className="text-[10px] uppercase text-text-secondary block">Degree / Certification Focus</span>
-                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.academicInfo.degree}</span>
+                    <div className="bg-slate-50/50 p-3 rounded-xl border border-slate-100">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Degree / Focus</span>
+                      <span className="text-slate-800 font-extrabold text-sm">{activeProfile.academicInfo.degree}</span>
                     </div>
-                    <div>
-                      <span className="text-[10px] uppercase text-text-secondary block">Current Year of Study</span>
-                      <span className="text-text-primary font-extrabold text-xs">Year {activeProfile.academicInfo.year}</span>
+                    <div className="bg-slate-50/50 p-3 rounded-xl border border-slate-100">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Current Year</span>
+                      <span className="text-slate-800 font-extrabold text-sm">Year {activeProfile.academicInfo.year}</span>
                     </div>
-                    <div>
-                      <span className="text-[10px] uppercase text-text-secondary block">Cumulative GPA / CGPA</span>
-                      <span className="text-emerald-700 bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 rounded font-black text-xs">{activeProfile.academicInfo.cgpa} / 10.0</span>
+                    <div className="bg-slate-50/50 p-3 rounded-xl border border-slate-100 flex items-center">
+                      <div>
+                        <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">GPA / CGPA</span>
+                        <span className="text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-md font-black text-sm">{activeProfile.academicInfo.cgpa} / 10.0</span>
+                      </div>
                     </div>
-                    <div>
-                      <span className="text-[10px] uppercase text-text-secondary block">Graduation Year</span>
-                      <span className="text-text-primary font-extrabold text-xs">{activeProfile.academicInfo.graduationYear}</span>
+                    <div className="bg-slate-50/50 p-3 rounded-xl border border-slate-100">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Graduation Year</span>
+                      <span className="text-slate-800 font-extrabold text-sm">{activeProfile.academicInfo.graduationYear}</span>
                     </div>
                   </div>
                 </div>
@@ -2289,10 +2317,10 @@ export default function StudentLifecycleManagementPage() {
 
       {/* POPUPS & MODALS DIALOGS */}
       {activeActionModal && (
-        <div className={`z-50 flex transition-all ${
+        <div className={`z-[100] flex transition-all ${
           (activeActionModal.type === 'edit' || activeActionModal.type === 'onboard') 
             ? 'absolute inset-0 bg-white p-0 items-start justify-stretch' 
-            : 'fixed inset-0 bg-slate-900/60 backdrop-blur-xs p-4 items-center justify-center'
+            : 'fixed inset-0 bg-slate-900/60 backdrop-blur-md p-4 items-center justify-center'
         }`}>
           <div className={`bg-white overflow-hidden transition-all duration-300 ${
             (activeActionModal.type === 'edit' || activeActionModal.type === 'onboard') 

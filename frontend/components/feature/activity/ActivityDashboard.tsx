@@ -173,7 +173,17 @@ export default function ActivityDashboard() {
             <p className="text-sm text-text-secondary mt-0.5">Audit trail and system-wide activity logs.</p>
           </div>
         </div>
-        <button className="bg-slate-900 hover:bg-black text-white px-4 py-2.5 rounded-xl font-medium text-sm transition-all flex items-center gap-2 shadow-lg shadow-slate-900/10 hover:shadow-xl hover:shadow-slate-900/20">
+        <button 
+          onClick={() => {
+            const params = new URLSearchParams();
+            if (statusFilter && statusFilter !== 'All') params.append('status', statusFilter);
+            if (moduleFilter && moduleFilter !== 'All') params.append('module', moduleFilter);
+            if (severityFilter && severityFilter !== 'All') params.append('severity', severityFilter);
+            if (search) params.append('search', search);
+            window.open(`/api/v1/activity/export?${params.toString()}`, '_blank');
+          }}
+          className="bg-slate-900 hover:bg-black text-white px-4 py-2.5 rounded-xl font-medium text-sm transition-all flex items-center gap-2 shadow-lg shadow-slate-900/10 hover:shadow-xl hover:shadow-slate-900/20"
+        >
           <Download className="w-4 h-4" />
           Export Logs
         </button>

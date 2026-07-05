@@ -23,6 +23,10 @@ export const studentApi = {
   deleteStudent: async (id: string): Promise<void> => {
     await apiClient.delete(`/api/v1/student/${id}`);
   },
+  bulkGenerateCredentials: async (ids: string[]): Promise<any> => {
+    const res = await apiClient.post(`/api/v1/student/bulk-credentials`, ids);
+    return res.data;
+  },
   getColleges: async (search?: string): Promise<TndceCollege[]> => {
     const params = search ? `?search=${encodeURIComponent(search)}` : '';
     const res = await apiClient.get<TndceCollege[]>(`${COLLEGE_API_URL}${params}`);
