@@ -4,19 +4,12 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import Toast from '../../components/ui/toast'; 
 import { authService } from '@/src/services/auth.service';
 import { useAuth } from '@/src/context/AuthContext';
 
 const LoginPage = () => {
   const router = useRouter();
   const { login } = useAuth();
-  const [toastConfig, setToastConfig] = useState<{ show: boolean, title: string, message: string, type: 'success' | 'error' | 'warning' | 'info' }>({
-    show: false,
-    title: '',
-    message: '',
-    type: 'error'
-  });
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,13 +22,6 @@ const LoginPage = () => {
       const response = await authService.login({ username: username.trim(), password });
 
       if (response && response.access_token) {
-        setToastConfig({
-          show: true,
-          title: 'Login Successful',
-          message: 'Redirecting to your workspace...',
-          type: 'success'
-        });
-        
         await login();
         
         // Fetch current user immediately to check forcePasswordChange
@@ -53,29 +39,9 @@ const LoginPage = () => {
             router.push('/dashboard');
           }
         }, 800);
-      } else {
-        setToastConfig({
-          show: true,
-          title: 'Authentication Failed',
-          message: 'Invalid username or password. Please try again.',
-          type: 'error'
-        });
-        
-        setTimeout(() => {
-          setToastConfig(prev => ({ ...prev, show: false }));
-        }, 4000);
       }
     } catch (error) {
       console.error("Login failed:", error);
-      setToastConfig({
-        show: true,
-        title: 'Connection Error',
-        message: 'Unable to reach the authentication server. Please check your network.',
-        type: 'error'
-      });
-      setTimeout(() => {
-        setToastConfig(prev => ({ ...prev, show: false }));
-      }, 4000);
     } finally {
       setIsSubmitting(false);
     }
@@ -249,16 +215,6 @@ const LoginPage = () => {
         </div>
 
       </div>
-
-      {/* Toast Notification */}
-      {toastConfig.show && (
-        <Toast 
-          title={toastConfig.title}
-          message={toastConfig.message}
-          type={toastConfig.type}
-          onClose={() => setToastConfig(prev => ({ ...prev, show: false }))} 
-        />
-      )}
     </div>
   );
 }

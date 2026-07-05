@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { authService } from '@/src/services/auth.service';
-import Toast from '@/components/ui/toast';
 import { useAuth } from '@/src/context/AuthContext';
 
 export default function ForcePasswordChangePage() {
@@ -13,29 +12,22 @@ export default function ForcePasswordChangePage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [toastConfig, setToastConfig] = useState<{ show: boolean; title: string; message: string; type: "success" | "error" | "warning" | "info" }>({ 
-    show: false, title: '', message: '', type: 'error' 
-  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      setToastConfig({ show: true, title: 'Error', message: 'Passwords do not match.', type: 'error' });
       return;
     }
     
     setIsSubmitting(true);
     try {
       await authService.changePassword({ old_password: oldPassword, new_password: newPassword });
-      setToastConfig({ show: true, title: 'Success', message: 'Password updated. Redirecting...', type: 'success' });
       
       // Refresh user context so forcePasswordChange is cleared
       await login();
       
       setTimeout(() => router.push('/dashboard'), 1500);
     } catch (err: any) {
-      const errorMsg = err?.response?.data?.detail || 'Failed to update password. Please check your current password.';
-      setToastConfig({ show: true, title: 'Error', message: errorMsg, type: 'error' });
     } finally {
       setIsSubmitting(false);
     }
@@ -86,14 +78,6 @@ export default function ForcePasswordChangePage() {
           </button>
         </form>
       </div>
-      {toastConfig.show && (
-        <Toast 
-          title={toastConfig.title} 
-          message={toastConfig.message} 
-          type={toastConfig.type} 
-          onClose={() => setToastConfig(prev => ({ ...prev, show: false }))} 
-        />
-      )}
     </div>
   );
 }

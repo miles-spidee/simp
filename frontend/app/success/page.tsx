@@ -4,20 +4,12 @@ import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { API_ENDPOINTS } from '@/src/config';
-import Toast, { ToastType } from '../../components/ui/toast';
 
 function SuccessPageContent() {
   const searchParams = useSearchParams();
   const type = searchParams.get('type');
   
   const isLogin = type === 'login';
-
-  const [toastConfig, setToastConfig] = React.useState<{ show: boolean, title: string, message: string, type: ToastType }>({
-    show: false,
-    title: '',
-    message: '',
-    type: 'info'
-  });
 
   React.useEffect(() => {
     // SUCCESS_DATA telemetry is optional — silently skip if unavailable
@@ -41,15 +33,6 @@ function SuccessPageContent() {
 
   return (
     <div className="w-full max-w-lg rounded-2xl bg-white p-8 sm:p-10 text-center shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-border animate-slide-in">
-      {/* Toast Notification */}
-      {toastConfig.show && (
-        <Toast 
-          title={toastConfig.title}
-          message={toastConfig.message}
-          type={toastConfig.type}
-          onClose={() => setToastConfig(prev => ({ ...prev, show: false }))} 
-        />
-      )}
       
       <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm shadow-blue-500/10">
         <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
