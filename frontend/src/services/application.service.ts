@@ -65,7 +65,6 @@ export const applicationService = {
       overallRecommendation: rd.overall_recommendation || 'Hold',
       reviewerNotes: rd.reviewer_notes || '',
       reviewerFeedback: rd.reviewer_feedback || app.remarks || '',
-      aiMatchPercentage: 0
     } as any;
   },
 

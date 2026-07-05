@@ -9,6 +9,7 @@ import {
   Sparkles, MapPin, GraduationCap, Eye, BookOpen, AlertCircle, Layers
 } from 'lucide-react';
 import { applicationService } from '@/src/services/application.service';
+import { applicationApi } from '@/src/api/application.api';
 import { Application, ApplicationStatus } from '@/src/types/applications.types';
 import { opportunitiesService } from '@/src/services/opportunities.service';
 import { Opportunity } from '@/src/types/opportunities.types';
@@ -48,6 +49,7 @@ export default function ApplicationPage() {
   const [overallRec, setOverallRec] = useState<string>('Hold');
   const [notesText, setNotesText] = useState<string>('');
   const [feedbackText, setFeedbackText] = useState<string>('');
+  const [aiLoading, setAiLoading] = useState(false);
   
   // Bulk actions popups
   const [bulkReviewerName, setBulkReviewerName] = useState('');
@@ -204,7 +206,7 @@ export default function ApplicationPage() {
   }, [loadData]);
 
   // Handle opening review workspace
-  const handleOpenReview = (app: Application) => {
+  const handleOpenReview = async (app: Application) => {
     setReviewApp(app);
     setTechScore(app.technicalScore || 5);
     setCommScore(app.communicationScore || 5);
@@ -213,6 +215,31 @@ export default function ApplicationPage() {
     setOverallRec(app.overallRecommendation || 'Hold');
     setNotesText(app.reviewerNotes || '');
     setFeedbackText(app.reviewerFeedback || '');
+
+    // Fetch AI evaluation in the background and merge into reviewApp state
+    setAiLoading(true);
+    try {
+      const aiData = await applicationApi.getAiEvaluation(app.id);
+      if (aiData && Object.keys(aiData).length > 0) {
+        setReviewApp(prev => prev ? {
+          ...prev,
+          aiSentiment: aiData.aiSentiment || prev.aiSentiment,
+          aiCommitmentScore: aiData.aiCommitmentScore ?? prev.aiCommitmentScore,
+          aiCommunicationScore: aiData.aiCommunicationScore ?? prev.aiCommunicationScore,
+          aiMatchPercentage: aiData.aiMatchPercentage ?? prev.aiMatchPercentage,
+          aiExperienceSummary: aiData.aiExperienceSummary || prev.aiExperienceSummary,
+          aiStrengths: aiData.aiStrengths || prev.aiStrengths,
+          aiWeaknesses: aiData.aiWeaknesses || prev.aiWeaknesses,
+          aiSuggestedQuestions: aiData.aiSuggestedQuestions || prev.aiSuggestedQuestions,
+          aiResumeSummary: aiData.aiResumeSummary || prev.aiResumeSummary,
+          aiSkillMatchPercentage: aiData.aiSkillMatchPercentage ?? prev.aiSkillMatchPercentage,
+        } : prev);
+      }
+    } catch (err) {
+      console.debug('AI evaluation fetch failed (non-critical):', err);
+    } finally {
+      setAiLoading(false);
+    }
   };
 
   // Handle Scorecard submission
@@ -1346,7 +1373,9 @@ export default function ApplicationPage() {
                       </div>
                       <div>
                         <span className="text-text-secondary font-semibold block uppercase text-[10px]">AI-Generated Experience Evaluation</span>
-                        <p className="text-blue-700 bg-blue-50/50 p-2.5 rounded-lg border border-blue-100 mt-1 leading-relaxed">{reviewApp.aiExperienceSummary || 'Pending AI evaluation.'}</p>
+                        <p className="text-blue-700 bg-blue-50/50 p-2.5 rounded-lg border border-blue-100 mt-1 leading-relaxed">
+                          {aiLoading ? <span className="animate-pulse text-blue-400">Evaluating experience…</span> : (reviewApp.aiExperienceSummary || 'AI evaluation pending.')}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -1366,7 +1395,9 @@ export default function ApplicationPage() {
                         </div>
                         <div>
                           <span className="text-text-secondary font-semibold block uppercase text-[10px]">Skill Match Accuracy</span>
-                          <span className="text-blue-600 font-black text-sm block mt-0.5">{reviewApp.aiSkillMatchPercentage || 0}% match</span>
+                          <span className="text-blue-600 font-black text-sm block mt-0.5">
+                            {aiLoading ? <span className="animate-pulse text-blue-400">…</span> : `${reviewApp.aiSkillMatchPercentage ?? 0}% match`}
+                          </span>
                         </div>
                       </div>
                       <div>
@@ -1433,7 +1464,9 @@ export default function ApplicationPage() {
 
                     <div className="bg-slate-50 rounded-xl p-3 border border-border space-y-2">
                       <span className="text-[9px] font-black text-text-secondary uppercase tracking-wider block">AI Resume Parser Summary</span>
-                      <p className="text-[11px] text-text-secondary leading-relaxed">{reviewApp.aiResumeSummary || 'Resume parsing text pending.'}</p>
+                      <p className="text-[11px] text-text-secondary leading-relaxed">
+                        {aiLoading ? <span className="animate-pulse text-blue-400">Parsing resume data…</span> : (reviewApp.aiResumeSummary || 'No parsed data available.')}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -1452,17 +1485,32 @@ export default function ApplicationPage() {
                     <div className="grid grid-cols-3 gap-3 pt-1 text-[11px]">
                       <div className="bg-slate-50 p-2 rounded border border-border text-center">
                         <span className="text-text-secondary block text-[9px] uppercase">Sentiment Analysis</span>
-                        <span className={`font-bold block mt-0.5 ${reviewApp.aiSentiment === 'Positive' ? 'text-emerald-600' : 'text-text-secondary'}`}>
-                          {reviewApp.aiSentiment || 'Neutral'}
-                        </span>
+                        {aiLoading ? (
+                          <span className="font-bold block mt-0.5 text-blue-400 animate-pulse text-[10px]">Analyzing…</span>
+                        ) : (
+                          <span className={`font-bold block mt-0.5 ${
+                            reviewApp.aiSentiment === 'Positive' ? 'text-emerald-600' :
+                            reviewApp.aiSentiment === 'Concern' ? 'text-rose-600' : 'text-amber-600'
+                          }`}>
+                            {reviewApp.aiSentiment || '—'}
+                          </span>
+                        )}
                       </div>
                       <div className="bg-slate-50 p-2 rounded border border-border text-center">
                         <span className="text-text-secondary block text-[9px] uppercase">Commitment Score</span>
-                        <span className="font-bold text-text-primary block mt-0.5">{reviewApp.aiCommitmentScore || 0}/100</span>
+                        {aiLoading ? (
+                          <span className="font-bold block mt-0.5 text-blue-400 animate-pulse text-[10px]">—</span>
+                        ) : (
+                          <span className="font-bold text-text-primary block mt-0.5">{reviewApp.aiCommitmentScore ?? '—'}/100</span>
+                        )}
                       </div>
                       <div className="bg-slate-50 p-2 rounded border border-border text-center">
                         <span className="text-text-secondary block text-[9px] uppercase">Comms Score</span>
-                        <span className="font-bold text-text-primary block mt-0.5">{reviewApp.aiCommunicationScore || 0}/100</span>
+                        {aiLoading ? (
+                          <span className="font-bold block mt-0.5 text-blue-400 animate-pulse text-[10px]">—</span>
+                        ) : (
+                          <span className="font-bold text-text-primary block mt-0.5">{reviewApp.aiCommunicationScore ?? '—'}/100</span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -1479,9 +1527,15 @@ export default function ApplicationPage() {
                       <Sparkles className="h-4 w-4 text-blue-600" />
                       AI Assistant Insight
                     </h4>
-                    <span className="bg-blue-100 text-blue-800 font-mono font-black px-2 py-0.5 rounded text-xs">
-                      {reviewApp.aiMatchPercentage}% match
-                    </span>
+                    {aiLoading ? (
+                      <span className="bg-blue-100 text-blue-500 font-mono font-black px-2 py-0.5 rounded text-xs animate-pulse">
+                        Analyzing…
+                      </span>
+                    ) : (
+                      <span className="bg-blue-100 text-blue-800 font-mono font-black px-2 py-0.5 rounded text-xs">
+                        {reviewApp.aiMatchPercentage != null ? `${reviewApp.aiMatchPercentage}% match` : '—% match'}
+                      </span>
+                    )}
                   </div>
 
                   <div className="space-y-2.5 text-[11px]">

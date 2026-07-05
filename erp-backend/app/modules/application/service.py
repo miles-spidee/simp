@@ -162,10 +162,16 @@ class ApplicationService(BaseService):
         import uuid
         from app.models.organizations.organization import Organization
 
-        # Find user by email
+        from sqlalchemy import or_
+        
+        conditions = [User.email == obj_in.email]
+        if getattr(obj_in, "mobile_number", None):
+            conditions.append(User.phone == obj_in.mobile_number)
+
+        # Find user by email or phone
         stmt = (
             select(User)
-            .where(User.email == obj_in.email)
+            .where(or_(*conditions))
         )
 
         result = await self.db.execute(stmt)

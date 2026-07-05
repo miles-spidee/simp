@@ -8,6 +8,7 @@ from app.core.dependencies import get_current_user
 from app.core.responses import APIResponse, success_response
 
 from app.models.authentication.user import User
+from app.models.internships.application import Application
 
 from app.modules.application.schemas import (
     ApplicationCreate,
@@ -15,6 +16,7 @@ from app.modules.application.schemas import (
     ApplicationReviewRequest,
 )
 from app.modules.application.service import ApplicationService
+from app.services.ai_evaluation import evaluate_application
 
 router = APIRouter()
 
@@ -150,3 +152,35 @@ async def withdraw_application(
         data=application,
         message="Application withdrawn successfully",
     )
+
+
+# -------------------------------------------------------
+# AI Evaluation — rule-based analysis
+# -------------------------------------------------------
+
+@router.get(
+    "/{application_id}/ai-evaluate",
+)
+async def ai_evaluate_application(
+    application_id: UUID,
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Run the smart AI evaluation engine on a single application.
+    Returns scores for sentiment, commitment, communication quality,
+    match percentage, strengths, weaknesses, and suggested questions.
+    """
+    from sqlalchemy import select
+
+    stmt = select(Application).where(Application.id == application_id)
+    result = await db.execute(stmt)
+    application = result.scalars().first()
+
+    if not application:
+        return success_response(data={}, message="Application not found")
+
+    ai_data = evaluate_application({
+        "application_data": application.application_data or {}
+    })
+
+    return success_response(data=ai_data, message="AI evaluation complete")

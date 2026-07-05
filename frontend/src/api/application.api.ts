@@ -30,5 +30,10 @@ export const applicationApi = {
   withdrawApplication: async (id: string): Promise<ApplicationResponse> => {
     const res = await apiClient.patch<any>(`/api/v1/application/${id}/withdraw`);
     return res.data.data;
-  }
+  },
+  getAiEvaluation: async (id: string): Promise<Record<string, any>> => {
+    const res = await apiClient.get<any>(`/api/v1/application/${id}/ai-evaluate`);
+    return res.data.data || {};
+  },
 };
+
