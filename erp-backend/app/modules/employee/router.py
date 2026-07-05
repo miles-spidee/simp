@@ -193,6 +193,9 @@ async def update_employee(
 
     if update_data.get("name"):
         user.username = update_data["name"]
+        parts = update_data["name"].split(" ")
+        profile.first_name = parts[0]
+        profile.last_name = " ".join(parts[1:]) if len(parts) > 1 else ""
     if update_data.get("email"):
         existing_email = await db.execute(
             select(User).where(User.email == update_data["email"], User.id != user.id)
@@ -200,8 +203,10 @@ async def update_employee(
         if existing_email.scalars().first():
             raise HTTPException(status_code=409, detail="Employee email already exists")
         user.email = update_data["email"]
+        profile.email = update_data["email"]
     if update_data.get("phone") is not None:
         user.phone = update_data["phone"]
+        profile.phone = update_data["phone"]
     if update_data.get("designation"):
         profile.designation = update_data["designation"]
     if update_data.get("employee_code"):
@@ -311,6 +316,10 @@ async def create_employee(
         user_id=new_user.id,
         organization_id=organization.id,
         department_id=department.id if department else None,
+        first_name=data.first_name.strip(),
+        last_name=data.last_name.strip(),
+        email=data.official_email.strip(),
+        phone=data.phone_number,
         employee_code=data.employee_code or f"EMP-{uuid4().hex[:8].upper()}",
         designation=data.designation or "Employee",
         date_of_joining=joining_date_value,
