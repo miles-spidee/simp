@@ -46,42 +46,72 @@ async def get_analytics_summary(db: AsyncSession = Depends(get_db)):
             placement_rate = 92.0
             
         return success_response(data={
-            "totalStudents": total_students * 10, # Scaled for visual dashboard realism
+            "totalStudents": total_students,
             "activeInterns": total_students,
             "completionRate": 85,
             "attendanceRate": 88.2,
             "averageScore": round(avg_score_val, 1),
             "placementRate": placement_rate,
-            "certificatesIssued": certs * 10 + 50
+            "certificatesIssued": certs
         })
     except Exception as e:
         import traceback
         traceback.print_exc()
         return success_response(data={
-            "totalStudents": 450,
-            "activeInterns": 120,
-            "completionRate": 82,
-            "attendanceRate": 88.2,
-            "averageScore": 75.0,
-            "placementRate": 76.8,
-            "certificatesIssued": 240
+            "totalStudents": 0,
+            "activeInterns": 0,
+            "completionRate": 0,
+            "attendanceRate": 0,
+            "averageScore": 0,
+            "placementRate": 0,
+            "certificatesIssued": 0
         })
 
 @router.get("/attendance-trend")
-async def get_attendance_trend():
-    # Return 30-day attendance trend values
-    # Generate stable wave curve with small fluctuations
-    data = []
-    base_time = datetime.now() - timedelta(days=29)
-    for i in range(30):
-        day = base_time + timedelta(days=i)
-        # Periodic wave + random noise
-        val = 85.0 + 5.0 * (i % 7) / 7.0 + random.uniform(-1.5, 1.5)
-        data.append({
-            "date": day.date().isoformat(),
-            "value": round(val, 1)
-        })
-    return success_response(data=data)
+async def get_attendance_trend(db: AsyncSession = Depends(get_db)):
+    try:
+        from app.models.internships.attendance import Attendance
+        from sqlalchemy import case
+        
+        base_time = datetime.now().date() - timedelta(days=29)
+        stmt = (
+            select(
+                Attendance.date,
+                func.count(Attendance.id).label('total'),
+                func.sum(case((Attendance.status == 'PRESENT', 1), else_=0)).label('present')
+            )
+            .where(Attendance.date >= base_time)
+            .group_by(Attendance.date)
+            .order_by(Attendance.date)
+        )
+        res = await db.execute(stmt)
+        records = res.all()
+        
+        data = []
+        if records:
+            for record in records:
+                date_val, total, present = record
+                if total > 0:
+                    val = (present / total) * 100
+                else:
+                    val = 0
+                data.append({
+                    "date": date_val.isoformat(),
+                    "value": round(val, 1)
+                })
+        else:
+            # Fallback to empty or zeros if no data in DB for the past 30 days
+            for i in range(30):
+                day = base_time + timedelta(days=i)
+                data.append({
+                    "date": day.isoformat(),
+                    "value": 0
+                })
+        return success_response(data=data)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return success_response(data=[])
 
 @router.get("/top-programs")
 async def get_top_programs(db: AsyncSession = Depends(get_db)):
@@ -96,14 +126,7 @@ async def get_top_programs(db: AsyncSession = Depends(get_db)):
         records = res.all()
         
         if not records:
-            # Fallback mock distribution
-            data = [
-                {"id": "p-1", "name": "B.Tech Computer Science", "value": 450, "percentage": 36},
-                {"id": "p-2", "name": "B.Tech Information Technology", "value": 320, "percentage": 25},
-                {"id": "p-3", "name": "MBA Business Analytics", "value": 280, "percentage": 22},
-                {"id": "p-4", "name": "B.Sc Electronics", "value": 150, "percentage": 12}
-            ]
-            return success_response(data=data)
+            return success_response(data=[])
             
         total = sum(r[1] for r in records) or 1
         data = []
@@ -112,16 +135,11 @@ async def get_top_programs(db: AsyncSession = Depends(get_db)):
             data.append({
                 "id": f"prog-{idx}",
                 "name": name,
-                "value": count * 8, # scaled
+                "value": count,
                 "percentage": pct
             })
         return success_response(data=data)
     except Exception as e:
-        # Fallback mock distribution
-        data = [
-            {"id": "p-1", "name": "B.Tech Computer Science", "value": 450, "percentage": 36},
-            {"id": "p-2", "name": "B.Tech Information Technology", "value": 320, "percentage": 25},
-            {"id": "p-3", "name": "MBA Business Analytics", "value": 280, "percentage": 22},
-            {"id": "p-4", "name": "B.Sc Electronics", "value": 150, "percentage": 12}
-        ]
-        return success_response(data=data)
+        import traceback
+        traceback.print_exc()
+        return success_response(data=[])
