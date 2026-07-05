@@ -3,6 +3,7 @@ from datetime import date, datetime, time, timezone
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.models.finance.billing import RefundRequest
 from app.models.finance.invoice import Invoice
 from app.models.finance.payment import PaymentTransaction
 from app.modules.finance.schemas import (
@@ -83,10 +84,20 @@ class FinanceRepository(
         )
         total_revenue, payment_count = result.one()
 
+        # Compute collection rate: paid invoices / total invoices
+        invoice_result = await self.db.execute(
+            select(
+                func.count(Invoice.id),
+                func.count(Invoice.id).filter(func.lower(Invoice.payment_status) == "paid"),
+            ).where(Invoice.deleted_at.is_(None))
+        )
+        total_invoices, paid_invoices = invoice_result.one()
+        collection_rate = float((paid_invoices / total_invoices) * 100) if total_invoices else 0.0
+
         return MonthlyRevenueResponse(
             total_revenue=total_revenue,
             payment_count=payment_count,
-            collection_rate=0,
+            collection_rate=collection_rate,
             growth_percentage=0,
         )
 
@@ -97,12 +108,16 @@ class FinanceRepository(
             select(
                 func.coalesce(func.sum(Invoice.grand_total), 0),
                 func.count(Invoice.id),
-            ).where(func.lower(Invoice.payment_status) != "paid")
+            ).where(
+                Invoice.deleted_at.is_(None),
+                func.lower(Invoice.payment_status) != "paid",
+            )
         )
         pending_amount, pending_invoices = pending_result.one()
 
         overdue_result = await self.db.execute(
             select(func.count(Invoice.id)).where(
+                Invoice.deleted_at.is_(None),
                 func.lower(Invoice.payment_status) != "paid",
                 Invoice.due_date < today,
             )
@@ -118,6 +133,7 @@ class FinanceRepository(
     async def get_recent_transactions(self, limit: int = 10) -> list[TransactionItem]:
         result = await self.db.execute(
             select(PaymentTransaction)
+            .where(PaymentTransaction.deleted_at.is_(None))
             .order_by(PaymentTransaction.created_at.desc())
             .limit(limit)
         )
@@ -134,21 +150,26 @@ class FinanceRepository(
         ]
 
     async def get_refund_summary(self) -> RefundSummaryResponse:
+        """Count RefundRequests by status for a real refund summary."""
         result = await self.db.execute(
-            select(func.count(PaymentTransaction.id)).where(
-                PaymentTransaction.refund.is_(True)
-            )
+            select(
+                func.count(RefundRequest.id).filter(func.lower(RefundRequest.status) == "pending"),
+                func.count(RefundRequest.id).filter(func.lower(RefundRequest.status) == "approved"),
+                func.count(RefundRequest.id).filter(func.lower(RefundRequest.status) == "rejected"),
+            ).where(RefundRequest.deleted_at.is_(None))
         )
+        pending, approved, rejected = result.one()
 
         return RefundSummaryResponse(
-            pending_refunds=result.scalar_one(),
-            approved_refunds=0,
-            rejected_refunds=0,
+            pending_refunds=pending,
+            approved_refunds=approved,
+            rejected_refunds=rejected,
         )
 
     async def get_recent_activity(self, limit: int = 10) -> list[ActivityItem]:
         result = await self.db.execute(
             select(PaymentTransaction)
+            .where(PaymentTransaction.deleted_at.is_(None))
             .order_by(PaymentTransaction.created_at.desc())
             .limit(limit)
         )
