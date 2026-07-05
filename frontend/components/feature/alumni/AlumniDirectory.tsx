@@ -11,6 +11,7 @@ export default function AlumniDirectory() {
 
   // Add Alumni Drawer state
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [selectedAlumni, setSelectedAlumni] = useState<AlumniProfile | null>(null);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -174,7 +175,11 @@ export default function AlumniDirectory() {
           </div>
         ) : (
           filteredAlumni.slice(0, 12).map(al => (
-            <div key={al.id} className="bg-white rounded-2xl border border-border p-5 shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden flex flex-col justify-between min-h-[190px]">
+            <div 
+              key={al.id} 
+              onClick={() => setSelectedAlumni(al)}
+              className="bg-white rounded-2xl border border-border p-5 shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden flex flex-col justify-between min-h-[190px] cursor-pointer"
+            >
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               
               <div>
@@ -188,12 +193,12 @@ export default function AlumniDirectory() {
                   </div>
                   <div className="flex gap-2">
                     {al.linkedInUrl && (
-                      <a href={al.linkedInUrl} target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-indigo-650 transition-colors">
+                      <a href={al.linkedInUrl} onClick={(e) => e.stopPropagation()} target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-indigo-650 transition-colors">
                         <Link className="h-4.5 w-4.5" />
                       </a>
                     )}
                     <button 
-                      onClick={() => handleDeleteAlumni(al.id)}
+                      onClick={(e) => { e.stopPropagation(); handleDeleteAlumni(al.id); }}
                       className="text-text-secondary hover:text-rose-600 transition-colors cursor-pointer"
                       title="Delete Profile"
                     >
@@ -379,6 +384,86 @@ export default function AlumniDirectory() {
         </form>
       </Drawer>
 
+      {/* View Alumni Drawer */}
+      <Drawer
+        isOpen={!!selectedAlumni}
+        onClose={() => setSelectedAlumni(null)}
+        title="Alumni Profile Details"
+      >
+        {selectedAlumni && (
+          <div className="flex-1 flex flex-col p-6 space-y-6 overflow-y-auto bg-slate-50">
+            <div className="flex items-center gap-5">
+              <div className="h-16 w-16 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 flex items-center justify-center font-extrabold text-indigo-700 text-2xl shadow-sm border-2 border-white">
+                {selectedAlumni.name.charAt(0)}
+              </div>
+              <div>
+                <h3 className="font-bold text-lg text-text-primary">{selectedAlumni.name}</h3>
+                <p className="text-sm text-indigo-650 font-bold uppercase tracking-wider">{selectedAlumni.batch} • {selectedAlumni.graduationYear}</p>
+                {selectedAlumni.isMentoring && (
+                  <span className="inline-flex items-center gap-1 mt-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold uppercase tracking-wider">
+                    <CheckCircle className="w-3 h-3 text-emerald-600 shrink-0" />
+                    Active Peer Mentor
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-4 pt-4 border-t border-border">
+              <h4 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-2">Professional Details</h4>
+              
+              <div className="bg-white rounded-xl p-4 border border-border shadow-sm flex items-start gap-3">
+                <Briefcase className="h-5 w-5 text-indigo-500 shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-xs text-text-secondary font-semibold">Current Role</p>
+                  <p className="text-sm font-bold text-text-primary">{selectedAlumni.currentDesignation}</p>
+                  <p className="text-sm text-text-secondary">{selectedAlumni.currentCompany}</p>
+                </div>
+              </div>
+
+              {selectedAlumni.careerHistory && selectedAlumni.careerHistory.length > 0 && (
+                <div className="bg-white rounded-xl p-4 border border-border shadow-sm flex items-start gap-3">
+                  <MapPin className="h-5 w-5 text-indigo-500 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-xs text-text-secondary font-semibold">Location</p>
+                    <p className="text-sm font-bold text-text-primary">{selectedAlumni.careerHistory[0].location}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-4 pt-4 border-t border-border">
+              <h4 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-2">Contact & Links</h4>
+              
+              {selectedAlumni.email && (
+                <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-border shadow-sm">
+                  <Mail className="h-4.5 w-4.5 text-text-secondary" />
+                  <a href={`mailto:${selectedAlumni.email}`} className="text-sm font-medium text-text-primary hover:text-indigo-650 transition-colors">
+                    {selectedAlumni.email}
+                  </a>
+                </div>
+              )}
+
+              {selectedAlumni.linkedInUrl && (
+                <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-border shadow-sm">
+                  <Link className="h-4.5 w-4.5 text-text-secondary" />
+                  <a href={selectedAlumni.linkedInUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors truncate">
+                    {selectedAlumni.linkedInUrl}
+                  </a>
+                </div>
+              )}
+            </div>
+            
+            <div className="mt-auto pt-6">
+              <button
+                onClick={() => setSelectedAlumni(null)}
+                className="w-full py-3 bg-slate-900 hover:bg-black text-white font-bold text-xs rounded-xl transition-all shadow-lg shadow-slate-900/10 cursor-pointer"
+              >
+                Close Profile
+              </button>
+            </div>
+          </div>
+        )}
+      </Drawer>
     </div>
   );
 }
