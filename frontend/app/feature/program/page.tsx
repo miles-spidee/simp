@@ -97,12 +97,14 @@ export default function ProgramManagementPage() {
     setTimeout(() => setToast(null), 4000);
   };
 
-  // Load programs and organizations
+  // Load programs and organizations — run in parallel for maximum speed
   const loadData = async () => {
     setLoading(true);
     try {
-      const progData = await programService.getPrograms();
-      const orgData = await organizationService.getOrganizations();
+      const [progData, orgData] = await Promise.all([
+        programService.getPrograms(),
+        organizationService.getOrganizations(),
+      ]);
       
       const mergedData = progData.map(prog => ({
         ...prog,
