@@ -22,17 +22,12 @@ class EmailService:
         smtp_user = settings.SMTP_USER
         smtp_password = settings.SMTP_PASSWORD
 
-        # Convert to list and filter out mock emails
+        # Convert to list
         recipients = [to] if isinstance(to, str) else list(to)
-        real_recipients = []
-        for r in recipients:
-            if "@pinesphere.example.com" in r or "example.com" in r:
-                print(f"| SMTP MOCK EMAIL BYPASSED | Target: {r} | Subject: {subject} |")
-            else:
-                real_recipients.append(r)
+        real_recipients = recipients
 
         if not real_recipients:
-            return "skipped_mock_email"
+            return "skipped_empty_recipients"
 
         import email.utils
 

@@ -60,6 +60,15 @@ class NotificationService:
 
         cls._add_in_app("Account Registered", f"Hi {username}, your registration is complete.", email, "Identity")
 
+    @classmethod
+    async def send_credentials_email(cls, email: str, username: str, password: str):
+        try:
+            subject = "Your Pinesphere ERP Account Credentials"
+            html = f"<h2>Welcome to Pinesphere ERP</h2><p>Hi {username},</p><p>Your account has been created successfully.</p><p>Username: <b>{username}</b></p><p>Password: <b>{password}</b></p><p>Please log in and change your password as soon as possible.</p>"
+            await email_service.send_email(email, subject, html)
+        except Exception:
+            pass
+
     # 3. Welcome (Email, In-App)
     @classmethod
     async def send_welcome_notif(cls, username: str, email: str):
