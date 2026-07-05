@@ -1,6 +1,7 @@
 import { programApi } from '../api/program.api';
 import { ProgramCreate, ProgramResponse } from '../types/api/program.types';
 import { Program } from '../types/programs.types';
+import { apiCache } from '../lib/apiCache';
 
 export type ExtendedProgram = ProgramResponse & Program;
 
@@ -44,22 +45,27 @@ export const programService = {
   },
 
   async getPrograms(): Promise<ExtendedProgram[]> {
-    try {
-      const data = await programApi.getPrograms();
-      return data.map(prog => this.mapToExtended(prog));
-    } catch (e) {
-      console.debug(e);
-      return [];
-    }
+    return apiCache.fetch('programs:all', async () => {
+      try {
+        const data = await programApi.getPrograms();
+        return data.map(prog => this.mapToExtended(prog));
+      } catch (e) {
+        console.debug(e);
+        return [];
+      }
+    }, 60_000); // 1-minute cache
   },
 
   async getProgram(id: string): Promise<ExtendedProgram | undefined> {
-    const all = await this.getPrograms();
-    return all.find(p => p.program_id === id || p.id === id);
+    return apiCache.fetch(`programs:${id}`, async () => {
+      const all = await this.getPrograms();
+      return all.find(p => p.program_id === id || p.id === id);
+    }, 60_000);
   },
 
   async createProgram(data: ProgramCreate): Promise<ExtendedProgram> {
     const res = await programApi.createProgram(data);
+    apiCache.invalidate('programs:all');
     return this.mapToExtended(res);
   },
 
@@ -74,6 +80,8 @@ export const programService = {
       };
       
       const res = await programApi.updateProgram(id, payload);
+      apiCache.invalidate('programs:all');
+      apiCache.invalidate(`programs:${id}`);
       const mapped = this.mapToExtended(res);
       if (updates.metadata) {
         mapped.metadata = {
