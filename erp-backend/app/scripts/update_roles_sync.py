@@ -20,40 +20,37 @@ AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=F
 ROLE_MODULES = {
     "SUPER_ADMIN": ["*"],
     "STUDENT": [
-        "dashboard", "my_learning", "my_task", "my_attendance", "my_assessment", 
-        "submission", "message", "calendar", "email", "document", "reports", 
-        "export_center", "help_desk", "digital_id", "self_service", "productivity"
+        "dashboard", "my_learning", "my_attendance", "my_tasks", "my_assessments", 
+        "submission", "common_file", "communication", "calendar", "email", 
+        "document", "reports", "helpdesk", "idcard", "selfservice", "productivity"
     ],
     "MENTOR": [
-        "dashboard", "lms_dashboard", "lms_management", "attendance_dashboard", 
-        "attendance_management", "assessment_dashboard", "assessment_management", 
-        "task_dashboard", "task_management", "performance", "submission", 
-        "leave_management", "message", "calendar", "email", "certificate", 
-        "reports", "kpis", "help_desk", "digital_id", "self_service", "productivity"
+        "dashboard", "lms", "lms_management", "attendance", 
+        "attendance_management", "task", "task_management", "assessment", 
+        "assessment_management", "submission", "performance", "leave", 
+        "common_file", "communication", "calendar", "email", "certificate", 
+        "reports", "kpi", "helpdesk", "idcard", "selfservice", "productivity"
     ],
     "COLLEGE_COORDINATOR": [
-        "dashboard", "lms_dashboard", "attendance_dashboard", "assessment_dashboard", 
-        "task_dashboard", "performance", "college_certificate_dashboard", "reports"
+        "dashboard", "lms", "attendance", "task", "assessment", 
+        "performance", "college_certificates", "common_file", "reports"
     ],
     "HR": [
-        "dashboard", "college_coordinator", "employee_management", "organization_management", 
-        "program_management", "opportunity_management", "application_management", 
-        "student_management", "batch_management", "allocation", "mentor_profile", 
-        "alumni_management", "analytics_dashboard", "kpi_management", "help_desk", 
-        "digital_id_card", "self_service_portal", "productivity", "announcement", 
-        "notification", "calendar", "reports"
+        "dashboard", "employee", "organization", "program", "opportunity", 
+        "application", "student", "batch", "allocation", "mentor", 
+        "college_coordinator", "placement", "alumni", "analytics", "notification", 
+        "announcement", "kpi", "helpdesk", "idcard", "selfservice", 
+        "productivity", "communication", "calendar", "email"
     ],
     "REPORTING_MANAGER": [
-        "dashboard", "analytics_dashboard", "kpi_management", "executive_dashboard", 
-        "help_desk", "digital_id_card", "self_service_portal", "productivity", 
-        "announcement", "notification", "leave_management", "reporting_manager", 
-        "activity_tracking", "escalation_engine", "message", "calendar", "email", "reports"
+        "dashboard", "reporting_manager", "executive", "analytics", "kpi", 
+        "leave", "activity", "notification", "announcement", "helpdesk", 
+        "idcard", "selfservice", "productivity", "communication", "calendar", "email"
     ],
     "FINANCE_MANAGER": [
-        "dashboard", "kpi_management", "help_desk", "digital_id_card", "self_service_portal", 
-        "productivity", "payment_management", "message", "calendar", "email", 
-        "fee_structure", "invoice_and_receipt", "internship_wallet", "finance_dashboard", 
-        "revenue_analytics", "reports"
+        "dashboard", "finance", "payment", "fee", "billing", "wallet", 
+        "finance_analytics", "kpi", "helpdesk", "idcard", "selfservice", 
+        "productivity", "communication", "calendar", "email"
     ]
 }
 

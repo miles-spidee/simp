@@ -669,7 +669,7 @@ export default function ProgramManagementPage() {
             </button>
           </div>
 
-          <PermissionGuard required="programs:export">
+          <PermissionGuard required="program.export">
             <button 
               onClick={handleExportData}
               className="flex items-center gap-1.5 px-3 py-2 border border-border hover:border-secondary hover:bg-slate-50 bg-white rounded-lg text-xs font-bold text-text-primary shadow-sm transition-all duration-200 cursor-pointer"
@@ -679,7 +679,7 @@ export default function ProgramManagementPage() {
             </button>
           </PermissionGuard>
           
-          <PermissionGuard required="programs:create">
+          <PermissionGuard required="program.create">
             <button 
               onClick={openOnboardModal}
               className="flex items-center gap-1.5 px-3 py-2 bg-slate-900 hover:bg-black text-white rounded-lg text-xs font-bold shadow-sm transition-all duration-200 cursor-pointer"
@@ -1011,7 +1011,7 @@ export default function ProgramManagementPage() {
                     <button onClick={() => handleOpenProfile(prog)} className="p-1 hover:bg-slate-100 rounded text-text-secondary hover:text-text-primary cursor-pointer" title="Open Profile Program">
                       <Eye className="h-4 w-4" />
                     </button>
-                    <PermissionGuard required="programs:update">
+                    <PermissionGuard required="program.update">
                       <button onClick={() => openEditModal(prog)} className="p-1 hover:bg-slate-100 rounded text-text-secondary hover:text-text-primary cursor-pointer" title="Edit Program Details">
                         <Edit className="h-4 w-4" />
                       </button>
@@ -1115,7 +1115,7 @@ export default function ProgramManagementPage() {
 
               {/* Sticky action buttons list */}
               <div className="flex items-center flex-wrap gap-2">
-                <PermissionGuard required="programs:update">
+                <PermissionGuard required="program.update">
                   <button 
                     onClick={() => openEditModal(activeProfile)}
                     className="bg-slate-800 hover:bg-slate-700 border border-border text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1"

@@ -28,6 +28,7 @@ class UserResponse(BaseModel):
     id: UUID
     username: str
     email: str
-    account_status: StatusEnum
-    roleName: Optional[str] = None
+    account_status: str
     roleId: Optional[UUID] = None
+    roleName: Optional[str] = None
+    moduleOverrides: Optional[list[UUID]] = None

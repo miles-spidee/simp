@@ -653,7 +653,7 @@ export default function EmployeeManagementPage() {
             </button>
           </div>
 
-          <PermissionGuard required="employee:export">
+          <PermissionGuard required="employee.export">
             <button 
               onClick={handleExportRoster}
               className="flex items-center gap-1.5 px-3 py-2 border border-border hover:border-secondary hover:bg-slate-50 bg-white rounded-lg text-xs font-bold text-text-primary shadow-sm transition-all duration-200 cursor-pointer"
@@ -663,7 +663,7 @@ export default function EmployeeManagementPage() {
             </button>
           </PermissionGuard>
           
-          <PermissionGuard required="employee:create">
+          <PermissionGuard required="employee.create">
             <button 
               onClick={openOnboardModal}
               className="flex items-center gap-1.5 px-3 py-2 bg-slate-900 hover:bg-black text-white rounded-lg text-xs font-bold shadow-sm transition-all duration-200 cursor-pointer"
@@ -1119,7 +1119,7 @@ export default function EmployeeManagementPage() {
                     >
                       <Eye className="h-3.5 w-3.5" />
                     </button>
-                    <PermissionGuard required="employee:update">
+                    <PermissionGuard required="employee.update">
                       <button 
                         onClick={() => openEditModal(emp)}
                         className="p-1 hover:bg-slate-100 rounded text-text-secondary hover:text-text-primary cursor-pointer"
@@ -1246,7 +1246,7 @@ export default function EmployeeManagementPage() {
 
               {/* Action Operations Button bar */}
               <div className="flex items-center flex-wrap gap-2">
-                <PermissionGuard required="employee:update">
+                <PermissionGuard required="employee.update">
                   <button 
                     onClick={() => openEditModal(activeProfile)}
                     className="bg-slate-800 hover:bg-slate-700 border border-border text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1"
@@ -1265,7 +1265,7 @@ export default function EmployeeManagementPage() {
                   <RefreshCw className="h-3 w-3 text-emerald-400" />
                   <span>Status</span>
                 </button>
-                <PermissionGuard required="employee:delete">
+                <PermissionGuard required="employee.delete">
                   <button 
                     onClick={() => {
                       if (confirm(`Are you sure you want to delete employee ${activeProfile.name}?`)) {
@@ -1455,7 +1455,7 @@ export default function EmployeeManagementPage() {
                                   </button>
                                 )}
                                 {doc.status !== 'Rejected' && (
-                                  <PermissionGuard required="employee:update">
+                                  <PermissionGuard required="employee.update">
                                     <button 
                                       onClick={() => {
                                         const docIdx = activeProfile.documents.findIndex(d => d.type === type);

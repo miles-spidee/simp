@@ -78,12 +78,33 @@ async def create_user(
 ):
     service = UserService(db)
     result = await service.create(obj_in=data, user_id=current_user.id)
+    
+    from sqlalchemy import select
+    from app.models.rbac.user_role import UserRole
+    from app.models.rbac.role import Role
+    from app.models.rbac.user_module import UserModule
+    
+    # Fetch Role
+    role_query = await db.execute(
+        select(Role.id, Role.name)
+        .join(UserRole, UserRole.role_id == Role.id)
+        .where(UserRole.user_id == result.id)
+    )
+    role_row = role_query.first()
+    
+    # Fetch Module Overrides
+    module_query = await db.execute(select(UserModule.module_id).where(UserModule.user_id == result.id))
+    module_overrides = [m for m in module_query.scalars().all()]
+    
     # Serialize for response
     user_data = UserResponse(
         id=result.id,
         username=result.username,
         email=result.email,
-        account_status=result.account_status
+        account_status=result.account_status,
+        roleId=role_row[0] if role_row else None,
+        roleName=role_row[1] if role_row else None,
+        moduleOverrides=module_overrides if module_overrides else []
     )
     return success_response(data=user_data.model_dump(), message="User created successfully")
 
@@ -95,11 +116,32 @@ async def get_user(
 ):
     service = UserService(db)
     result = await service.get(id)
+    
+    from sqlalchemy import select
+    from app.models.rbac.user_role import UserRole
+    from app.models.rbac.role import Role
+    from app.models.rbac.user_module import UserModule
+    
+    # Fetch Role
+    role_query = await db.execute(
+        select(Role.id, Role.name)
+        .join(UserRole, UserRole.role_id == Role.id)
+        .where(UserRole.user_id == id)
+    )
+    role_row = role_query.first()
+    
+    # Fetch Module Overrides
+    module_query = await db.execute(select(UserModule.module_id).where(UserModule.user_id == id))
+    module_overrides = [m for m in module_query.scalars().all()]
+    
     user_data = UserResponse(
         id=result.id,
         username=result.username,
         email=result.email,
-        account_status=result.account_status
+        account_status=result.account_status,
+        roleId=role_row[0] if role_row else None,
+        roleName=role_row[1] if role_row else None,
+        moduleOverrides=module_overrides if module_overrides else []
     )
     return success_response(data=user_data.model_dump())
 
@@ -112,11 +154,32 @@ async def update_user(
 ):
     service = UserService(db)
     result = await service.update(id=id, obj_in=data, user_id=current_user.id)
+    
+    from sqlalchemy import select
+    from app.models.rbac.user_role import UserRole
+    from app.models.rbac.role import Role
+    from app.models.rbac.user_module import UserModule
+    
+    # Fetch Role
+    role_query = await db.execute(
+        select(Role.id, Role.name)
+        .join(UserRole, UserRole.role_id == Role.id)
+        .where(UserRole.user_id == id)
+    )
+    role_row = role_query.first()
+    
+    # Fetch Module Overrides
+    module_query = await db.execute(select(UserModule.module_id).where(UserModule.user_id == id))
+    module_overrides = [m for m in module_query.scalars().all()]
+    
     user_data = UserResponse(
         id=result.id,
         username=result.username,
         email=result.email,
-        account_status=result.account_status
+        account_status=result.account_status,
+        roleId=role_row[0] if role_row else None,
+        roleName=role_row[1] if role_row else None,
+        moduleOverrides=module_overrides if module_overrides else []
     )
     return success_response(data=user_data.model_dump(), message="User updated successfully")
 

@@ -1333,7 +1333,7 @@ export default function StudentLifecycleManagementPage() {
                     <button onClick={() => handleOpenProfile(s)} className="p-1 hover:text-blue-600 hover:bg-slate-100 rounded text-text-secondary transition-colors" title="View Profile Workspace">
                       <Eye className="h-4 w-4" />
                     </button>
-                    <PermissionGuard required="student.edit">
+                    <PermissionGuard required="student.update">
                       <button onClick={() => openEditModal(s)} className="p-1 hover:text-amber-600 hover:bg-slate-100 rounded text-text-secondary transition-colors" title="Edit Personal/Academic Info">
                         <PlusCircle className="h-4 w-4" />
                       </button>
@@ -1455,7 +1455,7 @@ export default function StudentLifecycleManagementPage() {
 
               {/* Header Actions */}
               <div className="flex flex-wrap items-center gap-1.5">
-                <PermissionGuard required="student.edit">
+                <PermissionGuard required="student.update">
                   <button
                     onClick={() => openEditModal(activeProfile)}
                     className="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded transition"
