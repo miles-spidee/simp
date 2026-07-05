@@ -40,7 +40,7 @@ ROLE_MODULES = {
         "application", "student", "batch", "allocation", "mentor", 
         "college_coordinator", "placement", "alumni", "analytics", "notification", 
         "announcement", "kpi", "helpdesk", "idcard", "selfservice", 
-        "productivity", "communication", "calendar", "email"
+        "productivity", "communication", "calendar", "email", "user"
     ],
     "REPORTING_MANAGER": [
         "dashboard", "reporting_manager", "executive", "analytics", "kpi", 

@@ -481,7 +481,7 @@ export default function ApplicationPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <PermissionGuard required="application.review">
+            <PermissionGuard required="application.create">
               <button
                 onClick={() => setIsAddDrawerOpen(true)}
                 className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors cursor-pointer"
@@ -688,7 +688,7 @@ export default function ApplicationPage() {
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="text-[10px] text-text-secondary font-medium">{app.appliedDate}</span>
-                    <PermissionGuard required="application.review">
+                    <PermissionGuard required="application.update">
                       <button
                         onClick={() => handleOpenReview(app)}
                         className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-text-primary text-xs font-bold rounded-lg transition-colors cursor-pointer"
@@ -841,7 +841,7 @@ export default function ApplicationPage() {
                   label: 'Actions',
                   className: 'text-right',
                   render: (app) => (
-                    <PermissionGuard required="application.review">
+                    <PermissionGuard required="application.update">
                       <button
                         onClick={() => handleOpenReview(app)}
                         className="text-blue-600 hover:text-blue-800 font-black text-xs cursor-pointer inline-flex items-center gap-0.5"

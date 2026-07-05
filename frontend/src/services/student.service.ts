@@ -236,7 +236,13 @@ export const studentService = {
   },
 
   async bulkGenerateCredentials(ids: string[]): Promise<boolean> {
-    return true;
+    try {
+      await studentApi.bulkGenerateCredentials(ids);
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
   },
 
   async bulkGenerateCertificates(ids: string[]): Promise<boolean> {
