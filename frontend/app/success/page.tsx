@@ -20,38 +20,19 @@ function SuccessPageContent() {
   });
 
   React.useEffect(() => {
-    // Optionally fetch or send success data to the backend
+    // SUCCESS_DATA telemetry is optional — silently skip if unavailable
     if (type) {
       const fetchSuccessData = async () => {
         try {
-          const res = await fetch(`${API_ENDPOINTS.SUCCESS_DATA}?type=${type}`);
+          const endpoint = API_ENDPOINTS.SUCCESS_DATA;
+          if (!endpoint || endpoint.includes('undefined')) return;
+          const res = await fetch(`${endpoint}?type=${type}`);
           if (!res.ok) {
-            console.warn('Failed to record success data');
-            setToastConfig({
-              show: true,
-              title: 'Warning',
-              message: 'Failed to record success data telemetry.',
-              type: 'warning'
-            });
-            setTimeout(() => setToastConfig(prev => ({ ...prev, show: false })), 4000);
-          } else {
-            setToastConfig({
-              show: true,
-              title: 'Success Data Synced',
-              message: 'Your activity has been successfully logged.',
-              type: 'success'
-            });
-            setTimeout(() => setToastConfig(prev => ({ ...prev, show: false })), 4000);
+            console.warn('Failed to record success data (non-critical)');
           }
         } catch (err) {
-          console.error('Error fetching success data:', err);
-          setToastConfig({
-            show: true,
-            title: 'Connection Error',
-            message: 'Unable to reach the server to record activity.',
-            type: 'error'
-          });
-          setTimeout(() => setToastConfig(prev => ({ ...prev, show: false })), 4000);
+          // Silently ignore — telemetry is non-critical
+          console.warn('Success telemetry unavailable:', err);
         }
       };
       fetchSuccessData();

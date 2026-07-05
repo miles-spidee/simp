@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useEffect, useState, useRef } from 'react';
+import React, { Suspense, useEffect, useState, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { API_ENDPOINTS } from '@/src/config';
@@ -17,7 +17,10 @@ import {
   Building, 
   Check, 
   ArrowLeft,
-  Upload
+  Upload,
+  ChevronDown,
+  X,
+  RefreshCw
 } from 'lucide-react';
 
 // Replaced raw SVG paths with Lucide React icons to resolve IDE 'path' parsing errors
@@ -216,16 +219,27 @@ function ApplicationFormContent() {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   const [colleges, setColleges] = useState<any[]>([]);
+  const [collegesLoading, setCollegesLoading] = useState(false);
+  const [collegesError, setCollegesError] = useState(false);
   const [departments, setDepartments] = useState<any[]>([]);
   const [degrees, setDegrees] = useState<any[]>([]);
 
+  // College autocomplete state
+  const [collegeSearch, setCollegeSearch] = useState('');
+  const [collegeDropdownOpen, setCollegeDropdownOpen] = useState(false);
+  const [collegeHighlightIdx, setCollegeHighlightIdx] = useState(-1);
+  const collegeDropdownRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     async function fetchAcademicData() {
+      setCollegesLoading(true);
+      setCollegesError(false);
       try {
+        const { studentApi } = await import('@/src/api/student.api');
         const { organizationApi } = await import('@/src/api/organization.api');
         const { degreeService } = await import('@/src/services/degree.service');
         const [cols, depts, degs] = await Promise.all([
-          organizationApi.getColleges().catch(() => []),
+          studentApi.getColleges().catch(() => []),
           organizationApi.getDepartments().catch(() => []),
           degreeService.getDegrees().catch(() => [])
         ]);
@@ -243,10 +257,69 @@ function ApplicationFormContent() {
         setDegrees(degs && degs.length > 0 ? degs : defaultDegrees);
       } catch (err) {
         console.error("Failed to load academic data", err);
+        setCollegesError(true);
+      } finally {
+        setCollegesLoading(false);
       }
     }
     fetchAcademicData();
   }, []);
+
+  // Close college dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (collegeDropdownRef.current && !collegeDropdownRef.current.contains(e.target as Node)) {
+        setCollegeDropdownOpen(false);
+        setCollegeHighlightIdx(-1);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const filteredColleges = useMemo(() => {
+    if (!collegeSearch.trim()) return colleges;
+    const q = collegeSearch.toLowerCase();
+    return colleges.filter((c: any) =>
+      c.name?.toLowerCase().includes(q) ||
+      c.district?.toLowerCase().includes(q) ||
+      c.region?.toLowerCase().includes(q) ||
+      c.college_type?.toLowerCase().includes(q)
+    );
+  }, [colleges, collegeSearch]);
+
+  const handleCollegeKeyDown = (e: React.KeyboardEvent) => {
+    if (!collegeDropdownOpen) {
+      if (e.key === 'ArrowDown' || e.key === 'Enter') setCollegeDropdownOpen(true);
+      return;
+    }
+    if (e.key === 'ArrowDown') {
+      setCollegeHighlightIdx(prev => Math.min(prev + 1, filteredColleges.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      setCollegeHighlightIdx(prev => Math.max(prev - 1, 0));
+    } else if (e.key === 'Enter' && collegeHighlightIdx >= 0) {
+      const selected = filteredColleges[collegeHighlightIdx];
+      handleInputChange('academicInformation', 'collegeName', selected.name);
+      setCollegeSearch('');
+      setCollegeDropdownOpen(false);
+      setCollegeHighlightIdx(-1);
+    } else if (e.key === 'Escape') {
+      setCollegeDropdownOpen(false);
+      setCollegeHighlightIdx(-1);
+    }
+  };
+
+  const selectCollege = (col: any) => {
+    handleInputChange('academicInformation', 'collegeName', col.name);
+    setCollegeSearch('');
+    setCollegeDropdownOpen(false);
+    setCollegeHighlightIdx(-1);
+  };
+
+  const clearCollege = () => {
+    handleInputChange('academicInformation', 'collegeName', '');
+    setCollegeSearch('');
+  };
 
   const dragRefResume = useRef<HTMLDivElement>(null);
   const dragRefScreenshot = useRef<HTMLDivElement>(null);
@@ -1165,22 +1238,78 @@ function ApplicationFormContent() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div className="sm:col-span-2">
                   <label htmlFor="collegeName" className="block text-xs font-bold text-text-secondary mb-2 uppercase tracking-wide">College Name *</label>
-                  <select
-                    id="collegeName"
-                    name="collegeName"
-                    required
-                    value={formState.academicInformation.collegeName}
-                    onBlur={() => handleBlur("collegeName")}
-                    onChange={(e) => handleInputChange("academicInformation", "collegeName", e.target.value)}
-                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary bg-white placeholder:text-placeholder text-text-primary transition-all ${
-                      errors.collegeName && touched.collegeName ? "border-rose-500 bg-rose-50/20" : "border-border"
-                    }`}
-                  >
-                    <option value="">Select your college</option>
-                    {colleges.map((c: any) => (
-                      <option key={c.college_id} value={c.college_name}>{c.college_name}</option>
-                    ))}
-                  </select>
+                  <div className="relative" ref={collegeDropdownRef}>
+                    {/* Selected value display or search input */}
+                    <div
+                      className={`flex items-center gap-2 w-full rounded-xl border px-4 py-3 text-sm bg-white transition-all cursor-text focus-within:ring-1 focus-within:ring-primary focus-within:border-primary ${
+                        errors.collegeName && touched.collegeName ? 'border-rose-500 bg-rose-50/20' : collegeDropdownOpen ? 'border-primary' : 'border-border'
+                      }`}
+                      onClick={() => setCollegeDropdownOpen(true)}
+                    >
+                      {formState.academicInformation.collegeName && !collegeDropdownOpen ? (
+                        <>
+                          <span className="flex-1 truncate text-sm font-semibold text-blue-700">{formState.academicInformation.collegeName}</span>
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); clearCollege(); }}
+                            className="text-gray-400 hover:text-rose-500 transition-colors shrink-0"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </>
+                      ) : (
+                        <input
+                          id="collegeName"
+                          name="collegeName"
+                          type="text"
+                          autoFocus={collegeDropdownOpen}
+                          placeholder={formState.academicInformation.collegeName || (collegesLoading ? 'Loading colleges...' : 'Search by name, district, or region...')}
+                          value={collegeSearch}
+                          onChange={e => { setCollegeSearch(e.target.value); setCollegeDropdownOpen(true); setCollegeHighlightIdx(-1); }}
+                          onKeyDown={handleCollegeKeyDown}
+                          onFocus={() => setCollegeDropdownOpen(true)}
+                          onBlur={() => handleBlur('collegeName')}
+                          className="flex-1 bg-transparent outline-none text-sm placeholder:text-placeholder text-text-primary"
+                        />
+                      )}
+                      {!formState.academicInformation.collegeName && <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />}
+                    </div>
+
+                    {/* Dropdown list */}
+                    {collegeDropdownOpen && (
+                      <div className="absolute z-50 left-0 right-0 top-full mt-1 bg-white border border-blue-200 rounded-xl shadow-2xl max-h-60 overflow-y-auto">
+                        {collegesLoading ? (
+                          <div className="flex items-center gap-2 px-4 py-5 text-sm text-gray-400">
+                            <RefreshCw className="h-4 w-4 animate-spin" />
+                            Loading colleges...
+                          </div>
+                        ) : collegesError ? (
+                          <div className="flex items-center gap-2 px-4 py-5 text-sm text-rose-400">
+                            <AlertTriangle className="h-4 w-4" />
+                            Unable to fetch colleges. Please try again.
+                          </div>
+                        ) : filteredColleges.length === 0 ? (
+                          <div className="px-4 py-5 text-sm text-gray-400">No colleges found</div>
+                        ) : (
+                          filteredColleges.map((col: any, idx: number) => (
+                            <button
+                              key={col.id}
+                              type="button"
+                              onMouseDown={() => selectCollege(col)}
+                              className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
+                                idx === collegeHighlightIdx
+                                  ? 'bg-blue-50 text-blue-700'
+                                  : 'hover:bg-slate-50 text-text-primary'
+                              }`}
+                            >
+                              <div className="font-semibold">{col.name}</div>
+                              <div className="text-xs text-gray-400 mt-0.5">{col.district} &middot; {col.region} &middot; {col.college_type}</div>
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    )}
+                  </div>
                   {errors.collegeName && touched.collegeName && (
                     <p className="text-xs text-rose-500 font-semibold mt-1.5 flex items-center gap-1.5">
                       <WarningIcon className="h-3.5 w-3.5 text-rose-500 shrink-0" />

@@ -169,6 +169,34 @@ async def startup_event():
             await conn.run_sync(Base.metadata.create_all)
         logger.info("Database tables verified/created.")
 
+    # Always ensure TNDCE colleges table exists and is seeded (safe with checkfirst)
+    try:
+        from app.models.organizations.tndce_college import TNDCECollege
+        from app.models.core.base import Base
+        from app.core.database import AsyncSessionLocal
+        from sqlalchemy import select, func
+
+        logger.info("Ensuring ref_tndce_colleges table exists...")
+        async with engine.begin() as conn:
+            await conn.run_sync(
+                lambda sync_conn: TNDCECollege.__table__.create(sync_conn, checkfirst=True)
+            )
+
+        # Seed if empty
+        async with AsyncSessionLocal() as db:
+            count_res = await db.execute(select(func.count()).select_from(TNDCECollege))
+            count = count_res.scalar()
+            if count == 0:
+                logger.info("Seeding TNDCE colleges...")
+                from app.modules.student.router import sync_colleges_task
+                await sync_colleges_task(db)
+                logger.info("TNDCE colleges seeded successfully.")
+            else:
+                logger.info(f"TNDCE colleges table already has {count} records.")
+    except Exception as e:
+        logger.error(f"TNDCE colleges setup failed (non-critical): {e}")
+
+
 @app.get("/", tags=["Health"])
 async def health_check():
     return {"status": "ok", "app": settings.APP_NAME, "version": settings.APP_VERSION}
