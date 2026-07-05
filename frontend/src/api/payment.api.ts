@@ -6,14 +6,14 @@ export const paymentApi = {
   getPayments: async (): Promise<PaymentTransaction[]> => {
     try {
       const res = await apiClient.get('/api/v1/payment');
-      return res.data?.data || [];
+      return res.data?.data?.items || (Array.isArray(res.data?.data) ? res.data?.data : []);
     } catch (error) {
       return [];
     }
   },
   getPaymentById: async (id: string): Promise<PaymentTransaction> => {
     try {
-      const res = await apiClient.get('/api/v1/payment');
+      const res = await apiClient.get(`/api/v1/payment/${id}`);
       return res.data?.data || null as any;
     } catch (error) {
       return null as any;
