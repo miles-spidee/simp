@@ -100,7 +100,7 @@ export default function MyAssessmentsPage() {
     const loadQuizzes = async () => {
       if (!user) return;
       try {
-        const res = await fetch(`http://localhost:8000/api/v1/assessment/quizzes/student/${user.id}`);
+        const res = await fetch(`http://localhost:8000/api/v1/assessment/quizzes/student/${user.user_id}`);
         if (res.ok) {
           const data = await res.json();
           setQuizzes(data);
@@ -222,8 +222,8 @@ export default function MyAssessmentsPage() {
 
       const submissionAttempt = {
         asmId: selectedQuiz.id,
-        studentId: user?.id || 'unknown',
-        studentName: user ? `${user.firstName} ${user.lastName}` : 'Unknown Student',
+        studentId: user?.user_id || 'unknown',
+        studentName: user ? user.name : 'Unknown Student',
         attempts: 1,
         score: score,
         status: 'Completed',
