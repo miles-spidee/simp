@@ -23,8 +23,91 @@ from app.models.internships.certificate import Certificate
 from app.models.internships.mentor_assignment import MentorAssignment
 from app.models.alumni_placements.placement import PlacementApplication, OfferLetter
 from app.models.internships.document import Document
+from app.models.organizations.tndce_college import TNDCECollege
 
 router = APIRouter()
+
+COLLEGES_SEED = [
+    {"college_code": "TNDCE-001", "name": "Presidency College, Chennai", "district": "Chennai", "region": "Chennai", "college_type": "Government"},
+    {"college_code": "TNDCE-002", "name": "Government Arts College, Coimbatore", "district": "Coimbatore", "region": "Coimbatore", "college_type": "Government"},
+    {"college_code": "TNDCE-003", "name": "Madras Christian College, Chennai", "district": "Chennai", "region": "Chennai", "college_type": "Aided"},
+    {"college_code": "TNDCE-004", "name": "Loyola College, Chennai", "district": "Chennai", "region": "Chennai", "college_type": "Aided"},
+    {"college_code": "TNDCE-005", "name": "PSG College of Arts and Science, Coimbatore", "district": "Coimbatore", "region": "Coimbatore", "college_type": "Aided"},
+    {"college_code": "TNDCE-006", "name": "Government Arts College for Men, Nandanam", "district": "Chennai", "region": "Chennai", "college_type": "Government"},
+    {"college_code": "TNDCE-007", "name": "Queen Mary's College, Chennai", "district": "Chennai", "region": "Chennai", "college_type": "Government"},
+    {"college_code": "TNDCE-008", "name": "Stella Maris College, Chennai", "district": "Chennai", "region": "Chennai", "college_type": "Aided"},
+    {"college_code": "TNDCE-009", "name": "St. Joseph's College, Trichy", "district": "Trichy", "region": "Trichy", "college_type": "Aided"},
+    {"college_code": "TNDCE-010", "name": "Bishop Heber College, Trichy", "district": "Trichy", "region": "Trichy", "college_type": "Aided"},
+    {"college_code": "TNDCE-011", "name": "American College, Madurai", "district": "Madurai", "region": "Madurai", "college_type": "Aided"},
+    {"college_code": "TNDCE-012", "name": "Madura College, Madurai", "district": "Madurai", "region": "Madurai", "college_type": "Aided"},
+    {"college_code": "TNDCE-013", "name": "Lady Doak College, Madurai", "district": "Madurai", "region": "Madurai", "college_type": "Aided"},
+    {"college_code": "TNDCE-014", "name": "Government Arts College, Salem", "district": "Salem", "region": "Salem", "college_type": "Government"},
+    {"college_code": "TNDCE-015", "name": "Government Arts College, Dharmapuri", "district": "Dharmapuri", "region": "Dharmapuri", "college_type": "Government"},
+    {"college_code": "TNDCE-016", "name": "Government Arts College, Karur", "district": "Karur", "region": "Karur", "college_type": "Government"},
+    {"college_code": "TNDCE-017", "name": "Government Arts College, Kumbakonam", "district": "Thanjavur", "region": "Trichy", "college_type": "Government"},
+    {"college_code": "TNDCE-018", "name": "Government Arts College, Udhagamandalam", "district": "Nilgiris", "region": "Coimbatore", "college_type": "Government"},
+    {"college_code": "TNDCE-019", "name": "Government Arts College, Ariyalur", "district": "Ariyalur", "region": "Trichy", "college_type": "Government"},
+    {"college_code": "TNDCE-020", "name": "Government College for Women, Kumbakonam", "district": "Thanjavur", "region": "Trichy", "college_type": "Government"},
+    {"college_code": "TNDCE-021", "name": "Government Arts College, Chidambaram", "district": "Cuddalore", "region": "Chennai", "college_type": "Government"},
+    {"college_code": "TNDCE-022", "name": "Rajah Serfoji Government College, Thanjavur", "district": "Thanjavur", "region": "Trichy", "college_type": "Government"},
+    {"college_code": "TNDCE-023", "name": "Government Arts College, Melur", "district": "Madurai", "region": "Madurai", "college_type": "Government"},
+    {"college_code": "TNDCE-024", "name": "Government Arts College for Women, Nilakottai", "district": "Dindigul", "region": "Madurai", "college_type": "Government"},
+    {"college_code": "TNDCE-025", "name": "Government Arts College, Paramakudi", "district": "Ramanathapuram", "region": "Madurai", "college_type": "Government"},
+    {"college_code": "TNDCE-026", "name": "Alagappa Government Arts College, Karaikudi", "district": "Sivaganga", "region": "Madurai", "college_type": "Government"},
+    {"college_code": "TNDCE-027", "name": "Government Arts College, Sivaganga", "district": "Sivaganga", "region": "Madurai", "college_type": "Government"},
+    {"college_code": "TNDCE-028", "name": "Government Arts College, Udumalpet", "district": "Tiruppur", "region": "Coimbatore", "college_type": "Government"},
+    {"college_code": "TNDCE-029", "name": "Government Arts & Science College, Valparai", "district": "Coimbatore", "region": "Coimbatore", "college_type": "Government"},
+    {"college_code": "TNDCE-030", "name": "Government Arts & Science College, Kangeyam", "district": "Tiruppur", "region": "Coimbatore", "college_type": "Government"},
+    {"college_code": "TNDCE-031", "name": "Government Arts & Science College, Gudalur", "district": "Nilgiris", "region": "Coimbatore", "college_type": "Government"},
+    {"college_code": "TNDCE-032", "name": "Government Arts & Science College, Sathyamangalam", "district": "Erode", "region": "Coimbatore", "college_type": "Government"},
+    {"college_code": "TNDCE-033", "name": "Government Arts & Science College, Hosur", "district": "Krishnagiri", "region": "Salem", "college_type": "Government"},
+    {"college_code": "TNDCE-034", "name": "Government Arts & Science College, Komarapalayam", "district": "Namakkal", "region": "Salem", "college_type": "Government"},
+    {"college_code": "TNDCE-035", "name": "Government Arts & Science College, Pennagaram", "district": "Dharmapuri", "region": "Salem", "college_type": "Government"},
+    {"college_code": "TNDCE-036", "name": "Government Arts & Science College, Pappireddipatti", "district": "Dharmapuri", "region": "Salem", "college_type": "Government"},
+    {"college_code": "TNDCE-037", "name": "Government Arts & Science College, Harur", "district": "Dharmapuri", "region": "Salem", "college_type": "Government"},
+    {"college_code": "TNDCE-038", "name": "Government Arts & Science College, Mettur", "district": "Salem", "region": "Salem", "college_type": "Government"},
+    {"college_code": "TNDCE-039", "name": "Government Arts & Science College, Edappadi", "district": "Salem", "region": "Salem", "college_type": "Government"},
+    {"college_code": "TNDCE-040", "name": "Government Arts & Science College, Lalgudi", "district": "Trichy", "region": "Trichy", "college_type": "Government"},
+    {"college_code": "TNDCE-041", "name": "Government Arts & Science College, Perambalur", "district": "Perambalur", "region": "Trichy", "college_type": "Government"},
+    {"college_code": "TNDCE-042", "name": "Government Arts & Science College, Veppur", "district": "Perambalur", "region": "Trichy", "college_type": "Government"},
+    {"college_code": "TNDCE-043", "name": "Government Arts & Science College, Thiruverumbur", "district": "Trichy", "region": "Trichy", "college_type": "Government"},
+    {"college_code": "TNDCE-044", "name": "Government Arts & Science College, Jeyankondam", "district": "Ariyalur", "region": "Trichy", "college_type": "Government"},
+    {"college_code": "TNDCE-045", "name": "Government Arts & Science College, Manalmedu", "district": "Nagapattinam", "region": "Trichy", "college_type": "Government"},
+    {"college_code": "TNDCE-046", "name": "Government Arts & Science College, Thiruthuraipoondi", "district": "Tiruvarur", "region": "Trichy", "college_type": "Government"},
+    {"college_code": "TNDCE-047", "name": "Kunthavai Naacchiyaar Government Arts College for Women, Thanjavur", "district": "Thanjavur", "region": "Trichy", "college_type": "Government"},
+    {"college_code": "TNDCE-048", "name": "Government Arts & Science College, Veerapandi", "district": "Theni", "region": "Madurai", "college_type": "Government"},
+    {"college_code": "TNDCE-049", "name": "Government Arts & Science College, Kovilpatti", "district": "Thoothukudi", "region": "Tirunelveli", "college_type": "Government"},
+    {"college_code": "TNDCE-050", "name": "Government Arts & Science College, Sattur", "district": "Virudhunagar", "region": "Tirunelveli", "college_type": "Government"},
+    {"college_code": "TNDCE-051", "name": "Government Arts & Science College, Aruppukottai", "district": "Virudhunagar", "region": "Tirunelveli", "college_type": "Government"},
+    {"college_code": "TNDCE-052", "name": "Government Arts & Science College, Sivakasi", "district": "Virudhunagar", "region": "Tirunelveli", "college_type": "Government"},
+    {"college_code": "TNDCE-053", "name": "Government Arts & Science College, Kadayanallur", "district": "Tenkasi", "region": "Tirunelveli", "college_type": "Government"},
+    {"college_code": "TNDCE-054", "name": "Government Arts & Science College, Sankarankovil", "district": "Tenkasi", "region": "Tirunelveli", "college_type": "Government"},
+    {"college_code": "TNDCE-055", "name": "Government Arts & Science College, Melur", "district": "Madurai", "region": "Madurai", "college_type": "Government"},
+    {"college_code": "TNDCE-056", "name": "Government Arts & Science College, Theni", "district": "Theni", "region": "Madurai", "college_type": "Government"},
+    {"college_code": "TNDCE-057", "name": "Government Arts & Science College, Karambakudi", "district": "Pudukkottai", "region": "Trichy", "college_type": "Government"},
+    {"college_code": "TNDCE-058", "name": "Government Arts & Science College, Aranthangi", "district": "Pudukkottai", "region": "Trichy", "college_type": "Government"},
+    {"college_code": "TNDCE-059", "name": "Government Arts & Science College, Kadaladi", "district": "Ramanathapuram", "region": "Madurai", "college_type": "Government"},
+    {"college_code": "TNDCE-060", "name": "Government Arts & Science College, Tirupattur", "district": "Tirupattur", "region": "Vellore", "college_type": "Government"},
+    {"college_code": "TNDCE-061", "name": "Government Arts & Science College, Vaniyambadi", "district": "Tirupattur", "region": "Vellore", "college_type": "Government"},
+    {"college_code": "TNDCE-062", "name": "Government Arts & Science College, Arakkonam", "district": "Ranipet", "region": "Vellore", "college_type": "Government"},
+    {"college_code": "TNDCE-063", "name": "Government Arts & Science College, Walajapet", "district": "Ranipet", "region": "Vellore", "college_type": "Government"},
+    {"college_code": "TNDCE-064", "name": "Government Arts & Science College, Cheyyar", "district": "Tiruvannamalai", "region": "Vellore", "college_type": "Government"},
+    {"college_code": "TNDCE-065", "name": "Government Arts & Science College, Polur", "district": "Tiruvannamalai", "region": "Vellore", "college_type": "Government"},
+    {"college_code": "TNDCE-066", "name": "Government Arts & Science College, Chengam", "district": "Tiruvannamalai", "region": "Vellore", "college_type": "Government"},
+    {"college_code": "TNDCE-067", "name": "Government Arts & Science College, Villupuram", "district": "Villupuram", "region": "Chennai", "college_type": "Government"},
+    {"college_code": "TNDCE-068", "name": "Government Arts & Science College, Tindivanam", "district": "Villupuram", "region": "Chennai", "college_type": "Government"},
+    {"college_code": "TNDCE-069", "name": "Government Arts & Science College, Kallakurichi", "district": "Kallakurichi", "region": "Chennai", "college_type": "Government"},
+    {"college_code": "TNDCE-070", "name": "Government Arts & Science College, Tirukoilur", "district": "Kallakurichi", "region": "Chennai", "college_type": "Government"},
+    {"college_code": "TNDCE-071", "name": "Government Arts & Science College, Pennadam", "district": "Cuddalore", "region": "Chennai", "college_type": "Government"},
+    {"college_code": "TNDCE-072", "name": "Government Arts & Science College, Vridhachalam", "district": "Cuddalore", "region": "Chennai", "college_type": "Government"},
+    {"college_code": "TNDCE-073", "name": "Government Arts & Science College, Kattumannarkoil", "district": "Cuddalore", "region": "Chennai", "college_type": "Government"},
+    {"college_code": "TNDCE-074", "name": "Government Arts & Science College, Kurinjipadi", "district": "Cuddalore", "region": "Chennai", "college_type": "Government"},
+    {"college_code": "TNDCE-075", "name": "Government Arts & Science College, Chengalpattu", "district": "Chengalpattu", "region": "Chennai", "college_type": "Government"},
+    {"college_code": "TNDCE-076", "name": "Government Arts & Science College, Maduranthakam", "district": "Chengalpattu", "region": "Chennai", "college_type": "Government"},
+    {"college_code": "TNDCE-077", "name": "Government Arts & Science College, Ponneri", "district": "Tiruvallur", "region": "Chennai", "college_type": "Government"},
+    {"college_code": "TNDCE-078", "name": "Government Arts & Science College, Tiruttani", "district": "Tiruvallur", "region": "Chennai", "college_type": "Government"},
+    {"college_code": "TNDCE-079", "name": "Government Arts & Science College, Sriperumbudur", "district": "Kanchipuram", "region": "Chennai", "college_type": "Government"}
+]
 
 class StudentCreate(BaseModel):
     first_name: str
@@ -46,6 +129,7 @@ class StudentCreate(BaseModel):
     gender: Optional[str] = None
     address: Optional[str] = None
     status: Optional[str] = "Applied"
+    college_id: Optional[str] = None
 
 class StudentUpdate(BaseModel):
     name: Optional[str] = None
@@ -62,6 +146,59 @@ class StudentUpdate(BaseModel):
     internship_type: Optional[str] = None
     year: Optional[int] = None
     graduation_year: Optional[int] = None
+    college_id: Optional[str] = None
+
+async def sync_colleges_task(db: AsyncSession):
+    # Fetch/Synchronize from local seeds
+    for item in COLLEGES_SEED:
+        stmt = select(TNDCECollege).where(TNDCECollege.college_code == item["college_code"])
+        res = await db.execute(stmt)
+        existing = res.scalars().first()
+        if not existing:
+            new_col = TNDCECollege(
+                college_code=item["college_code"],
+                name=item["name"],
+                district=item["district"],
+                region=item["region"],
+                college_type=item["college_type"]
+            )
+            db.add(new_col)
+    await db.commit()
+
+@router.get("/colleges", response_model=APIResponse[List[dict]])
+async def get_colleges(search: Optional[str] = None, db: AsyncSession = Depends(get_db)):
+    count_stmt = select(func.count()).select_from(TNDCECollege)
+    count_res = await db.execute(count_stmt)
+    count = count_res.scalar()
+    if count == 0:
+        await sync_colleges_task(db)
+
+    stmt = select(TNDCECollege)
+    if search:
+        search_term = f"%{search}%"
+        stmt = stmt.where(
+            TNDCECollege.name.ilike(search_term) |
+            TNDCECollege.district.ilike(search_term) |
+            TNDCECollege.region.ilike(search_term) |
+            TNDCECollege.college_type.ilike(search_term)
+        )
+    stmt = stmt.order_by(TNDCECollege.name.asc())
+    result = await db.execute(stmt)
+    colleges = result.scalars().all()
+    
+    return success_response(data=[{
+        "id": str(c.id),
+        "college_code": c.college_code,
+        "name": c.name,
+        "district": c.district,
+        "region": c.region,
+        "college_type": c.college_type
+    } for c in colleges])
+
+@router.post("/colleges/sync", response_model=APIResponse[dict])
+async def sync_colleges(db: AsyncSession = Depends(get_db)):
+    await sync_colleges_task(db)
+    return success_response(message="Colleges synchronized successfully")
 
 async def _student_payload(profile: StudentProfile, user: User, organization: Optional[Organization], department: Optional[Department], batch: Optional[Batch], db: AsyncSession):
     # 1. Fetch mentor assignment
@@ -141,6 +278,15 @@ async def _student_payload(profile: StudentProfile, user: User, organization: Op
     intern_type = skills_dict.get("internship_type", "Free Internship")
     mapped_prog = skills_dict.get("program", program_name or "Summer Internship")
 
+    # Map referential TNDCE college id
+    college_id = ""
+    if organization:
+        col_rec_stmt = select(TNDCECollege).where(TNDCECollege.college_code == organization.code)
+        col_rec_res = await db.execute(col_rec_stmt)
+        col_rec = col_rec_res.scalars().first()
+        if col_rec:
+            college_id = str(col_rec.id)
+
     # Generate timeline
     timeline_events = [
         {"date": profile.created_at.date().isoformat(), "title": "Student Enrolled", "description": "Profile registered in SLMS", "type": "registration"}
@@ -163,6 +309,8 @@ async def _student_payload(profile: StudentProfile, user: User, organization: Op
         "email": user.email,
         "phone": user.phone or "",
         "enrollment_number": profile.enrollment_number,
+        "college_id": college_id,
+        "college_name": organization.name if organization else "",
         
         # Extended details
         "personal_info": {
@@ -297,9 +445,37 @@ async def create_student(data: StudentCreate, db: AsyncSession = Depends(get_db)
         if phone_res.scalars().first():
             raise HTTPException(status_code=409, detail="Student phone number already exists")
 
-    # Resolve default organization
-    org_res = await db.execute(select(Organization).order_by(Organization.created_at.asc()))
-    organization = org_res.scalars().first()
+    # Resolve selected college to dynamic organization
+    organization = None
+    if data.college_id:
+        college_uuid = UUID(data.college_id)
+        col_stmt = select(TNDCECollege).where(TNDCECollege.id == college_uuid)
+        col_res = await db.execute(col_stmt)
+        college = col_res.scalars().first()
+        if not college:
+            raise HTTPException(status_code=400, detail="Invalid TNDCE College ID selected")
+        
+        # Check if corresponding Organization already exists in org_organizations
+        org_stmt = select(Organization).where(Organization.code == college.college_code)
+        org_res = await db.execute(org_stmt)
+        organization = org_res.scalars().first()
+        if not organization:
+            organization = Organization(
+                name=college.name,
+                code=college.college_code,
+                type=college.college_type,
+                city=college.district,
+                state=college.region,
+                partnership_status="Active"
+            )
+            db.add(organization)
+            await db.flush()
+
+    if not organization:
+        # Fall back to first organization as default
+        org_res = await db.execute(select(Organization).order_by(Organization.created_at.asc()))
+        organization = org_res.scalars().first()
+
     if not organization:
         raise HTTPException(status_code=500, detail="No organization found for onboarding")
 
@@ -442,7 +618,31 @@ async def update_student(id: UUID, data: StudentUpdate, db: AsyncSession = Depen
             profile.batch_id = batch_obj.id
             batch = batch_obj
 
-    # 7. Update Mentor Assignment
+    # 7. Update College Selection
+    if "college_id" in update_dict and update_dict["college_id"]:
+        college_uuid = UUID(update_dict["college_id"])
+        col_stmt = select(TNDCECollege).where(TNDCECollege.id == college_uuid)
+        col_res = await db.execute(col_stmt)
+        college = col_res.scalars().first()
+        if college:
+            org_stmt = select(Organization).where(Organization.code == college.college_code)
+            org_res = await db.execute(org_stmt)
+            organization_obj = org_res.scalars().first()
+            if not organization_obj:
+                organization_obj = Organization(
+                    name=college.name,
+                    code=college.college_code,
+                    type=college.college_type,
+                    city=college.district,
+                    state=college.region,
+                    partnership_status="Active"
+                )
+                db.add(organization_obj)
+                await db.flush()
+            profile.organization_id = organization_obj.id
+            org = organization_obj
+
+    # 8. Update Mentor Assignment
     if "mentor_id" in update_dict:
         # Delete old mentor assignments
         await db.execute(delete(MentorAssignment).where(MentorAssignment.student_profile_id == profile.id))
@@ -459,7 +659,7 @@ async def update_student(id: UUID, data: StudentUpdate, db: AsyncSession = Depen
                 )
                 db.add(assignment)
 
-    # 8. Update extra fields in skills JSONB
+    # 9. Update extra fields in skills JSONB
     skills_dict = dict(profile.skills or {})
     for extra_field in ["dob", "gender", "address", "cgpa", "internship_type", "year", "graduation_year"]:
         if extra_field in update_dict:

@@ -1,3 +1,12 @@
+export interface TndceCollege {
+  id: string;
+  college_code: string;
+  name: string;
+  district: string;
+  region: string;
+  college_type: string;
+}
+
 export interface StudentCreate {
   first_name: string;
   last_name: string;
@@ -18,6 +27,7 @@ export interface StudentCreate {
   gender?: string;
   address?: string;
   status?: string;
+  college_id?: string;
 }
 
 export interface StudentResponse {
@@ -31,6 +41,8 @@ export interface StudentResponse {
   created_at: string;
   updated_at: string;
   enrollment_number?: string;
+  college_id?: string;
+  college_name?: string;
 }
 
 export interface StudentUpdate {
@@ -49,4 +61,5 @@ export interface StudentUpdate {
   year?: number;
   graduation_year?: number;
   student_status?: string;
+  college_id?: string;
 }

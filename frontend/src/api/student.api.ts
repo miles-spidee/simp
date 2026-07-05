@@ -1,5 +1,7 @@
 import { apiClient } from './api.client';
-import { StudentCreate, StudentResponse, StudentUpdate } from '../types/api/student.types';
+import { StudentCreate, StudentResponse, StudentUpdate, TndceCollege } from '../types/api/student.types';
+
+const COLLEGE_API_URL = process.env.NEXT_PUBLIC_COLLEGE_API_URL || '/api/v1/student/colleges';
 
 export const studentApi = {
   getStudents: async (): Promise<StudentResponse[]> => {
@@ -20,5 +22,11 @@ export const studentApi = {
   },
   deleteStudent: async (id: string): Promise<void> => {
     await apiClient.delete(`/api/v1/student/${id}`);
+  },
+  getColleges: async (search?: string): Promise<TndceCollege[]> => {
+    const params = search ? `?search=${encodeURIComponent(search)}` : '';
+    const res = await apiClient.get<TndceCollege[]>(`${COLLEGE_API_URL}${params}`);
+    return (res.data as any)?.data || res.data;
   }
 };
+

@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef, useCallback } from 'react';
 import { 
   Users, Plus, ChevronRight, FileDown, MoreVertical, 
   GraduationCap, CheckCircle2, XCircle, AlertCircle, Calendar, Award, 
   FileText, Building, Clock, TrendingUp, Download, RefreshCw, UserCheck, 
   MapPin, Activity, Mail, Phone, Shield, Printer, QrCode, Briefcase, 
-  UserX, Check, Trash, PlusCircle, LayoutGrid, Eye, Send, Lock
+  UserX, Check, Trash, PlusCircle, LayoutGrid, Eye, Send, Lock, Search, ChevronDown, X
 } from 'lucide-react';
 import { studentService } from '@/src/services/student.service';
+import { TndceCollege } from '@/src/types/api/student.types';
 import { Student, StudentDocument, StudentTimelineEvent, StudentBatch } from '@/src/types/students.types';
 import { useAuth } from '@/src/context/AuthContext';
 import { Drawer } from '@/components/feature/ui/Drawer';
@@ -52,6 +53,7 @@ export default function StudentLifecycleManagementPage() {
     gender: '',
     address: '',
     college: '',
+    college_id: '',
     department: 'CSE' as Student['academicInfo']['department'],
     degree: '',
     year: 1,
@@ -65,6 +67,15 @@ export default function StudentLifecycleManagementPage() {
     joiningDate: '',
     expectedCompletion: '',
   });
+
+  // College autocomplete state
+  const [colleges, setColleges] = useState<TndceCollege[]>([]);
+  const [collegesLoading, setCollegesLoading] = useState(false);
+  const [collegesError, setCollegesError] = useState(false);
+  const [collegeSearch, setCollegeSearch] = useState('');
+  const [collegeDropdownOpen, setCollegeDropdownOpen] = useState(false);
+  const [collegeHighlightIdx, setCollegeHighlightIdx] = useState(-1);
+  const collegeDropdownRef = useRef<HTMLDivElement>(null);
 
   const [batchForm, setBatchForm] = useState({
     name: '',
@@ -117,7 +128,77 @@ export default function StudentLifecycleManagementPage() {
 
   useEffect(() => {
     loadData();
+    // Fetch college list once on mount
+    const fetchColleges = async () => {
+      setCollegesLoading(true);
+      setCollegesError(false);
+      try {
+        const data = await studentService.getColleges();
+        setColleges(data);
+      } catch (e) {
+        setCollegesError(true);
+      } finally {
+        setCollegesLoading(false);
+      }
+    };
+    fetchColleges();
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (collegeDropdownRef.current && !collegeDropdownRef.current.contains(e.target as Node)) {
+        setCollegeDropdownOpen(false);
+        setCollegeHighlightIdx(-1);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const filteredColleges = useMemo(() => {
+    if (!collegeSearch.trim()) return colleges;
+    const q = collegeSearch.toLowerCase();
+    return colleges.filter(c =>
+      c.name.toLowerCase().includes(q) ||
+      c.district.toLowerCase().includes(q) ||
+      c.region.toLowerCase().includes(q) ||
+      c.college_type.toLowerCase().includes(q)
+    );
+  }, [colleges, collegeSearch]);
+
+  const handleCollegeKeyDown = (e: React.KeyboardEvent) => {
+    if (!collegeDropdownOpen) {
+      if (e.key === 'ArrowDown' || e.key === 'Enter') { setCollegeDropdownOpen(true); }
+      return;
+    }
+    if (e.key === 'ArrowDown') {
+      setCollegeHighlightIdx(prev => Math.min(prev + 1, filteredColleges.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      setCollegeHighlightIdx(prev => Math.max(prev - 1, 0));
+    } else if (e.key === 'Enter' && collegeHighlightIdx >= 0) {
+      const selected = filteredColleges[collegeHighlightIdx];
+      setEditForm(prev => ({ ...prev, college: selected.name, college_id: selected.id }));
+      setCollegeSearch('');
+      setCollegeDropdownOpen(false);
+      setCollegeHighlightIdx(-1);
+    } else if (e.key === 'Escape') {
+      setCollegeDropdownOpen(false);
+      setCollegeHighlightIdx(-1);
+    }
+  };
+
+  const selectCollege = (col: TndceCollege) => {
+    setEditForm(prev => ({ ...prev, college: col.name, college_id: col.id }));
+    setCollegeSearch('');
+    setCollegeDropdownOpen(false);
+    setCollegeHighlightIdx(-1);
+  };
+
+  const clearCollege = () => {
+    setEditForm(prev => ({ ...prev, college: '', college_id: '' }));
+    setCollegeSearch('');
+  };
 
   // Keyboard Shortcuts listener (Esc to close)
   useEffect(() => {
@@ -385,6 +466,7 @@ export default function StudentLifecycleManagementPage() {
       gender: student.personalInfo.gender,
       address: student.personalInfo.address,
       college: student.academicInfo.college,
+      college_id: (student as any).college_id || '',
       department: student.academicInfo.department,
       degree: student.academicInfo.degree,
       year: student.academicInfo.year,
@@ -438,8 +520,9 @@ export default function StudentLifecycleManagementPage() {
         mentorName: editForm.mentorName || 'Bob Johnson',
         joiningDate: editForm.joiningDate,
         expectedCompletion: editForm.expectedCompletion
-      }
-    });
+      },
+      college_id: editForm.college_id || undefined
+    } as any);
 
     if (updated) {
       setStudents(students.map(s => s.id === targetId ? updated : s));
@@ -477,7 +560,8 @@ export default function StudentLifecycleManagementPage() {
         dob: editForm.dob,
         gender: editForm.gender,
         address: editForm.address,
-        status: 'Applied'
+        status: 'Applied',
+        college_id: editForm.college_id || undefined
       } as any);
 
       if (newStu) {
@@ -958,16 +1042,18 @@ export default function StudentLifecycleManagementPage() {
           
           <PermissionGuard required="student.create">
             <button 
-              onClick={() => {
-                setEditForm({
-                  name: '', email: '', phone: '', dob: '', gender: 'Male', address: '', college: '',
-                  department: 'CSE', degree: 'B.Tech', year: 3, cgpa: 8.5, graduationYear: 2027,
-                  program: 'Summer Software Engineering Internship', internshipType: 'Free Internship',
-                  batchName: 'Alpha Cohort 2026', mentorId: 'emp-2', mentorName: 'Bob Johnson',
-                  joiningDate: '', expectedCompletion: ''
-                });
-                setActiveActionModal({ type: 'onboard' });
-              }}
+                onClick={() => {
+                  setEditForm({
+                    name: '', email: '', phone: '', dob: '', gender: 'Male', address: '', college: '',
+                    college_id: '',
+                    department: 'CSE', degree: 'B.Tech', year: 3, cgpa: 8.5, graduationYear: 2027,
+                    program: 'Summer Software Engineering Internship', internshipType: 'Free Internship',
+                    batchName: 'Alpha Cohort 2026', mentorId: 'emp-2', mentorName: 'Bob Johnson',
+                    joiningDate: '', expectedCompletion: ''
+                  });
+                  setCollegeSearch('');
+                  setActiveActionModal({ type: 'onboard' });
+                }}
               className="flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-sm transition-all cursor-pointer"
             >
               <Plus className="h-3.5 w-3.5" />
@@ -2334,13 +2420,75 @@ export default function StudentLifecycleManagementPage() {
                     <div className="grid grid-cols-3 gap-3">
                       <div className="space-y-1">
                         <label className="text-[10px] font-bold text-text-secondary">Institution *</label>
-                        <input 
-                          type="text" 
-                          required
-                          value={editForm.college}
-                          onChange={e => setEditForm({ ...editForm, college: e.target.value })}
-                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
-                        />
+                        <div className="relative" ref={collegeDropdownRef}>
+                          {/* Selected pill or input */}
+                          <div
+                            className={`flex items-center gap-1 w-full bg-slate-50 border rounded p-1.5 text-xs font-semibold text-text-primary focus-within:ring-1 focus-within:ring-blue-400 cursor-text ${
+                              collegeDropdownOpen ? 'border-blue-400' : 'border-border'
+                            }`}
+                            onClick={() => { setCollegeDropdownOpen(true); }}
+                          >
+                            {editForm.college && !collegeDropdownOpen ? (
+                              <>
+                                <span className="flex-1 truncate text-xs text-blue-700 font-bold">{editForm.college}</span>
+                                <button
+                                  type="button"
+                                  onClick={(e) => { e.stopPropagation(); clearCollege(); }}
+                                  className="ml-1 text-gray-400 hover:text-red-500 transition-colors"
+                                >
+                                  <X className="h-3 w-3" />
+                                </button>
+                              </>
+                            ) : (
+                              <input
+                                type="text"
+                                autoFocus={collegeDropdownOpen}
+                                placeholder={editForm.college || (collegesLoading ? 'Loading colleges...' : 'Search by name, district, region...')}
+                                value={collegeSearch}
+                                onChange={e => { setCollegeSearch(e.target.value); setCollegeDropdownOpen(true); setCollegeHighlightIdx(-1); }}
+                                onKeyDown={handleCollegeKeyDown}
+                                onFocus={() => setCollegeDropdownOpen(true)}
+                                className="flex-1 bg-transparent outline-none text-xs font-semibold placeholder-gray-400"
+                              />
+                            )}
+                            {!editForm.college && <ChevronDown className="h-3 w-3 text-gray-400 shrink-0" />}
+                          </div>
+
+                          {/* Dropdown list */}
+                          {collegeDropdownOpen && (
+                            <div className="absolute z-50 left-0 right-0 top-full mt-1 bg-white border border-blue-200 rounded-lg shadow-xl max-h-52 overflow-y-auto">
+                              {collegesLoading ? (
+                                <div className="flex items-center gap-2 px-3 py-4 text-xs text-gray-400">
+                                  <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                                  Loading colleges...
+                                </div>
+                              ) : collegesError ? (
+                                <div className="flex items-center gap-2 px-3 py-4 text-xs text-red-400">
+                                  <AlertCircle className="h-3.5 w-3.5" />
+                                  Unable to fetch colleges
+                                </div>
+                              ) : filteredColleges.length === 0 ? (
+                                <div className="px-3 py-4 text-xs text-gray-400">No colleges found</div>
+                              ) : (
+                                filteredColleges.map((col, idx) => (
+                                  <button
+                                    key={col.id}
+                                    type="button"
+                                    onMouseDown={() => selectCollege(col)}
+                                    className={`w-full text-left px-3 py-2 text-xs transition-colors ${
+                                      idx === collegeHighlightIdx
+                                        ? 'bg-blue-50 text-blue-700'
+                                        : 'hover:bg-slate-50 text-text-primary'
+                                    }`}
+                                  >
+                                    <div className="font-semibold truncate">{col.name}</div>
+                                    <div className="text-[10px] text-gray-400">{col.district} · {col.region} · {col.college_type}</div>
+                                  </button>
+                                ))
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
                       <div className="space-y-1">
                         <label className="text-[10px] font-bold text-text-secondary">Department</label>

@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = False
     SECRET_KEY: str = "change-this-in-production"
+    TNDCE_COLLEGE_API_URL: str = "https://tndce.tn.gov.in/Colleges"
 
     # Database
     DATABASE_URL: str = "postgresql+asyncpg://user:pass@localhost:5432/pinesphere_erp"

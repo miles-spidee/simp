@@ -1,5 +1,5 @@
 import { studentApi } from '../api/student.api';
-import { StudentCreate, StudentResponse, StudentUpdate } from '../types/api/student.types';
+import { StudentCreate, StudentResponse, StudentUpdate, TndceCollege } from '../types/api/student.types';
 import { Student, MOCK_STUDENTS } from '../data/mock-students';
 
 export type ExtendedStudent = StudentResponse & Student & {
@@ -10,6 +10,8 @@ export type ExtendedStudent = StudentResponse & Student & {
   designation?: string;
   has_account?: boolean;
   username?: string;
+  college_id?: string;
+  college_name?: string;
 };
 
 export const studentService = {
@@ -55,6 +57,8 @@ export const studentService = {
       phone: personalInfo.phone,
       official_email: personalInfo.email,
       designation: 'Student',
+      college_id: stu.college_id || '',
+      college_name: stu.college_name || stu.academic_info?.college || '',
 
       personalInfo: {
         ...personalInfo,
@@ -174,6 +178,15 @@ export const studentService = {
   async createStudent(data: StudentCreate): Promise<ExtendedStudent> {
     const res = await studentApi.createStudent(data);
     return this.mapToExtended(res);
+  },
+
+  async getColleges(search?: string): Promise<TndceCollege[]> {
+    try {
+      return await studentApi.getColleges(search);
+    } catch (e) {
+      console.error('Failed to fetch colleges:', e);
+      return [];
+    }
   },
 
   async deleteStudent(id: string): Promise<boolean> {
