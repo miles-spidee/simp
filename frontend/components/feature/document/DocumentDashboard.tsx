@@ -2,8 +2,10 @@
 import { useState, useEffect } from 'react';
 import DocumentTable from './DocumentTable';
 import { DocumentService } from '@/src/services/document.service';
+import { studentService, ExtendedStudent } from '@/src/services/student.service';
 import { GeneratedDocument, DocumentTemplate } from '@/src/types/document.types';
 import { FileText, FilePlus, Copy, Plus, Loader2 } from 'lucide-react';
+import { useMemo } from 'react';
 import { Drawer } from '../ui/Drawer';
 
 export default function DocumentDashboard() {
@@ -11,6 +13,7 @@ export default function DocumentDashboard() {
   const [templates, setTemplates] = useState<DocumentTemplate[]>([]);
   const [loading, setLoading] = useState(true);
   const [offerLettersCount, setOfferLettersCount] = useState(0);
+  const [students, setStudents] = useState<ExtendedStudent[]>([]);
 
   // Drawers
   const [isTemplatesOpen, setIsTemplatesOpen] = useState(false);
@@ -18,10 +21,21 @@ export default function DocumentDashboard() {
 
   // Generate Doc Form
   const [docType, setDocType] = useState<'Offer Letter' | 'Joining Letter' | 'Internship Letter' | 'Completion Certificate' | 'Recommendation Letter'>('Offer Letter');
+  const [selectedBatch, setSelectedBatch] = useState<string>('');
   const [studentName, setStudentName] = useState('');
   const [program, setProgram] = useState('Full Stack Web Development');
   const [stipend, setStipend] = useState('15000');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const groupedStudents = useMemo(() => {
+    const map: Record<string, ExtendedStudent[]> = {};
+    students.forEach(s => {
+      const b = s.internshipInfo?.batchName || 'Unassigned';
+      if (!map[b]) map[b] = [];
+      map[b].push(s);
+    });
+    return map;
+  }, [students]);
 
   useEffect(() => {
     loadData();
@@ -32,8 +46,10 @@ export default function DocumentDashboard() {
     try {
       const docs = await DocumentService.getGeneratedDocuments();
       const tpls = await DocumentService.getTemplates();
+      const stus = await studentService.getStudents();
       setDocuments(docs);
       setTemplates(tpls);
+      setStudents(stus);
       
       const count = docs.filter(d => d.type === 'Offer Letter').length;
       setOfferLettersCount(count);
@@ -199,15 +215,36 @@ export default function DocumentDashboard() {
       >
         <form onSubmit={handleGenerateDocument} className="flex-1 flex flex-col p-6 space-y-5 overflow-y-auto">
           <div className="space-y-1.5">
+            <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Select Batch</label>
+            <select
+              value={selectedBatch}
+              onChange={(e) => {
+                setSelectedBatch(e.target.value);
+                setStudentName('');
+              }}
+              className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary cursor-pointer"
+            >
+              <option value="">-- Choose a Batch --</option>
+              {Object.keys(groupedStudents).map(batch => (
+                <option key={batch} value={batch}>{batch}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="space-y-1.5">
             <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Student Name</label>
-            <input
-              type="text"
+            <select
               required
+              disabled={!selectedBatch}
               value={studentName}
               onChange={(e) => setStudentName(e.target.value)}
-              placeholder="e.g., Harin Nair"
-              className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary placeholder-slate-400"
-            />
+              className="w-full bg-slate-50 border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition-all font-medium text-text-primary cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <option value="">-- Select a Student --</option>
+              {selectedBatch && groupedStudents[selectedBatch]?.map(stu => (
+                <option key={stu.id} value={stu.personalInfo?.name}>{stu.personalInfo?.name} ({stu.personalInfo?.email})</option>
+              ))}
+            </select>
           </div>
 
           <div className="space-y-1.5">
