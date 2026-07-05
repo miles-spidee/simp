@@ -191,10 +191,23 @@ const toPlainBase64 = (value: string) => {
 
 const sanitizeFileData = (file: FileData | null): FileData | null => {
   if (!file) return null;
-
   return {
     ...file,
     base64: toPlainBase64(file.base64),
+  };
+};
+
+/**
+ * Strip base64 data before sending to the backend.
+ * The JSONB column has a ~1MB AWS Lambda limit — base64 files blow past it instantly.
+ * We keep only the metadata (name, size, type) so the reviewer knows what was uploaded.
+ */
+const stripFileForStorage = (file: FileData | null): Omit<FileData, 'base64'> | null => {
+  if (!file) return null;
+  return {
+    name: file.name,
+    size: file.size,
+    type: file.type,
   };
 };
 
@@ -801,7 +814,7 @@ function ApplicationFormContent() {
       const payload = {
         internshipType,
         personalInformation: {
-          photo: sanitizeFileData(formState.personalInformation.photo),
+          photo: stripFileForStorage(formState.personalInformation.photo),
           firstName: sanitizeText(formState.personalInformation.firstName),
           lastName: sanitizeText(formState.personalInformation.lastName),
           email: sanitizeText(formState.personalInformation.email),
@@ -836,11 +849,11 @@ function ApplicationFormContent() {
           researchAreaOfInterest: sanitizeText(formState.internshipSpecificData.researchAreaOfInterest),
           researchInterestStatement: sanitizeText(formState.internshipSpecificData.researchInterestStatement),
           publicationLinks: sanitizeText(formState.internshipSpecificData.publicationLinks),
-          paymentScreenshot: sanitizeFileData(formState.internshipSpecificData.paymentScreenshot),
+          paymentScreenshot: stripFileForStorage(formState.internshipSpecificData.paymentScreenshot),
         },
         documents: {
-          resume: sanitizeFileData(formState.documents.resume),
-          passbook: sanitizeFileData(formState.documents.passbook),
+          resume: stripFileForStorage(formState.documents.resume),
+          passbook: stripFileForStorage(formState.documents.passbook),
         },
         motivation: {
           whyInternship: sanitizeText(formState.motivation.whyInternship),

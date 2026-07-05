@@ -46,28 +46,13 @@ async def get_current_user(
             payload = decode_access_token(credentials.credentials)
             user_id_str = payload["sub"]
 
-            # ─── Cache hit ────────────────────────────────────────────────
-            cached = user_cache.get(user_id_str)
-            if cached is not None:
-                return cached
-
-            # ─── Cache miss → DB lookup ───────────────────────────────────
             user = await UserRepository(db).get(db, user_id_str)
-            if user:
-                user_cache.set(user_id_str, user)
-
         except Exception:
             pass
 
-    # Development fallback (also cached)
+    # Development fallback
     if not user and settings.APP_ENV == "development":
-        dev_key = "__dev_admin__"
-        cached_dev = user_cache.get(dev_key)
-        if cached_dev is not None:
-            return cached_dev
         user = await UserRepository(db).get_by_email(db, "admin@pinesphere.example.com")
-        if user:
-            user_cache.set(dev_key, user)
 
     if not user:
         raise HTTPException(status_code=401, detail="Not authenticated")

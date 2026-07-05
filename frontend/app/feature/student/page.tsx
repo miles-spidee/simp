@@ -9,6 +9,7 @@ import {
   UserX, Check, Trash, PlusCircle, LayoutGrid, Eye, Send, Lock, Search, ChevronDown, X, Edit3, UserPlus, Trash2
 } from 'lucide-react';
 import { studentService } from '@/src/services/student.service';
+import { userService } from '@/src/services/user.service';
 import { TndceCollege } from '@/src/types/api/student.types';
 import { Student, StudentDocument, StudentTimelineEvent, StudentBatch } from '@/src/types/students.types';
 import { useAuth } from '@/src/context/AuthContext';
@@ -28,6 +29,9 @@ export default function StudentLifecycleManagementPage() {
   
   // Selected students for bulk operations
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  
+  // Available mentors
+  const [availableMentors, setAvailableMentors] = useState<any[]>([]);
   
   // Drawer states
   const [activeProfile, setActiveProfile] = useState<Student | null>(null);
@@ -86,8 +90,8 @@ export default function StudentLifecycleManagementPage() {
   });
 
   const [mentorForm, setMentorForm] = useState({
-    mentorId: 'emp-2',
-    mentorName: 'Bob Johnson',
+    mentorId: '',
+    mentorName: '',
   });
 
   const [statusForm, setStatusForm] = useState<Student['status']>('Applied');
@@ -142,6 +146,23 @@ export default function StudentLifecycleManagementPage() {
       }
     };
     fetchColleges();
+
+    const fetchMentors = async () => {
+      try {
+        const data = await userService.getRegisteredEmployees();
+        // optionally filter for mentor roles if needed, for now we load all employees or those containing 'mentor'
+        // Let's filter those who have mentor in role or designation, or just fallback to all if none found
+        const mentors = data.filter(e => 
+          (e.roleName && e.roleName.toLowerCase().includes('mentor')) || 
+          (e.designation && e.designation.toLowerCase().includes('mentor'))
+        );
+        // If there are specific mentors, show them. Otherwise show all employees as potential mentors.
+        setAvailableMentors(mentors.length > 0 ? mentors : data);
+      } catch (e) {
+        console.error('Failed to load mentors', e);
+      }
+    };
+    fetchMentors();
   }, []);
 
   // Close dropdown when clicking outside
@@ -516,8 +537,8 @@ export default function StudentLifecycleManagementPage() {
         program: editForm.program,
         internshipType: editForm.internshipType,
         batchName: editForm.batchName,
-        mentorId: editForm.mentorId || 'emp-2',
-        mentorName: editForm.mentorName || 'Bob Johnson',
+        mentorId: editForm.mentorId || original.internshipInfo.mentorId || '',
+        mentorName: editForm.mentorName || original.internshipInfo.mentorName || '',
         joiningDate: editForm.joiningDate,
         expectedCompletion: editForm.expectedCompletion
       },
@@ -896,7 +917,8 @@ export default function StudentLifecycleManagementPage() {
       await studentService.bulkAssignBatch(selectedIds, bulkVal);
       showToast(`Bulk mapped ${selectedIds.length} students to batch ${bulkVal}`);
     } else if (activeActionModal.type === 'bulkMentor') {
-      const mentorName = bulkVal === 'emp-2' ? 'Bob Johnson' : bulkVal === 'emp-3' ? 'Diana Prince' : 'Charlie Davis';
+      const selectedMentor = availableMentors.find(m => m.id === bulkVal);
+      const mentorName = selectedMentor ? selectedMentor.name : 'Unknown Mentor';
       await studentService.bulkAssignMentor(selectedIds, bulkVal, mentorName);
       showToast(`Bulk assigned mentor ${mentorName} to ${selectedIds.length} students`);
     } else if (activeActionModal.type === 'bulkNotify') {
@@ -2061,8 +2083,8 @@ export default function StudentLifecycleManagementPage() {
                   <button
                     onClick={() => {
                       setMentorForm({
-                        mentorId: activeProfile.internshipInfo.mentorId || 'emp-2',
-                        mentorName: activeProfile.internshipInfo.mentorName || 'Bob Johnson'
+                        mentorId: activeProfile.internshipInfo.mentorId || '',
+                        mentorName: activeProfile.internshipInfo.mentorName || 'Unassigned'
                       });
                       setActiveActionModal({ type: 'mentor' });
                     }}
@@ -2675,14 +2697,17 @@ export default function StudentLifecycleManagementPage() {
                       value={mentorForm.mentorId}
                       onChange={e => {
                         const mId = e.target.value;
-                        const mName = mId === 'emp-2' ? 'Bob Johnson' : mId === 'emp-3' ? 'Diana Prince' : 'Charlie Davis';
+                        const selectedMentor = availableMentors.find(m => m.id === mId);
+                        const mName = selectedMentor ? selectedMentor.name : 'Unknown Mentor';
                         setMentorForm({ mentorId: mId, mentorName: mName });
                       }}
                       className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     >
-                      <option value="emp-2">Bob Johnson (Technical Engineering)</option>
-                      <option value="emp-3">Diana Prince (Data Operations)</option>
-                      <option value="emp-4">Charlie Davis (Supervisory HR)</option>
+                      {availableMentors.map(m => (
+                        <option key={m.id} value={m.id}>
+                          {m.name} {m.designation ? `(${m.designation})` : ''}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>
@@ -2829,9 +2854,11 @@ export default function StudentLifecycleManagementPage() {
                       className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     >
                       <option value="">-- Select Mentor --</option>
-                      <option value="emp-2">Bob Johnson (Technical Engineering)</option>
-                      <option value="emp-3">Diana Prince (Data Operations)</option>
-                      <option value="emp-4">Charlie Davis (Supervisory HR)</option>
+                      {availableMentors.map(m => (
+                        <option key={m.id} value={m.id}>
+                          {m.name} {m.designation ? `(${m.designation})` : ''}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>

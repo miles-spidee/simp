@@ -37,9 +37,14 @@ class ApplicationService(BaseService):
         application: Application,
         student: StudentProfile,
         user: User,
+        include_data: bool = True,
     ) -> ApplicationResponse:
 
-        ad = application.application_data or {}
+        if include_data:
+            ad = application.application_data or {}
+        else:
+            ad = {}
+            
         pi = ad.get("personalInformation", {})
         
         first_name = ad.get("first_name") or pi.get("firstName") or user.username
@@ -61,7 +66,7 @@ class ApplicationService(BaseService):
                 email=email,
                 mobile_number=user.phone or "",
             ),
-            application_data=application.application_data,
+            application_data=ad if include_data else None,
             review_data=application.review_data,
         )
 
@@ -71,10 +76,12 @@ class ApplicationService(BaseService):
 
     async def get_all(self):
 
+        from sqlalchemy.orm import defer
         stmt = (
             select(Application)
             .options(
-                joinedload(Application.student_profile).joinedload(StudentProfile.user)
+                joinedload(Application.student_profile).joinedload(StudentProfile.user),
+                defer(Application.application_data)
             )
             .order_by(Application.created_at.desc())
         )
@@ -88,6 +95,7 @@ class ApplicationService(BaseService):
                 app,
                 app.student_profile,
                 app.student_profile.user,
+                include_data=False,
             )
             for app in applications
         ]
@@ -98,12 +106,14 @@ class ApplicationService(BaseService):
 
     async def get_my_applications(self, user_id: UUID):
 
+        from sqlalchemy.orm import defer
         stmt = (
             select(Application)
             .join(StudentProfile)
             .where(StudentProfile.user_id == user_id)
             .options(
-                joinedload(Application.student_profile).joinedload(StudentProfile.user)
+                joinedload(Application.student_profile).joinedload(StudentProfile.user),
+                defer(Application.application_data)
             )
             .order_by(Application.created_at.desc())
         )

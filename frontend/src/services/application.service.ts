@@ -76,10 +76,11 @@ export const applicationService = {
       if (data && data.length > 0) {
         return data.map(app => this.mapToExtended(app));
       }
+      return [];
     } catch (e) {
-      console.debug('Failed to fetch applications, falling back to mock data', e);
+      console.error('Failed to fetch applications:', e);
+      throw e;
     }
-    return MOCK_APPLICATIONS as unknown as ExtendedApplication[];
   },
 
   async getApplication(id: string): Promise<ExtendedApplication | undefined> {
@@ -89,9 +90,9 @@ export const applicationService = {
         return this.mapToExtended(app);
       }
     } catch (e) {
-      console.debug('Failed to fetch application, falling back to mock data', e);
+      console.error('Failed to fetch application:', e);
     }
-    return MOCK_APPLICATIONS.find(a => a.id === id) as unknown as ExtendedApplication;
+    return undefined;
   },
 
   async getApplicationsByOpportunity(oppId: string): Promise<ExtendedApplication[]> {

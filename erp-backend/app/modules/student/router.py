@@ -245,15 +245,16 @@ async def _student_payload(profile: StudentProfile, user: User, organization: Op
     quiz_score = 82.5
     documents_list = []
 
+    # 1. Fetch mentor assignment
+    assign_stmt = select(MentorAssignment).where(MentorAssignment.student_profile_id == profile.id)
+    assign_res = await db.execute(assign_stmt)
+    assignment = assign_res.scalars().first()
+    if assignment:
+        mentor_stmt = select(User).join(MentorProfile, MentorProfile.user_id == User.id).where(MentorProfile.id == assignment.mentor_profile_id)
+        mentor_res = await db.execute(mentor_stmt)
+        mentor_user = mentor_res.scalars().first()
+
     if not is_list:
-        # 1. Fetch mentor assignment
-        assign_stmt = select(MentorAssignment).where(MentorAssignment.student_profile_id == profile.id)
-        assign_res = await db.execute(assign_stmt)
-        assignment = assign_res.scalars().first()
-        if assignment:
-            mentor_stmt = select(User).join(MentorProfile, MentorProfile.user_id == User.id).where(MentorProfile.id == assignment.mentor_profile_id)
-            mentor_res = await db.execute(mentor_stmt)
-            mentor_user = mentor_res.scalars().first()
 
         # 2. Fetch program
         if department:
@@ -712,9 +713,25 @@ async def update_student(id: UUID, data: StudentUpdate, db: AsyncSession = Depen
         # Delete old mentor assignments
         await db.execute(delete(MentorAssignment).where(MentorAssignment.student_profile_id == profile.id))
         if update_dict["mentor_id"]:
-            mentor_stmt = select(MentorProfile).where((MentorProfile.user_id == update_dict["mentor_id"]) | (MentorProfile.id == update_dict["mentor_id"]))
+            m_id = update_dict["mentor_id"]
+            mentor_stmt = select(MentorProfile).where((MentorProfile.user_id == m_id) | (MentorProfile.id == m_id))
             mentor_res = await db.execute(mentor_stmt)
             mentor_prof = mentor_res.scalars().first()
+            if not mentor_prof:
+                try:
+                    m_uuid = UUID(str(m_id))
+                    mentor_prof = MentorProfile(
+                        user_id=m_uuid,
+                        expertise="General",
+                        max_mentees=10,
+                        current_mentees=0,
+                        rating=0.0
+                    )
+                    db.add(mentor_prof)
+                    await db.flush()
+                except:
+                    pass
+
             if mentor_prof:
                 assignment = MentorAssignment(
                     student_profile_id=profile.id,
