@@ -788,7 +788,11 @@ function ApplicationFormContent() {
         // Mocking delay for UX if API is too fast
         await new Promise(resolve => setTimeout(resolve, 500));
 
-        localStorage.setItem('pinesphere_submitted_photo', formState.personalInformation.photo?.base64 || '');
+        try {
+          localStorage.setItem('pinesphere_submitted_photo', formState.personalInformation.photo?.base64 || '');
+        } catch (e) {
+          console.warn('Quota exceeded or error setting photo in localStorage', e);
+        }
         localStorage.setItem('pinesphere_submitted_name', `${formState.personalInformation.firstName} ${formState.personalInformation.lastName}`);
         localStorage.setItem('pinesphere_submitted_program', internshipType === 'research' ? 'Research Intern' : internshipType === 'paid' ? 'Paid Intern' : 'Free Intern');
         

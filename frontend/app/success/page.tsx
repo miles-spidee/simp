@@ -22,8 +22,9 @@ function SuccessPageContent() {
   React.useEffect(() => {
     // Optionally fetch or send success data to the backend
     if (type) {
-      fetch(`${API_ENDPOINTS.SUCCESS_DATA}?type=${type}`)
-        .then((res) => {
+      const fetchSuccessData = async () => {
+        try {
+          const res = await fetch(`${API_ENDPOINTS.SUCCESS_DATA}?type=${type}`);
           if (!res.ok) {
             console.warn('Failed to record success data');
             setToastConfig({
@@ -42,17 +43,18 @@ function SuccessPageContent() {
             });
             setTimeout(() => setToastConfig(prev => ({ ...prev, show: false })), 4000);
           }
-        })
-        .catch((err) => {
+        } catch (err) {
           console.error('Error fetching success data:', err);
           setToastConfig({
             show: true,
             title: 'Connection Error',
-            message: 'Unable to connect to the server.',
+            message: 'Unable to reach the server to record activity.',
             type: 'error'
           });
           setTimeout(() => setToastConfig(prev => ({ ...prev, show: false })), 4000);
-        });
+        }
+      };
+      fetchSuccessData();
     }
   }, [type]);
 
