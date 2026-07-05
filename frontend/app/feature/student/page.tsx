@@ -203,6 +203,84 @@ export default function StudentLifecycleManagementPage() {
     };
   }, [students]);
 
+  // Academic Top Performers (CGPA >= 8.5 or Assessment Score >= 90%)
+  const academicTopPerformers = useMemo(() => {
+    const list = students.filter(s => {
+      const cgpa = s.academicInfo?.cgpa || 0;
+      const score = s.performance?.assessmentScore || 0;
+      return cgpa >= 8.5 || score >= 90;
+    });
+    const sorted = [...list].sort((a, b) => {
+      const scoreB = b.performance?.assessmentScore || ((b.academicInfo?.cgpa || 0) * 10);
+      const scoreA = a.performance?.assessmentScore || ((a.academicInfo?.cgpa || 0) * 10);
+      return scoreB - scoreA;
+    });
+    return sorted.map((s, idx) => ({
+      id: s.id,
+      name: s.personalInfo.name,
+      department: s.academicInfo.department,
+      batch: s.internshipInfo.batchName || 'Unassigned',
+      score: s.performance?.assessmentScore || Math.round((s.academicInfo?.cgpa || 0) * 10),
+      rank: idx + 1,
+      avatar: s.personalInfo.avatar,
+      cgpa: s.academicInfo.cgpa
+    }));
+  }, [students]);
+
+  // At-Risk Cohort (Attendance < 75% or Assessment Average < 60% or Pending Tasks > 2 or LMS Inactive > 7)
+  const atRiskCohort = useMemo(() => {
+    const riskList: any[] = [];
+    students.forEach(s => {
+      let isRisk = false;
+      const reasons: string[] = [];
+      let riskScore = 0;
+
+      const attScore = s.performance?.attendanceScore || 0;
+      if (attScore < 75) {
+        isRisk = true;
+        reasons.push(`Low Attendance (${attScore}%)`);
+        riskScore += (75 - attScore) * 1.5;
+      }
+
+      const assessScore = s.performance?.assessmentScore || 0;
+      if (assessScore < 60) {
+        isRisk = true;
+        reasons.push(`Low Assessment Score (${assessScore}%)`);
+        riskScore += (60 - assessScore) * 2.0;
+      }
+
+      const pendingTasks = (s.performance as any)?.pendingTasks || 0;
+      if (pendingTasks > 2) {
+        isRisk = true;
+        reasons.push(`${pendingTasks} Pending Tasks`);
+        riskScore += pendingTasks * 10;
+      }
+
+      const lmsInactiveDays = (s.performance as any)?.lmsInactiveDays || 0;
+      if (lmsInactiveDays > 7) {
+        isRisk = true;
+        reasons.push(`LMS Inactive ${lmsInactiveDays} days`);
+        riskScore += (lmsInactiveDays - 7) * 5;
+      }
+
+      if (isRisk) {
+        riskList.push({
+          id: s.id,
+          name: s.personalInfo.name,
+          batch: s.internshipInfo.batchName || 'Unassigned',
+          attendancePct: attScore,
+          riskScore: Math.min(Math.round(riskScore), 100),
+          reason: reasons.join(', '),
+          avatar: s.personalInfo.avatar,
+          college: s.academicInfo.college,
+          department: s.academicInfo.department
+        });
+      }
+    });
+
+    return riskList.sort((a, b) => b.riskScore - a.riskScore);
+  }, [students]);
+
   // Global Activity Feed based on timeline logs
   const activityFeed = useMemo(() => {
     const feed: { studentName: string; avatar: string; date: string; title: string; desc: string; type: string }[] = [];
@@ -375,15 +453,59 @@ export default function StudentLifecycleManagementPage() {
 
   const handleCreateStudent = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newStu = await studentService.createStudent({
-      application_id: 'app-1',
-      program_id: 'prog-1'
-    } as any);
+    const parts = editForm.name.trim().split(" ");
+    const firstName = parts[0] || "Student";
+    const lastName = parts.slice(1).join(" ") || "Name";
 
-    if (newStu) {
-      setStudents([...students, newStu]);
-      showToast(`Enrolled student ${newStu.personalInfo.name} with ID ${newStu.internId}`);
-      setActiveActionModal(null);
+    try {
+      const newStu = await studentService.createStudent({
+        first_name: firstName,
+        last_name: lastName,
+        email: editForm.email,
+        phone: editForm.phone,
+        enrollment_number: `ENR${new Date().getFullYear()}${Math.floor(1000 + Math.random() * 9000)}`,
+        department: editForm.department,
+        degree: editForm.degree,
+        year: Number(editForm.year),
+        cgpa: Number(editForm.cgpa),
+        graduation_year: Number(editForm.graduationYear),
+        program: editForm.program,
+        internship_type: editForm.internshipType,
+        batch_name: editForm.batchName,
+        mentor_id: editForm.mentorId,
+        joining_date: editForm.joiningDate || new Date().toISOString().split('T')[0],
+        dob: editForm.dob,
+        gender: editForm.gender,
+        address: editForm.address,
+        status: 'Applied'
+      } as any);
+
+      if (newStu) {
+        setStudents([...students, newStu]);
+        showToast(`Enrolled student ${newStu.personalInfo.name} with ID ${newStu.internId}`);
+        setActiveActionModal(null);
+      }
+    } catch (err: any) {
+      console.error(err);
+      showToast(err.response?.data?.detail || 'Failed to enroll student', 'error');
+    }
+  };
+
+  const handleDeleteStudent = async (id: string) => {
+    const student = students.find(s => s.id === id);
+    if (!student) return;
+    if (confirm(`Are you sure you want to delete student ${student.personalInfo.name}?`)) {
+      const ok = await studentService.deleteStudent(id);
+      if (ok) {
+        setStudents(students.filter(s => s.id !== id));
+        if (activeProfile?.id === id) {
+          setIsProfileDrawerOpen(false);
+          setActiveProfile(null);
+        }
+        showToast('Student deleted successfully');
+      } else {
+        showToast('Failed to delete student', 'error');
+      }
     }
   };
 
@@ -986,29 +1108,36 @@ export default function StudentLifecycleManagementPage() {
             <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4 lg:col-span-1">
               <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary flex items-center gap-1.5">
                 <TrendingUp className="h-4 w-4 text-emerald-600" />
-                Academic Top Performers (90%+)
+                Academic Top Performers
               </h3>
               <div className="space-y-3">
-                {sortedPerformers.top.map(s => (
-                  <div 
-                    key={s.id} 
-                    onClick={() => handleOpenProfile(s)}
-                    className="flex items-center justify-between border-b border-border pb-2 cursor-pointer hover:bg-slate-50/50 p-1.5 rounded-lg transition"
-                  >
-                    <div className="flex items-center gap-2">
-                      <div className="h-8 w-8 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-xs">
-                        {s.personalInfo.avatar}
+                {academicTopPerformers.length > 0 ? (
+                  academicTopPerformers.slice(0, 5).map(s => (
+                    <div 
+                      key={s.id} 
+                      onClick={() => {
+                        const original = students.find(st => st.id === s.id);
+                        if (original) handleOpenProfile(original);
+                      }}
+                      className="flex items-center justify-between border-b border-border pb-2 cursor-pointer hover:bg-slate-50/50 p-1.5 rounded-lg transition"
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className="h-8 w-8 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-xs">
+                          #{s.rank}
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-text-primary">{s.name}</div>
+                          <div className="text-[10px] text-text-secondary">Dept: {s.department} | Batch: {s.batch}</div>
+                        </div>
                       </div>
-                      <div>
-                        <div className="text-xs font-bold text-text-primary">{s.personalInfo.name}</div>
-                        <div className="text-[10px] text-text-secondary">{s.academicInfo.college} | {s.academicInfo.department}</div>
-                      </div>
+                      <span className="text-xs font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
+                        {s.score}% / CGPA: {s.cgpa}
+                      </span>
                     </div>
-                    <span className="text-xs font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
-                      {s.performance.overallPerformance}%
-                    </span>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <div className="text-center py-6 text-xs text-text-secondary">No academic top performers found.</div>
+                )}
               </div>
             </div>
 
@@ -1016,32 +1145,40 @@ export default function StudentLifecycleManagementPage() {
             <div className="bg-white border border-border rounded-xl p-5 shadow-xs space-y-4 lg:col-span-1">
               <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary flex items-center gap-1.5">
                 <AlertCircle className="h-4 w-4 text-rose-600" />
-                At-Risk Cohort (Below 75%)
+                At-Risk Cohort
               </h3>
               <div className="space-y-3">
-                {sortedPerformers.bottom.length > 0 ? (
-                  sortedPerformers.bottom.map(s => (
+                {atRiskCohort.length > 0 ? (
+                  atRiskCohort.slice(0, 5).map(s => (
                     <div 
                       key={s.id} 
-                      onClick={() => handleOpenProfile(s)}
-                      className="flex items-center justify-between border-b border-border pb-2 cursor-pointer hover:bg-slate-50/50 p-1.5 rounded-lg transition"
+                      onClick={() => {
+                        const original = students.find(st => st.id === s.id);
+                        if (original) handleOpenProfile(original);
+                      }}
+                      className="border-b border-border pb-2 cursor-pointer hover:bg-slate-50/50 p-1.5 rounded-lg transition space-y-1"
                     >
-                      <div className="flex items-center gap-2">
-                        <div className="h-8 w-8 rounded-full bg-rose-50 text-rose-700 flex items-center justify-center font-bold text-xs">
-                          {s.personalInfo.avatar}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="h-8 w-8 rounded-full bg-rose-50 text-rose-700 flex items-center justify-center font-bold text-xs">
+                            {s.avatar}
+                          </div>
+                          <div>
+                            <div className="text-xs font-bold text-text-primary">{s.name}</div>
+                            <div className="text-[10px] text-text-secondary">Batch: {s.batch} | Att: {s.attendancePct}%</div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="text-xs font-bold text-text-primary">{s.personalInfo.name}</div>
-                          <div className="text-[10px] text-text-secondary">{s.academicInfo.college} | {s.academicInfo.department}</div>
-                        </div>
+                        <span className="text-xs font-black text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-100">
+                          Risk: {s.riskScore}%
+                        </span>
                       </div>
-                      <span className="text-xs font-black text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-100">
-                        {s.performance.overallPerformance}%
-                      </span>
+                      <div className="text-[10px] text-rose-700 bg-rose-50/50 px-2 py-1 rounded">
+                        Reason: {s.reason}
+                      </div>
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-6 text-xs text-text-secondary">No students are currently marked below 75% threshold.</div>
+                  <div className="text-center py-6 text-xs text-text-secondary">No students are currently marked in the at-risk cohort.</div>
                 )}
               </div>
             </div>
@@ -1204,6 +1341,11 @@ export default function StudentLifecycleManagementPage() {
                     <button onClick={() => handleGenerateCertificate(s.id)} className="p-1 hover:text-emerald-600 hover:bg-slate-100 rounded text-text-secondary transition-colors" title="Generate Certificates">
                       <Award className="h-4 w-4" />
                     </button>
+                    <PermissionGuard required="student.delete">
+                      <button onClick={() => handleDeleteStudent(s.id)} className="p-1 hover:text-rose-600 hover:bg-slate-100 rounded text-text-secondary transition-colors" title="Delete Student Record">
+                        <Trash className="h-4 w-4" />
+                      </button>
+                    </PermissionGuard>
                   </div>
                 ),
               },
@@ -1348,6 +1490,14 @@ export default function StudentLifecycleManagementPage() {
                 >
                   Generate Cert
                 </button>
+                <PermissionGuard required="student.delete">
+                  <button
+                    onClick={() => handleDeleteStudent(activeProfile.id)}
+                    className="px-2 py-1 bg-red-600 hover:bg-red-700 text-xs font-bold text-white rounded transition"
+                  >
+                    Delete Student
+                  </button>
+                </PermissionGuard>
               </div>
             </div>
 

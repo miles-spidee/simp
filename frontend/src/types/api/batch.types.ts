@@ -2,8 +2,11 @@ export interface BatchCreate {
   program_id: string;
   semester_id?: string;
 
-  name: string;
-  code: string;
+  name?: string;
+  code?: string;
+  batch_name?: string;
+  batch_code?: string;
+  batch_status?: string;
 
   start_date: string;
   end_date: string;
