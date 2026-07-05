@@ -2,7 +2,10 @@ import { organizationApi } from '../api/organization.api';
 import { CollegeCreate, CollegeResponse, DepartmentResponse, CoordinatorResponse } from '../types/api/organization.types';
 import { Organization } from '../types/organizations.types';
 
-export type ExtendedCollege = CollegeResponse & Organization;
+export type ExtendedCollege = CollegeResponse & Organization & {
+  has_account?: boolean;
+  username?: string;
+};
 
 export const organizationService = {
   mapToExtended(col: CollegeResponse): ExtendedCollege {

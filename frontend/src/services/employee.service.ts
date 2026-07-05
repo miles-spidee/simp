@@ -2,7 +2,10 @@ import { employeeApi } from '../api/employee.api';
 import { EmployeeCreate, EmployeeResponse } from '../types/api/employee.types';
 import { Employee, MOCK_EMPLOYEES } from '../data/mock-employees';
 
-export type ExtendedEmployee = EmployeeResponse & Employee;
+export type ExtendedEmployee = EmployeeResponse & Employee & {
+  has_account?: boolean;
+  username?: string;
+};
 
 export const employeeService = {
   mapToExtended(emp: EmployeeResponse): ExtendedEmployee {
