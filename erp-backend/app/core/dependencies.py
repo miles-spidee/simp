@@ -42,9 +42,6 @@ async def get_current_user(
 
 
 MODULE_MAPPING = {
-    "users": "user",
-    "roles": "role",
-    "modules": "module_registry",
     "organizations": "organization",
     "programs": "program",
     "opportunities": "opportunity",

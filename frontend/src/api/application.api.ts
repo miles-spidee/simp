@@ -35,5 +35,8 @@ export const applicationApi = {
     const res = await apiClient.get<any>(`/api/v1/application/${id}/ai-evaluate`);
     return res.data.data || {};
   },
+  deleteApplication: async (id: string): Promise<void> => {
+    await apiClient.delete(`/api/v1/application/${id}`);
+  },
 };
 

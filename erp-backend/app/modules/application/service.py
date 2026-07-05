@@ -426,4 +426,10 @@ class ApplicationService(BaseService):
                 status_code=403,
                 detail="Aadhaar verification lockout is active. Student cannot apply for another internship for 6 months.",
             )
-        
+
+    async def delete(self, application_id: UUID) -> None:
+        application = await self.repository.get(self.db, id=application_id)
+        if not application:
+            raise HTTPException(status_code=404, detail="Application not found")
+        await self.repository.remove(self.db, id=application_id)
+        await self.commit_transaction()

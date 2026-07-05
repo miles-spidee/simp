@@ -99,6 +99,16 @@ export const applicationService = {
     return all.filter(a => a.opening_id === oppId);
   },
 
+  async deleteApplication(id: string): Promise<boolean> {
+    try {
+      await applicationApi.deleteApplication(id);
+      return true;
+    } catch (e) {
+      console.error('Failed to delete application', e);
+      return false;
+    }
+  },
+
   async updateApplicationStatus(id: string, newStatus: string, remarks: string = ''): Promise<ExtendedApplication | undefined> {
     const req: ApplicationReviewRequest = { application_status: newStatus, remarks: remarks };
     try {

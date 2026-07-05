@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.core.dependencies import get_current_user
+from app.core.dependencies import get_current_user, require_permission
 from app.core.responses import APIResponse, success_response
 
 from app.models.authentication.user import User
@@ -183,4 +183,18 @@ async def ai_evaluate_application(
         "application_data": application.application_data or {}
     })
 
-    return success_response(data=ai_data, message="AI evaluation complete")
+    return success_response(data=ai_data, message="AI evaluation complete")
+
+@router.delete(
+    "/{application_id}",
+    response_model=APIResponse[dict]
+)
+async def delete_application(
+    application_id: UUID,
+    current_user: User = Depends(require_permission("applications", "delete")),
+    db: AsyncSession = Depends(get_db),
+):
+    service = ApplicationService(db)
+    await service.delete(application_id)
+    return success_response(data={"deleted": True}, message="Application deleted successfully")
+

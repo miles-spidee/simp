@@ -6,7 +6,7 @@ import {
   FileText, Plus, ChevronRight, Briefcase, User,
   CheckCircle2, XCircle, AlertTriangle, TrendingUp, Download,
   ExternalLink, FileSpreadsheet, Check, Users, BarChart3,
-  Sparkles, MapPin, GraduationCap, Eye, BookOpen, AlertCircle, Layers
+  Sparkles, MapPin, GraduationCap, Eye, BookOpen, AlertCircle, Layers, Trash2
 } from 'lucide-react';
 import { applicationService } from '@/src/services/application.service';
 import { applicationApi } from '@/src/api/application.api';
@@ -120,6 +120,20 @@ export default function ApplicationPage() {
     } finally {
       setActionLoading(null);
       setInterviewAppId(null);
+    }
+  };
+
+  const handleDeleteApplication = async (appId: string, candidateName: string) => {
+    if (confirm(`Are you sure you want to delete the application for ${candidateName}? This action cannot be undone.`)) {
+      setActionLoading('Deleting...');
+      const success = await applicationService.deleteApplication(appId);
+      if (success) {
+        setApplications(applications.filter(a => a.id !== appId));
+        triggerToast('Success', 'Application deleted successfully', 'success');
+      } else {
+        triggerToast('Error', 'Failed to delete application', 'error');
+      }
+      setActionLoading(null);
     }
   };
 
@@ -694,6 +708,15 @@ export default function ApplicationPage() {
                         className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-text-primary text-xs font-bold rounded-lg transition-colors cursor-pointer"
                       >
                         Review
+                      </button>
+                    </PermissionGuard>
+                    <PermissionGuard required="application.delete">
+                      <button
+                        onClick={() => handleDeleteApplication(app.id, app.candidateName)}
+                        className="p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                        title="Delete Application"
+                      >
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </PermissionGuard>
                   </div>
