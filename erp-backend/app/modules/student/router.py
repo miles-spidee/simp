@@ -299,15 +299,6 @@ async def _student_payload(profile: StudentProfile, user: User, organization: Op
     intern_type = skills_dict.get("internship_type", "Free Internship")
     mapped_prog = skills_dict.get("program", program_name or "Summer Internship")
 
-    # Map referential TNDCE college id
-    college_id = ""
-    if organization:
-        col_rec_stmt = select(TNDCECollege).where(TNDCECollege.college_code == organization.code)
-        col_rec_res = await db.execute(col_rec_stmt)
-        col_rec = col_rec_res.scalars().first()
-        if col_rec:
-            college_id = str(col_rec.id)
-
     # Generate timeline
     timeline_events = [
         {"date": profile.created_at.date().isoformat(), "title": "Student Enrolled", "description": "Profile registered in SLMS", "type": "registration"}

@@ -1,7 +1,8 @@
 from __future__ import annotations
 from typing import Any
 from uuid import UUID
-from sqlalchemy import select
+from sqlalchemy import select, text
+import time
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.repositories.base import BaseRepository
 from app.models.authentication.user import User
@@ -29,6 +30,9 @@ class UserRepository(BaseRepository[User, UserCreate, UserUpdate]):
         result = await db.execute(select(User).filter(User.email == email))
         return result.scalars().first()
 
+_perm_cache = {}
+CACHE_TTL = 300 # 5 minutes
+
 class PermissionRepository:
     def __init__(self, db: AsyncSession):
         pass
@@ -36,45 +40,43 @@ class PermissionRepository:
     async def user_has_permission(self, db: AsyncSession, user_id: UUID, permission_name: str) -> bool:
         """
         Check if a user has a specific permission code (e.g. 'students:read')
-        via their assigned roles.
+        via their assigned roles, using a single optimized SQL query and memory cache.
         """
-        # Check if user has SUPER_ADMIN role first
-        from app.models.rbac.role import Role
-        super_admin_stmt = (
-            select(Role)
-            .join(UserRole, UserRole.role_id == Role.id)
-            .where(UserRole.user_id == user_id)
-            .where(Role.code == 'SUPER_ADMIN')
-        )
-        super_admin_role = await db.execute(super_admin_stmt)
-        if super_admin_role.scalars().first():
-            return True
+        cache_key = f"{user_id}:{permission_name}"
+        now = time.time()
+        
+        # Check cache
+        if cache_key in _perm_cache and (now - _perm_cache[cache_key]['time']) < CACHE_TTL:
+            return _perm_cache[cache_key]['result']
 
-        # Check specific permission code (e.g. 'students:read')
-        stmt = (
-            select(Permission)
-            .join(RolePermission, RolePermission.permission_id == Permission.id)
-            .join(UserRole, UserRole.role_id == RolePermission.role_id)
-            .where(UserRole.user_id == user_id)
-            .where(Permission.code == permission_name)
-        )
-        result = await db.execute(stmt)
-        if result.scalars().first():
-            return True
-            
-        # Check module overrides (if user has the module assigned explicitly, grant them basic access)
-        if "." in permission_name:
-            module_code = permission_name.split(".")[0]
-            from app.models.rbac.user_module import UserModule
-            from app.models.rbac.module import Module
-            module_override_stmt = (
-                select(Module)
-                .join(UserModule, UserModule.module_id == Module.id)
-                .where(UserModule.user_id == user_id)
-                .where(Module.code == module_code)
+        module_code = permission_name.split(".")[0] if "." in permission_name else ""
+
+        # Single combined query
+        stmt = text("""
+            SELECT EXISTS (
+                SELECT 1 FROM rbac_user_roles ur 
+                JOIN rbac_roles r ON ur.role_id = r.id 
+                WHERE ur.user_id = :user_id AND r.code = 'SUPER_ADMIN'
+            ) OR EXISTS (
+                SELECT 1 FROM rbac_user_roles ur 
+                JOIN rbac_role_permissions rp ON ur.role_id = rp.role_id 
+                JOIN rbac_permissions p ON rp.permission_id = p.id 
+                WHERE ur.user_id = :user_id AND p.code = :permission_name
+            ) OR EXISTS (
+                SELECT 1 FROM rbac_user_modules um 
+                JOIN rbac_modules m ON um.module_id = m.id 
+                WHERE um.user_id = :user_id AND m.code = :module_code
             )
-            mod_result = await db.execute(module_override_stmt)
-            if mod_result.scalars().first():
-                return True
-                
-        return False
+        """)
+        
+        # We must bind user_id as string because raw SQL doesn't auto-cast UUID objects natively in asyncpg unless typed
+        result = await db.execute(stmt, {
+            "user_id": str(user_id), 
+            "permission_name": permission_name, 
+            "module_code": module_code
+        })
+        has_perm = result.scalar() or False
+        
+        # Save to cache
+        _perm_cache[cache_key] = {'time': now, 'result': has_perm}
+        return has_perm
