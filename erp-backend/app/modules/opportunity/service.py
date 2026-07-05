@@ -53,6 +53,7 @@ class OpportunityService(BaseService):
 
         opportunity = Opportunity(
             company_id=company.id,
+            program_id=data.program_id,
             title=data.project_title,
             description=data.role_description,
             status=data.opening_status.upper(),

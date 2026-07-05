@@ -39,6 +39,7 @@ class ApplicationReviewRequest(BaseModel):
     reviewer_notes: str | None = None
     reviewer_feedback: str | None = None
     amount_paid: float | None = None
+    payment_verified: str | None = None
 
 
 

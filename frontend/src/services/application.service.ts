@@ -66,6 +66,7 @@ export const applicationService = {
       reviewerNotes: rd.reviewer_notes || '',
       reviewerFeedback: rd.reviewer_feedback || app.remarks || '',
       amountPaid: rd.amount_paid || undefined,
+      paymentVerified: rd.payment_verified || undefined,
     } as any;
   },
 
@@ -120,11 +121,21 @@ export const applicationService = {
       overall_recommendation: updates.overallRecommendation,
       reviewer_notes: updates.reviewerNotes,
       reviewer_feedback: updates.reviewerFeedback,
-      amount_paid: updates.amountPaid
+      amount_paid: updates.amountPaid,
+      payment_verified: updates.paymentVerified,
     };
     try {
       const res = await applicationApi.reviewApplication(id, req);
-      return this.mapToExtended(res);
+      // Merge the local payment updates into the mapped response
+      // since the backend echoes review_data but may not return payment_verified directly
+      const mapped = this.mapToExtended(res);
+      if (updates.paymentVerified !== undefined) {
+        mapped.paymentVerified = updates.paymentVerified;
+      }
+      if (updates.amountPaid !== undefined) {
+        mapped.amountPaid = updates.amountPaid;
+      }
+      return mapped;
     } catch (e) {
       console.debug(e);
       return undefined;

@@ -13,6 +13,7 @@ class OpportunityCreate(BaseModel):
     opening_status: str
 
     company_id: Optional[UUID] = None
+    program_id: Optional[UUID] = None
     location: Optional[str] = None
     stipend: Optional[Decimal] = None
     fee: Optional[Decimal] = None
@@ -40,6 +41,7 @@ class OpportunityResponse(BaseModel):
 
     id: UUID
     company_id: UUID
+    program_id: Optional[UUID] = None
 
     title: str
     description: str

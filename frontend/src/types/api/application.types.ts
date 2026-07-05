@@ -92,4 +92,5 @@ export interface ApplicationReviewRequest {
   reviewer_notes?: string;
   reviewer_feedback?: string;
   amount_paid?: number;
+  payment_verified?: string;
 }

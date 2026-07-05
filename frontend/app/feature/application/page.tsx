@@ -62,6 +62,8 @@ export default function ApplicationPage() {
   const [interviewAppId, setInterviewAppId] = useState<string | null>(null);
 
   const [paymentAmount, setPaymentAmount] = useState<string>('');
+  const [paymentProcessing, setPaymentProcessing] = useState<'Verified' | 'Rejected' | null>(null);
+
 
   // Kanban Drag State
   const [draggedAppId, setDraggedAppId] = useState<string | null>(null);
@@ -319,26 +321,40 @@ export default function ApplicationPage() {
 
   // Payment Quick Actions
   const handlePaymentVerification = async (id: string, verify: 'Verified' | 'Rejected') => {
+    setPaymentProcessing(verify);
+    // Optimistic update immediately so the user sees feedback
+    const optimisticStatus: ApplicationStatus = verify === 'Verified' ? 'Under Review' : 'Hold';
+    const optimistic = { paymentVerified: verify, status: optimisticStatus, amountPaid: verify === 'Verified' ? Number(paymentAmount) : undefined };
+    setApplications(prev => prev.map(a => a.id === id ? { ...a, ...optimistic } : a));
+    if (reviewApp && reviewApp.id === id) setReviewApp(prev => prev ? { ...prev, ...optimistic } : prev);
     try {
-      const statusUpdate: ApplicationStatus = verify === 'Verified' ? 'Under Review' : 'Hold';
-      const updates = {
+      const updated = await applicationService.updateApplicationDetails(id, {
         paymentVerified: verify,
-        status: statusUpdate,
+        status: optimisticStatus,
         amountPaid: verify === 'Verified' ? Number(paymentAmount) : undefined
-      };
-      const updated = await applicationService.updateApplicationDetails(id, updates);
+      });
       if (updated) {
-        setApplications(applications.map(a => a.id === id ? updated : a));
-        if (reviewApp && reviewApp.id === id) {
-          setReviewApp(updated);
-        }
-        triggerToast('Payment Processed', `Payment verified as: ${verify}. Status set to ${statusUpdate}.`, 'success');
+        setApplications(prev => prev.map(a => a.id === id ? updated : a));
+        if (reviewApp && reviewApp.id === id) setReviewApp(updated);
       }
+      triggerToast(
+        verify === 'Verified' ? 'Payment Approved ✓' : 'Payment Rejected',
+        verify === 'Verified'
+          ? `Payment of ₹${paymentAmount || '—'} has been verified successfully.`
+          : 'Payment receipt has been rejected. Applicant may be notified.',
+        verify === 'Verified' ? 'success' : 'warning'
+      );
     } catch (err) {
       console.error(err);
-      triggerToast('Error', 'Failed to change payment check.', 'warning');
+      // Revert optimistic update on failure
+      setApplications(prev => prev.map(a => a.id === id ? { ...a, paymentVerified: undefined } : a));
+      if (reviewApp && reviewApp.id === id) setReviewApp(prev => prev ? { ...prev, paymentVerified: undefined } : prev);
+      triggerToast('Error', 'Failed to update payment status. Please try again.', 'error');
+    } finally {
+      setPaymentProcessing(null);
     }
   };
+
 
   // Bulk Operations
   const handleBulkStatus = async (status: ApplicationStatus) => {
@@ -1332,31 +1348,46 @@ export default function ApplicationPage() {
                         <div className="flex gap-2 pt-2">
                           <button
                             onClick={() => handlePaymentVerification(reviewApp.id, 'Verified')}
-                            disabled={reviewApp.paymentVerified === 'Verified'}
-                            className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-black uppercase cursor-pointer transition-colors"
+                            disabled={reviewApp.paymentVerified === 'Verified' || reviewApp.paymentVerified === 'Rejected'}
+                            className={`px-3.5 py-1.5 rounded-lg text-[10px] font-black uppercase transition-colors ${
+                              reviewApp.paymentVerified === 'Rejected'
+                                ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50'
+                                : 'bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer'
+                            }`}
                           >
                             Approve Payment
                           </button>
                           <button
                             onClick={() => handlePaymentVerification(reviewApp.id, 'Rejected')}
-                            disabled={reviewApp.paymentVerified === 'Rejected'}
-                            className="px-3.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-lg text-[10px] font-black uppercase cursor-pointer transition-colors border border-rose-200"
+                            disabled={reviewApp.paymentVerified === 'Rejected' || reviewApp.paymentVerified === 'Verified'}
+                            className={`px-3.5 py-1.5 rounded-lg text-[10px] font-black uppercase transition-colors border ${
+                              reviewApp.paymentVerified === 'Verified'
+                                ? 'bg-slate-50 text-slate-400 border-slate-200 cursor-not-allowed opacity-50'
+                                : 'bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-200 cursor-pointer'
+                            }`}
                           >
                             Reject
                           </button>
                         </div>
+
                       </div>
 
-                      {/* Simulated Payment Receipt Attachment Preview */}
-                      <div className="border border-border rounded-xl p-3.5 bg-slate-50 flex flex-col justify-between h-40">
-                        <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-wider text-text-secondary">
-                          <span>Screenshot Preview</span>
-                          <Eye className="h-4 w-4" />
-                        </div>
-                        <div className="flex-1 flex items-center justify-center">
-                          <FileText className="h-10 w-10 text-slate-300" />
-                        </div>
-                        <span className="text-[10px] font-bold text-text-secondary truncate text-center">{reviewApp.paymentScreenshot || 'No receipt screenshot uploaded'}</span>
+                      {/* Download Screenshot */}
+                      <div className="flex items-end pb-2">
+                        {reviewApp.paymentScreenshot ? (
+                          <a
+                            href={reviewApp.paymentScreenshot}
+                            download
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] font-black uppercase transition-colors"
+                          >
+                            <Download className="h-3.5 w-3.5" />
+                            Download Screenshot
+                          </a>
+                        ) : (
+                          <span className="text-[10px] text-text-secondary font-semibold">No receipt screenshot uploaded</span>
+                        )}
                       </div>
                     </div>
                   </div>
