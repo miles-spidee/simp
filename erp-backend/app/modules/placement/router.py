@@ -396,3 +396,22 @@ async def delete_opportunity(opp_id: uuid.UUID, db: AsyncSession = Depends(get_d
     except Exception as e:
         await db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
+
+class UpdateStageSchema(BaseModel):
+    stage: str
+
+@router.patch("/applications/{app_id}/stage")
+async def update_application_stage(app_id: uuid.UUID, payload: UpdateStageSchema, db: AsyncSession = Depends(get_db)):
+    try:
+        stmt = select(PlacementApplication).where(PlacementApplication.id == app_id)
+        res = await db.execute(stmt)
+        app = res.scalars().first()
+        if not app:
+            raise HTTPException(status_code=404, detail="Application not found")
+        
+        app.status = payload.stage
+        await db.commit()
+        return success_response(message="Stage updated successfully")
+    except Exception as e:
+        await db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))

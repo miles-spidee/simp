@@ -178,23 +178,23 @@ export default function AlumniDirectory() {
             <div 
               key={al.id} 
               onClick={() => setSelectedAlumni(al)}
-              className="bg-white/70 backdrop-blur-xl rounded-3xl border border-white/60 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(99,102,241,0.12)] transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden flex flex-col justify-between min-h-[200px] cursor-pointer"
+              className="bg-white/70 backdrop-blur-xl rounded-3xl border border-white/60 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(59,130,246,0.12)] transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden flex flex-col justify-between min-h-[200px] cursor-pointer"
             >
-              <div className="absolute -top-12 -right-12 w-32 h-32 bg-gradient-to-br from-indigo-100 to-purple-50 rounded-full blur-3xl opacity-0 group-hover:opacity-60 transition-opacity duration-500 pointer-events-none"></div>
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute -top-12 -right-12 w-32 h-32 bg-gradient-to-br from-blue-100 to-sky-50 rounded-full blur-3xl opacity-0 group-hover:opacity-60 transition-opacity duration-500 pointer-events-none"></div>
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-sky-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               
               <div className="relative z-10">
                 <div className="flex items-start gap-4">
-                  <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-indigo-50 to-indigo-100 flex items-center justify-center font-extrabold text-indigo-600 text-lg shadow-sm border border-white/50 group-hover:scale-110 transition-transform duration-300">
+                  <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center font-extrabold text-blue-600 text-lg shadow-sm border border-white/50 group-hover:scale-110 transition-transform duration-300">
                     {al.name.charAt(0)}
                   </div>
                   <div className="flex-1 min-w-0 pt-0.5">
-                    <h3 className="font-extrabold text-slate-800 leading-tight truncate group-hover:text-indigo-600 transition-colors text-[15px]">{al.name}</h3>
-                    <p className="text-[10px] text-indigo-500 font-bold mt-1 uppercase tracking-wider">{al.batch} • Class of {al.graduationYear}</p>
+                    <h3 className="font-extrabold text-slate-800 leading-tight truncate group-hover:text-blue-600 transition-colors text-[15px]">{al.name}</h3>
+                    <p className="text-[10px] text-blue-500 font-bold mt-1 uppercase tracking-wider">{al.batch} • Class of {al.graduationYear}</p>
                   </div>
                   <div className="flex gap-2">
                     {al.linkedInUrl && (
-                      <a href={al.linkedInUrl} onClick={(e) => e.stopPropagation()} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-indigo-600 transition-colors bg-slate-50 hover:bg-indigo-50 p-1.5 rounded-lg">
+                      <a href={al.linkedInUrl} onClick={(e) => e.stopPropagation()} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-blue-600 transition-colors bg-slate-50 hover:bg-blue-50 p-1.5 rounded-lg">
                         <Link className="h-4 w-4" />
                       </a>
                     )}
