@@ -390,7 +390,9 @@ export default function EmployeeManagementPage() {
       }
     } catch (err) {
       console.error(err);
-      showToast('Error executing action', 'error');
+      const detail = (err as any).response?.data?.detail;
+      const msg = typeof detail === 'string' ? detail : (err as any).response?.data?.message || (err as any).message || 'Error executing action';
+      showToast(msg, 'error');
     }
     
     // Close modal
@@ -443,7 +445,9 @@ export default function EmployeeManagementPage() {
       setActiveActionModal(null);
     } catch (err) {
       console.error(err);
-      showToast('Error executing bulk action', 'error');
+      const detail = (err as any).response?.data?.detail;
+      const msg = typeof detail === 'string' ? detail : (err as any).response?.data?.message || (err as any).message || 'Error executing bulk action';
+      showToast(msg, 'error');
     }
   };
 
