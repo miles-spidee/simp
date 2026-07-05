@@ -7,8 +7,8 @@ import {
   StudentAssessment,
   Assessment,
   DashboardStats
-} from '../../../../src/types/assessment-monitoring.types';
-import { fetchMonitoringData } from '../../../../src/api/assessment-monitoring.api';
+} from '@/src/types/assessment-monitoring.types';
+import { fetchMonitoringData } from '@/src/api/assessment-monitoring.api';
 import { DashboardCards } from './components/DashboardCards';
 import { AssessmentOverview } from './components/AssessmentOverview';
 import { StudentAssessmentTable } from './components/StudentAssessmentTable';

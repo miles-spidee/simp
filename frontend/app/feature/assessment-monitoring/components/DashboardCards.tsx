@@ -1,6 +1,6 @@
 import React from 'react';
 import { Users, FileText, CheckCircle, Clock, BarChart2, ShieldAlert, Award, AlertTriangle, TrendingUp, TrendingDown } from 'lucide-react';
-import { Role, DashboardStats } from '../../../../../src/types/assessment-monitoring.types';
+import { Role, DashboardStats } from '@/src/types/assessment-monitoring.types';
 
 interface DashboardCardsProps {
   role: Role;

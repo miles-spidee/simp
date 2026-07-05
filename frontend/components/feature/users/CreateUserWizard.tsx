@@ -13,7 +13,6 @@ import { moduleService } from '@/src/services/module.service';
 import { userService } from '@/src/services/user.service';
 import { organizationService, ExtendedCollege } from '@/src/services/organization.service';
 import { User } from '@/src/types/api/user.types';
-import { User } from '@/src/types/api/user.types';
 
 interface CreateUserWizardProps {
   isOpen: boolean;

@@ -21,14 +21,14 @@ function UsersPageContent() {
 
   // Tab and Entity states
   const [activeTab, setActiveTab] = useState<'accounts' | 'employees' | 'students' | 'organizations'>('accounts');
-  
+
   const [employees, setEmployees] = useState<any[]>([]);
   const [students, setStudents] = useState<any[]>([]);
   const [organizations, setOrganizations] = useState<any[]>([]);
 
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [autofillData, setAutofillData] = useState<{ name: string; email: string; phone: string } | null>(null);
+  const [autofillData, setAutofillData] = useState<{ id?: string; name: string; email: string; phone: string } | null>(null);
 
   const loadUsers = async () => {
     try {
@@ -185,13 +185,13 @@ function UsersPageContent() {
           <h1 className="text-2xl font-bold tracking-tight text-text-primary">Users</h1>
           <p className="text-sm text-text-secondary mt-1">Manage system users, roles, and access.</p>
         </div>
-        <Button 
+        <Button
           onClick={() => {
             setSelectedUser(null);
             setViewMode(false);
             setAutofillData(null);
             setIsCreateWizardOpen(true);
-          }} 
+          }}
           className="w-full sm:w-auto"
         >
           <Plus className="mr-2 h-4 w-4" /> Create User
@@ -208,18 +208,16 @@ function UsersPageContent() {
           <button
             key={t.id}
             onClick={() => setActiveTab(t.id as any)}
-            className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-all whitespace-nowrap ${
-              activeTab === t.id 
-                ? 'border-blue-600 text-blue-600 font-semibold' 
-                : 'border-transparent text-text-secondary hover:border-secondary hover:text-text-primary'
-            }`}
+            className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-all whitespace-nowrap ${activeTab === t.id
+              ? 'border-blue-600 text-blue-600 font-semibold'
+              : 'border-transparent text-text-secondary hover:border-secondary hover:text-text-primary'
+              }`}
           >
             <span>{t.label}</span>
-            <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
-              activeTab === t.id 
-                ? 'bg-blue-100 text-blue-600' 
-                : 'bg-slate-100 text-text-secondary'
-            }`}>
+            <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${activeTab === t.id
+              ? 'bg-blue-100 text-blue-600'
+              : 'bg-slate-100 text-text-secondary'
+              }`}>
               {t.count}
             </span>
           </button>
@@ -444,10 +442,10 @@ function UsersPageContent() {
                 render: (stu) => {
                   return stu.has_account ? (
                     <button
-                      onClick={() => handleView(getLinkedUser(stu.email) as any)}
+                      onClick={() => handleView(getLinkedUser(stu.email || '') as any)}
                       className="p-1 hover:text-blue-600 transition-colors inline-flex items-center justify-center"
                       title="View User Account"
-                      disabled={!getLinkedUser(stu.email)}
+                      disabled={!getLinkedUser(stu.email || '')}
                     >
                       <Eye className="h-4 w-4 text-slate-455 hover:text-blue-600" />
                     </button>
@@ -521,10 +519,10 @@ function UsersPageContent() {
                 render: (org) => {
                   return org.has_account ? (
                     <button
-                      onClick={() => handleView(getLinkedUser(org.email) as any)}
+                      onClick={() => handleView(getLinkedUser(org.email || '') as any)}
                       className="p-1 hover:text-blue-600 transition-colors inline-flex items-center justify-center"
                       title="View User Account"
-                      disabled={!getLinkedUser(org.email)}
+                      disabled={!getLinkedUser(org.email || '')}
                     >
                       <Eye className="h-4 w-4 text-slate-455 hover:text-blue-600" />
                     </button>
@@ -540,14 +538,14 @@ function UsersPageContent() {
         </div>
       )}
 
-      <CreateUserWizard 
-        isOpen={isCreateWizardOpen} 
+      <CreateUserWizard
+        isOpen={isCreateWizardOpen}
         onClose={() => {
           setIsCreateWizardOpen(false);
           setSelectedUser(null);
           setViewMode(false);
           setAutofillData(null);
-        }} 
+        }}
         onUserCreated={handleUserCreated}
         userToEdit={selectedUser}
         viewMode={viewMode}

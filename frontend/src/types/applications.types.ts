@@ -35,7 +35,7 @@ export interface Application {
   gender: string;
   city: string;
   state: string;
-  
+
   // Academic
   college: string;
   department: string;
@@ -68,12 +68,13 @@ export interface Application {
   transactionId?: string;
   paymentScreenshot?: string;
   paymentVerified?: 'Pending' | 'Verified' | 'Rejected';
-  
+  amountPaid?: number;
+
   relevantExperience?: string;
-  
+
   preferredTechStack?: string;
   technicalExperience?: string;
-  
+
   researchArea?: string;
   researchStatement?: string;
   publications?: string;

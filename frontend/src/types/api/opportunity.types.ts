@@ -4,8 +4,8 @@ export interface OpeningCreate {
   role_description: string;
   project_title: string;
   duration_weeks: number;
-  stipend_amount: number;
-  fee_amount: number;
+  stipend: number;
+  fee: number;
   total_openings: number;
   application_deadline: string;
   status: string;
@@ -18,8 +18,8 @@ export interface OpeningResponse {
   role_description: string;
   project_title: string;
   duration_weeks: number;
-  stipend_amount: number;
-  fee_amount: number;
+  stipend: number;
+  fee: number;
   total_openings: number;
   application_deadline: string;
   status: string;

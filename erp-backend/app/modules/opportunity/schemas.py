@@ -15,6 +15,7 @@ class OpportunityCreate(BaseModel):
     company_id: Optional[UUID] = None
     location: Optional[str] = None
     stipend: Optional[Decimal] = None
+    fee: Optional[Decimal] = None
     duration_weeks: Optional[int] = None
     requirements: Optional[str] = None
     deadline: Optional[date] = None
@@ -28,6 +29,7 @@ class OpportunityUpdate(BaseModel):
 
     location: Optional[str] = None
     stipend: Optional[Decimal] = None
+    fee: Optional[Decimal] = None
     duration_weeks: Optional[int] = None
     requirements: Optional[str] = None
     deadline: Optional[date] = None
@@ -44,6 +46,7 @@ class OpportunityResponse(BaseModel):
 
     location: Optional[str]
     stipend: Optional[Decimal]
+    fee: Optional[Decimal]
     duration_weeks: Optional[int]
     requirements: Optional[str]
     status: str

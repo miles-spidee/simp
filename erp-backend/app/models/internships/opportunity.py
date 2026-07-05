@@ -15,6 +15,7 @@ class Opportunity(BaseModel):
     description: Mapped[str] = mapped_column(Text, nullable=False)
     location: Mapped[Optional[str]] = mapped_column(String(255))
     stipend: Mapped[Optional[float]] = mapped_column(Numeric(10, 2))
+    fee: Mapped[Optional[float]] = mapped_column(Numeric(10, 2))
     duration_weeks: Mapped[Optional[int]] = mapped_column(Integer)
     requirements: Mapped[Optional[str]] = mapped_column(Text)
     

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Role } from '../../../../../src/types/assessment-monitoring.types';
+import { Role } from '@/src/types/assessment-monitoring.types';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, Legend } from 'recharts';
 import { Users, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 

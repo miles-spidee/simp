@@ -59,6 +59,7 @@ class OpportunityService(BaseService):
 
             location=data.location,
             stipend=data.stipend,
+            fee=data.fee,
             duration_weeks=data.duration_weeks,
             requirements=data.requirements,
             deadline=data.deadline,

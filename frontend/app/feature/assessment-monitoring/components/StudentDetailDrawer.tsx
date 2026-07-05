@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { StudentAssessment } from '../../../../../src/types/assessment-monitoring.types';
-import { X, User, Book, MapPin, Award, CheckCircle, XCircle, Clock, Zap, Target, BrainCircuit, AlertTriangle, PlayCircle } from 'lucide-react';
+import { StudentAssessment } from '@/src/types/assessment-monitoring.types';
+import { X, User, Book, MapPin, Award, CheckCircle, XCircle, Clock, Zap, Target, BrainCircuit, AlertTriangle, PlayCircle, TrendingUp } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 
 interface StudentDetailDrawerProps {
@@ -35,14 +35,14 @@ export function StudentDetailDrawer({ isOpen, onClose, studentAssessment }: Stud
   return (
     <>
       {/* Backdrop */}
-      <div 
+      <div
         className="fixed inset-0 bg-black/50 z-40 transition-opacity"
         onClick={onClose}
       />
-      
+
       {/* Drawer */}
       <div className={`fixed inset-y-0 right-0 w-full md:w-[600px] lg:w-[800px] bg-white dark:bg-gray-900 shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col overflow-hidden ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        
+
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50">
           <div className="flex items-center space-x-4">
@@ -57,7 +57,7 @@ export function StudentDetailDrawer({ isOpen, onClose, studentAssessment }: Stud
               </div>
             </div>
           </div>
-          <button 
+          <button
             onClick={onClose}
             className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 transition-colors"
           >
@@ -71,11 +71,10 @@ export function StudentDetailDrawer({ isOpen, onClose, studentAssessment }: Stud
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-4 py-3 text-sm font-medium capitalize border-b-2 transition-colors ${
-                activeTab === tab 
-                  ? 'border-blue-500 text-blue-600 dark:text-blue-400' 
+              className={`px-4 py-3 text-sm font-medium capitalize border-b-2 transition-colors ${activeTab === tab
+                  ? 'border-blue-500 text-blue-600 dark:text-blue-400'
                   : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-              }`}
+                }`}
             >
               {tab}
             </button>
@@ -84,7 +83,7 @@ export function StudentDetailDrawer({ isOpen, onClose, studentAssessment }: Stud
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6 space-y-8 bg-gray-50/30 dark:bg-gray-900/50">
-          
+
           {activeTab === 'overview' && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               {/* Assessment Summary Grid */}
@@ -124,8 +123,8 @@ export function StudentDetailDrawer({ isOpen, onClose, studentAssessment }: Stud
                           <span className="text-sm font-bold text-gray-900 dark:text-white">{section.score}/{section.max} <span className="text-gray-500 font-normal">({percentage}%)</span></span>
                         </div>
                         <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
-                          <div 
-                            className={`h-2.5 rounded-full ${percentage >= 80 ? 'bg-green-500' : percentage >= 50 ? 'bg-yellow-500' : 'bg-red-500'}`} 
+                          <div
+                            className={`h-2.5 rounded-full ${percentage >= 80 ? 'bg-green-500' : percentage >= 50 ? 'bg-yellow-500' : 'bg-red-500'}`}
                             style={{ width: `${percentage}%` }}
                           ></div>
                         </div>
@@ -160,7 +159,7 @@ export function StudentDetailDrawer({ isOpen, onClose, studentAssessment }: Stud
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                 <Clock className="w-5 h-5 mr-2 text-blue-500" /> Question-by-Question Analysis
               </h3>
-              
+
               <div className="space-y-4">
                 {studentAssessment.questions.map((q, idx) => {
                   const isCorrect = q.selectedAnswer === q.correctAnswer;
@@ -190,7 +189,7 @@ export function StudentDetailDrawer({ isOpen, onClose, studentAssessment }: Stud
                           </span>
                         </div>
                       </div>
-                      
+
                       <div className="ml-8 grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-sm">
                         <div className="p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
                           <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Student's Answer</p>
@@ -226,11 +225,11 @@ export function StudentDetailDrawer({ isOpen, onClose, studentAssessment }: Stud
                 <div className="absolute top-0 right-0 p-4 opacity-10">
                   <Zap className="w-24 h-24 text-indigo-500" />
                 </div>
-                
+
                 <h3 className="text-lg font-semibold text-indigo-900 dark:text-indigo-300 mb-5 flex items-center relative z-10">
                   <BrainCircuit className="w-5 h-5 mr-2" /> AI Learning Insights
                 </h3>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
                   <div className="space-y-3">
                     <h4 className="text-sm font-bold text-green-700 dark:text-green-400 uppercase tracking-wider flex items-center">
@@ -242,7 +241,7 @@ export function StudentDetailDrawer({ isOpen, onClose, studentAssessment }: Stud
                       <li className="text-sm text-gray-700 dark:text-gray-300 flex items-start"><span className="mr-2 text-green-500">•</span> High accuracy in Frontend (React) module</li>
                     </ul>
                   </div>
-                  
+
                   <div className="space-y-3">
                     <h4 className="text-sm font-bold text-red-700 dark:text-red-400 uppercase tracking-wider flex items-center">
                       <AlertTriangle className="w-4 h-4 mr-2" /> Needs Improvement
@@ -280,7 +279,7 @@ export function StudentDetailDrawer({ isOpen, onClose, studentAssessment }: Stud
                       <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
                       <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#6b7280', fontSize: 12 }} dy={10} />
                       <YAxis domain={[0, 100]} axisLine={false} tickLine={false} tick={{ fill: '#6b7280', fontSize: 12 }} dx={-10} />
-                      <RechartsTooltip 
+                      <RechartsTooltip
                         contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                       />
                       <Line type="monotone" dataKey="score" stroke="#3b82f6" strokeWidth={3} dot={{ r: 4, strokeWidth: 2, fill: '#fff' }} activeDot={{ r: 6 }} />

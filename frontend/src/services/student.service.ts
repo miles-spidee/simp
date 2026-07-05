@@ -24,7 +24,7 @@ export const studentService = {
       phone: '',
       official_email: 'student@example.com',
       designation: 'Student',
-      
+
       personalInfo: {
         name: `Student ${stu.student_id.substring(0, 4)}`,
         email: 'student@example.com',

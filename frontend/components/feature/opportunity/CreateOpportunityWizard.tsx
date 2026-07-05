@@ -41,7 +41,6 @@ export function CreateOpportunityWizard({
   const [programs, setPrograms] = useState<any[]>([]);
   const [selectedProgram, setSelectedProgram] = useState<any | null>(null);
   const [type, setType] = useState('Tech');
-  const [value, setValue] = useState<"free" | "paid" | "stipend" | "industrial" | "corporate" | "research">('free');
   const [description, setDescription] = useState('');
   const [duration, setDuration] = useState('6 Months');
   const [mode, setMode] = useState('Remote');
@@ -50,7 +49,6 @@ export function CreateOpportunityWizard({
   const [startDate, setStartDate] = useState('Starts Jan 2024');
   const [color, setColor] = useState('from-blue-600/20 to-cyan-600/20 border-blue-500/30 text-blue-400');
   const [internshipType, setInternshipType] = useState<"free" | "paid" | "stipend" | "industrial" | "corporate" | "research" >('free');
-  const [amountType, setAmountType] = useState<string>('free');
   const [amount, setAmount] = useState('');
 
   // Error state
@@ -61,7 +59,6 @@ export function CreateOpportunityWizard({
       if (opportunityToView) {
         setTitle(opportunityToView.title || '');
         setType(opportunityToView.type || 'Tech');
-        setValue(opportunityToView.value || 'free');
         setDescription(opportunityToView.description || '');
         setDuration(opportunityToView.duration || '6 Months');
         setMode(opportunityToView.mode || 'Remote');
@@ -70,7 +67,6 @@ export function CreateOpportunityWizard({
         setStartDate(opportunityToView.startDate || '');
         setColor(opportunityToView.color || 'from-blue-600/20 to-cyan-600/20 border-blue-500/30 text-blue-400');
         setInternshipType(opportunityToView.internshipType || 'free');
-        setAmountType(opportunityToView.amountType || 'free');
         setAmount(opportunityToView.amount || '');
         
         if (viewMode) {
@@ -82,7 +78,6 @@ export function CreateOpportunityWizard({
         // Reset form fields
         setTitle('');
         setType('Tech');
-        setValue('free');
         setDescription('');
         setDuration('6 Months');
         setMode('Remote');
@@ -91,7 +86,6 @@ export function CreateOpportunityWizard({
         setStartDate('Starts Jan 2024');
         setColor('from-blue-600/20 to-cyan-600/20 border-blue-500/30 text-blue-400');
         setInternshipType('free');
-        setAmountType('free');
         setAmount('');
         setCurrentStep(0);
       }
@@ -122,7 +116,7 @@ export function CreateOpportunityWizard({
     if (!seats.trim()) newErrors.seats = 'Seats is required';
     if (!eligibility.trim()) newErrors.eligibility = 'Eligibility is required';
     if (!startDate.trim()) newErrors.startDate = 'Start date is required';
-    if (amountType !== 'free' && !amount.trim()) {
+    if ((internshipType === 'paid' || internshipType === 'stipend') && !amount.trim()) {
       newErrors.amount = 'Amount is required for paid/stipend positions';
     }
     setErrors(newErrors);
@@ -149,10 +143,16 @@ export function CreateOpportunityWizard({
 
     try {
       setIsSubmitting(true);
+      const parsedAmount = parseFloat(amount.replace(/[^0-9.]/g, '')) || 0;
       const payload: any = {
         role_name: title.trim(),
         role_description: description.trim(),
         project_title: title.trim(),
+        duration_weeks: parseInt(duration.replace(/\D/g, '')) * 4 || 24,
+        stipend: internshipType === 'stipend' ? parsedAmount : 0,
+        fee: internshipType === 'paid' ? parsedAmount : 0,
+        total_openings: parseInt(seats.replace(/\D/g, '')) || 10,
+        application_deadline: startDate.trim(),
         opening_status: 'Active',
       };
       if (selectedProgram) payload.program_id = selectedProgram.program_id || selectedProgram.id || selectedProgram.programId;
@@ -243,22 +243,6 @@ export function CreateOpportunityWizard({
                 />
                 {errors.type && <p className="text-xs font-semibold text-red-500 mt-1">{errors.type}</p>}
               </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-label">Value Category *</label>
-                <select
-                  value={value}
-                  onChange={e => setValue(e.target.value as any)}
-                  className="w-full rounded-lg border border-border px-3.5 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary transition-all bg-white"
-                >
-                  <option value="free">Free</option>
-                  <option value="paid">Paid</option>
-                  <option value="stipend">Stipend</option>
-                  <option value="industrial">Industrial</option>
-                  <option value="corporate">Corporate</option>
-                  <option value="research">Research</option>
-                </select>
-              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -320,26 +304,9 @@ export function CreateOpportunityWizard({
                 </select>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-label">Amount Type</label>
-                <select
-                  value={amountType}
-                  onChange={e => {
-                    setAmountType(e.target.value);
-                    if (errors.amount) setErrors(prev => ({ ...prev, amount: '' }));
-                  }}
-                  className="w-full rounded-lg border border-border px-3 py-2 text-xs focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all bg-white"
-                >
-                  <option value="free">Free / Unpaid</option>
-                  <option value="stipend">Stipend</option>
-                  <option value="paid">Pay</option>
-                  <option value="corporate">Will Be Paid</option>
-                </select>
-              </div>
-
-              {amountType !== 'free' && (
+              {(internshipType === 'paid' || internshipType === 'stipend') && (
                 <div className="space-y-2 animate-slide-in">
-                  <label className="text-sm font-bold text-label">Amount *</label>
+                  <label className="text-sm font-bold text-label">{internshipType === 'paid' ? 'Fee Amount *' : 'Stipend Amount *'}</label>
                   <div className="relative">
                     <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary" />
                     <input
@@ -354,7 +321,7 @@ export function CreateOpportunityWizard({
                           ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
                           : 'border-border focus:border-primary focus:ring-primary'
                       }`}
-                      placeholder={amountType === 'stipend' ? 'e.g. $500/Month' : 'e.g. $25/Hour'}
+                      placeholder={internshipType === 'stipend' ? 'e.g. 500/Month' : 'e.g. 2500'}
                     />
                   </div>
                   {errors.amount && <p className="text-xs font-semibold text-red-500 mt-1">{errors.amount}</p>}
@@ -476,10 +443,7 @@ export function CreateOpportunityWizard({
                     <p className="text-xs font-bold text-text-secondary uppercase tracking-wide">Type</p>
                     <p className="text-sm font-semibold text-text-primary mt-1">{type}</p>
                   </div>
-                  <div>
-                    <p className="text-xs font-bold text-text-secondary uppercase tracking-wide">Value Category</p>
-                    <p className="text-sm font-semibold text-text-primary mt-1 capitalize">{value}</p>
-                  </div>
+
                   <div>
                     <p className="text-xs font-bold text-text-secondary uppercase tracking-wide flex items-center gap-1">
                       <Users className="h-3.5 w-3.5 text-text-secondary" /> Seats / Openings
@@ -496,11 +460,7 @@ export function CreateOpportunityWizard({
                     <p className="text-xs font-bold text-text-secondary uppercase tracking-wide">Internship Type</p>
                     <p className="text-sm font-semibold text-text-primary mt-1 capitalize">{internshipType}</p>
                   </div>
-                  <div>
-                    <p className="text-xs font-bold text-text-secondary uppercase tracking-wide">Amount Type</p>
-                    <p className="text-sm font-semibold text-text-primary mt-1 capitalize">{amountType}</p>
-                  </div>
-                  {amountType !== 'free' && (
+                  {(internshipType === 'paid' || internshipType === 'stipend') && (
                     <div>
                       <p className="text-xs font-bold text-text-secondary uppercase tracking-wide">Amount</p>
                       <p className="text-sm font-semibold text-text-primary mt-1">{amount}</p>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StudentAssessment, Role } from '../../../../../src/types/assessment-monitoring.types';
+import { StudentAssessment, Role } from '@/src/types/assessment-monitoring.types';
 import { Search, Filter, Eye, BarChart2, MoreVertical } from 'lucide-react';
 
 interface StudentAssessmentTableProps {

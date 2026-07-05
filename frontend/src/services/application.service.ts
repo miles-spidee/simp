@@ -65,6 +65,7 @@ export const applicationService = {
       overallRecommendation: rd.overall_recommendation || 'Hold',
       reviewerNotes: rd.reviewer_notes || '',
       reviewerFeedback: rd.reviewer_feedback || app.remarks || '',
+      amountPaid: rd.amount_paid || undefined,
     } as any;
   },
 
@@ -118,7 +119,8 @@ export const applicationService = {
       culture_fit_score: updates.cultureFitScore,
       overall_recommendation: updates.overallRecommendation,
       reviewer_notes: updates.reviewerNotes,
-      reviewer_feedback: updates.reviewerFeedback
+      reviewer_feedback: updates.reviewerFeedback,
+      amount_paid: updates.amountPaid
     };
     try {
       const res = await applicationApi.reviewApplication(id, req);

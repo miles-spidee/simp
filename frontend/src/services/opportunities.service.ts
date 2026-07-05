@@ -18,12 +18,16 @@ class OpportunitiesService {
     const openingId = (opp as any).opening_id || (opp as any).id || (opp as any).openingId || (opp as any).opportunity_id || '';
     const createdAt = (opp as any).created_at || (opp as any).createdAt || '';
 
+    const fee = parseFloat(opp.fee as any) || parseFloat((opp as any).fee_amount) || 0;
+    const stipend = parseFloat(opp.stipend as any) || parseFloat((opp as any).stipend_amount) || 0;
+    const derivedType = (opp as any).internshipType || (opp as any).value || (fee > 0 ? 'paid' : stipend > 0 ? 'stipend' : 'free');
+
     return {
       ...opp,
       id: openingId,
       title: ((opp as any).title && String((opp as any).title).trim()) || (opp.project_title && opp.project_title.trim()) || (opp.role_name && opp.role_name.trim()) || `Opportunity ${openingId || 'unknown'}`,
       type: 'Internship',
-      value: 'stipend',
+      value: derivedType,
       description: (opp as any).description || opp.role_description,
       duration: '6 Months',
       mode: 'Remote',
@@ -31,8 +35,8 @@ class OpportunitiesService {
       eligibility: 'Any Degree',
       startDate: opp.created_at || new Date().toISOString(),
       color: 'from-blue-600/20 to-cyan-600/20 border-blue-500/30 text-blue-400',
-      internshipType: 'stipend',
-      amount: '$0',
+      internshipType: derivedType,
+      amount: fee > 0 ? `$${fee}` : stipend > 0 ? `$${stipend}` : '$0',
       programId: (opp as any).program_id || (opp as any).programId,
       status: 'Open' as any,
       postedDate: createdAt ? String(createdAt).split('T')[0] : ''

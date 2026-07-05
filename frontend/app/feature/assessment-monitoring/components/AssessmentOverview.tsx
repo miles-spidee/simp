@@ -1,5 +1,5 @@
 import React from 'react';
-import { Assessment } from '../../../../../src/types/assessment-monitoring.types';
+import { Assessment } from '@/src/types/assessment-monitoring.types';
 import { Calendar, Clock, Users, CheckCircle, HelpCircle, BarChart, ChevronRight } from 'lucide-react';
 
 interface AssessmentOverviewProps {

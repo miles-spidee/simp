@@ -55,7 +55,7 @@ export interface ApplicationCreate {
   email: string;
   mobile_number: string;
   resume_url?: string;
-  
+
   internshipType: string;
   personalInformation: ApplicationPersonalInformation;
   academicInformation: ApplicationAcademicInformation;
@@ -91,4 +91,5 @@ export interface ApplicationReviewRequest {
   overall_recommendation?: string;
   reviewer_notes?: string;
   reviewer_feedback?: string;
+  amount_paid?: number;
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Award, Zap, TrendingUp, Star } from 'lucide-react';
-import { Role } from '../../../../../src/types/assessment-monitoring.types';
+import { Role } from '@/src/types/assessment-monitoring.types';
 
 interface LeaderboardProps {
   role: Role;

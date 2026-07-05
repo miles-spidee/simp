@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import { 
-  FileText, Plus, ChevronRight, Briefcase, User, 
-  CheckCircle2, XCircle, AlertTriangle, TrendingUp, Download, 
-  ExternalLink, FileSpreadsheet, Check, Users, BarChart3, 
+import {
+  FileText, Plus, ChevronRight, Briefcase, User,
+  CheckCircle2, XCircle, AlertTriangle, TrendingUp, Download,
+  ExternalLink, FileSpreadsheet, Check, Users, BarChart3,
   Sparkles, MapPin, GraduationCap, Eye, BookOpen, AlertCircle, Layers
 } from 'lucide-react';
 import { applicationService } from '@/src/services/application.service';
@@ -27,18 +27,18 @@ export default function ApplicationPage() {
 
   // Navigation State
   const [activeTab, setActiveTab] = useState<TabType>('applications');
-  
+
   // Data State
   const [applications, setApplications] = useState<Application[]>([]);
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
-  
+
   // Selection State
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [reviewApp, setReviewApp] = useState<Application | null>(null);
   const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false);
-  
+
   // Filters State (removed - handled by EnhancedTable)
 
   // Evaluation Workspace State
@@ -50,7 +50,7 @@ export default function ApplicationPage() {
   const [notesText, setNotesText] = useState<string>('');
   const [feedbackText, setFeedbackText] = useState<string>('');
   const [aiLoading, setAiLoading] = useState(false);
-  
+
   // Bulk actions popups
   const [bulkReviewerName, setBulkReviewerName] = useState('');
   const [showBulkReviewerInput, setShowBulkReviewerInput] = useState(false);
@@ -60,6 +60,8 @@ export default function ApplicationPage() {
   const [interviewDate, setInterviewDate] = useState('');
   const [interviewTime, setInterviewTime] = useState('');
   const [interviewAppId, setInterviewAppId] = useState<string | null>(null);
+
+  const [paymentAmount, setPaymentAmount] = useState<string>('');
 
   // Kanban Drag State
   const [draggedAppId, setDraggedAppId] = useState<string | null>(null);
@@ -166,7 +168,7 @@ export default function ApplicationPage() {
   };
 
   // Load Data
-    const loadData = React.useCallback(async (showLoader = true) => {
+  const loadData = React.useCallback(async (showLoader = true) => {
     if (showLoader) setLoading(true);
     try {
       const appData = await applicationService.getApplications();
@@ -215,6 +217,7 @@ export default function ApplicationPage() {
     setOverallRec(app.overallRecommendation || 'Hold');
     setNotesText(app.reviewerNotes || '');
     setFeedbackText(app.reviewerFeedback || '');
+    setPaymentAmount(app.amountPaid?.toString() || '');
 
     // Fetch AI evaluation in the background and merge into reviewApp state
     setAiLoading(true);
@@ -258,7 +261,7 @@ export default function ApplicationPage() {
         reviewerNotes: notesText,
         reviewerFeedback: feedbackText
       };
-      
+
       const updated = await applicationService.updateApplicationDetails(reviewApp.id, updates);
       if (updated) {
         setReviewApp(updated);
@@ -320,7 +323,8 @@ export default function ApplicationPage() {
       const statusUpdate: ApplicationStatus = verify === 'Verified' ? 'Under Review' : 'Hold';
       const updates = {
         paymentVerified: verify,
-        status: statusUpdate
+        status: statusUpdate,
+        amountPaid: verify === 'Verified' ? Number(paymentAmount) : undefined
       };
       const updated = await applicationService.updateApplicationDetails(id, updates);
       if (updated) {
@@ -341,7 +345,7 @@ export default function ApplicationPage() {
     if (selectedIds.length === 0) return;
     try {
       await applicationService.bulkUpdateStatus(selectedIds, status);
-      setApplications(applications.map(app => 
+      setApplications(applications.map(app =>
         selectedIds.includes(app.id) ? { ...app, status } : app
       ));
       setSelectedIds([]);
@@ -355,7 +359,7 @@ export default function ApplicationPage() {
     if (selectedIds.length === 0 || !bulkReviewerName.trim()) return;
     try {
       await applicationService.bulkAssignReviewer(selectedIds, bulkReviewerName.trim());
-      setApplications(applications.map(app => 
+      setApplications(applications.map(app =>
         selectedIds.includes(app.id) ? { ...app, assignedReviewer: bulkReviewerName.trim() } : app
       ));
       setSelectedIds([]);
@@ -377,7 +381,7 @@ export default function ApplicationPage() {
     const interviews = applications.filter(a => a.status === 'Interview Scheduled' || a.status === 'Interview').length;
     const selected = applications.filter(a => a.status === 'Selected' || a.status === 'Accepted').length;
     const rejected = applications.filter(a => a.status === 'Rejected').length;
-    
+
     // Calculate applications by type
     const types: Record<string, number> = {};
     applications.forEach(a => {
@@ -432,12 +436,11 @@ export default function ApplicationPage() {
       {/* Toast Notification */}
       {toast && (
         <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-white border border-border rounded-xl px-4 py-3.5 shadow-2xl animate-slide-in ring-1 ring-black/5 max-w-sm">
-          <div className={`p-1.5 rounded-lg shrink-0 ${
-            toast.type === 'success' ? 'bg-emerald-50 text-emerald-600' :
-            toast.type === 'warning' ? 'bg-amber-50 text-amber-600' : 'bg-blue-50 text-blue-600'
-          }`}>
+          <div className={`p-1.5 rounded-lg shrink-0 ${toast.type === 'success' ? 'bg-emerald-50 text-emerald-600' :
+              toast.type === 'warning' ? 'bg-amber-50 text-amber-600' : 'bg-blue-50 text-blue-600'
+            }`}>
             {toast.type === 'success' ? <CheckCircle2 className="h-5 w-5" /> :
-             toast.type === 'warning' ? <AlertTriangle className="h-5 w-5" /> : <AlertCircle className="h-5 w-5" />}
+              toast.type === 'warning' ? <AlertTriangle className="h-5 w-5" /> : <AlertCircle className="h-5 w-5" />}
           </div>
           <div>
             <h4 className="text-xs font-bold text-text-primary leading-snug">{toast.title}</h4>
@@ -460,10 +463,10 @@ export default function ApplicationPage() {
               Linear-styled candidate evaluation dashboard with real-time analytics, Kanban views, and scorecard controls.
             </p>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <PermissionGuard required="application.review">
-              <button 
+              <button
                 onClick={() => setIsAddDrawerOpen(true)}
                 className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors cursor-pointer"
               >
@@ -472,9 +475,9 @@ export default function ApplicationPage() {
               </button>
             </PermissionGuard>
             <PermissionGuard required="application.export">
-              <button 
+              <button
                 onClick={() => {
-                  const csvContent = "data:text/csv;charset=utf-8,ID,Name,College,Type,Status,CGPA\n" + 
+                  const csvContent = "data:text/csv;charset=utf-8,ID,Name,College,Type,Status,CGPA\n" +
                     applications.map(a => `"${a.id}","${a.candidateName}","${a.college}","${a.internshipType}","${a.status}",${a.cgpa}`).join("\n");
                   const encodedUri = encodeURI(csvContent);
                   const link = document.createElement("a");
@@ -496,44 +499,40 @@ export default function ApplicationPage() {
 
         {/* Dashboard Sub Tabs Navigation */}
         <div className="flex items-center gap-1.5 bg-slate-100/70 border border-border/50 p-1.5 rounded-xl w-fit">
-          <button 
+          <button
             onClick={() => setActiveTab('dashboard')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              activeTab === 'dashboard' ? 'bg-white text-text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'
-            }`}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'dashboard' ? 'bg-white text-text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'
+              }`}
           >
             <span className="flex items-center gap-1.5">
               <BarChart3 className="h-3.5 w-3.5" />
               Dashboard Overview
             </span>
           </button>
-          <button 
+          <button
             onClick={() => setActiveTab('applications')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              activeTab === 'applications' ? 'bg-white text-text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'
-            }`}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'applications' ? 'bg-white text-text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'
+              }`}
           >
             <span className="flex items-center gap-1.5">
               <Users className="h-3.5 w-3.5" />
               Applications Table
             </span>
           </button>
-          <button 
+          <button
             onClick={() => setActiveTab('pipeline')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              activeTab === 'pipeline' ? 'bg-white text-text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'
-            }`}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'pipeline' ? 'bg-white text-text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'
+              }`}
           >
             <span className="flex items-center gap-1.5">
               <Briefcase className="h-3.5 w-3.5" />
               Kanban Pipeline
             </span>
           </button>
-          <button 
+          <button
             onClick={() => setActiveTab('reports')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              activeTab === 'reports' ? 'bg-white text-text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'
-            }`}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'reports' ? 'bg-white text-text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'
+              }`}
           >
             <span className="flex items-center gap-1.5">
               <TrendingUp className="h-3.5 w-3.5" />
@@ -600,11 +599,11 @@ export default function ApplicationPage() {
               <div className="space-y-3.5 pt-2">
                 {Object.entries(stats.types).map(([type, count]) => {
                   const pct = Math.round((count / stats.total) * 100);
-                  const barColor = 
+                  const barColor =
                     type === 'research' ? 'bg-purple-500' :
-                    type === 'paid' ? 'bg-amber-500' :
-                    type === 'stipend' ? 'bg-blue-500' :
-                    type === 'industrial' ? 'bg-emerald-500' : 'bg-slate-500';
+                      type === 'paid' ? 'bg-amber-500' :
+                        type === 'stipend' ? 'bg-blue-500' :
+                          type === 'industrial' ? 'bg-emerald-500' : 'bg-slate-500';
                   return (
                     <div key={type} className="space-y-1.5">
                       <div className="flex items-center justify-between text-xs font-semibold text-text-primary">
@@ -674,7 +673,7 @@ export default function ApplicationPage() {
                   <div className="flex items-center gap-3">
                     <span className="text-[10px] text-text-secondary font-medium">{app.appliedDate}</span>
                     <PermissionGuard required="application.review">
-                      <button 
+                      <button
                         onClick={() => handleOpenReview(app)}
                         className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-text-primary text-xs font-bold rounded-lg transition-colors cursor-pointer"
                       >
@@ -702,7 +701,7 @@ export default function ApplicationPage() {
                   key: 'select',
                   label: '',
                   render: (app) => (
-                    <input 
+                    <input
                       type="checkbox"
                       checked={selectedIds.includes(app.id)}
                       onChange={(e) => {
@@ -748,13 +747,12 @@ export default function ApplicationPage() {
                   key: 'internshipType',
                   label: 'Internship Type',
                   render: (app) => (
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-black uppercase ${
-                      app.internshipType === 'research' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
-                      app.internshipType === 'paid' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                      app.internshipType === 'stipend' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
-                      app.internshipType === 'industrial' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
-                      'bg-slate-50 text-text-primary border border-border'
-                    }`}>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-black uppercase ${app.internshipType === 'research' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
+                        app.internshipType === 'paid' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                          app.internshipType === 'stipend' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
+                            app.internshipType === 'industrial' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                              'bg-slate-50 text-text-primary border border-border'
+                      }`}>
                       {app.internshipType}
                     </span>
                   ),
@@ -763,10 +761,9 @@ export default function ApplicationPage() {
                   key: 'cgpa',
                   label: 'CGPA',
                   render: (app) => (
-                    <span className={`inline-flex items-center px-1.5 py-0.5 rounded font-mono font-bold ${
-                      app.cgpa >= 9.0 ? 'bg-emerald-50 text-emerald-700' :
-                      app.cgpa >= 8.0 ? 'bg-blue-50 text-blue-700' : 'bg-slate-50 text-text-secondary'
-                    }`}>
+                    <span className={`inline-flex items-center px-1.5 py-0.5 rounded font-mono font-bold ${app.cgpa >= 9.0 ? 'bg-emerald-50 text-emerald-700' :
+                        app.cgpa >= 8.0 ? 'bg-blue-50 text-blue-700' : 'bg-slate-50 text-text-secondary'
+                      }`}>
                       {app.cgpa.toFixed(2)}
                     </span>
                   ),
@@ -787,10 +784,9 @@ export default function ApplicationPage() {
                   className: 'text-center',
                   render: (app) => (
                     app.reviewScore ? (
-                      <span className={`font-mono font-bold ${
-                        app.reviewScore >= 85 ? 'text-emerald-600' :
-                        app.reviewScore >= 70 ? 'text-blue-600' : 'text-amber-600'
-                      }`}>
+                      <span className={`font-mono font-bold ${app.reviewScore >= 85 ? 'text-emerald-600' :
+                          app.reviewScore >= 70 ? 'text-blue-600' : 'text-amber-600'
+                        }`}>
                         {app.reviewScore}
                       </span>
                     ) : (
@@ -802,16 +798,15 @@ export default function ApplicationPage() {
                   key: 'status',
                   label: 'Status',
                   render: (app) => (
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black border ${
-                      app.status === 'Accepted' || app.status === 'Selected' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                      app.status === 'Pending' || app.status === 'New' ? 'bg-slate-50 text-text-primary border-border' :
-                      app.status === 'Under Review' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                      app.status === 'Shortlisted' ? 'bg-purple-50 text-purple-700 border-purple-200' :
-                      app.status === 'Interview Scheduled' || app.status === 'Interview' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' :
-                      app.status === 'Rejected' ? 'bg-rose-50 text-rose-700 border-rose-200' :
-                      app.status === 'Payment Verification Pending' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                      'bg-amber-50 text-amber-700 border-amber-200'
-                    }`}>
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black border ${app.status === 'Accepted' || app.status === 'Selected' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                        app.status === 'Pending' || app.status === 'New' ? 'bg-slate-50 text-text-primary border-border' :
+                          app.status === 'Under Review' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                            app.status === 'Shortlisted' ? 'bg-purple-50 text-purple-700 border-purple-200' :
+                              app.status === 'Interview Scheduled' || app.status === 'Interview' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' :
+                                app.status === 'Rejected' ? 'bg-rose-50 text-rose-700 border-rose-200' :
+                                  app.status === 'Payment Verification Pending' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                                    'bg-amber-50 text-amber-700 border-amber-200'
+                      }`}>
                       {app.status}
                     </span>
                   ),
@@ -831,7 +826,7 @@ export default function ApplicationPage() {
                   className: 'text-right',
                   render: (app) => (
                     <PermissionGuard required="application.review">
-                      <button 
+                      <button
                         onClick={() => handleOpenReview(app)}
                         className="text-blue-600 hover:text-blue-800 font-black text-xs cursor-pointer inline-flex items-center gap-0.5"
                       >
@@ -852,15 +847,15 @@ export default function ApplicationPage() {
                 Selected <span className="text-white font-black">{selectedIds.length}</span> candidates
               </span>
               <div className="h-4 w-px bg-slate-800 shrink-0"></div>
-              
+
               <div className="flex items-center gap-2">
-                <button 
+                <button
                   onClick={() => handleBulkStatus('Shortlisted')}
                   className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] font-black uppercase tracking-wider transition-colors cursor-pointer"
                 >
                   Shortlist
                 </button>
-                <button 
+                <button
                   onClick={() => handleBulkStatus('Rejected')}
                   className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[10px] font-black uppercase tracking-wider transition-colors cursor-pointer"
                 >
@@ -869,14 +864,14 @@ export default function ApplicationPage() {
 
                 {showBulkReviewerInput ? (
                   <div className="flex items-center gap-1.5">
-                    <input 
-                      type="text" 
-                      placeholder="Reviewer Name" 
+                    <input
+                      type="text"
+                      placeholder="Reviewer Name"
                       value={bulkReviewerName}
                       onChange={(e) => setBulkReviewerName(e.target.value)}
                       className="bg-slate-800 text-white border border-border rounded px-2 py-1 text-[10px] w-28 focus:outline-none"
                     />
-                    <button 
+                    <button
                       onClick={handleBulkAssign}
                       className="p-1 bg-emerald-600 rounded text-white hover:bg-emerald-700"
                     >
@@ -884,7 +879,7 @@ export default function ApplicationPage() {
                     </button>
                   </div>
                 ) : (
-                  <button 
+                  <button
                     onClick={() => setShowBulkReviewerInput(true)}
                     className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[10px] font-black uppercase tracking-wider transition-colors cursor-pointer border border-border"
                   >
@@ -892,7 +887,7 @@ export default function ApplicationPage() {
                   </button>
                 )}
               </div>
-              <button 
+              <button
                 onClick={() => setSelectedIds([])}
                 className="text-text-secondary hover:text-slate-300 text-xs font-semibold ml-2"
               >
@@ -912,9 +907,8 @@ export default function ApplicationPage() {
             return (
               <div
                 key={col}
-                className={`bg-slate-100/60 rounded-xl p-3 border-2 flex flex-col min-w-[210px] w-[210px] h-[550px] transition-all ${
-                  isDragOver ? 'border-blue-400 bg-blue-50/40 scale-[1.01]' : 'border-border/50'
-                }`}
+                className={`bg-slate-100/60 rounded-xl p-3 border-2 flex flex-col min-w-[210px] w-[210px] h-[550px] transition-all ${isDragOver ? 'border-blue-400 bg-blue-50/40 scale-[1.01]' : 'border-border/50'
+                  }`}
                 onDragOver={(e) => { e.preventDefault(); setDragOverCol(col); }}
                 onDragLeave={() => setDragOverCol(null)}
                 onDrop={() => handleKanbanDrop(col)}
@@ -931,29 +925,27 @@ export default function ApplicationPage() {
                 <div className="flex-1 overflow-y-auto space-y-3 mt-3 pr-1">
                   {colApps.length > 0 ? (
                     colApps.map(app => (
-                      <div 
+                      <div
                         key={app.id}
                         draggable={app.status !== 'Selected' && app.status !== 'Accepted' && app.status !== 'Rejected'}
                         onDragStart={() => setDraggedAppId(app.id)}
                         onDragEnd={() => { setDraggedAppId(null); setDragOverCol(null); }}
                         title={app.status === 'Selected' || app.status === 'Accepted' || app.status === 'Rejected' ? `${app.candidateName} is locked (${app.status})` : undefined}
-                        className={`bg-white border rounded-xl p-3.5 shadow-sm space-y-3 transition-all group ${
-                          app.status === 'Selected' || app.status === 'Accepted' || app.status === 'Rejected'
+                        className={`bg-white border rounded-xl p-3.5 shadow-sm space-y-3 transition-all group ${app.status === 'Selected' || app.status === 'Accepted' || app.status === 'Rejected'
                             ? 'border-border opacity-70 cursor-not-allowed'
                             : `border-border hover:border-secondary hover:shadow cursor-grab active:cursor-grabbing ${draggedAppId === app.id ? 'opacity-40 ring-2 ring-blue-400' : ''}`
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center justify-between">
                           <span className="text-[9px] bg-slate-100 text-text-secondary font-mono px-1 rounded">{app.id}</span>
-                          <span className={`text-[8px] font-black uppercase px-1.5 py-0.5 rounded ${
-                            app.internshipType === 'research' ? 'bg-purple-50 text-purple-700' :
-                            app.internshipType === 'paid' ? 'bg-amber-50 text-amber-700' :
-                            app.internshipType === 'stipend' ? 'bg-blue-50 text-blue-700' : 'bg-slate-50'
-                          }`}>
+                          <span className={`text-[8px] font-black uppercase px-1.5 py-0.5 rounded ${app.internshipType === 'research' ? 'bg-purple-50 text-purple-700' :
+                              app.internshipType === 'paid' ? 'bg-amber-50 text-amber-700' :
+                                app.internshipType === 'stipend' ? 'bg-blue-50 text-blue-700' : 'bg-slate-50'
+                            }`}>
                             {app.internshipType}
                           </span>
                         </div>
-                        
+
                         <div>
                           <h4 className="text-xs font-bold text-text-primary">{app.candidateName}</h4>
                           <p className="text-[10px] text-blue-600 font-semibold mt-0.5 truncate">
@@ -977,7 +969,7 @@ export default function ApplicationPage() {
                           <span className="text-[8px] font-black text-text-secondary uppercase tracking-widest block mb-1">Stage Ops</span>
                           <div className="flex gap-1.5">
                             {col !== 'Shortlisted' && col !== 'Selected' && (
-                              <button 
+                              <button
                                 onClick={() => handleQuickStatus(app.id, 'Shortlisted')}
                                 className="px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded text-[9px] font-bold cursor-pointer"
                               >
@@ -985,7 +977,7 @@ export default function ApplicationPage() {
                               </button>
                             )}
                             {col !== 'Interview Scheduled' && (
-                              <button 
+                              <button
                                 onClick={() => handleQuickStatus(app.id, 'Interview Scheduled')}
                                 className="px-1.5 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[9px] font-bold cursor-pointer"
                               >
@@ -993,7 +985,7 @@ export default function ApplicationPage() {
                               </button>
                             )}
                             {col !== 'Rejected' && (
-                              <button 
+                              <button
                                 onClick={() => handleQuickStatus(app.id, 'Rejected')}
                                 className="px-1.5 py-0.5 bg-rose-50 text-rose-600 rounded text-[9px] font-bold cursor-pointer"
                               >
@@ -1003,7 +995,7 @@ export default function ApplicationPage() {
                           </div>
                         </div>
 
-                        <button 
+                        <button
                           onClick={() => handleOpenReview(app)}
                           className="w-full text-center py-1.5 mt-2 bg-slate-50 hover:bg-slate-100 text-text-secondary font-bold text-[10px] rounded-lg transition-colors cursor-pointer"
                         >
@@ -1061,7 +1053,7 @@ export default function ApplicationPage() {
                 data={['Alice Vance', 'David Miller', 'Sarah Connor'].map(rev => {
                   const revApps = applications.filter(a => a.assignedReviewer === rev);
                   const scores = revApps.map(a => a.reviewScore).filter(Boolean) as number[];
-                  const avg = scores.length > 0 ? Math.round(scores.reduce((a,b)=>a+b, 0) / scores.length) : '-';
+                  const avg = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : '-';
                   return { reviewer: rev, count: revApps.length, avgScore: avg };
                 })}
                 searchPlaceholder="Search reviewers..."
@@ -1111,9 +1103,9 @@ export default function ApplicationPage() {
       )}
 
       {/* FULL-SCREEN SIDE EVALUATION DRAWER */}
-      <Drawer 
-        isOpen={!!reviewApp} 
-        onClose={() => setReviewApp(null)} 
+      <Drawer
+        isOpen={!!reviewApp}
+        onClose={() => setReviewApp(null)}
         title="Candidate Profile & Scorecard Workspace"
       >
         {reviewApp && (
@@ -1137,28 +1129,28 @@ export default function ApplicationPage() {
                   const isTerminal = reviewApp.status === 'Rejected' || reviewApp.status === 'Selected' || reviewApp.status === 'Accepted';
                   return (
                     <>
-                      <button 
+                      <button
                         onClick={() => handleQuickStatus(reviewApp.id, 'Shortlisted')}
                         disabled={reviewApp.status === 'Shortlisted' || actionLoading !== null || isTerminal}
                         className="px-3.5 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 rounded-lg text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                       >
                         {actionLoading === 'Shortlisted' ? 'Processing...' : 'Shortlist'}
                       </button>
-                      <button 
+                      <button
                         onClick={() => openInterviewModal(reviewApp.id)}
                         disabled={reviewApp.status === 'Interview Scheduled' || actionLoading !== null || isTerminal}
                         className="px-3.5 py-1.5 bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 rounded-lg text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                       >
                         {actionLoading === 'Interview Scheduled' ? 'Processing...' : 'Schedule Interview'}
                       </button>
-                      <button 
+                      <button
                         onClick={() => handleApproveAndCreateUser(reviewApp)}
                         disabled={isTerminal || actionLoading !== null}
                         className="px-3.5 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 rounded-lg text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                       >
                         {actionLoading === 'Approve' ? 'Processing...' : 'Approve / Select'}
                       </button>
-                      <button 
+                      <button
                         onClick={() => handleQuickStatus(reviewApp.id, 'Rejected')}
                         disabled={isTerminal || actionLoading !== null}
                         className="px-3.5 py-1.5 bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 rounded-lg text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
@@ -1175,7 +1167,7 @@ export default function ApplicationPage() {
             <div className="flex-1 flex overflow-hidden min-h-0">
               {/* Left Column: Applicant Details Portfolio */}
               <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                
+
                 {/* Section 1: Personal Info */}
                 <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
                   <h4 className="text-xs font-black text-text-primary uppercase tracking-wider flex items-center gap-1.5 border-b border-border pb-2">
@@ -1320,22 +1312,32 @@ export default function ApplicationPage() {
                         </div>
                         <div>
                           <span className="text-text-secondary font-semibold block uppercase text-[10px]">Receipt Check Status</span>
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded font-black text-[9px] mt-1 ${
-                            reviewApp.paymentVerified === 'Verified' ? 'bg-emerald-50 text-emerald-700' :
-                            reviewApp.paymentVerified === 'Rejected' ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'
-                          }`}>
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded font-black text-[9px] mt-1 ${reviewApp.paymentVerified === 'Verified' ? 'bg-emerald-50 text-emerald-700' :
+                              reviewApp.paymentVerified === 'Rejected' ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'
+                            }`}>
                             {reviewApp.paymentVerified || 'Pending Check'}
                           </span>
                         </div>
+                        <div>
+                          <span className="text-text-secondary font-semibold block uppercase text-[10px] mb-1">Amount Paid (₹)</span>
+                          <input
+                            type="number"
+                            value={paymentAmount}
+                            onChange={(e) => setPaymentAmount(e.target.value)}
+                            placeholder="Enter amount..."
+                            className="w-full bg-slate-50 border border-border text-text-primary rounded px-2 py-1.5 text-xs font-bold focus:outline-none focus:border-blue-400"
+                            disabled={reviewApp.paymentVerified === 'Verified'}
+                          />
+                        </div>
                         <div className="flex gap-2 pt-2">
-                          <button 
+                          <button
                             onClick={() => handlePaymentVerification(reviewApp.id, 'Verified')}
                             disabled={reviewApp.paymentVerified === 'Verified'}
                             className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-black uppercase cursor-pointer transition-colors"
                           >
                             Approve Payment
                           </button>
-                          <button 
+                          <button
                             onClick={() => handlePaymentVerification(reviewApp.id, 'Rejected')}
                             disabled={reviewApp.paymentVerified === 'Rejected'}
                             className="px-3.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-lg text-[10px] font-black uppercase cursor-pointer transition-colors border border-rose-200"
@@ -1344,7 +1346,7 @@ export default function ApplicationPage() {
                           </button>
                         </div>
                       </div>
-                      
+
                       {/* Simulated Payment Receipt Attachment Preview */}
                       <div className="border border-border rounded-xl p-3.5 bg-slate-50 flex flex-col justify-between h-40">
                         <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-wider text-text-secondary">
@@ -1441,7 +1443,7 @@ export default function ApplicationPage() {
                       Resume Documents
                     </h4>
                     <div className="flex gap-2">
-                      <button 
+                      <button
                         onClick={handleDownloadResume}
                         className="text-blue-600 hover:text-blue-800 text-[10px] font-bold inline-flex items-center gap-0.5 cursor-pointer"
                       >
@@ -1450,10 +1452,10 @@ export default function ApplicationPage() {
                       </button>
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
                     {/* Simulated document PDF wrapper */}
-                    <div 
+                    <div
                       onClick={handleDownloadResume}
                       className="md:col-span-2 border border-border rounded-xl p-4 bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer flex flex-col items-center justify-center min-h-[140px]"
                     >
@@ -1488,10 +1490,9 @@ export default function ApplicationPage() {
                         {aiLoading ? (
                           <span className="font-bold block mt-0.5 text-blue-400 animate-pulse text-[10px]">Analyzing…</span>
                         ) : (
-                          <span className={`font-bold block mt-0.5 ${
-                            reviewApp.aiSentiment === 'Positive' ? 'text-emerald-600' :
-                            reviewApp.aiSentiment === 'Concern' ? 'text-rose-600' : 'text-amber-600'
-                          }`}>
+                          <span className={`font-bold block mt-0.5 ${reviewApp.aiSentiment === 'Positive' ? 'text-emerald-600' :
+                              reviewApp.aiSentiment === 'Concern' ? 'text-rose-600' : 'text-amber-600'
+                            }`}>
                             {reviewApp.aiSentiment || '—'}
                           </span>
                         )}
@@ -1549,7 +1550,7 @@ export default function ApplicationPage() {
                         </ul>
                       </div>
                     )}
-                    
+
                     {reviewApp.aiWeaknesses && reviewApp.aiWeaknesses.length > 0 && (
                       <div>
                         <span className="text-[10px] font-black text-rose-800 uppercase tracking-widest block mb-1">Weaknesses</span>
@@ -1597,9 +1598,9 @@ export default function ApplicationPage() {
                         <span>Technical Evaluation</span>
                         <span className="font-mono text-blue-600 font-bold">{techScore}/10</span>
                       </div>
-                      <input 
-                        type="range" min="1" max="10" 
-                        value={techScore} 
+                      <input
+                        type="range" min="1" max="10"
+                        value={techScore}
                         onChange={(e) => setTechScore(parseInt(e.target.value))}
                         className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
                       />
@@ -1610,9 +1611,9 @@ export default function ApplicationPage() {
                         <span>Communication</span>
                         <span className="font-mono text-blue-600 font-bold">{commScore}/10</span>
                       </div>
-                      <input 
-                        type="range" min="1" max="10" 
-                        value={commScore} 
+                      <input
+                        type="range" min="1" max="10"
+                        value={commScore}
                         onChange={(e) => setCommScore(parseInt(e.target.value))}
                         className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
                       />
@@ -1623,9 +1624,9 @@ export default function ApplicationPage() {
                         <span>Academic Records</span>
                         <span className="font-mono text-blue-600 font-bold">{acadScore}/10</span>
                       </div>
-                      <input 
-                        type="range" min="1" max="10" 
-                        value={acadScore} 
+                      <input
+                        type="range" min="1" max="10"
+                        value={acadScore}
                         onChange={(e) => setAcadScore(parseInt(e.target.value))}
                         className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
                       />
@@ -1636,9 +1637,9 @@ export default function ApplicationPage() {
                         <span>Culture Alignment</span>
                         <span className="font-mono text-blue-600 font-bold">{cultureScore}/10</span>
                       </div>
-                      <input 
-                        type="range" min="1" max="10" 
-                        value={cultureScore} 
+                      <input
+                        type="range" min="1" max="10"
+                        value={cultureScore}
                         onChange={(e) => setCultureScore(parseInt(e.target.value))}
                         className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
                       />
@@ -1648,7 +1649,7 @@ export default function ApplicationPage() {
                   {/* Recommendation dropdown */}
                   <div className="space-y-1.5 pt-2">
                     <label className="text-[10px] font-black text-text-secondary uppercase tracking-wider block">Recruiter Recommendation</label>
-                    <select 
+                    <select
                       value={overallRec}
                       onChange={(e) => setOverallRec(e.target.value)}
                       className="w-full text-xs font-semibold border border-border rounded-lg p-2 bg-white"
@@ -1664,7 +1665,7 @@ export default function ApplicationPage() {
                   {/* Notes & feedback text areas */}
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-black text-text-secondary uppercase tracking-wider block">Internal Reviewer Notes</label>
-                    <textarea 
+                    <textarea
                       value={notesText}
                       onChange={(e) => setNotesText(e.target.value)}
                       rows={3}
@@ -1675,7 +1676,7 @@ export default function ApplicationPage() {
 
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-black text-text-secondary uppercase tracking-wider block">Candidate Feedback (Sendable)</label>
-                    <textarea 
+                    <textarea
                       value={feedbackText}
                       onChange={(e) => setFeedbackText(e.target.value)}
                       rows={3}
@@ -1684,7 +1685,7 @@ export default function ApplicationPage() {
                     ></textarea>
                   </div>
 
-                  <button 
+                  <button
                     onClick={handleSaveEvaluation}
                     disabled={actionLoading !== null}
                     className="w-full py-2 bg-slate-900 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
