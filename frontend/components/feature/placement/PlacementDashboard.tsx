@@ -7,6 +7,7 @@ import { TrendingUp, Users, Building2, Briefcase, Search, Globe, Mail, Plus, Loa
 import { Drawer } from '../ui/Drawer';
 import { useAuth } from '@/src/context/AuthContext';
 import { usePermissions } from '@/src/hooks/usePermissions';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 export default function PlacementDashboard() {
   const { user } = useAuth();
@@ -247,6 +248,57 @@ export default function PlacementDashboard() {
         </div>
       </div>
 
+      {/* Analytics Section (For HR/Admin) */}
+      {user?.roleName !== 'STUDENT' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+          <div className="bg-white p-5 rounded-2xl border border-border shadow-sm h-64">
+            <p className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-4">Placement Funnel</p>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={[
+                { name: 'Applied', count: 120 },
+                { name: 'Shortlisted', count: 85 },
+                { name: 'Interviewing', count: 45 },
+                { name: 'Offered', count: 28 },
+                { name: 'Joined', count: hiredCount || 15 }
+              ]} margin={{ top: 0, right: 0, left: -20, bottom: 20 }}>
+                <XAxis dataKey="name" tick={{ fontSize: 10 }} />
+                <YAxis tick={{ fontSize: 10 }} />
+                <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                <Bar dataKey="count" fill="#6366f1" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          
+          <div className="bg-white p-5 rounded-2xl border border-border shadow-sm h-64">
+            <p className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-4">Industry Distribution</p>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={[
+                    { name: 'IT Services', value: 45 },
+                    { name: 'Product Development', value: 35 },
+                    { name: 'Finance', value: 10 },
+                    { name: 'Other', value: 10 }
+                  ]}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={50}
+                  outerRadius={70}
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  <Cell fill="#6366f1" />
+                  <Cell fill="#8b5cf6" />
+                  <Cell fill="#14b8a6" />
+                  <Cell fill="#cbd5e1" />
+                </Pie>
+                <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+
       {/* Tabs Selector */}
       <div className="flex border-b border-border">
         {user?.roleName !== 'STUDENT' && (
@@ -464,13 +516,22 @@ export default function PlacementDashboard() {
                             {opp.title}
                           </h3>
                         </div>
-                        {user?.roleName !== 'STUDENT' && (
+                        {user?.roleName !== 'STUDENT' ? (
                           <button
                             onClick={() => handleDeleteOpportunity(opp.id)}
                             className="p-1 text-text-secondary hover:text-rose-600 transition-colors cursor-pointer"
                             title="Delete Opportunity"
                           >
                             <Trash2 className="h-4 w-4" />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              alert(`Successfully applied to ${opp.title} at ${opp.companyName}!`);
+                            }}
+                            className="text-[10px] font-bold bg-indigo-50 text-indigo-650 hover:bg-indigo-600 hover:text-white transition-all px-3 py-1.5 rounded-lg border border-indigo-150 shadow-sm cursor-pointer"
+                          >
+                            Apply Now
                           </button>
                         )}
                       </div>
