@@ -41,6 +41,18 @@ async def get_current_user(
     return user
 
 
+MODULE_MAPPING = {
+    "users": "user",
+    "roles": "role",
+    "modules": "module_registry",
+    "organizations": "organization",
+    "programs": "program",
+    "opportunities": "opportunity",
+    "applications": "application",
+    "students": "student",
+    "files": "common_file",
+}
+
 def require_permission(module: str, action: str):
     """
     Reusable RBAC dependency factory.
@@ -57,7 +69,10 @@ def require_permission(module: str, action: str):
         from app.modules.identity.repository import PermissionRepository
         # Map read to view to match DB seed scripts
         mapped_action = "view" if action == "read" else action
-        permission_name = f"{module}.{mapped_action}"
+        # Map router module name to DB module name
+        mapped_module = MODULE_MAPPING.get(module, module)
+        
+        permission_name = f"{mapped_module}.{mapped_action}"
         has_perm = await PermissionRepository(db).user_has_permission(
             db=db,
             user_id=current_user.id,
