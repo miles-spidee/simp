@@ -43,6 +43,10 @@ export default function PlacementDashboard() {
   const [performanceScore, setPerformanceScore] = useState<number | undefined>(undefined);
   const [previewTier, setPreviewTier] = useState<'ALL' | 'TOP' | 'MID' | 'SMALL'>('ALL');
 
+  // View Details Drawer state
+  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+  const [selectedOpportunity, setSelectedOpportunity] = useState<PlacementOpportunity | null>(null);
+
   // Add Opportunity Drawer state
   const [isAddOppOpen, setIsAddOppOpen] = useState(false);
   const [oppTitle, setOppTitle] = useState('');
@@ -392,7 +396,7 @@ export default function PlacementDashboard() {
                     </td>
                   </tr>
                 ) : filteredCompanies.map(comp => (
-                  <tr key={comp.id} className="hover:bg-slate-50/50 transition-colors">
+                  <tr key={comp.id} onClick={() => setSelectedCompany(comp)} className="hover:bg-slate-50/50 transition-colors cursor-pointer">
                     <td className="px-5 py-4">
                       <div className="font-bold text-text-primary">{comp.name}</div>
                     </td>
@@ -497,7 +501,8 @@ export default function PlacementDashboard() {
                 return (
                   <div 
                     key={opp.id} 
-                    className={`bg-white rounded-2xl border p-5 flex flex-col justify-between min-h-[220px] transition-all relative overflow-hidden group hover:shadow-md ${
+                    onClick={() => setSelectedOpportunity(opp)}
+                    className={`bg-white rounded-2xl border p-5 flex flex-col justify-between min-h-[220px] transition-all relative overflow-hidden group hover:shadow-md cursor-pointer ${
                       isTop ? 'border-violet-250 bg-gradient-to-br from-white to-violet-50/10' : isMid ? 'border-blue-150' : 'border-border'
                     }`}
                   >
@@ -518,7 +523,7 @@ export default function PlacementDashboard() {
                         </div>
                         {user?.roleName !== 'STUDENT' ? (
                           <button
-                            onClick={() => handleDeleteOpportunity(opp.id)}
+                            onClick={(e) => { e.stopPropagation(); handleDeleteOpportunity(opp.id); }}
                             className="p-1 text-text-secondary hover:text-rose-600 transition-colors cursor-pointer"
                             title="Delete Opportunity"
                           >
@@ -526,7 +531,8 @@ export default function PlacementDashboard() {
                           </button>
                         ) : (
                           <button
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation();
                               alert(`Successfully applied to ${opp.title} at ${opp.companyName}!`);
                             }}
                             className="text-[10px] font-bold bg-indigo-50 text-indigo-650 hover:bg-indigo-600 hover:text-white transition-all px-3 py-1.5 rounded-lg border border-indigo-150 shadow-sm cursor-pointer"
@@ -802,6 +808,111 @@ export default function PlacementDashboard() {
             </button>
           </div>
         </form>
+      </Drawer>
+
+      {/* View Company Drawer */}
+      <Drawer
+        isOpen={!!selectedCompany}
+        onClose={() => setSelectedCompany(null)}
+        title="Partner Company Details"
+      >
+        {selectedCompany && (
+          <div className="p-6 space-y-6">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="h-16 w-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl font-bold uppercase shadow-sm border border-blue-100">
+                {selectedCompany.name.charAt(0)}
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-slate-800">{selectedCompany.name}</h3>
+                <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">{selectedCompany.industry}</p>
+              </div>
+            </div>
+            
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Website</span>
+                <a href={selectedCompany.website} target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-blue-600 hover:underline flex items-center gap-1"><Globe className="w-4 h-4"/> {selectedCompany.website.replace('https://', '')}</a>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">HR Contact</span>
+                <span className="text-sm font-bold text-slate-800">{selectedCompany.contactPerson}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Email</span>
+                <a href={`mailto:${selectedCompany.contactEmail}`} className="text-sm font-bold text-blue-600 hover:underline flex items-center gap-1"><Mail className="w-4 h-4"/> {selectedCompany.contactEmail}</a>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Active Openings</span>
+                <span className="text-sm font-bold text-slate-800 px-2.5 py-0.5 bg-white rounded-full border border-slate-200">{selectedCompany.activeRoles}</span>
+              </div>
+            </div>
+          </div>
+        )}
+      </Drawer>
+
+      {/* View Opportunity Drawer */}
+      <Drawer
+        isOpen={!!selectedOpportunity}
+        onClose={() => setSelectedOpportunity(null)}
+        title="Opportunity Details"
+      >
+        {selectedOpportunity && (
+          <div className="p-6 space-y-6">
+            <div className="mb-6">
+              <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md ${
+                selectedOpportunity.tier === 'TOP' ? 'bg-violet-100 text-violet-700' : selectedOpportunity.tier === 'MID' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-text-secondary'
+              }`}>
+                {selectedOpportunity.tier} Tier
+              </span>
+              <h3 className="text-2xl font-bold text-slate-800 mt-3">{selectedOpportunity.title}</h3>
+              <div className="font-bold text-blue-600 text-sm mt-1 flex items-center gap-1.5">
+                <Building2 className="w-4 h-4" />
+                {selectedOpportunity.companyName}
+              </div>
+            </div>
+            
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Location</span>
+                <span className="text-sm font-bold text-slate-800 flex items-center gap-1"><MapPin className="w-4 h-4 text-slate-400" /> {selectedOpportunity.location}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Package / Stipend</span>
+                <span className="text-lg font-extrabold text-blue-600 font-mono">
+                  {selectedOpportunity.packageLpa >= 1000 ? `${selectedOpportunity.packageLpa.toLocaleString()} INR/mo` : `${selectedOpportunity.packageLpa} LPA`}
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="text-xs text-slate-500 font-bold uppercase tracking-wider">Role Description</h4>
+              <p className="text-sm text-slate-700 leading-relaxed bg-white p-4 rounded-xl border border-slate-100 whitespace-pre-wrap">{selectedOpportunity.description}</p>
+            </div>
+
+            {selectedOpportunity.requirements && (
+              <div className="space-y-2">
+                <h4 className="text-xs text-slate-500 font-bold uppercase tracking-wider">Technical Requirements</h4>
+                <div className="bg-slate-800 p-4 rounded-xl text-xs font-mono leading-relaxed text-slate-200 whitespace-pre-wrap">
+                  {selectedOpportunity.requirements}
+                </div>
+              </div>
+            )}
+            
+            {user?.roleName === 'STUDENT' && (
+              <div className="pt-4 mt-6 border-t border-slate-100">
+                <button
+                  onClick={() => {
+                    alert(`Successfully applied to ${selectedOpportunity.title} at ${selectedOpportunity.companyName}!`);
+                    setSelectedOpportunity(null);
+                  }}
+                  className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-blue-600/20 flex items-center justify-center gap-2"
+                >
+                  <Briefcase className="w-4 h-4" /> Apply for this role
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </Drawer>
 
     </div>

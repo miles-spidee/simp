@@ -45,5 +45,9 @@ export const PlacementService = {
 
   deleteOpportunity: async (id: string) => {
     return await PlacementApi.deleteOpportunity(id);
+  },
+
+  updatePlacementStage: async (id: string, stage: string) => {
+    return await PlacementApi.updatePlacementStage(id, stage);
   }
 };

@@ -55,5 +55,14 @@ export const PlacementApi = {
     } catch (error) {
       return false;
     }
+  },
+
+  updatePlacementStage: async (id: string, stage: string): Promise<boolean> => {
+    try {
+      await apiClient.patch(`/api/v1/placement/applications/${id}/stage`, { stage });
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 };
