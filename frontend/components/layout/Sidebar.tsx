@@ -80,7 +80,19 @@ export function Sidebar({ isMobileOpen, setMobileOpen, isCollapsed, setCollapsed
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-3 py-6 space-y-1 font-sans select-none custom-scrollbar">
+        {/* Desktop Sidebar Toggle */}
+        <div className={`hidden md:flex items-center mt-5 px-5 ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
+          {!isCollapsed && <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Menu</span>}
+          <button 
+            onClick={() => setCollapsed(!isCollapsed)} 
+            className="p-1 rounded-md text-text-secondary hover:bg-selected hover:text-primary transition-colors cursor-pointer"
+            title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+          >
+            {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          </button>
+        </div>
+
+        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1 font-sans select-none custom-scrollbar">
           {filteredItems.map((item) => {
             const IconComponent = item.icon;
             const active = isLinkActive(item.route);
@@ -132,17 +144,6 @@ export function Sidebar({ isMobileOpen, setMobileOpen, isCollapsed, setCollapsed
              
             >
               <LogOut className="h-5 w-5" />
-            </button>
-          </div>
-          
-          {/* Collapse sidebar toggle button for desktop/tablet */}
-          <div className="hidden md:flex justify-end mt-4 pt-2 border-t border-border">
-            <button 
-              onClick={() => setCollapsed(!isCollapsed)} 
-              className="p-1.5 rounded-lg bg-selected/50 text-text-secondary hover:bg-selected hover:text-primary-hover transition-colors cursor-pointer"
-              title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
-            >
-              {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
             </button>
           </div>
         </div>
