@@ -69,7 +69,7 @@ export const programService = {
         program_name: updates.program_name || updates.title,
         program_code: updates.program_code || updates.code,
         duration_weeks: updates.duration_weeks || updates.durationWeeks,
-        internship_type_id: updates.internship_type_id || updates.program_type || updates.type,
+        internship_type_id: updates.internship_type_id || updates.type,
         program_description: updates.program_description || updates.description,
       };
       

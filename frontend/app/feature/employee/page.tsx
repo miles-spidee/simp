@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useMemo, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   Users, Search, Filter, Plus, ChevronRight, FileDown, MoreVertical, 
   Building, MapPin, TrendingUp, CheckCircle2, XCircle, AlertTriangle, 
@@ -1236,16 +1237,6 @@ export default function EmployeeManagementPage() {
                 </PermissionGuard>
                 <button 
                   onClick={() => {
-                    setMentorInput(activeProfile.mentorId || '');
-                    setActiveActionModal({ type: 'mentor' });
-                  }}
-                  className="bg-slate-800 hover:bg-slate-700 border border-border text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1"
-                >
-                  <Award className="h-3 w-3 text-text-secondary" />
-                  <span>Mentor</span>
-                </button>
-                <button 
-                  onClick={() => {
                     setStatusInput(activeProfile.status);
                     setActiveActionModal({ type: 'status' });
                   }}
@@ -1254,74 +1245,8 @@ export default function EmployeeManagementPage() {
                   <RefreshCw className="h-3 w-3 text-emerald-400" />
                   <span>Status</span>
                 </button>
-                <button 
-                  onClick={() => {
-                    setPromoTitle(activeProfile.designation);
-                    setPromoGrade(activeProfile.salaryGrade);
-                    setActiveActionModal({ type: 'promote' });
-                  }}
-                  className="bg-slate-800 hover:bg-slate-700 border border-border text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1 text-amber-400"
-                >
-                  <TrendingUp className="h-3 w-3" />
-                  <span>Promote</span>
-                </button>
-                <button 
-                  onClick={() => {
-                    setNotifyMsg('');
-                    setActiveActionModal({ type: 'notify' });
-                  }}
-                  className="bg-slate-800 hover:bg-slate-700 border border-border text-white px-2.5 py-1.5 rounded text-[11px] font-bold transition-all duration-150 cursor-pointer flex items-center gap-1 text-blue-400"
-                >
-                  <Send className="h-3 w-3" />
-                  <span>Notify</span>
-                </button>
-                
-                {/* Export single record */}
-                <button 
-                  onClick={() => {
-                    showToast(`Single Employee record compiled & exported for ${activeProfile.name}`);
-                  }}
-                  className="bg-slate-800 hover:bg-slate-700 border border-border text-slate-300 hover:text-white p-1.5 rounded cursor-pointer"
-                  title="Export Record Summary"
-                >
-                  <FileDown className="h-4 w-4" />
-                </button>
               </div>
 
-            </div>
-
-            {/* TAB SELECTOR STRIP */}
-            <div className="bg-white border-b border-border px-6 overflow-x-auto flex shrink-0 scrollbar-none">
-              {[
-                { id: 'overview', label: 'Overview' },
-                { id: 'documents', label: 'Documents Center' },
-                { id: 'hr', label: 'HR Operations' },
-                { id: 'mentor', label: 'Mentor Metrics', mentorOnly: true },
-                { id: 'access', label: 'Access Control', adminOnly: true },
-                { id: 'performance', label: 'Performance Center' },
-                { id: 'projects', label: 'Projects & Work' },
-                { id: 'timeline', label: 'Timeline History' },
-              ].map((tab) => {
-                // Check if mentor role
-                if (tab.mentorOnly && activeProfile.roleName !== 'Mentor') return null;
-                // Check if admin only
-                if (tab.adminOnly && user?.roleName !== 'Super Admin') return null;
-
-                const isActive = profileTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setProfileTab(tab.id as any)}
-                    className={`py-3 px-4 font-bold text-xs border-b-2 transition-all shrink-0 cursor-pointer ${
-                      isActive 
-                        ? 'border-blue-600 text-blue-600' 
-                        : 'border-transparent text-text-secondary hover:text-text-primary'
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                );
-              })}
             </div>
 
             {/* TAB CONTENT SPACE (SCROLLABLE) */}
@@ -1404,35 +1329,7 @@ export default function EmployeeManagementPage() {
                     </div>
                   </div>
 
-                  {/* Employment stage timeline flow bar */}
-                  <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
-                    <h4 className="text-xs font-extrabold text-text-secondary uppercase tracking-widest">
-                      Lifecycle Stage Status
-                    </h4>
-                    <div className="flex items-center justify-between relative mt-2">
-                      <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-slate-200 -translate-y-1/2 z-0" />
-                      
-                      {[
-                        { title: 'Recruit', date: activeProfile.joinDate, active: true },
-                        { title: 'Onboard', date: activeProfile.joinDate, active: true },
-                        { title: 'Probation', date: activeProfile.status === 'Probation' ? 'Current' : 'Completed', active: activeProfile.status !== 'Training' },
-                        { title: 'Active Duty', date: activeProfile.status === 'Active' ? 'Current' : '', active: activeProfile.status === 'Active' || activeProfile.status === 'Notice Period' },
-                        { title: 'Exit', date: activeProfile.status === 'Notice Period' ? 'In notice' : '', active: activeProfile.status === 'Notice Period' || activeProfile.status === 'Resigned' }
-                      ].map((stage, sIdx) => (
-                        <div key={sIdx} className="flex flex-col items-center z-10">
-                          <div className={`h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold border-2 ${
-                            stage.active 
-                              ? 'bg-blue-600 border-blue-600 text-white shadow-sm' 
-                              : 'bg-white border-border text-text-secondary'
-                          }`}>
-                            {sIdx + 1}
-                          </div>
-                          <span className="text-[10px] font-bold text-text-primary mt-1">{stage.title}</span>
-                          <span className="text-[8px] text-text-secondary font-semibold">{stage.date}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+
 
                 </div>
               )}
@@ -2088,10 +1985,10 @@ export default function EmployeeManagementPage() {
       </Drawer>
 
       {/* ------------------ MODALS FOR OPERATIONAL ACTIONS ------------------ */}
-      {activeActionModal && (
+      {activeActionModal && typeof document !== 'undefined' && createPortal(
         <div className={`z-[100] flex transition-all ${
           (activeActionModal.type === 'edit' || activeActionModal.type === 'onboard') 
-            ? 'absolute inset-0 bg-white p-0 items-start justify-stretch' 
+            ? 'fixed inset-y-0 left-0 lg:left-72 right-0 bg-white p-0 items-start justify-stretch' 
             : 'fixed inset-0 bg-slate-900/50 backdrop-blur-sm p-4 items-center justify-center'
         }`}>
           <div className={`bg-white overflow-hidden transition-all duration-300 ${
@@ -2629,7 +2526,8 @@ export default function EmployeeManagementPage() {
 
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
     </div>
