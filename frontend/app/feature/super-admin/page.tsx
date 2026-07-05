@@ -8,10 +8,15 @@ import { AlertTriangle,
 import { superAdminService } from '@/src/services/super-admin.service';
 import { SystemSetting, AuditLog, RolePermission } from '@/src/types/super-admin.types';
 import { EnhancedTable } from '@/components/feature/ui/Table';
+import EmailDashboard from '@/components/feature/email/EmailDashboard';
+import CertificateDashboard from '@/components/feature/certificate/CertificateDashboard';
+import CollegeCertificateDashboard from '@/components/feature/certificate/CollegeCertificateDashboard';
+import DocumentDashboard from '@/components/feature/document/DocumentDashboard';
+import { Mail, Award, ShieldCheck, FileText } from 'lucide-react';
 
 export default function SuperAdminPage() {
 
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'settings' | 'logs' | 'roles'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'settings' | 'logs' | 'roles' | 'email' | 'certificates' | 'college-certificates' | 'documents'>('dashboard');
   const [settings, setSettings] = useState<SystemSetting[]>([]);
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [roles, setRoles] = useState<RolePermission[]>([]);
@@ -81,7 +86,11 @@ export default function SuperAdminPage() {
           { id: 'dashboard', label: 'System Health', icon: Activity },
           { id: 'settings', label: 'Global Settings', icon: Settings },
           { id: 'roles', label: 'Role Permissions', icon: Users },
-          { id: 'logs', label: 'Audit Logs', icon: List }
+          { id: 'logs', label: 'Audit Logs', icon: List },
+          { id: 'email', label: 'Email Templates', icon: Mail },
+          { id: 'certificates', label: 'Certificates', icon: Award },
+          { id: 'college-certificates', label: 'College Verifications', icon: ShieldCheck },
+          { id: 'documents', label: 'Documents', icon: FileText }
         ].map(t => (
           <button
             key={t.id}
@@ -246,6 +255,10 @@ export default function SuperAdminPage() {
               />
             </div>
           )}
+          {activeTab === 'email' && <EmailDashboard />}
+          {activeTab === 'certificates' && <CertificateDashboard />}
+          {activeTab === 'college-certificates' && <CollegeCertificateDashboard />}
+          {activeTab === 'documents' && <DocumentDashboard />}
         </div>
       </div>
     </div>

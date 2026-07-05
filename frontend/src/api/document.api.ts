@@ -1,42 +1,51 @@
-import { apiClient } from './api.client';
 import { GeneratedDocument, DocumentTemplate } from '../types/document.types';
-import {} from '../types/documents.types';
 
+const getStoredDocs = (): GeneratedDocument[] => {
+  if (typeof window === 'undefined') return [];
+  try {
+    const stored = localStorage.getItem('doc_mock');
+    if (stored) return JSON.parse(stored);
+    return [];
+  } catch {
+    return [];
+  }
+};
 
 export const DocumentApi = {
   getGeneratedDocuments: async (): Promise<GeneratedDocument[]> => {
-    try {
-      const res = await apiClient.get('/api/v1/document');
-      return res.data?.data || [];
-    } catch (error) {
-      return [];
-    }
+    return getStoredDocs();
   },
   
   getTemplates: async (): Promise<DocumentTemplate[]> => {
-    try {
-      const res = await apiClient.get('/api/v1/document/templates');
-      return res.data?.data || [];
-    } catch (error) {
-      return [];
-    }
+    return [];
   },
 
   createGeneratedDocument: async (doc: Partial<GeneratedDocument>): Promise<GeneratedDocument> => {
-    try {
-      const res = await apiClient.post('/api/v1/document', doc);
-      return res.data?.data || null as any;
-    } catch (error) {
-      return null as any;
-    }
+    if (typeof window === 'undefined') return null as any;
+    const docs = getStoredDocs();
+    
+    const newDoc: GeneratedDocument = {
+      ...doc,
+      id: Math.random().toString(36).substr(2, 9),
+      generatedAt: new Date().toISOString(),
+      url: '#',
+      status: 'Generated',
+    } as GeneratedDocument;
+    
+    docs.unshift(newDoc);
+    localStorage.setItem('doc_mock', JSON.stringify(docs));
+    return newDoc;
   },
 
   updateDocumentStatus: async (id: string, status: 'Draft' | 'Generated' | 'Sent' | 'Signed'): Promise<GeneratedDocument> => {
-    try {
-      const res = await apiClient.patch(`/api/v1/document/${id}/status`, { status });
-      return res.data?.data || null as any;
-    } catch (error) {
-      return null as any;
+    if (typeof window === 'undefined') return null as any;
+    const docs = getStoredDocs();
+    const index = docs.findIndex(d => d.id === id);
+    if (index > -1) {
+      docs[index].status = status;
+      localStorage.setItem('doc_mock', JSON.stringify(docs));
+      return docs[index];
     }
+    return null as any;
   }
 };
