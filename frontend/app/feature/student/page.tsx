@@ -46,6 +46,8 @@ export default function StudentLifecycleManagementPage() {
 
   // Forms state
   const [editForm, setEditForm] = useState({
+    firstName: '',
+    lastName: '',
     name: '',
     email: '',
     phone: '',
@@ -102,6 +104,7 @@ export default function StudentLifecycleManagementPage() {
 
   const [notifyMsg, setNotifyMsg] = useState('');
   const [bulkVal, setBulkVal] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Toast notification
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
@@ -458,7 +461,10 @@ export default function StudentLifecycleManagementPage() {
 
   // Pre-fill student editing forms
   const openEditModal = (student: Student) => {
+    const parts = student.personalInfo.name.trim().split(" ");
     setEditForm({
+      firstName: parts[0] || "",
+      lastName: parts.slice(1).join(" ") || "",
       name: student.personalInfo.name,
       email: student.personalInfo.email,
       phone: student.personalInfo.phone,
@@ -495,7 +501,7 @@ export default function StudentLifecycleManagementPage() {
     const updated = await studentService.updateStudent(targetId, {
       personalInfo: {
         ...original.personalInfo,
-        name: editForm.name,
+        name: `${editForm.firstName} ${editForm.lastName}`.trim(),
         email: editForm.email,
         phone: editForm.phone,
         dob: editForm.dob,
@@ -536,9 +542,9 @@ export default function StudentLifecycleManagementPage() {
 
   const handleCreateStudent = async (e: React.FormEvent) => {
     e.preventDefault();
-    const parts = editForm.name.trim().split(" ");
-    const firstName = parts[0] || "Student";
-    const lastName = parts.slice(1).join(" ") || "Name";
+    setIsSubmitting(true);
+    const firstName = editForm.firstName.trim() || "Student";
+    const lastName = editForm.lastName.trim() || "Name";
 
     try {
       const newStu = await studentService.createStudent({
@@ -572,6 +578,8 @@ export default function StudentLifecycleManagementPage() {
     } catch (err: any) {
       console.error(err);
       showToast(err.response?.data?.detail || 'Failed to enroll student', 'error');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -1044,7 +1052,7 @@ export default function StudentLifecycleManagementPage() {
             <button 
                 onClick={() => {
                   setEditForm({
-                    name: '', email: '', phone: '', dob: '', gender: 'Male', address: '', college: '',
+                    firstName: '', lastName: '', name: '', email: '', phone: '', dob: '', gender: 'Male', address: '', college: '',
                     college_id: '',
                     department: 'CSE', degree: 'B.Tech', year: 3, cgpa: 8.5, graduationYear: 2027,
                     program: 'Summer Software Engineering Internship', internshipType: 'Free Internship',
@@ -1517,13 +1525,14 @@ export default function StudentLifecycleManagementPage() {
       <Drawer
         isOpen={isProfileDrawerOpen}
         onClose={() => setIsProfileDrawerOpen(false)}
-        title="" // Custom styled header below
+        title="Student Profile Center"
       >
         {activeProfile && (
-          <div className="space-y-6 pb-20">
+          <div className="p-4 md:p-6 space-y-6 pb-20 overflow-y-auto bg-slate-50/50 h-full">
             
-            {/* Drawer Master Sticky Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 text-white p-6 -mx-6 -mt-6 sticky top-0 z-30 shadow-[0_10px_30px_rgba(0,0,0,0.2)] border-b border-white/5 backdrop-blur-2xl">
+            {/* Drawer Master Header - Hero Banner */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 text-white p-6 rounded-2xl shadow-lg border border-slate-700 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
               <div className="flex items-center gap-4">
                 <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-black text-xl shadow-[0_0_15px_rgba(79,70,229,0.4)] border border-white/20 shrink-0 transform transition-all hover:scale-105 hover:rotate-3">
                   {activeProfile.personalInfo.avatar}
@@ -2370,7 +2379,7 @@ export default function StudentLifecycleManagementPage() {
               
               {/* Form 1: Onboard / Edit Student Profile */}
               {(activeActionModal.type === 'onboard' || activeActionModal.type === 'edit') && (
-                <div className="space-y-6 max-w-5xl mx-auto w-full flex-1 flex flex-col justify-start overflow-hidden pt-4">
+                <div className="space-y-6 max-w-5xl mx-auto w-full flex-1 flex flex-col justify-start overflow-y-auto pr-2 pt-4">
                   
                   {/* Section 1 */}
                   <div className="space-y-2">
@@ -2379,12 +2388,22 @@ export default function StudentLifecycleManagementPage() {
                     </div>
                     <div className="grid grid-cols-3 gap-3">
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-text-secondary">Legal Name *</label>
+                        <label className="text-[10px] font-bold text-text-secondary">First Name *</label>
                         <input 
                           type="text" 
                           required 
-                          value={editForm.name}
-                          onChange={e => setEditForm({ ...editForm, name: e.target.value })}
+                          value={editForm.firstName}
+                          onChange={e => setEditForm({ ...editForm, firstName: e.target.value })}
+                          className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-text-secondary">Last Name *</label>
+                        <input 
+                          type="text" 
+                          required 
+                          value={editForm.lastName}
+                          onChange={e => setEditForm({ ...editForm, lastName: e.target.value })}
                           className="w-full bg-slate-50 border border-border rounded p-1.5 text-xs font-semibold text-text-primary focus:outline-none"
                         />
                       </div>
@@ -2864,9 +2883,10 @@ export default function StudentLifecycleManagementPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition shadow-sm"
+                  disabled={isSubmitting}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Confirm Action
+                  {isSubmitting ? 'Confirming...' : 'Confirm Action'}
                 </button>
               </div>
 

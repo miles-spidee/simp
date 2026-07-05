@@ -463,6 +463,32 @@ async def get_student(id: UUID, db: AsyncSession = Depends(get_db)):
     payload = await _student_payload(profile, user, org, dept, batch, db)
     return success_response(data=payload)
 
+@router.post("/bulk-credentials", response_model=APIResponse[dict])
+async def generate_bulk_credentials(
+    student_ids: List[str],
+    db: AsyncSession = Depends(get_db)
+):
+    try:
+        from app.models.authentication.user import User
+        import uuid
+        uuids = [uuid.UUID(sid) for sid in student_ids]
+
+        stmt = select(User).join(StudentProfile, StudentProfile.user_id == User.id).where(StudentProfile.id.in_(uuids))
+        res = await db.execute(stmt)
+        users = res.scalars().all()
+
+        for u in users:
+            u.account_status = "ACTIVE"
+        
+        await db.commit()
+        return success_response(message=f"Successfully generated credentials for {len(users)} students.")
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        await db.rollback()
+        from app.core.responses import error_response
+        return error_response(message="Failed to generate credentials", status_code=500)
+
 @router.post("/", response_model=APIResponse[dict])
 async def create_student(data: StudentCreate, db: AsyncSession = Depends(get_db)):
     # 1. Duplicate check for enrollment
@@ -477,32 +503,6 @@ async def create_student(data: StudentCreate, db: AsyncSession = Depends(get_db)
     email_res = await db.execute(email_stmt)
     if email_res.scalars().first():
         raise HTTPException(status_code=409, detail="Student email already exists")
-@router.post("/bulk-credentials", response_model=APIResponse[dict])
-async def generate_bulk_credentials(
-    student_ids: List[str],
-    db: AsyncSession = Depends(get_db)
-):
-    try:
-        from app.models.authentication.user import User
-        # Convert string IDs to UUIDs
-        import uuid
-        uuids = [uuid.UUID(sid) for sid in student_ids]
-
-        # Get the users for these students
-        stmt = select(User).join(StudentProfile, StudentProfile.user_id == User.id).where(StudentProfile.id.in_(uuids))
-        res = await db.execute(stmt)
-        users = res.scalars().all()
-
-        for u in users:
-            u.account_status = "ACTIVE"
-        
-        await db.commit()
-        return success_response(message=f"Successfully generated credentials for {len(users)} students.")
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
-        await db.rollback()
-        return error_response(message="Failed to generate credentials", status_code=500)
     # 3. Duplicate check for phone
     if data.phone:
         phone_stmt = select(User).where(User.phone == data.phone)
@@ -513,6 +513,7 @@ async def generate_bulk_credentials(
     # Resolve selected college to dynamic organization
     organization = None
     if data.college_id:
+        from app.models.organizations.tndce_college import TNDCECollege
         college_uuid = UUID(data.college_id)
         col_stmt = select(TNDCECollege).where(TNDCECollege.id == college_uuid)
         col_res = await db.execute(col_stmt)
@@ -566,10 +567,23 @@ async def generate_bulk_credentials(
 
     # Create User
     full_name = f"{data.first_name.strip()} {data.last_name.strip()}".strip()
+    
+    # Ensure username is unique
+    base_username = full_name
+    username = base_username
+    counter = 1
+    while True:
+        dup_user_stmt = select(User).where(User.username == username)
+        dup_user_res = await db.execute(dup_user_stmt)
+        if not dup_user_res.scalars().first():
+            break
+        username = f"{base_username}{counter}"
+        counter += 1
+
     new_user = User(
-        username=full_name,
+        username=username,
         email=data.email,
-        phone=data.phone,
+        phone=data.phone if data.phone else None,
         password_hash=hash_password("ChangeMe@123"),
         account_status=data.status or "Applied",
         email_verified=True,
@@ -594,7 +608,7 @@ async def generate_bulk_credentials(
     enrollment = data.enrollment_number or f"ENR{datetime.now().year}{uuid.uuid4().hex[:4].upper()}"
     profile = StudentProfile(
         user_id=new_user.id,
-        organization_id=organization.id,
+        organization_id=organization.id if organization else None,
         department_id=department.id if department else None,
         batch_id=batch.id if batch else None,
         enrollment_number=enrollment,
@@ -607,18 +621,22 @@ async def generate_bulk_credentials(
 
     # Handle optional initial mentor assignment
     if data.mentor_id:
-        mentor_stmt = select(MentorProfile).where((MentorProfile.user_id == data.mentor_id) | (MentorProfile.id == data.mentor_id))
-        mentor_res = await db.execute(mentor_stmt)
-        mentor_prof = mentor_res.scalars().first()
-        if mentor_prof:
-            assignment = MentorAssignment(
-                student_profile_id=profile.id,
-                mentor_profile_id=mentor_prof.id,
-                start_date=date.today(),
-                status="ACTIVE"
-            )
-            db.add(assignment)
-            await db.commit()
+        try:
+            mentor_uuid = uuid.UUID(data.mentor_id)
+            mentor_stmt = select(MentorProfile).where((MentorProfile.user_id == mentor_uuid) | (MentorProfile.id == mentor_uuid))
+            mentor_res = await db.execute(mentor_stmt)
+            mentor_prof = mentor_res.scalars().first()
+            if mentor_prof:
+                assignment = MentorAssignment(
+                    student_profile_id=profile.id,
+                    mentor_profile_id=mentor_prof.id,
+                    start_date=date.today(),
+                    status="ACTIVE"
+                )
+                db.add(assignment)
+                await db.commit()
+        except ValueError:
+            pass
 
     payload = await _student_payload(profile, new_user, organization, department, batch, db)
     return success_response(data=payload, message="Student enrolled successfully")

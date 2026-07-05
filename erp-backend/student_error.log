@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "D:\pinesphere\simp\erp-backend\app\modules\student\router.py", line 609, in create_student
+    enrollment = data.enrollment_number or f"ENR{datetime.now().year}{uuid.uuid4().hex[:4].upper()}"
+                                                                      ^^^^
+UnboundLocalError: cannot access local variable 'uuid' where it is not associated with a value
