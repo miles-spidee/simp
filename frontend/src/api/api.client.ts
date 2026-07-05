@@ -7,11 +7,13 @@ const AUTH_USER_KEY = 'auth_user';
 
 export const apiClient: AxiosInstance = axios.create({
   baseURL: BASE_URL,
+  timeout: 15000,       // 15 s — fail fast instead of hanging indefinitely
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
   },
 });
+
 
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {

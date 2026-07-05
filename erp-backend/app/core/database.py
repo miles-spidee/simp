@@ -16,7 +16,16 @@ engine = create_async_engine(
     pool_size=settings.DATABASE_POOL_SIZE,
     max_overflow=settings.DATABASE_MAX_OVERFLOW,
     pool_pre_ping=True,
-    echo= False,
+    pool_recycle=1800,          # recycle connections every 30 min to prevent RDS timeout
+    pool_timeout=10,            # fail fast if no connection available within 10s
+    echo=False,
+    connect_args={
+        "statement_cache_size": 0,   # required for asyncpg + PgBouncer/RDS Proxy
+        "server_settings": {
+            "application_name": "pinesphere_erp",
+            "jit": "off",            # disable JIT for small queries (faster startup)
+        }
+    }
 )
 
 AsyncSessionLocal = async_sessionmaker(
@@ -26,6 +35,7 @@ AsyncSessionLocal = async_sessionmaker(
     autocommit=False,
     autoflush=False,
 )
+
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     async with AsyncSessionLocal() as session:

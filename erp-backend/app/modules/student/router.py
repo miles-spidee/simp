@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, delete
+from sqlalchemy import select, func, delete, text
+from sqlalchemy.dialects.postgresql import insert as pg_insert
 from uuid import UUID
 from typing import List, Optional
 from app.core.database import get_db
@@ -8,6 +9,8 @@ from app.core.responses import success_response, APIResponse
 from pydantic import BaseModel
 import uuid
 from datetime import datetime, date, timedelta
+import asyncio
+import time
 from app.core.security import hash_password
 from app.models.authentication.user import User
 from app.models.profiles.student_profile import StudentProfile
@@ -148,25 +151,44 @@ class StudentUpdate(BaseModel):
     graduation_year: Optional[int] = None
     college_id: Optional[str] = None
 
+# ─── In-process cache for colleges (5-minute TTL) ────────────────────────
+_colleges_cache: list = []
+_colleges_cache_ts: float = 0.0
+_COLLEGES_CACHE_TTL = 300  # seconds
+
 async def sync_colleges_task(db: AsyncSession):
-    # Fetch/Synchronize from local seeds
-    for item in COLLEGES_SEED:
-        stmt = select(TNDCECollege).where(TNDCECollege.college_code == item["college_code"])
-        res = await db.execute(stmt)
-        existing = res.scalars().first()
-        if not existing:
-            new_col = TNDCECollege(
-                college_code=item["college_code"],
-                name=item["name"],
-                district=item["district"],
-                region=item["region"],
-                college_type=item["college_type"]
-            )
-            db.add(new_col)
+    """Bulk-insert all seed colleges in ONE query using ON CONFLICT DO NOTHING."""
+    global _colleges_cache, _colleges_cache_ts
+    if not COLLEGES_SEED:
+        return
+    stmt = pg_insert(TNDCECollege).values([
+        {
+            "id": uuid.uuid4(),
+            "college_code": item["college_code"],
+            "name": item["name"],
+            "district": item["district"],
+            "region": item["region"],
+            "college_type": item["college_type"],
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow(),
+            "version_id": 1,
+        }
+        for item in COLLEGES_SEED
+    ]).on_conflict_do_nothing(index_elements=["college_code"])
+    await db.execute(stmt)
     await db.commit()
+    # Invalidate cache
+    _colleges_cache = []
+    _colleges_cache_ts = 0.0
 
 @router.get("/colleges", response_model=APIResponse[List[dict]])
 async def get_colleges(search: Optional[str] = None, db: AsyncSession = Depends(get_db)):
+    global _colleges_cache, _colleges_cache_ts
+
+    # Use cache when no search filter and cache is fresh
+    if not search and _colleges_cache and (time.monotonic() - _colleges_cache_ts) < _COLLEGES_CACHE_TTL:
+        return success_response(data=_colleges_cache)
+
     count_stmt = select(func.count()).select_from(TNDCECollege)
     count_res = await db.execute(count_stmt)
     count = count_res.scalar()
@@ -185,15 +207,22 @@ async def get_colleges(search: Optional[str] = None, db: AsyncSession = Depends(
     stmt = stmt.order_by(TNDCECollege.name.asc())
     result = await db.execute(stmt)
     colleges = result.scalars().all()
-    
-    return success_response(data=[{
+
+    data = [{
         "id": str(c.id),
         "college_code": c.college_code,
         "name": c.name,
         "district": c.district,
         "region": c.region,
         "college_type": c.college_type
-    } for c in colleges])
+    } for c in colleges]
+
+    # Store in cache if no search filter
+    if not search:
+        _colleges_cache = data
+        _colleges_cache_ts = time.monotonic()
+
+    return success_response(data=data)
 
 @router.post("/colleges/sync", response_model=APIResponse[dict])
 async def sync_colleges(db: AsyncSession = Depends(get_db)):
@@ -407,11 +436,10 @@ async def get_student_list(db: AsyncSession = Depends(get_db)):
         )
         result = await db.execute(stmt)
         rows = result.all()
-        data = []
-        for profile, user, org, dept, batch in rows:
-            payload = await _student_payload(profile, user, org, dept, batch, db, is_list=True)
-            data.append(payload)
-        return success_response(data=data)
+        # Build all payloads in parallel (is_list=True skips per-student sub-queries)
+        tasks = [_student_payload(p, u, o, d, b, db, is_list=True) for p, u, o, d, b in rows]
+        data = await asyncio.gather(*tasks)
+        return success_response(data=list(data))
     except Exception as e:
         import traceback
         traceback.print_exc()
