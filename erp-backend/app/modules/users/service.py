@@ -145,3 +145,14 @@ class UserService(BaseCRUDService[User, UserCreate, UserUpdate]):
         await self.log_audit_event("LOCK_ACCOUNT", "User", user_id, new_value=StatusEnum.SUSPENDED.value)
         await self.commit_transaction()
         return user
+
+    async def delete(self, *, id: UUID, user_id: UUID = None) -> User:
+        user = await self.get(id)
+        if user and not user.deleted_at:
+            import time
+            suffix = f"_deleted_{int(time.time())}"
+            user.email = (user.email[:200] + suffix) if len(user.email) > 200 else (user.email + suffix)
+            user.username = (user.username[:50] + suffix) if len(user.username) > 50 else (user.username + suffix)
+            self.db.add(user)
+            await self.db.flush()
+        return await super().delete(id=id, user_id=user_id)
