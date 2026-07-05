@@ -44,6 +44,7 @@ class ApplicationService(BaseService):
         
         first_name = ad.get("first_name") or pi.get("firstName") or user.username
         last_name = ad.get("last_name") or pi.get("lastName") or ""
+        email = ad.get("email") or pi.get("email") or user.email
 
         return ApplicationResponse(
             application_id=application.id,
@@ -57,7 +58,7 @@ class ApplicationService(BaseService):
             profile=ApplicationProfileResponse(
                 first_name=first_name,
                 last_name=last_name,
-                email=user.email,
+                email=email,
                 mobile_number=user.phone or "",
             ),
             application_data=application.application_data,
@@ -325,6 +326,39 @@ class ApplicationService(BaseService):
                     )
             except Exception as e:
                 print("Error sending application selected notification:", e)
+
+        if application.status.upper() == "INTERVIEW SCHEDULED":
+            try:
+                from sqlalchemy import select
+                from app.models.authentication.user import User as DBUser
+                from app.models.profiles.student_profile import StudentProfile
+                from app.services.notification_service import notification_service
+                
+                # Fetch user details
+                user_stmt = select(DBUser).join(StudentProfile, StudentProfile.user_id == DBUser.id).where(StudentProfile.id == application.student_profile_id)
+                user_res = await self.db.execute(user_stmt)
+                user_obj = user_res.scalars().first()
+                
+                # The remarks contain "Interview set for YYYY-MM-DD at HH:MM"
+                remarks = data.remarks or ""
+                date_str = ""
+                time_str = ""
+                if "set for " in remarks and " at " in remarks:
+                    parts = remarks.split("set for ")[1].split(" at ")
+                    date_str = parts[0]
+                    time_str = parts[1].strip()
+                
+                if user_obj and date_str and time_str:
+                    await notification_service.send_interview_scheduled(
+                        username=user_obj.username.title(),
+                        email=user_obj.email,
+                        phone=user_obj.phone or "+919876543210",
+                        date_str=date_str,
+                        time_str=time_str,
+                        venue="Online/Virtual"
+                    )
+            except Exception as e:
+                print("Error sending interview scheduled notification:", e)
 
         return await self.get(application.id)
 

@@ -99,8 +99,8 @@ export const applicationService = {
     return all.filter(a => a.opening_id === oppId);
   },
 
-  async updateApplicationStatus(id: string, newStatus: string): Promise<ExtendedApplication | undefined> {
-    const req: ApplicationReviewRequest = { application_status: newStatus, remarks: '' };
+  async updateApplicationStatus(id: string, newStatus: string, remarks: string = ''): Promise<ExtendedApplication | undefined> {
+    const req: ApplicationReviewRequest = { application_status: newStatus, remarks: remarks };
     try {
       const res = await applicationApi.reviewApplication(id, req);
       return this.mapToExtended(res);

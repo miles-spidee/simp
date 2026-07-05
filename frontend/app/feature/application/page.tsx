@@ -108,7 +108,7 @@ export default function ApplicationPage() {
     setShowInterviewModal(false);
     setActionLoading('Interview Scheduled');
     try {
-      const updated = await applicationService.updateApplicationStatus(interviewAppId, 'Interview Scheduled');
+      const updated = await applicationService.updateApplicationStatus(interviewAppId, 'Interview Scheduled', `Interview set for ${interviewDate} at ${interviewTime}`);
       if (updated) {
         setApplications(applications.map(a => a.id === interviewAppId ? updated : a));
         if (reviewApp && reviewApp.id === interviewAppId) setReviewApp(updated);
