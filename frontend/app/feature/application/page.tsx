@@ -864,15 +864,26 @@ export default function ApplicationPage() {
                   label: 'Actions',
                   className: 'text-right',
                   render: (app) => (
-                    <PermissionGuard required="application.update">
-                      <button
-                        onClick={() => handleOpenReview(app)}
-                        className="text-blue-600 hover:text-blue-800 font-black text-xs cursor-pointer inline-flex items-center gap-0.5"
-                      >
-                        <span>Review Workspace</span>
-                        <ChevronRight className="h-3 w-3" />
-                      </button>
-                    </PermissionGuard>
+                    <div className="flex items-center justify-end gap-3">
+                      <PermissionGuard required="application.update">
+                        <button
+                          onClick={() => handleOpenReview(app)}
+                          className="text-blue-600 hover:text-blue-800 font-black text-xs cursor-pointer inline-flex items-center gap-0.5"
+                        >
+                          <span>Review Workspace</span>
+                          <ChevronRight className="h-3 w-3" />
+                        </button>
+                      </PermissionGuard>
+                      <PermissionGuard required="application.delete">
+                        <button
+                          onClick={() => handleDeleteApplication(app.id, app.candidateName)}
+                          className="text-rose-500 hover:text-rose-700 font-black cursor-pointer"
+                          title="Delete Application"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </PermissionGuard>
+                    </div>
                   ),
                 },
               ]}

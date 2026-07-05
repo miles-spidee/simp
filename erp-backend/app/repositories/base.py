@@ -99,9 +99,7 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         # ── Single-pass COUNT via window function ──────────────────────────
         # We add a window-function column so Postgres counts in one pass.
         count_col = func.count().over().label("_total_count")
-        stmt_with_count = select(self.model, count_col).select_from(
-            stmt.subquery()
-        )
+        stmt_with_count = stmt.add_columns(count_col)
 
         skip = (page - 1) * page_size
         stmt_with_count = stmt_with_count.offset(skip).limit(page_size)

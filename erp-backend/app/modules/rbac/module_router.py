@@ -4,7 +4,7 @@ from sqlalchemy import select
 from uuid import UUID
 from typing import List
 from app.core.database import get_db
-from app.core.dependencies import require_permission
+from app.core.dependencies import require_permission, get_current_user
 from app.core.responses import success_response, APIResponse
 from app.models.authentication.user import User
 from app.models.rbac.module import Module
@@ -58,9 +58,15 @@ async def _module_display_index(db: AsyncSession, module_id: UUID) -> int | None
 
 @router.get("/", response_model=APIResponse[List[dict]])
 async def get_modules(
-    current_user: User = Depends(require_permission("modules", "read")),
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    from app.modules.identity.repository import PermissionRepository
+    repo = PermissionRepository(db)
+    has_modules = await repo.user_has_permission(db, current_user.id, "modules.view")
+    has_users = await repo.user_has_permission(db, current_user.id, "users.create")
+    if not has_modules and not has_users:
+        raise HTTPException(status_code=403, detail="Permission denied: requires modules.view or users.create")
     result = await db.execute(select(Module).order_by(Module.created_at, Module.name))
     modules = result.scalars().all()
     data = [_serialize_module(module, index) for index, module in enumerate(modules)]

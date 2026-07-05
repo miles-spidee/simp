@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 from app.core.database import get_db
@@ -10,6 +10,15 @@ from app.modules.users.service import UserService
 from app.models.authentication.user import User
 
 router = APIRouter()
+
+async def _require_users_access(current_user: User, db: AsyncSession):
+    """Allow access if user has users.read OR users.create permission."""
+    from app.modules.identity.repository import PermissionRepository
+    repo = PermissionRepository(db)
+    has_read = await repo.user_has_permission(db, current_user.id, "users.read")
+    has_create = await repo.user_has_permission(db, current_user.id, "users.create")
+    if not has_read and not has_create:
+        raise HTTPException(status_code=403, detail="Permission denied")
 
 @router.post("/search", response_model=APIResponse[PaginatedResponse])
 async def search_users(
@@ -211,9 +220,10 @@ async def delete_user(
 
 @router.get("/registered/employees", response_model=APIResponse[list])
 async def get_registered_employees(
-    current_user: User = Depends(require_permission("users", "read")),
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
+    await _require_users_access(current_user, db)
     from sqlalchemy import select
     from app.models.profiles.employee_profile import EmployeeProfile
     from app.models.authentication.user import User
@@ -240,9 +250,10 @@ async def get_registered_employees(
 
 @router.get("/registered/students", response_model=APIResponse[list])
 async def get_registered_students(
-    current_user: User = Depends(require_permission("users", "read")),
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
+    await _require_users_access(current_user, db)
     from sqlalchemy import select
     from app.models.profiles.student_profile import StudentProfile
     from app.models.authentication.user import User
@@ -265,9 +276,10 @@ async def get_registered_students(
 
 @router.get("/registered/organizations", response_model=APIResponse[list])
 async def get_registered_organizations(
-    current_user: User = Depends(require_permission("users", "read")),
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
+    await _require_users_access(current_user, db)
     from sqlalchemy import select
     from app.models.organizations.organization import Organization
     from app.models.authentication.user import User
@@ -294,11 +306,11 @@ async def get_registered_organizations(
 async def get_registered_entity(
     entity_type: str,
     id: UUID,
-    current_user: User = Depends(require_permission("users", "read")),
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
+    await _require_users_access(current_user, db)
     from sqlalchemy import select
-    from fastapi import HTTPException
     
     if entity_type == "employee":
         from app.models.profiles.employee_profile import EmployeeProfile

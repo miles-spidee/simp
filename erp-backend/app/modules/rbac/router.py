@@ -26,9 +26,15 @@ router.include_router(module_api_router, prefix="/modules", tags=["RBAC Modules"
 @router.post("/roles/search", response_model=APIResponse[dict])
 async def search_roles(
     params: SearchParams,
-    current_user: User = Depends(require_permission("roles", "read")),
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    from app.modules.identity.repository import PermissionRepository
+    repo = PermissionRepository(db)
+    has_roles = await repo.user_has_permission(db, current_user.id, "roles.view")
+    has_users = await repo.user_has_permission(db, current_user.id, "users.create")
+    if not has_roles and not has_users:
+        raise HTTPException(status_code=403, detail="Permission denied: requires roles.view or users.create")
     service = RoleService(db)
     result = await service.search_paginated(params)
 
@@ -80,7 +86,7 @@ async def search_roles(
                 "icon": r.icon,
                 "moduleIds": all_module_ids
                 if r.code == "SUPER_ADMIN"
-                else list(role_modules.get(str(r.id), [])),
+                else sorted(list(role_modules.get(str(r.id), set()))),
                 "usersCount": user_counts.get(str(r.id), 0),
             }
             new_items.append(r_dict)
@@ -146,9 +152,15 @@ async def assign_permissions(
 
 @router.get("/roles", response_model=APIResponse[dict])
 async def get_roles(
-    current_user: User = Depends(require_permission("roles", "read")),
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
+    from app.modules.identity.repository import PermissionRepository
+    repo = PermissionRepository(db)
+    has_roles = await repo.user_has_permission(db, current_user.id, "roles.view")
+    has_users = await repo.user_has_permission(db, current_user.id, "users.create")
+    if not has_roles and not has_users:
+        raise HTTPException(status_code=403, detail="Permission denied: requires roles.view or users.create")
     from sqlalchemy import select
     from app.models.rbac.role import Role
     from app.models.rbac.role_permission import RolePermission

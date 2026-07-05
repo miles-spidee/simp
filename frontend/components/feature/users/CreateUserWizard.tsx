@@ -4,14 +4,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Drawer } from '@/components/feature/ui/Drawer';
 import { Stepper } from '@/components/feature/ui/Stepper';
 import { Button } from '@/components/feature/ui/Button';
-import { Search, CheckCircle2, ChevronRight, ChevronLeft, Shield, Upload, Users, Sparkles, Key } from 'lucide-react';
+import { Search, CheckCircle2, ChevronRight, ChevronLeft, Shield, Upload, Users, Sparkles, Key, AlertCircle } from 'lucide-react';
 import { Card } from '@/components/feature/ui/Card';
 import { Role } from '@/src/types/api/role.types';
 import { Module } from '@/src/types/modules.types';
 import { roleService } from '@/src/services/role.service';
 import { moduleService } from '@/src/services/module.service';
 import { userService } from '@/src/services/user.service';
-import { organizationService, ExtendedCollege } from '@/src/services/organization.service';
 import { User } from '@/src/types/api/user.types';
 
 interface CreateUserWizardProps {
@@ -28,7 +27,7 @@ interface CreateUserWizardProps {
   } | null;
 }
 
-const STEPS = ['Basic Information', 'Role Assignment', 'Module Override', 'Review & Create'];
+const STEPS = ['Basic Information', 'Role Assignment', 'Module Access', 'Review & Create'];
 
 interface AutofillEntity {
   id: string;
@@ -39,16 +38,24 @@ interface AutofillEntity {
   detail: string;
 }
 
+/** Deduplicate an array, preserving insertion order */
+function dedup<T>(arr: T[]): T[] {
+  return [...new Set(arr)];
+}
+
 export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, viewMode, autofillData }: CreateUserWizardProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
+  // assignedModules = union of role-default modules + user's manual picks
   const [assignedModules, setAssignedModules] = useState<string[]>([]);
-  
+
   const [roles, setRoles] = useState<Role[]>([]);
   const [modules, setModules] = useState<Module[]>([]);
   const [unlinkedEntities, setUnlinkedEntities] = useState<AutofillEntity[]>([]);
   const [selectedEntityId, setSelectedEntityId] = useState<string>('');
   const [existingUsers, setExistingUsers] = useState<User[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Form Fields
   const [fullName, setFullName] = useState('');
@@ -64,24 +71,38 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
   const [accountValidationPeriod, setAccountValidationPeriod] = useState('');
   const [moduleSearch, setModuleSearch] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     async function loadData() {
+      setIsLoading(true);
+      setLoadError(null);
       try {
-        const [loadedRoles, loadedModules, loadedEmployees, loadedStudents, loadedOrganizations, loadedUsers] = await Promise.all([
+        const results = await Promise.allSettled([
           roleService.getRoles(),
           moduleService.getModules(),
-          userService.getRegisteredEmployees(),
-          userService.getRegisteredStudents(),
-          userService.getRegisteredOrganizations(),
-          userService.getUsers()
+          userService.getRegisteredEmployees().catch(() => []),
+          userService.getRegisteredStudents().catch(() => []),
+          userService.getRegisteredOrganizations().catch(() => []),
+          userService.getUsers().catch(() => []),
         ]);
-        
+
+        const loadedRoles = results[0].status === 'fulfilled' ? results[0].value : [];
+        const loadedModules = results[1].status === 'fulfilled' ? results[1].value : [];
+        const loadedEmployees = results[2].status === 'fulfilled' ? results[2].value : [];
+        const loadedStudents = results[3].status === 'fulfilled' ? results[3].value : [];
+        const loadedOrganizations = results[4].status === 'fulfilled' ? results[4].value : [];
+        const loadedUsers = results[5].status === 'fulfilled' ? results[5].value : [];
+
+        if (loadedRoles.length === 0) {
+          setLoadError('Could not load roles. Please check your permissions.');
+        }
+
         const entities: AutofillEntity[] = [];
 
-        loadedEmployees.forEach(emp => {
+        (loadedEmployees as any[]).forEach(emp => {
           if (!emp.has_account) {
             entities.push({
               id: `emp-${emp.id}`,
@@ -94,7 +115,7 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
           }
         });
 
-        loadedStudents.forEach(stu => {
+        (loadedStudents as any[]).forEach(stu => {
           if (!stu.has_account) {
             entities.push({
               id: `stu-${stu.id}`,
@@ -107,7 +128,7 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
           }
         });
 
-        loadedOrganizations.forEach(org => {
+        (loadedOrganizations as any[]).forEach(org => {
           if (!org.has_account) {
             entities.push({
               id: `org-${org.id}`,
@@ -120,12 +141,15 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
           }
         });
 
-        setRoles(loadedRoles);
+        setRoles(loadedRoles as Role[]);
         setModules(loadedModules as any);
         setUnlinkedEntities(entities);
-        setExistingUsers(loadedUsers);
+        setExistingUsers(loadedUsers as User[]);
       } catch (err) {
         console.error('Failed to load user wizard data', err);
+        setLoadError('Failed to load data. Please try again.');
+      } finally {
+        setIsLoading(false);
       }
     }
     if (isOpen) {
@@ -139,9 +163,9 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
     if (isOpen) {
       Promise.resolve().then(() => {
         if (!isMounted) return;
-        
-        // Reset selected entity when opening
+
         setSelectedEntityId('');
+        setSubmitError(null);
 
         if (userToEdit) {
           setFullName(userToEdit.name);
@@ -150,19 +174,23 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
           setPhone('');
           setPassword('••••••••');
           setConfirmPassword('••••••••');
-          setSelectedRole(userToEdit.roleId);
-          
+          setSelectedRole(userToEdit.roleId || null);
+
           const loadAssigned = async () => {
-            const uMods = await userService.getUserModules(userToEdit.id);
-            if (isMounted) {
-              setAssignedModules(uMods.map(m => m.id));
+            try {
+              const uMods = await userService.getUserModules(userToEdit.id);
+              if (isMounted) {
+                setAssignedModules(dedup(uMods.map(m => m.id)));
+              }
+            } catch {
+              if (isMounted) setAssignedModules([]);
             }
           };
           loadAssigned();
-          
+
           setAvatar(typeof userToEdit.avatar === 'string' && userToEdit.avatar.length > 2 ? userToEdit.avatar : null);
           setAvatarName(null);
-          
+
           if (viewMode) {
             setCurrentStep(3);
           } else {
@@ -226,20 +254,17 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
       alert("Please enter a Full Name first to generate a username.");
       return;
     }
-    
-    // Get first word of full name and clean it to alphanumeric only
+
     const base = fullName.trim().split(' ')[0].replace(/[^a-zA-Z0-9]/g, '');
     const cleanBase = base || 'User';
-    
+
     let counter = 1;
     let candidate = '';
     let isUnique = false;
-    
+
     while (!isUnique) {
-      const suffix = String(counter).padStart(3, '0'); // '001', '002', etc.
+      const suffix = String(counter).padStart(3, '0');
       candidate = `${cleanBase}${suffix}`;
-      
-      // Check if username already exists
       const match = existingUsers.some(u => u.username.toLowerCase() === candidate.toLowerCase());
       if (!match) {
         isUnique = true;
@@ -247,7 +272,7 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
         counter++;
       }
     }
-    
+
     setUsername(candidate);
   };
 
@@ -257,43 +282,33 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
     const numbers = '0123456789';
     const symbols = '!@#$%^&*';
     const all = uppercase + lowercase + numbers + symbols;
-    
+
     let pass = '';
-    // Ensure at least one of each category for strong password
     pass += uppercase.charAt(Math.floor(Math.random() * uppercase.length));
     pass += lowercase.charAt(Math.floor(Math.random() * lowercase.length));
     pass += numbers.charAt(Math.floor(Math.random() * numbers.length));
     pass += symbols.charAt(Math.floor(Math.random() * symbols.length));
-    
+
     for (let i = 0; i < 8; i++) {
       pass += all.charAt(Math.floor(Math.random() * all.length));
     }
-    
-    // Shuffle the generated characters
+
     const shuffled = pass.split('').sort(() => 0.5 - Math.random()).join('');
-    
     setPassword(shuffled);
     setConfirmPassword(shuffled);
   };
 
-  // When role changes, update assigned modules to match the role's default modules
-  useEffect(() => {
-    let isMounted = true;
-    // Only auto-update default modules for NEW users, not during edit mode initialization
-    if (!userToEdit && selectedRole && modules.length > 0) {
-      const roleObj = roles.find(r => r.id === selectedRole);
-      if (roleObj && roleObj.moduleIds) {
-        Promise.resolve().then(() => {
-          if (isMounted) {
-            setAssignedModules(roleObj.moduleIds);
-          }
-        });
-      }
+  const handleRoleSelect = (roleId: string) => {
+    if (viewMode) return;
+    setSelectedRole(roleId);
+    // Auto-set assigned modules to role's default modules (deduplicated)
+    const roleObj = roles.find(r => r.id === roleId);
+    if (roleObj?.moduleIds) {
+      setAssignedModules(dedup(roleObj.moduleIds));
+    } else {
+      setAssignedModules([]);
     }
-    return () => {
-      isMounted = false;
-    };
-  }, [selectedRole, modules, roles, userToEdit]);
+  };
 
   const handleNext = () => {
     if (currentStep === 0) {
@@ -301,7 +316,7 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
         alert('Please fill in Name, Username, Email, and Password.');
         return;
       }
-      if (password !== confirmPassword) {
+      if (password !== '••••••••' && password !== confirmPassword) {
         alert('Passwords do not match.');
         return;
       }
@@ -323,8 +338,8 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
 
   const toggleModule = (id: string) => {
     if (viewMode) return;
-    setAssignedModules(prev => 
-      prev.includes(id) ? prev.filter(m => m !== id) : [...prev, id]
+    setAssignedModules(prev =>
+      dedup(prev.includes(id) ? prev.filter(m => m !== id) : [...prev, id])
     );
   };
 
@@ -352,9 +367,10 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
     }
     try {
       setIsSubmitting(true);
+      setSubmitError(null);
       const roleObj = roles.find(r => r.id === selectedRole);
       const roleName = roleObj ? roleObj.name : 'User';
-      
+
       let entityType = undefined;
       let entityId = undefined;
       if (selectedEntityId) {
@@ -368,18 +384,19 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
         entityId = parts.slice(1).join('-');
       }
 
+      // moduleOverrides = modules beyond what the role provides by default
+      const defaultModuleIds = roleObj?.moduleIds || [];
+      const moduleOverrides = assignedModules.filter(id => !defaultModuleIds.includes(id));
+
       const userData = {
         name: fullName.trim(),
         username: username.trim(),
         email: email.trim(),
-        password: password,
+        password: password === '••••••••' ? undefined : password,
         roleId: selectedRole,
         roleName: roleName,
         status: userToEdit ? userToEdit.status : ('Active' as const),
-        moduleOverrides: assignedModules.filter(id => {
-          const defaultModuleIds = roleObj?.moduleIds || [];
-          return !defaultModuleIds.includes(id);
-        }),
+        moduleOverrides: dedup(moduleOverrides),
         avatar: avatar || fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2),
         sendEmail: sendEmail,
         entityType: entityType,
@@ -387,26 +404,33 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
         forcePasswordChange: forcePasswordChange,
         accountValidationPeriod: accountValidationPeriod ? parseInt(accountValidationPeriod, 10) : undefined
       };
-      
+
       if (userToEdit) {
         await userService.updateUser(userToEdit.id, userData as any);
       } else {
         await userService.createUser(userData as any);
       }
-      
+
       if (onUserCreated) {
         onUserCreated();
       }
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to save user', err);
-      alert('Error saving user.');
+      const msg = err?.response?.data?.detail || err?.message || 'Error saving user.';
+      setSubmitError(typeof msg === 'string' ? msg : JSON.stringify(msg));
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const filteredModules = modules.filter(m => 
+  const selectedRoleObj = selectedRole ? roles.find(r => r.id === selectedRole) : null;
+  // Role-default modules
+  const roleDefaultModuleIds = dedup(selectedRoleObj?.moduleIds || []);
+  // All assigned modules (role defaults + manual overrides), deduplicated
+  const allAssignedModuleIds = dedup(assignedModules);
+  // Filtered list for the module picker
+  const filteredModules = modules.filter(m =>
     m.name.toLowerCase().includes(moduleSearch.toLowerCase())
   );
 
@@ -421,6 +445,12 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
       case 0:
         return (
           <div className="space-y-4 p-6">
+            {loadError && (
+              <div className="flex items-center gap-2 rounded-lg bg-amber-50 border border-amber-200 p-3 text-sm text-amber-800">
+                <AlertCircle className="h-4 w-4 shrink-0" />
+                {loadError}
+              </div>
+            )}
             {!userToEdit && !autofillData && unlinkedEntities.length > 0 && (
               <div className="bg-slate-50 border border-border rounded-lg p-4 space-y-2">
                 <label className="text-sm font-semibold text-label flex items-center gap-2">
@@ -449,9 +479,9 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
                     })}
                   </select>
                   {selectedEntityId && (
-                    <Button 
-                      type="button" 
-                      variant="outline" 
+                    <Button
+                      type="button"
+                      variant="outline"
                       size="sm"
                       onClick={() => handleEntitySelect('')}
                     >
@@ -468,13 +498,13 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-label">Full Name *</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={fullName}
                   onChange={e => setFullName(e.target.value)}
                   disabled={viewMode}
-                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50" 
-                  placeholder="John Doe" 
+                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50"
+                  placeholder="John Doe"
                 />
               </div>
               <div className="space-y-2">
@@ -490,35 +520,35 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
                     </button>
                   )}
                 </div>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={username}
                   onChange={e => setUsername(e.target.value)}
                   disabled={viewMode}
-                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50" 
-                  placeholder="johndoe001" 
+                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50"
+                  placeholder="johndoe001"
                 />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-label">Email Address *</label>
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   disabled={viewMode}
-                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50" 
-                  placeholder="john@example.com" 
+                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50"
+                  placeholder="john@example.com"
                 />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-label">Phone Number</label>
-                <input 
-                  type="tel" 
+                <input
+                  type="tel"
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
                   disabled={viewMode}
-                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50" 
-                  placeholder="+1 (555) 000-0000" 
+                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50"
+                  placeholder="+1 (555) 000-0000"
                 />
               </div>
               <div className="space-y-2">
@@ -534,13 +564,13 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
                     </button>
                   )}
                 </div>
-                <input 
-                  type="password" 
+                <input
+                  type="password"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   disabled={viewMode}
-                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50" 
-                  placeholder="••••••••" 
+                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50"
+                  placeholder="••••••••"
                 />
                 {password && password !== '••••••••' && !viewMode && (
                   <p className="text-[11px] font-mono text-text-secondary bg-slate-100 px-2 py-1 rounded border border-dashed border-border">
@@ -550,29 +580,29 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-label">Confirm Password *</label>
-                <input 
-                  type="password" 
+                <input
+                  type="password"
                   value={confirmPassword}
                   onChange={e => setConfirmPassword(e.target.value)}
                   disabled={viewMode}
-                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50" 
-                  placeholder="••••••••" 
+                  className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50"
+                  placeholder="••••••••"
                 />
               </div>
             </div>
-            
+
             <div className="pt-4 grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
               {/* Profile Picture Upload */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-705 text-label">Profile Picture</label>
-                <input 
-                  type="file" 
-                  ref={fileInputRef} 
-                  onChange={handleAvatarChange} 
-                  accept="image/*" 
-                  className="hidden" 
+                <label className="text-sm font-medium text-label">Profile Picture</label>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleAvatarChange}
+                  accept="image/*"
+                  className="hidden"
                 />
-                <div 
+                <div
                   onClick={triggerFileUpload}
                   className="mt-1 flex justify-center rounded-md border-2 border-dashed border-border px-4 py-4 hover:bg-slate-50 transition-colors cursor-pointer"
                 >
@@ -599,34 +629,34 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
               {/* Login Preferences */}
               <div className="space-y-3 md:pt-8">
                 <label className="flex items-center gap-3 cursor-pointer select-none">
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     checked={sendEmail}
                     onChange={e => setSendEmail(e.target.checked)}
                     disabled={viewMode}
-                    className="h-4 w-4 rounded border-border text-blue-600 focus:ring-primary disabled:opacity-50" 
+                    className="h-4 w-4 rounded border-border text-blue-600 focus:ring-primary disabled:opacity-50"
                   />
                   <span className="text-sm text-text-primary">Send Credentials By Email</span>
                 </label>
                 <label className="flex items-center gap-3 cursor-pointer select-none">
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     checked={forcePasswordChange}
                     onChange={e => setForcePasswordChange(e.target.checked)}
                     disabled={viewMode}
-                    className="h-4 w-4 rounded border-border text-blue-600 focus:ring-primary disabled:opacity-50" 
+                    className="h-4 w-4 rounded border-border text-blue-600 focus:ring-primary disabled:opacity-50"
                   />
                   <span className="text-sm text-text-primary">Force Password Change on Login</span>
                 </label>
                 <div className="pt-2">
                   <label className="text-sm font-medium text-label block mb-1">Account Validation Period (Days)</label>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     value={accountValidationPeriod}
                     onChange={e => setAccountValidationPeriod(e.target.value)}
                     disabled={viewMode}
-                    className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50" 
-                    placeholder="e.g. 365 (Leave empty for unlimited)" 
+                    className="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50"
+                    placeholder="e.g. 365 (Leave empty for unlimited)"
                     min="1"
                   />
                 </div>
@@ -634,98 +664,129 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
             </div>
           </div>
         );
+
       case 1:
         return (
           <div className="flex h-full p-6 gap-6">
             <div className="flex-1 space-y-4">
               <h3 className="text-sm font-semibold text-text-primary">Select Role</h3>
-              <div className="grid gap-3">
-                {roles.map((role) => (
-                  <div 
-                    key={role.id}
-                    onClick={() => {
-                      if (!viewMode) {
-                        setSelectedRole(role.id);
-                        setAssignedModules(role.moduleIds || []);
-                      }
-                    }}
-                    className={`relative rounded-lg border p-4 cursor-pointer transition-all ${
-                      selectedRole === role.id 
-                        ? 'border-blue-600 bg-blue-50/50 ring-1 ring-blue-600' 
-                        : 'border-border hover:border-secondary hover:bg-slate-50'
-                    } ${viewMode ? 'pointer-events-none' : ''}`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className={`p-2 rounded-md ${selectedRole === role.id ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-text-secondary'}`}>
-                          <Shield className="h-5 w-5" />
+              {isLoading ? (
+                <p className="text-sm text-text-secondary">Loading roles...</p>
+              ) : roles.length === 0 ? (
+                <div className="flex items-center gap-2 rounded-lg bg-amber-50 border border-amber-200 p-3 text-sm text-amber-800">
+                  <AlertCircle className="h-4 w-4 shrink-0" />
+                  No roles available. Contact your administrator.
+                </div>
+              ) : (
+                <div className="grid gap-3">
+                  {roles.map((role) => (
+                    <div
+                      key={role.id}
+                      onClick={() => handleRoleSelect(role.id)}
+                      className={`relative rounded-lg border p-4 cursor-pointer transition-all ${
+                        selectedRole === role.id
+                          ? 'border-blue-600 bg-blue-50/50 ring-1 ring-blue-600'
+                          : 'border-border hover:border-secondary hover:bg-slate-50'
+                      } ${viewMode ? 'pointer-events-none' : ''}`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`p-2 rounded-md ${selectedRole === role.id ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-text-secondary'}`}>
+                            <Shield className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <p className={`text-sm font-medium ${selectedRole === role.id ? 'text-blue-900' : 'text-text-primary'}`}>{role.name}</p>
+                            <p className="text-xs text-text-secondary mt-0.5">{role.desc || role.description}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className={`text-sm font-medium ${selectedRole === role.id ? 'text-blue-900' : 'text-text-primary'}`}>{role.name}</p>
-                          <p className="text-xs text-text-secondary mt-0.5">{role.desc}</p>
-                        </div>
+                        {selectedRole === role.id && (
+                          <CheckCircle2 className="h-5 w-5 text-blue-600" />
+                        )}
                       </div>
-                      {selectedRole === role.id && (
-                        <CheckCircle2 className="h-5 w-5 text-blue-600" />
-                      )}
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
-            
+
             <div className="w-1/3 shrink-0">
               <div className="sticky top-0 rounded-lg border border-border bg-slate-50 p-4">
-                <h3 className="text-sm font-semibold text-text-primary mb-3">Modules Inherited</h3>
+                <h3 className="text-sm font-semibold text-text-primary mb-1">Modules Included</h3>
+                {selectedRoleObj && (
+                  <p className="text-xs text-text-secondary mb-3">Default access for <span className="font-medium text-text-primary">{selectedRoleObj.name}</span></p>
+                )}
                 {selectedRole ? (
-                  <ul className="space-y-2">
-                    {assignedModules.map(id => {
-                      const mod = modules.find(m => m.id === id);
-                      return mod ? (
-                        <li key={id} className="flex items-center gap-2 text-sm text-text-secondary">
-                          <CheckCircle2 className="h-4 w-4 text-emerald-500" /> {mod.name}
-                        </li>
-                      ) : null;
-                    })}
-                  </ul>
+                  roleDefaultModuleIds.length > 0 ? (
+                    <ul className="space-y-2">
+                      {roleDefaultModuleIds.map(id => {
+                        const mod = modules.find(m => m.id === id);
+                        return mod ? (
+                          <li key={id} className="flex items-center gap-2 text-sm text-text-secondary">
+                            <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" /> {mod.name}
+                          </li>
+                        ) : null;
+                      })}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-text-secondary italic">No default modules for this role.</p>
+                  )
                 ) : (
-                  <p className="text-sm text-text-secondary italic">Select a role to preview modules.</p>
+                  <p className="text-sm text-text-secondary italic">Select a role to preview its modules.</p>
                 )}
               </div>
             </div>
           </div>
         );
+
       case 2:
         return (
           <div className="flex h-full p-6 gap-6">
             <div className="flex-1 space-y-4">
+              <div>
+                <h3 className="text-sm font-semibold text-text-primary">Module Access Override</h3>
+                <p className="text-xs text-text-secondary mt-1">
+                  Modules from the selected role are pre-checked. You can add or remove access for this specific user.
+                </p>
+              </div>
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-text-primary">Available Modules</h3>
+                <p className="text-xs text-text-secondary">
+                  {allAssignedModuleIds.length} module{allAssignedModuleIds.length !== 1 ? 's' : ''} selected
+                </p>
                 <div className="relative">
                   <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-text-secondary" />
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={moduleSearch}
                     onChange={e => setModuleSearch(e.target.value)}
                     disabled={viewMode}
-                    placeholder="Search..." 
-                    className="w-48 rounded-md border border-border pl-8 pr-3 py-1.5 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50" 
+                    placeholder="Search modules..."
+                    className="w-48 rounded-md border border-border pl-8 pr-3 py-1.5 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-slate-50"
                   />
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-3">
                 {filteredModules.map((module) => {
-                  const isAssigned = assignedModules.includes(module.id);
+                  const isAssigned = allAssignedModuleIds.includes(module.id);
+                  const isFromRole = roleDefaultModuleIds.includes(module.id);
                   return (
-                    <div 
+                    <div
                       key={module.id}
                       onClick={() => toggleModule(module.id)}
                       className={`flex items-center justify-between rounded-lg border p-3 cursor-pointer transition-all ${
-                        isAssigned ? 'border-blue-200 bg-blue-50/30' : 'border-border hover:bg-slate-50'
+                        isAssigned
+                          ? isFromRole
+                            ? 'border-emerald-200 bg-emerald-50/40'
+                            : 'border-blue-200 bg-blue-50/30'
+                          : 'border-border hover:bg-slate-50'
                       } ${viewMode ? 'pointer-events-none' : ''}`}
                     >
-                      <span className="text-sm font-medium text-text-primary">{module.name}</span>
+                      <div>
+                        <span className="text-sm font-medium text-text-primary">{module.name}</span>
+                        {isFromRole && isAssigned && (
+                          <span className="ml-1.5 text-[10px] text-emerald-600 font-medium">role default</span>
+                        )}
+                      </div>
                       <div className={`flex h-5 w-5 items-center justify-center rounded border ${isAssigned ? 'border-blue-600 bg-blue-600 text-white' : 'border-border bg-white'}`}>
                         {isAssigned && <CheckCircle2 className="h-3 w-3 text-white" />}
                       </div>
@@ -734,20 +795,23 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
                 })}
               </div>
             </div>
-            
+
             <div className="w-1/3 shrink-0">
               <div className="sticky top-0 rounded-lg border border-border bg-slate-50 p-4">
-                <h3 className="text-sm font-semibold text-text-primary mb-3">Final Access</h3>
+                <h3 className="text-sm font-semibold text-text-primary mb-3">Final Access Summary</h3>
                 <ul className="space-y-2">
-                  {assignedModules.map(id => {
+                  {allAssignedModuleIds.map(id => {
                     const mod = modules.find(m => m.id === id);
+                    const isFromRole = roleDefaultModuleIds.includes(id);
                     return mod ? (
                       <li key={id} className="flex items-center gap-2 text-sm text-text-secondary">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-500" /> {mod.name}
+                        <CheckCircle2 className={`h-4 w-4 shrink-0 ${isFromRole ? 'text-emerald-500' : 'text-blue-500'}`} />
+                        <span>{mod.name}</span>
+                        {!isFromRole && <span className="text-[10px] text-blue-500 font-medium">+added</span>}
                       </li>
                     ) : null;
                   })}
-                  {assignedModules.length === 0 && (
+                  {allAssignedModuleIds.length === 0 && (
                     <p className="text-sm text-text-secondary italic">No modules assigned.</p>
                   )}
                 </ul>
@@ -755,6 +819,7 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
             </div>
           </div>
         );
+
       case 3:
         return (
           <div className="p-6 space-y-6">
@@ -788,7 +853,7 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
                   <div>
                     <p className="text-xs text-text-secondary">Selected Role</p>
                     <p className="text-sm font-medium text-text-primary">
-                      {selectedRole ? roles.find(r => r.id === selectedRole)?.name : 'None'}
+                      {selectedRoleObj ? selectedRoleObj.name : 'None'}
                     </p>
                   </div>
                   {!viewMode && (
@@ -803,8 +868,8 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
                     <div>
                       <p className="text-xs text-text-secondary">User Status</p>
                       <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold mt-1 border ${
-                        userToEdit.status === 'Active' 
-                          ? 'bg-emerald-100 text-emerald-700 border-emerald-250' 
+                        userToEdit.status === 'Active'
+                          ? 'bg-emerald-100 text-emerald-700 border-emerald-250'
                           : 'bg-slate-100 text-text-primary border-slate-250'
                       }`}>
                         {userToEdit.status}
@@ -817,22 +882,33 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
 
             <Card>
               <div className="p-4 border-b border-border bg-slate-50/50">
-                <h3 className="font-semibold text-text-primary">Assigned Modules</h3>
+                <h3 className="font-semibold text-text-primary">Assigned Modules ({allAssignedModuleIds.length})</h3>
               </div>
               <div className="p-4 flex flex-wrap gap-2">
-                {assignedModules.map(id => {
+                {allAssignedModuleIds.map(id => {
                   const mod = modules.find(m => m.id === id);
+                  const isExtra = !roleDefaultModuleIds.includes(id);
                   return mod ? (
-                    <span key={id} className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
+                    <span key={id} className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${isExtra ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800'}`}>
                       {mod.name}
                     </span>
                   ) : null;
                 })}
-                {assignedModules.length === 0 && (
+                {allAssignedModuleIds.length === 0 && (
                   <span className="text-xs text-text-secondary italic">No modules assigned</span>
                 )}
               </div>
             </Card>
+
+            {submitError && (
+              <div className="flex items-start gap-2 rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-800">
+                <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+                <div>
+                  <p className="font-semibold">Failed to save user</p>
+                  <p className="mt-0.5">{submitError}</p>
+                </div>
+              </div>
+            )}
           </div>
         );
       default:
@@ -844,11 +920,11 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
     <Drawer isOpen={isOpen} onClose={onClose} title={getDrawerTitle()}>
       <div className="flex flex-col h-full min-h-0">
         {!viewMode && <Stepper steps={STEPS} currentStep={currentStep} />}
-        
+
         <div className="flex-1 overflow-y-auto bg-white">
           {renderStepContent()}
         </div>
-        
+
         <div className="shrink-0 border-t border-border p-4 bg-slate-50 flex items-center justify-between">
           {viewMode ? (
             <div className="w-full flex justify-end">
@@ -858,8 +934,8 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
             </div>
           ) : (
             <>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={currentStep === 0 ? onClose : handleBack}
                 disabled={isSubmitting}
               >
@@ -869,8 +945,8 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
                   </>
                 )}
               </Button>
-              
-              <Button 
+
+              <Button
                 onClick={currentStep === STEPS.length - 1 ? handleCreateUser : handleNext}
                 disabled={isSubmitting}
               >
