@@ -10,6 +10,7 @@ class Opportunity(BaseModel):
     __table_args__ = {'comment': 'Internship and placement opportunities posted by companies'}
 
     company_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('comp_companies.id', ondelete='CASCADE'), index=True, nullable=False)
+    program_id: Mapped[Optional[uuid.UUID]] = mapped_column(ForeignKey('acad_programs.id', ondelete='SET NULL'), index=True, nullable=True)
     
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False)

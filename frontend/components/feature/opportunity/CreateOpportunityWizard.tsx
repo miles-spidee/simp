@@ -5,7 +5,7 @@ import { Drawer } from '@/components/feature/ui/Drawer';
 import { Stepper } from '@/components/feature/ui/Stepper';
 import { Button } from '@/components/feature/ui/Button';
 import { Card } from '@/components/feature/ui/Card';
-import { ChevronRight, ChevronLeft, Briefcase, Calendar, MapPin, Users, Info, DollarSign } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Briefcase, Calendar, MapPin, Users, Info, DollarSign, GraduationCap } from 'lucide-react';
 import { opportunitiesService } from '@/src/services/opportunities.service';
 import { programService } from '@/src/services/program.service';
 import { Opportunity } from '@/src/types/opportunities.types';
@@ -16,6 +16,7 @@ interface CreateOpportunityWizardProps {
   onOpportunityCreated?: () => void;
   opportunityToView?: Opportunity | null;
   viewMode?: boolean;
+  preselectedProgram?: any | null;
 }
 
 const STEPS = ['Opportunity Details', 'Review & Post'];
@@ -31,7 +32,8 @@ export function CreateOpportunityWizard({
   onClose, 
   onOpportunityCreated, 
   opportunityToView, 
-  viewMode = false 
+  viewMode = false,
+  preselectedProgram = null,
 }: CreateOpportunityWizardProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -90,6 +92,23 @@ export function CreateOpportunityWizard({
         setCurrentStep(0);
       }
       setErrors({});
+    }
+    // If a program was preselected from the picker, apply it immediately
+    if (isOpen && preselectedProgram && !opportunityToView) {
+      setSelectedProgram(preselectedProgram);
+      const name = preselectedProgram.program_name || preselectedProgram.title || preselectedProgram.name || '';
+      if (name) setTitle(name);
+      const pType = preselectedProgram.program_type || preselectedProgram.type || 'Tech';
+      setType(pType);
+      const weeks = preselectedProgram.duration_weeks || (preselectedProgram.duration_months ? preselectedProgram.duration_months * 4 : 0);
+      if (weeks) setDuration(`${Math.round(weeks / 4)} Months`);
+      if (preselectedProgram.capacity || preselectedProgram.seats) {
+        setSeats(String(preselectedProgram.capacity || preselectedProgram.seats));
+      }
+      if (preselectedProgram.eligibility) setEligibility(preselectedProgram.eligibility);
+      if (preselectedProgram.description || preselectedProgram.program_description) {
+        setDescription(preselectedProgram.description || preselectedProgram.program_description || '');
+      }
     }
     // load programs for title suggestions
     (async () => {
@@ -181,8 +200,22 @@ export function CreateOpportunityWizard({
       case 0:
         return (
           <div className="space-y-6 p-6">
+            {/* Linked Program Badge */}
+            {preselectedProgram && (
+              <div className="flex items-center gap-3 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3">
+                <GraduationCap className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <div className="text-[10px] font-black uppercase tracking-wider text-blue-500 mb-0.5">Linked Program</div>
+                  <div className="text-sm font-bold text-blue-800 truncate">
+                    {preselectedProgram.program_name || preselectedProgram.title || preselectedProgram.name}
+                  </div>
+                </div>
+                <span className="text-[10px] font-bold bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full flex-shrink-0">Mapped</span>
+              </div>
+            )}
             <div className="space-y-2">
               <label className="text-sm font-bold text-label">Opportunity Title *</label>
+
               <div>
                 <input
                   type="text"
