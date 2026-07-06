@@ -93,7 +93,7 @@ async def delete_program(
     db: AsyncSession = Depends(get_db),
 ):
     service = ProgramService(db)
-    program = await service.remove(id=program_id)
+    program = await service.delete(id=program_id, user_id=current_user.id)
     if not program:
         raise HTTPException(status_code=404, detail="Program not found")
     return None

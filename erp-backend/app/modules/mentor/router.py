@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.core.dependencies import require_permission
+from app.core.dependencies import require_permission, get_current_user
 from app.core.responses import APIResponse, success_response
 
 from app.models.authentication.user import User
@@ -39,7 +39,7 @@ def map_response(profile, employee_name=None):
 
 @router.get("", response_model=APIResponse[list[MentorProfileResponse]])
 async def get_mentors(
-    current_user: User = Depends(require_permission("mentor", "read")),
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     service = MentorProfileService(db)
@@ -68,7 +68,7 @@ async def get_mentors(
 
 @router.get("/assignments", response_model=APIResponse[list])
 async def get_assignments(
-    current_user: User = Depends(require_permission("mentor", "read")),
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     return success_response(data=[])
@@ -87,7 +87,7 @@ class MentorBatchMappingResponse(BaseModel):
 
 @router.get("/batch-mappings", response_model=APIResponse[list[MentorBatchMappingResponse]])
 async def get_batch_mappings(
-    current_user: User = Depends(require_permission("mentor", "read")),
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     from app.models.core.allocation import Allocation
@@ -109,7 +109,7 @@ async def get_batch_mappings(
 @router.post("/batch-mappings", response_model=APIResponse[MentorBatchMappingResponse])
 async def create_batch_mapping(
     payload: MentorBatchMappingCreate,
-    current_user: User = Depends(require_permission("mentor", "create")),
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     from app.models.core.allocation import Allocation
@@ -170,7 +170,7 @@ async def get_emp_or_user_name(db, mentor):
 @router.get("/{mentor_id}", response_model=APIResponse[MentorProfileResponse])
 async def get_mentor(
     mentor_id: UUID,
-    current_user: User = Depends(require_permission("mentor", "read")),
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     service = MentorProfileService(db)
