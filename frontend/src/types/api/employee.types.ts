@@ -11,6 +11,7 @@ export interface EmployeeCreate {
 
 export interface EmployeeResponse {
   employee_id: string;
+  user_id: string;
   employee_code: string;
   first_name: string;
   last_name: string;

@@ -47,7 +47,14 @@ export default function MentorProfilePage() {
     e.preventDefault();
     if (!createForm.employee_id) return;
     
+    const selectedEmp = employees.find(emp => emp.employee_id === createForm.employee_id);
+    if (!selectedEmp || !selectedEmp.user_id) {
+       alert("The selected employee does not have an associated user account.");
+       return;
+    }
+    
     await mentorService.createMentorProfile({
+      user_id: selectedEmp.user_id,
       employee_id: createForm.employee_id,
       employeeName: createForm.employeeName,
       mentor_bio: createForm.mentor_bio,

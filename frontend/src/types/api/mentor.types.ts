@@ -1,5 +1,6 @@
 export interface MentorProfile {
   mentor_profile_id: string;
+  user_id: string;
   employee_id: string;
   employeeName: string;
   mentor_bio: string;

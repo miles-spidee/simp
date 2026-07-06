@@ -99,6 +99,7 @@ def _employee_payload(profile, user=None, organization=None, department=None):
     department_code = getattr(department, "code", None) or str(getattr(department, "id", ""))
     return {
         "employee_id": str(profile.id),
+        "user_id": str(profile.user_id) if profile.user_id else "",
         "employee_code": profile.employee_code,
         "first_name": first_name,
         "last_name": last_name,
