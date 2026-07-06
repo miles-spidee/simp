@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from app.core.database import get_db
+from app.core.dependencies import require_permission
 from datetime import datetime, timezone
 
 from app.models.academic.course import Course
@@ -65,7 +66,11 @@ def _map_course(course, program_name: str, modules: list) -> dict:
 
 
 @router.get("/courses")
-async def get_courses(db: AsyncSession = Depends(get_db)):
+async def get_courses(
+    current_user: dict = Depends(require_permission("lms", "read")),
+    db: AsyncSession = Depends(get_db)
+):
+    from app.core.security_filters import apply_rls_filter
     """List all courses with their nested modules and lessons."""
     # Fetch all non-deleted courses, eagerly joining program
     course_stmt = (
@@ -74,6 +79,7 @@ async def get_courses(db: AsyncSession = Depends(get_db)):
         .filter(Course.deleted_at.is_(None))
         .order_by(Course.created_at.desc())
     )
+    course_stmt = await apply_rls_filter(course_stmt, db, current_user, Course)
     course_result = await db.execute(course_stmt)
     courses = course_result.scalars().all()
 

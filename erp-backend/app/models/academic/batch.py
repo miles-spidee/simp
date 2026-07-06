@@ -24,5 +24,7 @@ class Batch(BaseModel):
     end_date: Mapped[date] = mapped_column(Date, nullable=False)
     max_capacity: Mapped[int] = mapped_column(Integer, nullable=False)
 
+
+
     program: Mapped["Program"] = relationship("Program", back_populates="batches")
     semester: Mapped[Optional["Semester"]] = relationship("Semester", back_populates="batches")

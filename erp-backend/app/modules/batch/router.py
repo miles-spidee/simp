@@ -51,9 +51,7 @@ async def get_batches(
     db: AsyncSession = Depends(get_db),
 ):
     service = BatchService(db)
-
-    batches = await service.get_multi()
-
+    batches = await service.get_multi(current_user=current_user)
     from app.models.academic.program import Program
     from sqlalchemy import select
     prog_ids = list({b.program_id for b in batches})

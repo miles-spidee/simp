@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
+from app.core.dependencies import require_permission
 from app.modules.assessment.service import QuizAssessmentService, QuizSubmissionService
 from app.modules.assessment.schemas import QuizAssessmentCreate, QuizSubmissionCreate
 import logging
@@ -65,9 +66,12 @@ async def add_version_id():
     return {"status": "ok"}
 
 @router.get("/quizzes")
-async def get_assessment_list(db: AsyncSession = Depends(get_db)):
+async def get_assessment_list(
+    current_user: dict = Depends(require_permission("assessment", "read")),
+    db: AsyncSession = Depends(get_db)
+):
     svc = QuizAssessmentService(db)
-    quizzes, submissions = await svc.get_all_quizzes()
+    quizzes, submissions = await svc.get_all_quizzes(current_user)
     
     # Map back to frontend expected structure
     result = []

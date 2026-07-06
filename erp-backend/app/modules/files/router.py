@@ -28,7 +28,7 @@ async def get_files(
 ):
     service = FileService(db)
 
-    files = await service.get_multi(limit=1000)
+    files = await service.get_multi(current_user=current_user, limit=1000)
 
     return success_response(
         data=[

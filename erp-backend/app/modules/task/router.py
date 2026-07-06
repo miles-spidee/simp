@@ -13,12 +13,21 @@ from typing import List
 
 router = APIRouter()
 
+from app.core.dependencies import get_current_user
+from app.models.authentication.user import User
+
 @router.get("/", response_model=APIResponse[List[dict]])
-async def get_task_list(db: AsyncSession = Depends(get_db)):
+async def get_task_list(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    from app.core.security_filters import apply_student_filter
     try:
         stmt = select(Task).options(
             joinedload(Task.assignment).joinedload(MentorAssignment.student_profile)
-        )
+        ).join(MentorAssignment, Task.assignment_id == MentorAssignment.id).join(StudentProfile, MentorAssignment.student_profile_id == StudentProfile.id)
+        
+        stmt = await apply_student_filter(stmt, db, current_user, StudentProfile)
         result = await db.execute(stmt)
         tasks = result.scalars().all()
         data = []

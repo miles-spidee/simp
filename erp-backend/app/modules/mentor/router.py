@@ -41,7 +41,7 @@ async def get_mentors(
 ):
     service = MentorProfileService(db)
 
-    mentors = await service.get_multi()
+    mentors = await service.get_multi(current_user=current_user)
 
     return success_response(
         data=[map_response(m) for m in mentors]

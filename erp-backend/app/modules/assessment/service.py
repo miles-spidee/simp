@@ -3,6 +3,8 @@ from app.services.base import BaseService
 from app.modules.assessment.repository import QuizAssessmentRepository, QuizSubmissionRepository
 from app.modules.assessment.schemas import QuizAssessmentCreate, QuizSubmissionCreate
 import uuid
+from typing import Optional
+from app.models.authentication.user import User
 
 class QuizAssessmentService(BaseService):
     def __init__(self, db: AsyncSession):
@@ -50,10 +52,10 @@ class QuizAssessmentService(BaseService):
 
         return quiz
 
-    async def get_all_quizzes(self):
-        quizzes = await self.repo.get_all_with_submissions()
+    async def get_all_quizzes(self, current_user: Optional[User] = None):
+        quizzes = await self.repo.get_all_with_submissions(current_user=current_user)
         # also fetch submissions
-        submissions = await self.submission_repo.get_all()
+        submissions = await self.submission_repo.get_all(current_user=current_user)
         return quizzes, submissions
 
 class QuizSubmissionService(BaseService):

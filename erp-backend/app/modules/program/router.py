@@ -19,8 +19,7 @@ async def get_programs(
     db: AsyncSession = Depends(get_db)
 ):
     service = ProgramService(db)
-
-    programs = await service.get_multi()
+    programs = await service.get_multi(current_user=current_user)
 
     return [
         {

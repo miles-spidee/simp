@@ -36,7 +36,7 @@ async def search_roles(
     if not has_roles and not has_users:
         raise HTTPException(status_code=403, detail="Permission denied: requires roles.view or users.create")
     service = RoleService(db)
-    result = await service.search_paginated(params)
+    result = await service.search_paginated(params, current_user=current_user)
 
     from sqlalchemy import select, func
     from app.models.rbac.role_permission import RolePermission

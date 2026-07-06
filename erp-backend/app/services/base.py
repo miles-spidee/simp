@@ -72,11 +72,23 @@ class BaseCRUDService(BaseService, Generic[ModelType, CreateSchemaType, UpdateSc
         return obj
 
     async def get_multi(
-        self, *, skip: int = 0, limit: int = 100, filters: Dict[str, Any] = None
+        self, *, skip: int = 0, limit: int = 100, filters: Dict[str, Any] = None, security_filter: Optional[Any] = None, current_user: Optional[Any] = None
     ) -> Sequence[ModelType]:
-        return await self.repository.get_multi(self.db, skip=skip, limit=limit, filters=filters)
+        if not security_filter and current_user:
+            async def auto_security_filter(stmt, db):
+                from app.core.security_filters import apply_rls_filter
+                return await apply_rls_filter(stmt, db, current_user, self.repository.model)
+            security_filter = auto_security_filter
+
+        return await self.repository.get_multi(self.db, skip=skip, limit=limit, filters=filters, security_filter=security_filter)
         
-    async def search_paginated(self, params: SearchParams, filters: Dict[str, Any] = None) -> PaginatedResponse:
+    async def search_paginated(self, params: SearchParams, filters: Dict[str, Any] = None, security_filter: Optional[Any] = None, current_user: Optional[Any] = None) -> PaginatedResponse:
+        if not security_filter and current_user:
+            async def auto_security_filter(stmt, db):
+                from app.core.security_filters import apply_rls_filter
+                return await apply_rls_filter(stmt, db, current_user, self.repository.model)
+            security_filter = auto_security_filter
+
         items, total = await self.repository.get_paginated(
             self.db,
             page=params.page,
@@ -84,7 +96,8 @@ class BaseCRUDService(BaseService, Generic[ModelType, CreateSchemaType, UpdateSc
             search=params.search,
             sort_by=params.sort_by,
             sort_order=params.sort_order,
-            filters=filters
+            filters=filters,
+            security_filter=security_filter
         )
         total_pages = math.ceil(total / params.page_size) if total > 0 else 1
         return PaginatedResponse(

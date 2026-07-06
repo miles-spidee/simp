@@ -1,5 +1,5 @@
 import uuid
-from typing import Optional
+from typing import Optional, List
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Integer, Boolean, ForeignKey
 from app.models.core.mixins import BaseModel
@@ -16,3 +16,4 @@ class MentorProfile(BaseModel):
     years_of_experience: Mapped[Optional[int]] = mapped_column(Integer)
     max_capacity: Mapped[int] = mapped_column(Integer, default=10, nullable=False)
     is_available: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    # Relationships

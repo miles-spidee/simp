@@ -8,6 +8,7 @@ from app.core.database import get_db
 from app.core.responses import success_response, APIResponse
 from pydantic import BaseModel
 import uuid
+from app.core.dependencies import require_permission
 from datetime import datetime, date, timedelta
 import asyncio
 import time
@@ -348,21 +349,21 @@ async def _student_payload(profile: StudentProfile, user: User, organization: Op
         "completed_at": "",
         "created_at": profile.created_at.isoformat() if profile.created_at else "",
         "updated_at": profile.updated_at.isoformat() if profile.updated_at else "",
-        "email": user.email,
-        "phone": user.phone or "",
+        "email": user.email if user else "",
+        "phone": (user.phone if user else "") or "",
         "enrollment_number": profile.enrollment_number,
         "college_id": college_id,
         "college_name": organization.name if organization else "",
         
         # Extended details
         "personal_info": {
-            "name": user.username,
-            "email": user.email,
-            "phone": user.phone or "",
+            "name": user.username if user else "Unknown",
+            "email": user.email if user else "",
+            "phone": (user.phone if user else "") or "",
             "dob": dob,
             "gender": gender,
             "address": address,
-            "avatar": "".join([part[0] for part in user.username.split(" ") if part]).upper()[:2]
+            "avatar": "".join([part[0] for part in (user.username or "Unknown").split(" ") if part]).upper()[:2] if user and user.username else "UN"
         },
         "academic_info": {
             "college": organization.name if organization else "",
@@ -383,7 +384,7 @@ async def _student_payload(profile: StudentProfile, user: User, organization: Op
         },
         "documents": documents_list,
         "credentials": {
-            "username": user.email,
+            "username": user.email if user else "",
             "portalAccess": True,
             "lmsAccess": True,
             "assessmentAccess": True
@@ -424,20 +425,26 @@ async def _student_payload(profile: StudentProfile, user: User, organization: Op
     }
 
 @router.get("/", response_model=APIResponse[List[dict]])
-async def get_student_list(db: AsyncSession = Depends(get_db)):
+async def get_student_list(
+    current_user: User = Depends(require_permission("students", "read")),
+    db: AsyncSession = Depends(get_db)
+):
     try:
-        stmt = (
+        from app.core.security_filters import apply_student_filter
+        
+        base_stmt = (
             select(StudentProfile, User, Organization, Department, Batch)
             .join(User, User.id == StudentProfile.user_id)
             .outerjoin(Organization, Organization.id == StudentProfile.organization_id)
             .outerjoin(Department, Department.id == StudentProfile.department_id)
             .outerjoin(Batch, Batch.id == StudentProfile.batch_id)
             .where(StudentProfile.deleted_at.is_(None))
-            .order_by(StudentProfile.created_at.desc())
         )
+        
+        filtered_stmt = await apply_student_filter(base_stmt, db, current_user, StudentProfile)
+        stmt = filtered_stmt.order_by(StudentProfile.created_at.desc())
         result = await db.execute(stmt)
         rows = result.all()
-        # Build payloads sequentially to avoid concurrent AsyncSession usage errors
         data = []
         for p, u, o, d, b in rows:
             payload = await _student_payload(p, u, o, d, b, db, is_list=True)
@@ -446,10 +453,16 @@ async def get_student_list(db: AsyncSession = Depends(get_db)):
     except Exception as e:
         import traceback
         traceback.print_exc()
-        return success_response(data=[])
+        return success_response(data=[], message=str(e))
 
 @router.get("/{id}", response_model=APIResponse[dict])
-async def get_student(id: UUID, db: AsyncSession = Depends(get_db)):
+async def get_student(
+    id: UUID,
+    current_user: User = Depends(require_permission("students", "read")),
+    db: AsyncSession = Depends(get_db)
+):
+    from app.core.security_filters import apply_student_filter
+    
     stmt = (
         select(StudentProfile, User, Organization, Department, Batch)
         .join(User, User.id == StudentProfile.user_id)
@@ -458,6 +471,7 @@ async def get_student(id: UUID, db: AsyncSession = Depends(get_db)):
         .outerjoin(Batch, Batch.id == StudentProfile.batch_id)
         .where(StudentProfile.id == id)
     )
+    stmt = await apply_student_filter(stmt, db, current_user, StudentProfile)
     result = await db.execute(stmt)
     row = result.first()
     if not row:

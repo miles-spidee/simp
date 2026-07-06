@@ -27,7 +27,7 @@ async def search_users(
     db: AsyncSession = Depends(get_db)
 ):
     service = UserService(db)
-    result = await service.search_paginated(params)
+    result = await service.search_paginated(params, current_user=current_user)
     
     # Fetch roles for all users in the page
     from app.models.rbac.user_role import UserRole

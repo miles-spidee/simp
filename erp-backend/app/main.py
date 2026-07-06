@@ -1,11 +1,14 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import traceback
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.logging import setup_logging
 from app.core.exceptions import register_exception_handlers
+from app.core.database import get_db
+from app.core.middleware import RLSMiddleware
 
 setup_logging()
 import app.models
@@ -25,6 +28,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.add_middleware(RLSMiddleware)
 
 # Register exception handlers
 register_exception_handlers(app)

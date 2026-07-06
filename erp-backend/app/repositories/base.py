@@ -30,7 +30,8 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         *,
         skip: int = 0,
         limit: int = 100,
-        filters: Dict[str, Any] = None
+        filters: Dict[str, Any] = None,
+        security_filter: Optional[Any] = None
     ) -> Sequence[ModelType]:
         stmt = select(self.model)
         if hasattr(self.model, 'deleted_at'):
@@ -40,6 +41,10 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             for k, v in filters.items():
                 if hasattr(self.model, k):
                     stmt = stmt.filter(getattr(self.model, k) == v)
+                    
+        if security_filter:
+            stmt = await security_filter(stmt, db)
+
         stmt = stmt.offset(skip).limit(limit)
         result = await db.execute(stmt)
         return result.scalars().all()
@@ -54,6 +59,7 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         sort_by: Optional[str] = "created_at",
         sort_order: Optional[str] = "desc",
         filters: Dict[str, Any] = None,
+        security_filter: Optional[Any] = None
     ) -> Tuple[Sequence[ModelType], int]:
         """
         Return (items, total_count) using a **single query** with a window
@@ -95,6 +101,9 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         if sort_by and hasattr(self.model, sort_by):
             col = getattr(self.model, sort_by)
             stmt = stmt.order_by(desc(col) if sort_order == "desc" else asc(col))
+
+        if security_filter:
+            stmt = await security_filter(stmt, db)
 
         # ── Single-pass COUNT via window function ──────────────────────────
         # We add a window-function column so Postgres counts in one pass.
