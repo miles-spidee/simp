@@ -35,6 +35,7 @@ class RoleResponse(BaseModel):
     is_system: bool
     is_active: bool
     icon: Optional[str]
+    moduleIds: Optional[List[str]] = None
 
 
 class PermissionAssign(BaseModel):

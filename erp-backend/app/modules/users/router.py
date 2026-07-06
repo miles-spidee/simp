@@ -17,7 +17,8 @@ async def _require_users_access(current_user: User, db: AsyncSession):
     repo = PermissionRepository(db)
     has_read = await repo.user_has_permission(db, current_user.id, "IDENTITY_USER.view")
     has_create = await repo.user_has_permission(db, current_user.id, "IDENTITY_USER.create")
-    if not has_read and not has_create:
+    has_hr = await repo.user_has_permission(db, current_user.id, "EMPLOYEE_MANAGEMENT.view")
+    if not has_read and not has_create and not has_hr:
         raise HTTPException(status_code=403, detail="Permission denied")
 
 @router.post("/search", response_model=APIResponse[PaginatedResponse])

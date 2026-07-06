@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
+from app.core.responses import success_response
 # NOTE: endpoints return raw Pydantic models (not wrapped)
 
 from app.modules.opportunity.service import OpportunityService
