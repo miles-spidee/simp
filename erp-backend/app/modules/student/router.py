@@ -266,17 +266,75 @@ async def _student_payload(profile: StudentProfile, user: User, organization: Op
     # 2 & 3. Fetch Batch and Program
     alloc_batch_name = ""
     alloc_program_name = ""
-    if profile.batch_id:
-        batch_stmt = select(Batch).where(Batch.id == profile.batch_id)
-        batch_res = await db.execute(batch_stmt)
-        alloc_batch = batch_res.scalars().first()
-        if alloc_batch:
-            alloc_batch_name = alloc_batch.name
-            prog_stmt = select(Program).where(Program.id == alloc_batch.program_id)
-            prog_res = await db.execute(prog_stmt)
-            alloc_prog = prog_res.scalars().first()
-            if alloc_prog:
-                alloc_program_name = alloc_prog.name
+    prog_alloc_stmt = select(Program).join(
+        Allocation, Allocation.target_id == Program.id
+    ).where(
+        Allocation.source_type == "STUDENT",
+        Allocation.source_id.in_([profile.id, user.id]),
+        Allocation.target_type == "PROGRAM",
+        Allocation.deleted_at.is_(None)
+    ).order_by(Allocation.created_at.desc())
+    prog_alloc_res = await db.execute(prog_alloc_stmt)
+    alloc_prog = prog_alloc_res.scalars().first()
+    if alloc_prog:
+        alloc_program_name = alloc_prog.name
+        
+    if not mentor_user and alloc_prog:
+        # Check if mentor is allocated to this program
+        prog_mentor_stmt = select(User).join(
+            Allocation, Allocation.source_id == User.id
+        ).where(
+            Allocation.source_type == "MENTOR",
+            Allocation.target_type == "PROGRAM",
+            Allocation.target_id == alloc_prog.id,
+            Allocation.deleted_at.is_(None)
+        ).order_by(Allocation.created_at.desc())
+        prog_mentor_res = await db.execute(prog_mentor_stmt)
+        mentor_user = prog_mentor_res.scalars().first()
+        
+    # 3. Fetch Batch from Allocation
+    alloc_batch_name = ""
+    alloc_batch_obj = None
+    batch_alloc_stmt = select(Batch).join(
+        Allocation, Allocation.target_id == Batch.id
+    ).where(
+        Allocation.source_type == "STUDENT",
+        Allocation.source_id.in_([profile.id, user.id]),
+        Allocation.target_type == "BATCH",
+        Allocation.deleted_at.is_(None)
+    ).order_by(Allocation.created_at.desc())
+    batch_alloc_res = await db.execute(batch_alloc_stmt)
+    alloc_batch = batch_alloc_res.scalars().first()
+    if alloc_batch:
+        alloc_batch_name = alloc_batch.name
+        alloc_batch_obj = alloc_batch
+    elif alloc_prog:
+        prog_batch_stmt = select(Batch).join(
+            Allocation, Allocation.target_id == Batch.id
+        ).where(
+            Allocation.source_type == "PROGRAM",
+            Allocation.source_id == alloc_prog.id,
+            Allocation.target_type == "BATCH",
+            Allocation.deleted_at.is_(None)
+        ).order_by(Allocation.created_at.desc())
+        prog_batch_res = await db.execute(prog_batch_stmt)
+        prog_batch = prog_batch_res.scalars().first()
+        if prog_batch:
+            alloc_batch_name = prog_batch.name
+            alloc_batch_obj = prog_batch
+
+    if not mentor_user and alloc_batch_obj:
+        # Check if mentor is allocated to this batch
+        batch_mentor_stmt = select(User).join(
+            Allocation, Allocation.source_id == User.id
+        ).where(
+            Allocation.source_type == "MENTOR",
+            Allocation.target_type == "BATCH",
+            Allocation.target_id == alloc_batch_obj.id,
+            Allocation.deleted_at.is_(None)
+        ).order_by(Allocation.created_at.desc())
+        batch_mentor_res = await db.execute(batch_mentor_stmt)
+        mentor_user = batch_mentor_res.scalars().first()
 
     if not is_list:
 
