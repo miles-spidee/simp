@@ -51,13 +51,14 @@ async def sync_applications(
 
 @router.get("/", response_model=APIResponse[list[AllocationResponse]])
 async def get_allocations(
+    source_type: Optional[str] = Query(None),
     target_type: Optional[str] = Query(None),
     target_id: Optional[UUID] = Query(None),
     current_user: User = Depends(require_permission("allocation", "read")),
     db: AsyncSession = Depends(get_db),
 ):
     service = AllocationService(db)
-    allocations = await service.get_allocations(target_type, target_id)
+    allocations = await service.get_allocations(source_type, target_type, target_id)
     return success_response(data=[map_allocation(a) for a in allocations])
 
 @router.post("/", response_model=APIResponse[AllocationResponse])

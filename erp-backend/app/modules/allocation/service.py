@@ -13,8 +13,10 @@ class AllocationService(BaseService):
     def __init__(self, db: AsyncSession):
         super().__init__(db)
 
-    async def get_allocations(self, target_type: str = None, target_id: UUID = None) -> List[dict]:
+    async def get_allocations(self, source_type: str = None, target_type: str = None, target_id: UUID = None) -> List[dict]:
         stmt = select(Allocation).where(Allocation.deleted_at == None)
+        if source_type:
+            stmt = stmt.where(Allocation.source_type == source_type)
         if target_type:
             stmt = stmt.where(Allocation.target_type == target_type)
         if target_id:
