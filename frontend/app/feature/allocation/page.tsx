@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 
 import { 
   Users, Award, Building, Activity, LayoutGrid, 
@@ -10,7 +10,7 @@ type TabKey = 'overview' | 'student' | 'mentor' | 'program' | 'report_manager' |
 
 export default function AllocationManagementPage() {
   const [activeTab, setActiveTab] = useState<TabKey>('overview');
-  const [allocations, setAllocations] = useState([]);
+  const [allocations, setAllocations] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
@@ -19,6 +19,14 @@ export default function AllocationManagementPage() {
   const [targetId, setTargetId] = useState('');
   const [targetType, setTargetType] = useState('PROGRAM');
   const [role, setRole] = useState('MEMBER');
+
+  // Options for dropdowns
+  const [sourceOptions, setSourceOptions] = useState<{id: string, name: string}[]>([]);
+  const [targetOptions, setTargetOptions] = useState<{id: string, name: string}[]>([]);
+  const [loadingOptions, setLoadingOptions] = useState(false);
+  
+  // Cache for resolving names in the table
+  const [nameCache, setNameCache] = useState<Record<string, string>>({});
 
   const showToast = (message: string, type: 'success' | 'error' = 'success') => {
     setToast({ message, type });
@@ -44,9 +52,96 @@ export default function AllocationManagementPage() {
     }
   };
 
+  // Helper to fetch options
+  const fetchOptions = async (endpoint: string, type: string) => {
+    try {
+      const res = await fetch(endpoint);
+      if (res.ok) {
+        const data = await res.json();
+        const list = data.data || [];
+        const options = list.map((item: any) => {
+          let name = 'Unknown';
+          if (type === 'student') {
+             name = `${item.first_name || ''} ${item.last_name || ''} ${item.enrollment_number ? `(${item.enrollment_number})` : ''}`.trim();
+          } else if (type === 'mentor' || type === 'user' || type === 'employee') {
+             const baseName = `${item.first_name || ''} ${item.last_name || ''}`.trim();
+             name = baseName || item.email || item.username || 'Unknown';
+          } else if (type === 'program' || type === 'batch') {
+             name = item.name || item.batch_name || item.id;
+          }
+          if (!name || name === 'Unknown') name = item.id;
+          return { id: item.id, name };
+        });
+        
+        // Update cache
+        setNameCache(prev => {
+          const newCache = { ...prev };
+          options.forEach((o: any) => { newCache[o.id] = o.name; });
+          return newCache;
+        });
+        
+        return options;
+      }
+    } catch (error) {
+      console.error("Failed to fetch options for", type, error);
+    }
+    return [];
+  };
+
+  // Fetch source options when activeTab changes
   useEffect(() => {
+    const loadSourceOptions = async () => {
+      if (activeTab === 'overview') return;
+      setLoadingOptions(true);
+      let endpoint = '';
+      let type = '';
+      switch (activeTab) {
+        case 'student': endpoint = '/api/v1/student'; type = 'student'; break;
+        case 'mentor': endpoint = '/api/v1/mentor'; type = 'mentor'; break;
+        case 'program': endpoint = '/api/v1/program'; type = 'program'; break;
+        case 'report_manager':
+        case 'finance_manager':
+        case 'user': endpoint = '/api/v1/employee'; type = 'employee'; break;
+      }
+      
+      if (endpoint) {
+        const options = await fetchOptions(endpoint, type);
+        setSourceOptions(options);
+      } else {
+        setSourceOptions([]);
+      }
+      setSourceId('');
+      setLoadingOptions(false);
+    };
+    
+    loadSourceOptions();
     fetchData();
   }, [activeTab]);
+
+  // Fetch target options when targetType changes
+  useEffect(() => {
+    const loadTargetOptions = async () => {
+      setLoadingOptions(true);
+      let endpoint = '';
+      let type = '';
+      switch (targetType) {
+        case 'PROGRAM': endpoint = '/api/v1/program'; type = 'program'; break;
+        case 'BATCH': endpoint = '/api/v1/batch'; type = 'batch'; break;
+        case 'USER': endpoint = '/api/v1/employee'; type = 'employee'; break;
+      }
+      
+      if (endpoint) {
+        const options = await fetchOptions(endpoint, type);
+        setTargetOptions(options);
+      } else {
+        setTargetOptions([]);
+      }
+      setTargetId('');
+      setLoadingOptions(false);
+    };
+    
+    loadTargetOptions();
+  }, [targetType]);
 
   const deleteAllocation = async (id: string) => {
     if(!confirm("Are you sure you want to remove this allocation?")) return;
@@ -64,6 +159,10 @@ export default function AllocationManagementPage() {
 
   const createAllocation = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!sourceId || !targetId) {
+      showToast("Please select both a source and a target", "error");
+      return;
+    }
     try {
       const res = await fetch('/api/v1/allocation', {
         method: "POST",
@@ -73,7 +172,7 @@ export default function AllocationManagementPage() {
           source_id: sourceId,
           target_type: targetType,
           target_id: targetId,
-          role: role,
+          role: role || "MEMBER",
           status: "ACTIVE"
         })
       });
@@ -118,6 +217,17 @@ export default function AllocationManagementPage() {
     { id: 'finance_manager', label: 'Finance Manager Mapping', icon: Building },
     { id: 'user', label: 'User Mapping', icon: UserCheck }
   ];
+
+  // Filter out sources that are already allocated
+  const availableSourceOptions = useMemo(() => {
+    return sourceOptions.filter(opt => !allocations.some(a => a.source_id === opt.id));
+  }, [sourceOptions, allocations]);
+
+  // Helper to get name by ID for table
+  const getName = (id: string) => {
+    if (nameCache[id]) return nameCache[id];
+    return `${id.substring(0,8)}...`;
+  };
 
   return (
     <div className="h-screen -m-6 flex bg-slate-50 border border-border rounded-xl overflow-hidden text-text-primary">
@@ -195,10 +305,10 @@ export default function AllocationManagementPage() {
                 <table className="w-full text-sm text-left">
                   <thead className="bg-slate-50 border-b">
                     <tr>
-                      <th className="px-4 py-3 font-semibold text-slate-700">Source ID</th>
+                      <th className="px-4 py-3 font-semibold text-slate-700">Source</th>
                       <th className="px-4 py-3 font-semibold text-slate-700">Role</th>
                       <th className="px-4 py-3 font-semibold text-slate-700">Target Type</th>
-                      <th className="px-4 py-3 font-semibold text-slate-700">Target ID</th>
+                      <th className="px-4 py-3 font-semibold text-slate-700">Target</th>
                       <th className="px-4 py-3 font-semibold text-slate-700">Status</th>
                       <th className="px-4 py-3 font-semibold text-slate-700 text-right">Actions</th>
                     </tr>
@@ -210,12 +320,12 @@ export default function AllocationManagementPage() {
                       <tr><td colSpan={6} className="text-center py-8 text-muted-foreground">No allocations found.</td></tr>
                     ) : allocations.map((a: any) => (
                       <tr key={a.id} className="hover:bg-slate-50/50">
-                        <td className="px-4 py-3 font-mono text-xs">{a.source_id.substring(0,8)}...</td>
+                        <td className="px-4 py-3 font-medium text-slate-900">{getName(a.source_id)}</td>
                         <td className="px-4 py-3">
                           <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded-md text-xs font-medium border">{a.role}</span>
                         </td>
                         <td className="px-4 py-3">{a.target_type}</td>
-                        <td className="px-4 py-3 font-mono text-xs">{a.target_id.substring(0,8)}...</td>
+                        <td className="px-4 py-3 font-medium text-slate-900">{getName(a.target_id)}</td>
                         <td className="px-4 py-3">
                           <span className={`px-2 py-1 rounded-md text-xs font-medium ${a.status === 'ACTIVE' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
                             {a.status}
@@ -237,21 +347,32 @@ export default function AllocationManagementPage() {
                 <h3 className="text-sm font-bold mb-4">Create New Mapping</h3>
                 <form onSubmit={createAllocation} className="space-y-4">
                   <div>
-                    <label className="text-xs font-semibold">Source ID ({activeTab.toUpperCase()})</label>
-                    <input 
+                    <label className="text-xs font-semibold">Select {activeTab.replace('_', ' ')} (Source)</label>
+                    <select
                       className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
-                      placeholder="UUID" 
-                      value={sourceId} 
-                      onChange={e => setSourceId(e.target.value)} 
+                      value={sourceId}
+                      onChange={e => setSourceId(e.target.value)}
                       required
-                    />
+                      disabled={loadingOptions}
+                    >
+                      <option value="" disabled>-- Select Source --</option>
+                      {availableSourceOptions.map(opt => (
+                        <option key={opt.id} value={opt.id}>{opt.name}</option>
+                      ))}
+                    </select>
+                    {availableSourceOptions.length === 0 && !loadingOptions && (
+                      <p className="text-xs text-red-500 mt-1">No options available or all are allocated.</p>
+                    )}
                   </div>
                   <div>
                     <label className="text-xs font-semibold">Target Type</label>
                     <select 
                       className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
                       value={targetType}
-                      onChange={e => setTargetType(e.target.value)}
+                      onChange={e => {
+                        setTargetType(e.target.value);
+                        setTargetId('');
+                      }}
                     >
                       <option value="PROGRAM">PROGRAM</option>
                       <option value="BATCH">BATCH</option>
@@ -259,14 +380,19 @@ export default function AllocationManagementPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="text-xs font-semibold">Target ID</label>
-                    <input 
+                    <label className="text-xs font-semibold">Select Target</label>
+                    <select
                       className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
-                      placeholder="UUID" 
-                      value={targetId} 
-                      onChange={e => setTargetId(e.target.value)} 
+                      value={targetId}
+                      onChange={e => setTargetId(e.target.value)}
                       required
-                    />
+                      disabled={loadingOptions}
+                    >
+                      <option value="" disabled>-- Select Target --</option>
+                      {targetOptions.map(opt => (
+                        <option key={opt.id} value={opt.id}>{opt.name}</option>
+                      ))}
+                    </select>
                   </div>
                   <div>
                     <label className="text-xs font-semibold">Role/Relationship</label>
@@ -277,7 +403,7 @@ export default function AllocationManagementPage() {
                       onChange={e => setRole(e.target.value)} 
                     />
                   </div>
-                  <button type="submit" className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition-colors text-sm">
+                  <button type="submit" disabled={loadingOptions} className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition-colors text-sm disabled:opacity-50">
                     <Plus className="mr-2 h-4 w-4" /> Map Relationship
                   </button>
                 </form>
