@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState, useMemo } from 'react';
+import { apiClient } from '@/src/api/api.client';
 
 import { 
   Users, Award, Building, Activity, LayoutGrid, 
@@ -39,11 +40,9 @@ export default function AllocationManagementPage() {
     setLoading(true);
     try {
       const sourceType = activeTab.toUpperCase();
-      const res = await fetch(`/api/v1/allocation?source_type=${sourceType}`);
-      if(res.ok) {
-        const data = await res.json();
-        setAllocations(data.data || []);
-      }
+      const res = await apiClient.get(`/api/v1/allocation/?source_type=${sourceType}`);
+      const data = res.data as any;
+      setAllocations(data.data || []);
     } catch (error) {
       console.error(error);
       showToast("Failed to fetch allocations", "error");
@@ -55,11 +54,10 @@ export default function AllocationManagementPage() {
   // Helper to fetch options
   const fetchOptions = async (endpoint: string, type: string) => {
     try {
-      const res = await fetch(endpoint);
-      if (res.ok) {
-        const data = await res.json();
-        const list = data.data || [];
-        const options = list.map((item: any) => {
+      const res = await apiClient.get(endpoint);
+      const data = res.data as any;
+      const list = data.data || [];
+      const options = list.map((item: any) => {
           let name = 'Unknown';
           if (type === 'student') {
              name = `${item.first_name || ''} ${item.last_name || ''} ${item.enrollment_number ? `(${item.enrollment_number})` : ''}`.trim();
@@ -80,8 +78,8 @@ export default function AllocationManagementPage() {
           return newCache;
         });
         
-        return options;
-      }
+      
+      return options;
     } catch (error) {
       console.error("Failed to fetch options for", type, error);
     }
@@ -96,12 +94,12 @@ export default function AllocationManagementPage() {
       let endpoint = '';
       let type = '';
       switch (activeTab) {
-        case 'student': endpoint = '/api/v1/student'; type = 'student'; break;
-        case 'mentor': endpoint = '/api/v1/mentor'; type = 'mentor'; break;
-        case 'program': endpoint = '/api/v1/program'; type = 'program'; break;
+        case 'student': endpoint = '/api/v1/student/'; type = 'student'; break;
+        case 'mentor': endpoint = '/api/v1/mentor/'; type = 'mentor'; break;
+        case 'program': endpoint = '/api/v1/program/'; type = 'program'; break;
         case 'report_manager':
         case 'finance_manager':
-        case 'user': endpoint = '/api/v1/employee'; type = 'employee'; break;
+        case 'user': endpoint = '/api/v1/employee/'; type = 'employee'; break;
       }
       
       if (endpoint) {
@@ -125,9 +123,9 @@ export default function AllocationManagementPage() {
       let endpoint = '';
       let type = '';
       switch (targetType) {
-        case 'PROGRAM': endpoint = '/api/v1/program'; type = 'program'; break;
-        case 'BATCH': endpoint = '/api/v1/batch'; type = 'batch'; break;
-        case 'USER': endpoint = '/api/v1/employee'; type = 'employee'; break;
+        case 'PROGRAM': endpoint = '/api/v1/program/'; type = 'program'; break;
+        case 'BATCH': endpoint = '/api/v1/batch/'; type = 'batch'; break;
+        case 'USER': endpoint = '/api/v1/employee/'; type = 'employee'; break;
       }
       
       if (endpoint) {
@@ -146,11 +144,9 @@ export default function AllocationManagementPage() {
   const deleteAllocation = async (id: string) => {
     if(!confirm("Are you sure you want to remove this allocation?")) return;
     try {
-      const res = await fetch(`/api/v1/allocation/${id}`, { method: "DELETE" });
-      if(res.ok) {
-        setAllocations(allocations.filter((a: any) => a.id !== id));
-        showToast("Allocation removed");
-      }
+      await apiClient.delete(`/api/v1/allocation/${id}`);
+      setAllocations(allocations.filter((a: any) => a.id !== id));
+      showToast("Allocation removed");
     } catch(error) {
       console.error(error);
       showToast("Error removing allocation", "error");
@@ -164,42 +160,31 @@ export default function AllocationManagementPage() {
       return;
     }
     try {
-      const res = await fetch('/api/v1/allocation', {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          source_type: activeTab.toUpperCase(),
-          source_id: sourceId,
-          target_type: targetType,
-          target_id: targetId,
-          role: role || "MEMBER",
-          status: "ACTIVE"
-        })
+      await apiClient.post('/api/v1/allocation/', {
+        source_type: activeTab.toUpperCase(),
+        source_id: sourceId,
+        target_type: targetType,
+        target_id: targetId,
+        role: role || "MEMBER",
+        status: "ACTIVE"
       });
-      if(res.ok) {
-        showToast("Allocation created successfully");
-        setSourceId('');
-        setTargetId('');
-        fetchData();
-      } else {
-        const err = await res.json();
-        showToast(err.detail || "Error creating allocation", "error");
-      }
-    } catch(err) {
+      showToast("Allocation created successfully");
+      setSourceId('');
+      setTargetId('');
+      fetchData();
+    } catch(err: any) {
       console.error(err);
-      showToast("Network error", "error");
+      showToast(err.response?.data?.detail || "Error creating allocation", "error");
     }
   };
 
   const syncApplications = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/v1/allocation/sync-applications`, { method: "POST" });
-      if(res.ok) {
-        const data = await res.json();
-        showToast(data.message);
-        fetchData();
-      }
+      const res = await apiClient.post(`/api/v1/allocation/sync-applications`);
+      const data = res.data as any;
+      showToast(data.message);
+      fetchData();
     } catch(error) {
       console.error(error);
       showToast("Failed to sync", "error");

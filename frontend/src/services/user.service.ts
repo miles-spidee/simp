@@ -45,7 +45,10 @@ export const userService = {
     const user = await this.getUser(id);
     if (!user) return [];
 
-    const role = await roleService.getRole(user.roleId);
+    let role: any = null;
+    if (user.roleId) {
+      role = await roleService.getRole(user.roleId);
+    }
     let allowedModuleIds = new Set<string>();
 
     if (role && role.moduleIds) {
