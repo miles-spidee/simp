@@ -62,17 +62,17 @@ export default function MentorBatchMappingPage() {
       
       // Update mock mapping for UI preview
       const mentor = mentors.find(m => m.mentor_profile_id === mapForm.mentor_profile_id);
-      const batch = batches.find(b => b.id === mapForm.batch_id);
+      const batch = batches.find(b => b.batch_id === mapForm.batch_id);
       
       if (mentor && batch) {
         await mentorService.createBatchMapping({
           mentorProfileId: mentor.mentor_profile_id,
           mentorName: mentor.employeeName || 'Unknown',
           employeeId: mentor.employee_id,
-          batchId: batch.id,
-          batchName: batch.name || 'Unknown Batch',
-          batchCode: batch.code || 'UNKNOWN',
-          programName: batch.program_name || 'Program',
+          batchId: batch.batch_id,
+          batchName: batch.batch_name || 'Unknown Batch',
+          batchCode: batch.batch_code || 'UNKNOWN',
+          programName: (batch as any).program_name || 'Program',
           studentCount: 0,
           batchCapacity: batch.max_capacity || 50,
           mappedDate: new Date().toISOString().split('T')[0],
@@ -273,8 +273,8 @@ export default function MentorBatchMappingPage() {
                 >
                   <option value="">-- Choose Batch --</option>
                   {batches.map(b => (
-                    <option key={b.id} value={b.id}>
-                      {b.name} ({b.code || b.id.substring(0, 8)})
+                    <option key={b.batch_id} value={b.batch_id}>
+                      {b.batch_name} ({b.batch_code || b.batch_id.substring(0, 8)})
                     </option>
                   ))}
                 </select>

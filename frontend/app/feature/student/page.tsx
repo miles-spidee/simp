@@ -702,8 +702,7 @@ export default function StudentLifecycleManagementPage() {
     const realBatchName = selectedBatch ? (selectedBatch.batch_name || selectedBatch.name) : batchForm.name;
 
     const updated = await studentService.updateStudent(studentId, {
-      batch_id: batchForm.name,
-      batch_name: realBatchName
+      batch: { id: batchForm.name, name: realBatchName } as any
     });
 
     if (updated) {

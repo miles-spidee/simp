@@ -63,21 +63,25 @@ export const mentorApi = {
 
   getAssignments: async (): Promise<MentorAssignment[]> => {
     const res = await apiClient.get<MentorAssignment[]>('/api/v1/mentor/assignments/');
-    return res.data;
+    return (res as any).data?.data || res.data;
   },
 
   createAssignment: async (data: MentorAssignmentCreate): Promise<MentorAssignment> => {
     const res = await apiClient.post<MentorAssignment>('/api/v1/mentor/assignments/', data);
-    return res.data;
+    return (res as any).data?.data || res.data;
   },
 
   getBatchMappings: async (): Promise<MentorBatchMapping[]> => {
     const res = await apiClient.get<MentorBatchMapping[]>('/api/v1/mentor/batch-mappings/');
-    return res.data;
+    return (res as any).data?.data || res.data;
   },
 
   createBatchMapping: async (data: MentorBatchMappingCreate): Promise<MentorBatchMapping> => {
-    const res = await apiClient.post<MentorBatchMapping>('/api/v1/mentor/batch-mappings/', data);
-    return res.data;
+    const payload = {
+      mentor_id: data.mentorProfileId || (data as any).mentor_id,
+      batch_id: data.batchId || (data as any).batch_id
+    };
+    const res = await apiClient.post<MentorBatchMapping>('/api/v1/mentor/batch-mappings/', payload);
+    return (res as any).data?.data || res.data;
   },
 };

@@ -43,6 +43,8 @@ class MentorProfileResponse(BaseModel):
 
     created_at: str
     updated_at: str
+    
+    employeeName: Optional[str] = None
 
     class Config:
         from_attributes = True
