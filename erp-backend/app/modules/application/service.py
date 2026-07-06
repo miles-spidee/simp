@@ -79,6 +79,7 @@ class ApplicationService(BaseService):
         from sqlalchemy.orm import defer
         stmt = (
             select(Application)
+            .where(Application.deleted_at.is_(None))
             .options(
                 joinedload(Application.student_profile).joinedload(StudentProfile.user),
                 defer(Application.application_data)
@@ -110,6 +111,7 @@ class ApplicationService(BaseService):
         stmt = (
             select(Application)
             .join(StudentProfile)
+            .where(Application.deleted_at.is_(None))
             .where(StudentProfile.user_id == user_id)
             .options(
                 joinedload(Application.student_profile).joinedload(StudentProfile.user),
@@ -140,6 +142,7 @@ class ApplicationService(BaseService):
         stmt = (
             select(Application)
             .where(Application.id == application_id)
+            .where(Application.deleted_at.is_(None))
             .options(
                 joinedload(Application.student_profile).joinedload(StudentProfile.user)
             )
@@ -315,6 +318,7 @@ class ApplicationService(BaseService):
                 from app.models.profiles.student_profile import StudentProfile
                 from app.models.internships.opportunity import Opportunity
                 from app.services.notification_service import notification_service
+                import asyncio
                 
                 # Fetch user details
                 user_stmt = select(DBUser).join(StudentProfile, StudentProfile.user_id == DBUser.id).where(StudentProfile.id == application.student_profile_id)
@@ -328,11 +332,13 @@ class ApplicationService(BaseService):
                 opp_title = opp_obj.title if opp_obj else "Opportunity"
                 
                 if user_obj:
-                    await notification_service.send_application_selected(
-                        username=user_obj.username.title(),
-                        email=user_obj.email,
-                        phone=user_obj.phone or "+919876543210",
-                        opportunity_title=opp_title
+                    asyncio.create_task(
+                        notification_service.send_application_selected(
+                            username=user_obj.username.title(),
+                            email=user_obj.email,
+                            phone=user_obj.phone or "+919876543210",
+                            opportunity_title=opp_title
+                        )
                     )
             except Exception as e:
                 print("Error sending application selected notification:", e)
@@ -343,6 +349,7 @@ class ApplicationService(BaseService):
                 from app.models.authentication.user import User as DBUser
                 from app.models.profiles.student_profile import StudentProfile
                 from app.services.notification_service import notification_service
+                import asyncio
                 
                 # Fetch user details
                 user_stmt = select(DBUser).join(StudentProfile, StudentProfile.user_id == DBUser.id).where(StudentProfile.id == application.student_profile_id)
@@ -359,13 +366,15 @@ class ApplicationService(BaseService):
                     time_str = parts[1].strip()
                 
                 if user_obj and date_str and time_str:
-                    await notification_service.send_interview_scheduled(
-                        username=user_obj.username.title(),
-                        email=user_obj.email,
-                        phone=user_obj.phone or "+919876543210",
-                        date_str=date_str,
-                        time_str=time_str,
-                        venue="Online/Virtual"
+                    asyncio.create_task(
+                        notification_service.send_interview_scheduled(
+                            username=user_obj.username.title(),
+                            email=user_obj.email,
+                            phone=user_obj.phone or "+919876543210",
+                            date_str=date_str,
+                            time_str=time_str,
+                            venue="Online/Virtual"
+                        )
                     )
             except Exception as e:
                 print("Error sending interview scheduled notification:", e)
@@ -441,5 +450,5 @@ class ApplicationService(BaseService):
         application = await self.repository.get(self.db, id=application_id)
         if not application:
             raise HTTPException(status_code=404, detail="Application not found")
-        await self.repository.remove(self.db, id=application_id)
+        await self.repository.delete(self.db, id=application_id)
         await self.commit_transaction()

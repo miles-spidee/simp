@@ -76,16 +76,20 @@ class OpportunityService(BaseService):
             from app.models.authentication.user import User as DBUser
             from app.models.profiles.student_profile import StudentProfile
             from app.services.notification_service import notification_service
+            import asyncio
             
             res_users = await self.db.execute(select(DBUser).join(StudentProfile, StudentProfile.user_id == DBUser.id))
             students = res_users.scalars().all()
             
-            for s in students:
-                await notification_service.send_opportunity_published(
-                    title=opportunity.title,
-                    description=opportunity.description or "",
-                    recipient_email=s.email
-                )
+            async def notify_students(student_list, opp_title, opp_desc):
+                for s in student_list:
+                    await notification_service.send_opportunity_published(
+                        title=opp_title,
+                        description=opp_desc or "",
+                        recipient_email=s.email
+                    )
+            
+            asyncio.create_task(notify_students(students, opportunity.title, opportunity.description))
         except Exception as e:
             print("Error notifying students of opportunity:", e)
 

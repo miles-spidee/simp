@@ -148,6 +148,9 @@ async def get_me(current_user: User = Depends(get_current_user), db: AsyncSessio
         'productivity': 'productivity',
         'super_admin_settings': 'super_admin',
         'super_admin': 'super_admin',
+        'identity_user': 'users',
+        'identity_roles': 'roles',
+        'module_registry': 'module_registry',
     }
     
     mapped_modules = []

@@ -63,8 +63,8 @@ async def get_modules(
 ):
     from app.modules.identity.repository import PermissionRepository
     repo = PermissionRepository(db)
-    has_modules = await repo.user_has_permission(db, current_user.id, "modules.view")
-    has_users = await repo.user_has_permission(db, current_user.id, "users.create")
+    has_modules = await repo.user_has_permission(db, current_user.id, "MODULE_REGISTRY.view")
+    has_users = await repo.user_has_permission(db, current_user.id, "IDENTITY_USER.create")
     if not has_modules and not has_users:
         raise HTTPException(status_code=403, detail="Permission denied: requires modules.view or users.create")
     result = await db.execute(select(Module).order_by(Module.created_at, Module.name))

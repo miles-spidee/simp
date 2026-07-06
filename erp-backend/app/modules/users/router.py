@@ -15,8 +15,8 @@ async def _require_users_access(current_user: User, db: AsyncSession):
     """Allow access if user has users.read OR users.create permission."""
     from app.modules.identity.repository import PermissionRepository
     repo = PermissionRepository(db)
-    has_read = await repo.user_has_permission(db, current_user.id, "users.read")
-    has_create = await repo.user_has_permission(db, current_user.id, "users.create")
+    has_read = await repo.user_has_permission(db, current_user.id, "IDENTITY_USER.view")
+    has_create = await repo.user_has_permission(db, current_user.id, "IDENTITY_USER.create")
     if not has_read and not has_create:
         raise HTTPException(status_code=403, detail="Permission denied")
 
