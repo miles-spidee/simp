@@ -357,3 +357,33 @@ async def get_registered_entity(
         })
     else:
         raise HTTPException(400, "Invalid entity type")
+
+@router.get("/by-role/{role_code}", response_model=APIResponse[list])
+async def get_users_by_role(
+    role_code: str,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    from sqlalchemy import select
+    from app.models.authentication.user import User
+    from app.models.rbac.user_role import UserRole
+    from app.models.rbac.role import Role
+
+    query = select(User).join(UserRole, User.id == UserRole.user_id).join(Role, UserRole.role_id == Role.id)
+    if role_code.upper() != "ALL":
+        query = query.where(Role.code == role_code.upper())
+
+    result = await db.execute(query)
+    users = result.scalars().all()
+    
+    items = []
+    for user in users:
+        items.append({
+            "id": str(user.id),
+            "username": user.username,
+            "email": user.email,
+            "first_name": "",
+            "last_name": "",
+        })
+        
+    return success_response(data=items)
