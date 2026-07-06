@@ -48,9 +48,40 @@ async def apply_program_filter(query, db: AsyncSession, user: User, program_mode
         return query
         
     if "MENTOR" in roles:
-        allocated_programs = await get_allocated_target_ids(db, user.id, "PROGRAM")
-        if allocated_programs:
-            return query.where(program_model.id.in_(allocated_programs))
+        from app.models.profiles.mentor_profile import MentorProfile
+        from app.models.internships.mentor_assignment import MentorAssignment
+        from app.models.profiles.student_profile import StudentProfile
+        from app.models.academic.batch import Batch
+        
+        stmt = select(Batch.program_id).join(
+            StudentProfile, StudentProfile.batch_id == Batch.id
+        ).join(
+            MentorAssignment, MentorAssignment.student_profile_id == StudentProfile.id
+        ).join(
+            MentorProfile, MentorProfile.id == MentorAssignment.mentor_profile_id
+        ).where(
+            MentorProfile.user_id == user.id
+        ).distinct()
+        
+        result = await db.execute(stmt)
+        program_ids = result.scalars().all()
+        
+        if program_ids:
+            return query.where(program_model.id.in_(program_ids))
+        return query.where(program_model.id.in_([]))
+
+    if "STUDENT" in roles:
+        from app.models.profiles.student_profile import StudentProfile
+        from app.models.academic.batch import Batch
+        stmt = select(Batch.program_id).join(
+            StudentProfile, StudentProfile.batch_id == Batch.id
+        ).where(
+            StudentProfile.user_id == user.id
+        )
+        result = await db.execute(stmt)
+        prog_id = result.scalars().first()
+        if prog_id:
+            return query.where(program_model.id == prog_id)
         return query.where(program_model.id.in_([]))
 
     if "COLLEGE_COORDINATOR" in roles:

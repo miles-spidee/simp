@@ -311,6 +311,21 @@ export default function BatchManagementPage() {
     }
   };
 
+  const handleDeleteBatch = async (batchId: string) => {
+    if (!confirm('Are you sure you want to delete this batch?')) return;
+    const success = await batchService.deleteBatch(batchId);
+    if (success) {
+      setBatches(batches.filter(b => b.id !== batchId));
+      showToast('Batch deleted successfully', 'success');
+      if (activeProfile?.id === batchId) {
+        setIsProfileDrawerOpen(false);
+        setActiveProfile(null);
+      }
+    } else {
+      showToast('Failed to delete batch', 'error');
+    }
+  };
+
   // Add student allocation
   const handleAddStudentToBatch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1023,6 +1038,9 @@ export default function BatchManagementPage() {
                     </button>
                     <button onClick={() => openEditModal(b)} className="p-1 hover:text-amber-600 hover:bg-slate-100 rounded text-text-secondary transition-colors" title="Edit Cohort Parameters">
                       <PlusCircle className="h-4 w-4" />
+                    </button>
+                    <button onClick={() => handleDeleteBatch(b.id)} className="p-1 hover:text-red-600 hover:bg-slate-100 rounded text-text-secondary transition-colors" title="Delete Batch">
+                      <Trash className="h-4 w-4" />
                     </button>
                   </div>
                 ),

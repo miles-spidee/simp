@@ -5,7 +5,7 @@ import { useErrorStore } from '../../store/errorStore';
 import { 
   XCircle, AlertTriangle, Info, WifiOff, X
 } from 'lucide-react';
-import { ActionType } from '../../lib/errorUtils';
+export type ActionType = 'refresh' | 'login' | 'forgot_password' | 'retry' | 'close';
 
 export function ErrorDialog() {
   const { isOpen, errorData, hideError } = useErrorStore();

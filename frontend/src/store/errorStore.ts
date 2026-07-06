@@ -1,5 +1,14 @@
 import { create } from 'zustand';
-import { ApiErrorData } from '../lib/errorUtils';
+export type ActionType = 'refresh' | 'login' | 'forgot_password' | 'retry' | 'close';
+
+export interface ApiErrorData {
+  status?: number;
+  title: string;
+  explanation: string;
+  primaryAction?: ActionType;
+  secondaryAction?: ActionType;
+}
+
 
 export interface SuccessData {
   message: string;

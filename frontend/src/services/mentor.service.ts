@@ -64,6 +64,19 @@ export const mentorService = {
     return MOCK_MENTOR_PROFILES[idx];
   },
 
+  async deleteMentorProfile(id: string): Promise<void> {
+    try {
+      await mentorApi.deleteMentorProfile(id);
+    } catch (e) {
+      console.debug(e);
+      throw e;
+    }
+    const idx = MOCK_MENTOR_PROFILES.findIndex(m => m.mentor_profile_id === id);
+    if (idx !== -1) {
+      MOCK_MENTOR_PROFILES.splice(idx, 1);
+    }
+  },
+
   async getAssignments(): Promise<MentorAssignment[]> {
     try {
       const data = await mentorApi.getAssignments();

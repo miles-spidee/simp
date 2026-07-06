@@ -698,20 +698,11 @@ export default function StudentLifecycleManagementPage() {
     e.preventDefault();
     if (!activeProfile) return;
     const studentId = activeProfile.id;
+    const selectedBatch = availableBatches.find(b => b.batch_id === batchForm.name || b.id === batchForm.name);
+    const realBatchName = selectedBatch ? (selectedBatch.batch_name || selectedBatch.name) : batchForm.name;
 
     const updated = await studentService.updateStudent(studentId, {
-      batch: {
-        name: batchForm.name,
-        program: batchForm.program || activeProfile.internshipInfo.program,
-        startDate: batchForm.startDate || '2026-05-01',
-        endDate: batchForm.endDate || '2026-08-01',
-        mentor: batchForm.mentor || activeProfile.internshipInfo.mentorName,
-        status: 'Active'
-      },
-      internshipInfo: {
-        ...activeProfile.internshipInfo,
-        batchName: batchForm.name
-      }
+      batch: { id: batchForm.name, name: realBatchName } as any
     });
 
     if (updated) {
@@ -720,7 +711,7 @@ export default function StudentLifecycleManagementPage() {
       updatedTimeline.unshift({
         date: new Date().toISOString().split('T')[0],
         title: 'Batch Re-assigned',
-        description: `Transferred to batch "${batchForm.name}".`,
+        description: `Transferred to batch "${realBatchName}".`,
         type: 'batch'
       });
       const finalObj = await studentService.updateStudent(studentId, { timeline: updatedTimeline });
@@ -728,7 +719,7 @@ export default function StudentLifecycleManagementPage() {
       if (finalObj) {
         setStudents(students.map(s => s.id === studentId ? finalObj : s));
         setActiveProfile(finalObj);
-        showToast(`Transferred student to batch ${batchForm.name}`);
+        showToast(`Transferred student to batch ${realBatchName}`);
         setActiveActionModal(null);
       }
     }

@@ -21,5 +21,8 @@ export const programApi = {
   updateProgram: async (id: string, data: Partial<ProgramCreate>): Promise<ProgramResponse> => {
     const res = await apiClient.put<ProgramResponse>(`/api/v1/program/${id}`, data);
     return res.data;
+  },
+  deleteProgram: async (id: string): Promise<void> => {
+    await apiClient.delete(`/api/v1/program/${id}`);
   }
 };
