@@ -11,11 +11,11 @@ export const programApi = {
     return res.data;
   },
   getPrograms: async (): Promise<ProgramResponse[]> => {
-    const res = await apiClient.get<ProgramResponse[]>('/api/v1/program');
-    return res.data;
+    const res = await apiClient.get<any>('/api/v1/program/');
+    return res.data?.data || res.data;
   },
   createProgram: async (data: ProgramCreate): Promise<ProgramResponse> => {
-    const res = await apiClient.post<ProgramResponse>('/api/v1/program', data);
+    const res = await apiClient.post<any>('/api/v1/program/', data);
     return res.data;
   },
   updateProgram: async (id: string, data: Partial<ProgramCreate>): Promise<ProgramResponse> => {

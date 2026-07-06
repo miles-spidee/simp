@@ -3,11 +3,11 @@ import { BatchCreate, BatchResponse, BatchStudentCreate, BatchStudentResponse } 
 
 export const batchApi = {
   getBatches: async (): Promise<BatchResponse[]> => {
-    const res = await apiClient.get<any>('/api/v1/batch');
+    const res = await apiClient.get<any>('/api/v1/batch/');
     return res.data?.data || [];
   },
   createBatch: async (data: BatchCreate): Promise<BatchResponse> => {
-    const res = await apiClient.post<any>('/api/v1/batch', data);
+    const res = await apiClient.post<any>('/api/v1/batch/', data);
     return res.data?.data || res.data;
   },
   getBatch: async (id: string): Promise<BatchResponse> => {
