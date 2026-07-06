@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from app.core.database import get_db
 from app.core.responses import success_response
 from app.models.analytics.kpi import KPIMetric
+from app.modules.kpi.compute import compute_kpis
 
 router = APIRouter()
 
@@ -33,21 +34,62 @@ class KPIUpdate(BaseModel):
 @router.get("/")
 async def list_kpis(db: AsyncSession = Depends(get_db)):
     try:
-        # Check if empty, and auto-seed default metrics
-        count_stmt = select(func.count(KPIMetric.id))
-        count_res = await db.execute(count_stmt)
-        if count_res.scalar() == 0:
-            kpis = [
-                KPIMetric(name="Overall Placement Rate", category="Placement", current_value=76.8, target_value=85.0, unit="%", status="at_risk", trend="up", trend_percentage=4.2),
-                KPIMetric(name="Average Course Score", category="Performance", current_value=78.2, target_value=80.0, unit="%", status="on_track", trend="up", trend_percentage=1.5),
-                KPIMetric(name="Digital Certificates Issued", category="Retention", current_value=120.0, target_value=150.0, unit=" Certs", status="at_risk", trend="flat", trend_percentage=0.0),
-                KPIMetric(name="Total Invoice Collection", category="Finance", current_value=450.0, target_value=500.0, unit="k", status="on_track", trend="up", trend_percentage=12.8),
-                KPIMetric(name="Daily Student Attendance", category="Attendance", current_value=88.2, target_value=95.0, unit="%", status="behind", trend="down", trend_percentage=-2.4),
-                KPIMetric(name="Peer Mentor Coverage", category="General", current_value=65.0, target_value=80.0, unit="%", status="on_track", trend="flat", trend_percentage=0.0),
-            ]
-            db.add_all(kpis)
-            await db.commit()
+        # Check if empty, and auto-seed default metrics or update existing standard metrics
+        computed_values = await compute_kpis(db)
+
+        # Standard definitions
+        standard_kpis = [
+            {"name": "Overall Placement Rate", "category": "Placement", "target_value": 85.0, "unit": "%"},
+            {"name": "Average Course Score", "category": "Performance", "target_value": 80.0, "unit": "%"},
+            {"name": "Digital Certificates Issued", "category": "Retention", "target_value": 150.0, "unit": " Certs"},
+            {"name": "Total Invoice Collection", "category": "Finance", "target_value": 500000.0, "unit": " INR"},
+            {"name": "Daily Student Attendance", "category": "Attendance", "target_value": 95.0, "unit": "%"},
+            {"name": "Peer Mentor Coverage", "category": "General", "target_value": 80.0, "unit": "%"},
+        ]
+
+        stmt = select(KPIMetric)
+        res = await db.execute(stmt)
+        existing_metrics = {m.name: m for m in res.scalars().all()}
+
+        new_metrics_to_add = []
+        for std in standard_kpis:
+            name = std["name"]
+            val = computed_values.get(name, 0.0)
             
+            # Basic status logic
+            status = "on_track"
+            if name in ["Overall Placement Rate", "Daily Student Attendance", "Peer Mentor Coverage", "Average Course Score"]:
+                if val < std["target_value"] * 0.8:
+                    status = "at_risk"
+                elif val < std["target_value"]:
+                    status = "behind"
+            elif name in ["Digital Certificates Issued", "Total Invoice Collection"]:
+                if val < std["target_value"] * 0.5:
+                    status = "behind"
+
+            if name in existing_metrics:
+                m = existing_metrics[name]
+                m.current_value = val
+                m.status = status
+            else:
+                new_kpi = KPIMetric(
+                    name=name,
+                    category=std["category"],
+                    current_value=val,
+                    target_value=std["target_value"],
+                    unit=std["unit"],
+                    status=status,
+                    trend="flat",
+                    trend_percentage=0.0
+                )
+                new_metrics_to_add.append(new_kpi)
+
+        if new_metrics_to_add:
+            db.add_all(new_metrics_to_add)
+        
+        await db.commit()
+
+        # Re-fetch after updates
         stmt = select(KPIMetric)
         res = await db.execute(stmt)
         metrics = res.scalars().all()

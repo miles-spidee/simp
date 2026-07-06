@@ -11,35 +11,6 @@ from typing import List
 
 router = APIRouter()
 
-# In-memory backup list to persist during server run if DB fails
-MEM_ANNOUNCEMENTS = [
-    {
-        "id": "ann-mock-1",
-        "title": "Welcome to the New Pinesphere ERP Portal",
-        "description": "We are excited to launch the new Pinesphere ERP portal. Explore dashboard analytics, task management, and attendance features.",
-        "audience": ["All"],
-        "category": "General",
-        "priority": "Normal",
-        "attachments": [],
-        "publishDate": "2026-07-01T09:00:00.000Z",
-        "status": "Published",
-        "pinned": True,
-        "author": "Admin Team"
-    },
-    {
-        "id": "ann-mock-2",
-        "title": "Academic Calendar Release for Cohort 2026",
-        "description": "The academic calendar detailing assessments, holidays, and internship dates has been uploaded. Please refer to the downloads section.",
-        "audience": ["Student"],
-        "category": "Academic",
-        "priority": "High",
-        "attachments": [],
-        "publishDate": "2026-07-02T10:00:00.000Z",
-        "status": "Published",
-        "pinned": False,
-        "author": "Admin Team"
-    }
-]
 
 @router.get("/", response_model=APIResponse[List[dict]])
 async def list_announcements(db: AsyncSession = Depends(get_db)):
@@ -65,14 +36,9 @@ async def list_announcements(db: AsyncSession = Depends(get_db)):
                 "author": "Admin Team"
             })
             
-        # Add memory announcements if they aren't already in list
-        for mem in MEM_ANNOUNCEMENTS:
-            if not any(x["id"] == mem["id"] for x in data):
-                data.append(mem)
-                
         return success_response(data=data)
     except Exception as e:
-        return success_response(data=MEM_ANNOUNCEMENTS)
+        return success_response(data=[])
 
 @router.post("/", response_model=APIResponse[dict])
 async def create_announcement(request: Request, db: AsyncSession = Depends(get_db)):
@@ -185,15 +151,7 @@ async def create_announcement(request: Request, db: AsyncSession = Depends(get_d
         }
         return success_response(data=res_data)
     except Exception as e:
-        # Fallback to saving in memory list if DB fail
-        try:
-            body = await request.json()
-            body["id"] = body.get("id") or f"ann-custom-{uuid.uuid4().hex[:4]}"
-            body["publishDate"] = datetime.datetime.now().isoformat()
-            MEM_ANNOUNCEMENTS.insert(0, body)
-            return success_response(data=body)
-        except Exception:
-            return success_response(data={})
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/{path:path}")
 async def fallback_get_announcement(path: str, db: AsyncSession = Depends(get_db)):

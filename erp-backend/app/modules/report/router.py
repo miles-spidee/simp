@@ -140,32 +140,6 @@ async def list_generated_reports(
                 "downloadUrl": r.download_url or ""
             })
             
-        # Seed initial records if empty and user is Super Admin
-        if not data and role_code == "SUPER_ADMIN":
-            initial = [
-                ReportRecord(name="Q1 Tuition Fees Audit", type="Financial", generated_by="System Scheduler", status="Completed", format="PDF", size_bytes=1048576, download_url="", created_by=current_user.id),
-                ReportRecord(name="CSE-A Batch Performance Analysis", type="Academic", generated_by="Dean Office Console", status="Completed", format="PDF", size_bytes=204850, download_url="", created_by=current_user.id)
-            ]
-            db.add_all(initial)
-            await db.commit()
-            
-            # Set download URLs with real IDs
-            for r in initial:
-                r.download_url = f"/api/v1/report/{r.id}/download"
-            await db.commit()
-            
-            for r in initial:
-                data.append({
-                    "id": str(r.id),
-                    "name": r.name,
-                    "type": r.type,
-                    "generatedBy": r.generated_by,
-                    "generatedDate": datetime.now().isoformat(),
-                    "status": r.status,
-                    "format": r.format,
-                    "sizeBytes": r.size_bytes,
-                    "downloadUrl": r.download_url
-                })
         return success_response(data=data)
     except Exception as e:
         import traceback

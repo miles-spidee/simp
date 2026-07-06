@@ -1,50 +1,87 @@
-from fastapi import APIRouter
-from typing import Dict
-from uuid import UUID
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.core.database import get_db
+from app.core.responses import success_response
+from app.models.internships.task import Task
+import uuid
 
 router = APIRouter()
 
-mock_submissions = {
-    "123e4567-e89b-12d3-a456-426614174000": {
-        "id": "123e4567-e89b-12d3-a456-426614174000",
-        "studentId": "STU-001",
-        "taskId": "task-xyz",
-        "assessmentId": "assm-999",
-        "status": "PENDING",
-        "repoLink": "https://github.com/miles-spidee/simp",
-        "liveLink": "https://simp.pinesphere.com",
-        "subtasks": [
-            {"id": "st1", "phase": 1, "task": "Initial Setup", "completed": True},
-            {"id": "st2", "phase": 1, "task": "Database Schema", "completed": True},
-            {"id": "st3", "phase": 2, "task": "API Integration", "completed": False}
-        ],
-        "commits": [
-            {"commit": "a1b2c3d", "message": "Initial commit", "author": "Student", "date": "2026-07-01", "guideComment": "Good start"},
-            {"commit": "e4f5g6h", "message": "Add API integration", "author": "Student", "date": "2026-07-02", "guideComment": None}
-        ],
-        "marksObtained": None,
-        "fileIds": ["file-xyz123", "file-abc456"]
-    }
-}
-
 @router.get("/")
-async def get_submissions():
-    return list(mock_submissions.values())
+async def get_submissions(db: AsyncSession = Depends(get_db)):
+    try:
+        # For submissions, fetch tasks that have a submission or are in review/completed
+        stmt = select(Task).where(Task.status.in_(["IN_REVIEW", "COMPLETED", "SUBMITTED"]))
+        res = await db.execute(stmt)
+        tasks = res.scalars().all()
+        
+        data = []
+        for t in tasks:
+            data.append({
+                "id": str(t.id),
+                "studentId": "STU-Unknown", # Would need joins to get actual student
+                "taskId": str(t.id),
+                "status": t.status,
+                "repoLink": t.submission_url or "",
+                "liveLink": "",
+                "subtasks": [],
+                "commits": [],
+                "marksObtained": None,
+                "fileIds": []
+            })
+        return success_response(data=data)
+    except Exception as e:
+        return success_response(data=[])
 
 @router.get("/{id}")
-async def get_submission(id: str):
-    return mock_submissions.get(id)
+async def get_submission(id: uuid.UUID, db: AsyncSession = Depends(get_db)):
+    try:
+        t = await db.scalar(select(Task).where(Task.id == id))
+        if not t:
+            raise HTTPException(status_code=404, detail="Not found")
+        return success_response(data={
+            "id": str(t.id),
+            "studentId": "STU-Unknown",
+            "taskId": str(t.id),
+            "status": t.status,
+            "repoLink": t.submission_url or "",
+            "liveLink": "",
+            "subtasks": [],
+            "commits": [],
+            "marksObtained": None,
+            "fileIds": []
+        })
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/")
-async def create_submission(data: dict):
-    new_id = f"sub-{len(mock_submissions)+1}"
-    data["id"] = new_id
-    mock_submissions[new_id] = data
-    return data
+async def create_submission(data: dict, db: AsyncSession = Depends(get_db)):
+    # Assuming this updates a task's submission url
+    try:
+        task_id = data.get("taskId")
+        if task_id:
+            t = await db.scalar(select(Task).where(Task.id == uuid.UUID(task_id)))
+            if t:
+                t.submission_url = data.get("repoLink", "")
+                t.status = "SUBMITTED"
+                await db.commit()
+                return success_response(data=data)
+        return success_response(data=data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.patch("/{id}")
-async def update_submission(id: str, updates: dict):
-    if id in mock_submissions:
-        mock_submissions[id].update(updates)
-        return mock_submissions[id]
-    return None
+async def update_submission(id: uuid.UUID, updates: dict, db: AsyncSession = Depends(get_db)):
+    try:
+        t = await db.scalar(select(Task).where(Task.id == id))
+        if t:
+            if "status" in updates:
+                t.status = updates["status"]
+            if "repoLink" in updates:
+                t.submission_url = updates["repoLink"]
+            await db.commit()
+            return success_response(data={"status": t.status})
+        raise HTTPException(status_code=404, detail="Not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

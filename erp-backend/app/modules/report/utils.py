@@ -76,11 +76,6 @@ async def compile_report_data(
                 records = res.scalars().all()
                 for r in records:
                     rows.append([r.date.isoformat(), r.status, r.notes or ""])
-            if len(rows) <= 1:
-                # Fallback mock data
-                for i in range(10):
-                    day = date.today()
-                    rows.append([str(day), "PRESENT" if i != 3 else "ABSENT", "Regular attendance" if i != 3 else "Medical leave"])
             present = sum(1 for row in rows[1:] if row[1] == "PRESENT")
             total = len(rows) - 1
             pct = (present / total * 100) if total > 0 else 0.0
@@ -104,10 +99,6 @@ async def compile_report_data(
                 res = await db.execute(stmt)
                 for qa, quiz_title, passing_score in res.all():
                     rows.append([quiz_title, f"{qa.score:.1f}", f"{passing_score:.1f}", qa.status])
-            if len(rows) <= 1:
-                rows.append(["Python Programming Basics", "85.0", "70.0", "PASSED"])
-                rows.append(["SQL Database Design", "72.0", "70.0", "PASSED"])
-                rows.append(["React State Management", "54.0", "70.0", "FAILED"])
             passed = sum(1 for r in rows[1:] if r[3] == "PASSED")
             total = len(rows) - 1
             summary_lines = [
@@ -120,9 +111,6 @@ async def compile_report_data(
             title = "LMS Progress Report"
             category = "Student"
             rows = [["Course Module", "Lessons Completed", "Quizzes Attempted", "Status"]]
-            rows.append(["Frontend Web Development", "12/12", "3", "COMPLETED"])
-            rows.append(["Backend API Design", "8/15", "1", "IN_PROGRESS"])
-            rows.append(["Cloud Infrastructure basics", "0/8", "0", "PENDING"])
             summary_lines = [
                 f"LMS module enrollment details for {username}.",
                 "Average course completion progress stands at 55.5% across 3 active tracks."
@@ -132,9 +120,6 @@ async def compile_report_data(
             title = "Internship Progress"
             category = "Student"
             rows = [["Milestone", "Mentor Evaluated", "Status", "Review Remarks"]]
-            rows.append(["Onboarding & Setup", "Yes", "APPROVED", "Good progress, workspace set up correctly."])
-            rows.append(["Module 1 Coding tasks", "Yes", "APPROVED", "Code quality matches standards."])
-            rows.append(["Midterm Presentation", "No", "UNDER_REVIEW", "Presentation draft received."])
             summary_lines = [
                 f"Internship progress tracking ledger for {username}.",
                 "Currently at Milestone 3: Midterm Project Evaluation."
@@ -144,7 +129,6 @@ async def compile_report_data(
             title = "Certificate History"
             category = "Student"
             rows = [["Certificate ID", "Program Name", "Issue Date", "Status"]]
-            rows.append(["CERT-WEBDEV-2026", "Web Development Bootcamp", "2026-05-15", "ACTIVE"])
             summary_lines = [
                 f"Issued certificates log for {username}.",
                 "1 active certificate of completion is registered under this profile."
@@ -154,9 +138,6 @@ async def compile_report_data(
             title = "Submitted Documents Summary"
             category = "Student"
             rows = [["Document Type", "File Name", "Verification Date", "Status"]]
-            rows.append(["Aadhaar Card", "aadhaar_verified.pdf", "2026-06-01", "VERIFIED"])
-            rows.append(["PAN Card", "pan_card.png", "2026-06-02", "VERIFIED"])
-            rows.append(["College Transcript", "transcript_final.pdf", "2026-06-03", "VERIFIED"])
             summary_lines = [
                 f"Identity verification document log for {username}.",
                 "All primary identity files stand successfully verified."
@@ -179,9 +160,6 @@ async def compile_report_data(
                 res = await db.execute(stmt)
                 for app_obj, opp_title, comp_name in res.all():
                     rows.append([opp_title, comp_name, app_obj.created_at.date().isoformat() if app_obj.created_at else "", app_obj.status])
-            if len(rows) <= 1:
-                rows.append(["Full Stack Developer Intern", "Nexus Solutions", "2026-06-15", "ACCEPTED"])
-                rows.append(["Data Engineering Analyst", "Apex Analytics", "2026-06-18", "PENDING"])
             summary_lines = [
                 f"Internship placement application tracker for student {username}.",
                 f"Total applications submitted: {len(rows)-1}."
@@ -220,10 +198,6 @@ async def compile_report_data(
                 res = await db.execute(stmt)
                 for r, s_name in res.all():
                     rows.append([s_name.title(), r.date.isoformat(), r.status, r.notes or ""])
-            if len(rows) <= 1:
-                rows.append(["Alice Smith", "2026-07-01", "PRESENT", "On time"])
-                rows.append(["Bob Johnson", "2026-07-01", "ABSENT", "Informed leave"])
-                rows.append(["Carol White", "2026-07-01", "PRESENT", "On time"])
             present_pct = (sum(1 for r in rows[1:] if r[2] == "PRESENT") / (len(rows)-1) * 100) if len(rows) > 1 else 90.0
             summary_lines = [
                 f"Mentor supervised student attendance log. Mentor: {username}.",
@@ -235,9 +209,6 @@ async def compile_report_data(
             title = "LMS Progress Reports"
             category = "Academic"
             rows = [["Student Name", "Course Track", "Modules Completed", "Last Active"]]
-            rows.append(["Alice Smith", "Full Stack Coding", "4/5", "2 hours ago"])
-            rows.append(["Bob Johnson", "Data Analytics Basics", "2/5", "1 day ago"])
-            rows.append(["Carol White", "Full Stack Coding", "5/5", "10 mins ago"])
             summary_lines = [
                 f"LMS progress audit sheet for Mentor {username}.",
                 "Average completion rates of assigned students: 73.3%."
@@ -260,10 +231,6 @@ async def compile_report_data(
                 res = await db.execute(stmt)
                 for qa, quiz_title, s_name in res.all():
                     rows.append([s_name.title(), quiz_title, f"{qa.score:.1f}", qa.status])
-            if len(rows) <= 1:
-                rows.append(["Alice Smith", "SQL Basics Quiz", "88.0", "PASSED"])
-                rows.append(["Bob Johnson", "SQL Basics Quiz", "65.0", "FAILED"])
-                rows.append(["Carol White", "React Routing Quiz", "92.0", "PASSED"])
             summary_lines = [
                 f"Grading logs for students assigned to Mentor {username}.",
                 "Cohort average assessment grade: 81.6%."
@@ -273,9 +240,6 @@ async def compile_report_data(
             title = "Internship Progress Reports"
             category = "Student"
             rows = [["Student Name", "Current Step", "Duration Completed", "Evaluation Status"]]
-            rows.append(["Alice Smith", "Milestone 4", "4 Months", "ON_TRACK"])
-            rows.append(["Bob Johnson", "Milestone 2", "2 Months", "NEEDS_IMPROVEMENT"])
-            rows.append(["Carol White", "Milestone 5", "5 Months", "ON_TRACK"])
             summary_lines = [
                 f"Workplace performance evaluations led by Mentor {username}.",
                 "All assigned students are actively reporting their milestone updates."
@@ -285,9 +249,6 @@ async def compile_report_data(
             title = "Student Performance Reports"
             category = "Academic"
             rows = [["Student Name", "Tech Skills Score", "Soft Skills Score", "Overall Grade"]]
-            rows.append(["Alice Smith", "88.5", "92.0", "A"])
-            rows.append(["Bob Johnson", "64.0", "75.0", "B-"])
-            rows.append(["Carol White", "94.5", "90.0", "A+"])
             summary_lines = [
                 f"Comprehensive candidate evaluation card. Compiled by Mentor {username}."
             ]
@@ -296,9 +257,6 @@ async def compile_report_data(
             title = "Task Completion Reports"
             category = "Academic"
             rows = [["Student Name", "Total Tasks", "Pending Tasks", "Overdue Tasks"]]
-            rows.append(["Alice Smith", "15", "3", "0"])
-            rows.append(["Bob Johnson", "12", "7", "2"])
-            rows.append(["Carol White", "18", "0", "0"])
             summary_lines = [
                 f"Supervised student task ledger. Mentor: {username}.",
                 "Ensure that overdue tasks for Bob Johnson are resolved this week."
@@ -334,9 +292,6 @@ async def compile_report_data(
                 res = await db.execute(stmt)
                 for enr, s_name, d_id in res.all():
                     rows.append([enr, s_name.title(), "Computer Science" if d_id else "Engineering", "2026"])
-            if len(rows) <= 1:
-                rows.append(["ENR-2026-001", "John Doe", "Computer Science", "2026"])
-                rows.append(["ENR-2026-002", "Jane Miller", "Information Technology", "2026"])
             summary_lines = [
                 f"Active students enrolled under Coordinator {username}.",
                 f"Total students currently listed in campus database: {len(rows)-1}."
@@ -346,8 +301,6 @@ async def compile_report_data(
             title = "Batch Attendance"
             category = "Academic"
             rows = [["Student Name", "Enrollment No", "Date", "Daily Status"]]
-            rows.append(["John Doe", "ENR-2026-001", "2026-07-01", "PRESENT"])
-            rows.append(["Jane Miller", "ENR-2026-002", "2026-07-01", "PRESENT"])
             summary_lines = [
                 f"Campus student attendance ledger. Coordinator: {username}.",
                 "Attendance validation is matching the 90% college policy criteria."
@@ -357,8 +310,6 @@ async def compile_report_data(
             title = "Placement Statistics"
             category = "Placement"
             rows = [["Student Name", "Company Selected", "Package (CTC LPA)", "Job Profile"]]
-            rows.append(["John Doe", "Nexus Solutions", "8.5", "Full Stack developer"])
-            rows.append(["Jane Miller", "Apex Analytics", "6.2", "Data Analyst"])
             summary_lines = [
                 f"Placement status audit sheet. Coordinator: {username}.",
                 "2 students placed out of 2 registered candidates. Selection rate: 100%."
@@ -368,8 +319,6 @@ async def compile_report_data(
             title = "Internship Allocation"
             category = "Placement"
             rows = [["Student Name", "Opportunity Title", "Mentor Name", "Duration"]]
-            rows.append(["John Doe", "Full Stack Intern", "Priya Sharma", "6 Months"])
-            rows.append(["Jane Miller", "Data Scientist Intern", "Amit Patel", "6 Months"])
             summary_lines = [
                 f"Internship allocation roster. Coordinator: {username}."
             ]
@@ -378,8 +327,6 @@ async def compile_report_data(
             title = "Student Verification Reports"
             category = "Student"
             rows = [["Student Name", "Enrollment No", "Aadhaar Verified", "College Docs Status"]]
-            rows.append(["John Doe", "ENR-2026-001", "VERIFIED", "APPROVED"])
-            rows.append(["Jane Miller", "ENR-2026-002", "VERIFIED", "PENDING"])
             summary_lines = [
                 f"Student identity audit ledger. Coordinator: {username}."
             ]
@@ -388,8 +335,6 @@ async def compile_report_data(
             title = "Organization Mapping Reports"
             category = "Student"
             rows = [["Department Code", "Department Name", "Linked Programs", "Total Batches"]]
-            rows.append(["CSE", "Computer Science", "B.Tech Computer Science", "2"])
-            rows.append(["IT", "Information Technology", "B.Tech Information Technology", "1"])
             summary_lines = [
                 "Organizational structure map for coordinator's academic institution."
             ]
@@ -411,9 +356,6 @@ async def compile_report_data(
                 res = await db.execute(stmt)
                 for emp in res.scalars().all():
                     rows.append([emp.employee_code, f"{emp.first_name} {emp.last_name}", emp.designation, "94.5%"])
-            if len(rows) <= 1:
-                rows.append(["EMP001", "Alice Smith", "HR Department", "98.0%"])
-                rows.append(["EMP002", "Bob Johnson", "Engineering Department", "91.2%"])
             summary_lines = [
                 "Corporate Employee Attendance metrics summary.",
                 f"Total corporate staff monitored: {len(rows)-1}."
@@ -423,8 +365,6 @@ async def compile_report_data(
             title = "Leave"
             category = "Human Resources"
             rows = [["Employee Name", "Leave Type", "Duration Days", "Approval Status"]]
-            rows.append(["Bob Johnson", "SICK LEAVE", "3.0", "APPROVED"])
-            rows.append(["Alice Smith", "CASUAL LEAVE", "1.0", "APPROVED"])
             summary_lines = [
                 "Leaves ledger and quota audit card for the current financial year."
             ]
@@ -433,8 +373,6 @@ async def compile_report_data(
             title = "Recruitment"
             category = "Human Resources"
             rows = [["Job Position", "Applicants", "Interviewed", "Hired", "Status"]]
-            rows.append(["Frontend Developer Intern", "45", "12", "3", "CLOSED"])
-            rows.append(["Data Science Intern", "30", "8", "2", "ACTIVE"])
             summary_lines = [
                 "Hiring pipeline status reports for open opportunities."
             ]
@@ -443,8 +381,6 @@ async def compile_report_data(
             title = "Employee Performance"
             category = "Human Resources"
             rows = [["Employee Name", "Designation", "KPI Rating", "Review Status"]]
-            rows.append(["Alice Smith", "Coordinator", "4.5 / 5.0", "COMPLETED"])
-            rows.append(["Bob Johnson", "Assistant Manager", "4.0 / 5.0", "COMPLETED"])
             summary_lines = [
                 "Quarterly Corporate Employee performance ratings report."
             ]
@@ -466,9 +402,6 @@ async def compile_report_data(
                 res = await db.execute(stmt)
                 for emp in res.scalars().all():
                     rows.append([emp.employee_code, f"{emp.first_name} {emp.last_name}", emp.designation, "95.0%"])
-            if len(rows) <= 1:
-                rows.append(["EMP-ENG-001", "David Jones", "Lead Engineer", "96.5%"])
-                rows.append(["EMP-ENG-002", "Sarah Conor", "Developer", "92.0%"])
             summary_lines = [
                 f"Attendance ledger for team reporting to Manager {username}."
             ]
@@ -477,7 +410,6 @@ async def compile_report_data(
             title = "Leave"
             category = "Human Resources"
             rows = [["Employee Name", "Leave Type", "Start Date", "Status"]]
-            rows.append(["David Jones", "CASUAL LEAVE", "2026-07-10", "PENDING"])
             summary_lines = [
                 f"Pending leave approval logs for Manager {username}'s direct reports."
             ]
@@ -486,8 +418,6 @@ async def compile_report_data(
             title = "Tasks"
             category = "Operations"
             rows = [["Task Subject", "Assigned Employee", "Due Date", "Status"]]
-            rows.append(["Complete API Docs", "David Jones", "2026-07-05", "IN_PROGRESS"])
-            rows.append(["Fix Database locking issue", "Sarah Conor", "2026-07-06", "TODO"])
             summary_lines = [
                 f"Active sprint task monitoring for team under Manager {username}."
             ]
@@ -496,8 +426,6 @@ async def compile_report_data(
             title = "Employee Performance"
             category = "Human Resources"
             rows = [["Employee Name", "Designation", "KPI Score", "Remarks"]]
-            rows.append(["David Jones", "Lead Engineer", "4.8", "Excellent technical leadership"])
-            rows.append(["Sarah Conor", "Developer", "4.2", "Delivered core API tasks on schedule"])
             summary_lines = [
                 f"Performance tracker for team reporting to Manager {username}."
             ]
@@ -514,9 +442,6 @@ async def compile_report_data(
             res = await db.execute(stmt)
             for tx in res.scalars().all():
                 rows.append([tx.transaction_id, tx.customer_name or "Student", f"{tx.amount:.2f}", tx.status])
-            if len(rows) <= 1:
-                rows.append(["TXN-901", "Ananya Desai", "15000.00", "captured"])
-                rows.append(["TXN-902", "Rahul Sharma", "12500.00", "captured"])
             total_rev = sum(float(r[2]) for r in rows[1:] if r[3] == "captured")
             summary_lines = [
                 "Tuition Fee collection transaction log.",
@@ -527,8 +452,6 @@ async def compile_report_data(
             title = "Fee Collection"
             category = "Finance"
             rows = [["Fee Structure Name", "Amount Invoiced", "Amount Collected", "Outstanding"]]
-            rows.append(["Academic Semester 1 Tuition", "12,50,000", "10,25,000", "2,25,000"])
-            rows.append(["Internship Program Fee", "4,50,000", "4,50,000", "0"])
             summary_lines = [
                 "Fees collection structure ledger summary.",
                 "Total outstanding fee receivables: INR 2,25,000."
@@ -538,8 +461,6 @@ async def compile_report_data(
             title = "Payments"
             category = "Finance"
             rows = [["Receipt ID", "Payment Method", "Amount Transferred", "Payment Status"]]
-            rows.append(["REC-001", "UPI Transfer", "15000.00", "PAID"])
-            rows.append(["REC-002", "Credit Card", "12500.00", "PAID"])
             summary_lines = [
                 "Disbursements and vendor payments logs."
             ]
@@ -548,8 +469,6 @@ async def compile_report_data(
             title = "Budget"
             category = "Finance"
             rows = [["Department", "Allocated Budget (INR)", "Expenses Logged", "Remaining"]]
-            rows.append(["Computer Science Department", "50,00,000", "42,30,000", "7,70,000"])
-            rows.append(["Infrastructure & Labs", "20,00,000", "18,45,000", "1,55,000"])
             summary_lines = [
                 "Academic Year Budget implementation sheet."
             ]
@@ -567,9 +486,6 @@ async def compile_report_data(
             for batch in res.scalars().all():
                 present = 85.0 + random.randint(0, 14)
                 rows.append([batch.name, batch.code, f"{present:.1f}%", f"{100-present:.1f}%"])
-            if len(rows) <= 1:
-                rows.append(["Web Development Batch 2026", "B2026-1", "91.3%", "8.7%"])
-                rows.append(["Data Science Batch 2026", "B2026-2", "93.5%", "6.5%"])
             summary_lines = [
                 "Monthly aggregated student attendance rate across all active classes.",
                 "Overall campus attendance average: 92.4%."
@@ -579,8 +495,6 @@ async def compile_report_data(
             title = "Student Performance Evaluation"
             category = "Academic"
             rows = [["Cohort Name", "Module", "Average Grade", "Engagement Score"]]
-            rows.append(["Cohort A (Web Dev)", "React & Next.js", "A- (82.1%)", "High"])
-            rows.append(["Cohort B (Data Sci)", "Python Fundamentals", "A+ (91.2%)", "Very High"])
             summary_lines = [
                 "Aggregated performance grades compiled from module assignments."
             ]
@@ -589,8 +503,6 @@ async def compile_report_data(
             title = "Assessment Summary"
             category = "Academic"
             rows = [["Module Name", "Total Quizzes", "Total Attempts", "Average Score"]]
-            rows.append(["React & State", "3", "138", "82.1 / 100.0"])
-            rows.append(["Python Programming basics", "2", "120", "91.2 / 100.0"])
             summary_lines = [
                 "Overview of student grading stats compiled from quiz results."
             ]
@@ -599,8 +511,6 @@ async def compile_report_data(
             title = "LMS Completion Report"
             category = "Academic"
             rows = [["Course Track", "Registered Users", "Average Progress", "Completed Users"]]
-            rows.append(["Frontend Coding Bootcamp", "45", "73.3%", "20"])
-            rows.append(["Data Engineering fundamentals", "42", "68.2%", "15"])
             summary_lines = [
                 "Learning Management System syllabus completion analytics."
             ]
@@ -609,8 +519,6 @@ async def compile_report_data(
             title = "Placement Success Report"
             category = "Placement"
             rows = [["Company Name", "Registered", "Offered Candidates", "Selection Ratio", "Avg CTC (LPA)"]]
-            rows.append(["Nexus Solutions", "45", "15", "33.3%", "8.5"])
-            rows.append(["Apex Analytics", "30", "8", "26.6%", "6.2"])
             summary_lines = [
                 "Placement success rates audit log.",
                 "Global selection ratio stands at 30.6% with average package INR 7.35 LPA."
@@ -620,8 +528,6 @@ async def compile_report_data(
             title = "Financial Revenue Report"
             category = "Finance"
             rows = [["Financial Quarter", "Invoiced Amount", "Amount Collected", "Receivables Outstanding"]]
-            rows.append(["Q1 2026", "45,50,000", "42,25,000", "3,25,000"])
-            rows.append(["Q2 2026", "52,30,000", "45,75,000", "6,55,000"])
             summary_lines = [
                 "Finance overview report including collections and outstanding invoice balances."
             ]
@@ -630,8 +536,6 @@ async def compile_report_data(
             title = "Internship Progress Report"
             category = "Student"
             rows = [["Cohort Name", "Total Interns", "On Track", "At Risk", "Completed"]]
-            rows.append(["Batch 2026 Web Dev", "30", "25", "4", "1"])
-            rows.append(["Batch 2026 Data Sci", "20", "18", "2", "0"])
             summary_lines = [
                 "Internship progress review ledger for active program cohorts."
             ]
