@@ -437,10 +437,12 @@ async def get_student_list(db: AsyncSession = Depends(get_db)):
         )
         result = await db.execute(stmt)
         rows = result.all()
-        # Build all payloads in parallel (is_list=True skips per-student sub-queries)
-        tasks = [_student_payload(p, u, o, d, b, db, is_list=True) for p, u, o, d, b in rows]
-        data = await asyncio.gather(*tasks)
-        return success_response(data=list(data))
+        # Build payloads sequentially to avoid concurrent AsyncSession usage errors
+        data = []
+        for p, u, o, d, b in rows:
+            payload = await _student_payload(p, u, o, d, b, db, is_list=True)
+            data.append(payload)
+        return success_response(data=data)
     except Exception as e:
         import traceback
         traceback.print_exc()

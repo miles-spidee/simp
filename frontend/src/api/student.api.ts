@@ -7,12 +7,12 @@ const COLLEGE_API_URL = process.env.NEXT_PUBLIC_COLLEGE_API_URL || '/api/v1/stud
 export const studentApi = {
   getStudents: async (): Promise<StudentResponse[]> => {
     return apiCache.fetch('students:all', async () => {
-      const res = await apiClient.get<StudentResponse[]>('/api/v1/student');
+      const res = await apiClient.get<StudentResponse[]>('/api/v1/student/');
       return (res.data as any)?.data || res.data;
     }, 60_000); // 1-minute cache
   },
   createStudent: async (data: StudentCreate): Promise<StudentResponse> => {
-    const res = await apiClient.post<StudentResponse>('/api/v1/student', data);
+    const res = await apiClient.post<StudentResponse>('/api/v1/student/', data);
     apiCache.invalidate('students:all'); // bust list cache on create
     return (res.data as any)?.data || res.data;
   },

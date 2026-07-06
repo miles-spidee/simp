@@ -1,7 +1,5 @@
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { parseApiError } from '../lib/errorUtils';
-import { getSuccessMessage } from '../lib/feedbackUtils';
-import { useErrorStore } from '../store/errorStore';
+
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 const ACCESS_TOKEN_KEY = 'access_token';
@@ -34,12 +32,6 @@ apiClient.interceptors.request.use(
 
 apiClient.interceptors.response.use(
   (response) => {
-    if (typeof window !== 'undefined') {
-      const msg = getSuccessMessage(response.config);
-      if (msg) {
-        useErrorStore.getState().showSuccess(msg);
-      }
-    }
     return response;
   },
   async (error: AxiosError) => {
@@ -47,11 +39,6 @@ apiClient.interceptors.response.use(
       localStorage.removeItem(ACCESS_TOKEN_KEY);
       localStorage.removeItem(REFRESH_TOKEN_KEY);
       localStorage.removeItem(AUTH_USER_KEY);
-    }
-
-    if (typeof window !== 'undefined') {
-      const parsedError = parseApiError(error);
-      useErrorStore.getState().showError(parsedError);
     }
 
     return Promise.reject(error);
