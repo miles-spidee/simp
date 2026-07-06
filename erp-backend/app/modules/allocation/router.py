@@ -20,6 +20,23 @@ from app.modules.allocation.service import AllocationService
 
 router = APIRouter()
 
+
+def map_allocation(allocation):
+    return AllocationResponse(
+        id=allocation.id,
+        source_type=allocation.source_type,
+        source_id=allocation.source_id,
+        target_type=allocation.target_type,
+        target_id=allocation.target_id,
+        role=allocation.role,
+        start_date=allocation.start_date.isoformat() if allocation.start_date else "",
+        end_date=allocation.end_date.isoformat() if allocation.end_date else None,
+        status=allocation.status,
+        created_at=allocation.created_at.isoformat() if allocation.created_at else "",
+        updated_at=allocation.updated_at.isoformat() if allocation.updated_at else "",
+    )
+
+
 @router.post("/sync-applications", response_model=APIResponse[dict])
 async def sync_applications(
     current_user: User = Depends(require_permission("allocation", "create")),
@@ -41,7 +58,7 @@ async def get_allocations(
 ):
     service = AllocationService(db)
     allocations = await service.get_allocations(target_type, target_id)
-    return success_response(data=[AllocationResponse.model_validate(a) for a in allocations])
+    return success_response(data=[map_allocation(a) for a in allocations])
 
 @router.post("/", response_model=APIResponse[AllocationResponse])
 async def create_allocation(
@@ -52,7 +69,7 @@ async def create_allocation(
     service = AllocationService(db)
     allocation = await service.create_allocation(payload, current_user.id)
     return success_response(
-        data=AllocationResponse.model_validate(allocation),
+        data=map_allocation(allocation),
         message="Allocation created successfully",
     )
 
@@ -66,7 +83,7 @@ async def update_allocation(
     service = AllocationService(db)
     allocation = await service.update_allocation(allocation_id, payload, current_user.id)
     return success_response(
-        data=AllocationResponse.model_validate(allocation),
+        data=map_allocation(allocation),
         message="Allocation updated successfully",
     )
 

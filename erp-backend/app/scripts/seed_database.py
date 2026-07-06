@@ -91,7 +91,8 @@ ROLE_MODULES = {
         "APPLICATION_MANAGEMENT", "BATCH_MANAGEMENT", "MESSAGE",
         "NOTIFICATION_CENTER", "CALENDAR", "EMAIL", "CERTIFICATE", "DOCUMENT", 
         "PLACEMENT_AND_HIRING", "ALUMNI_MANAGEMENT", "ANALYTICS_DASHBOARD", "REPORTS", 
-        "HELP_DESK", "PRODUCTIVITY", "DIGITAL_ID", "SELF_SERVICE_PORTAL"
+        "HELP_DESK", "PRODUCTIVITY", "DIGITAL_ID", "SELF_SERVICE_PORTAL",
+        "ALLOCATION", "OPPORTUNITY_MANAGEMENT", "STUDENT_MANAGEMENT"
     ],
     "COLLEGE_COORDINATOR": [
         "ORGANIZATION_MANAGEMENT", "PROGRAM_MANAGEMENT", "BATCH_MANAGEMENT", "STUDENT_MANAGEMENT", 
@@ -168,7 +169,8 @@ async def seed_db():
             module_permission_ids[code] = []
             for action_code in ["read", "create", "update", "delete", "manage", "export"]:
                 if action_code in action_map:
-                    perm_code = f"{code}:{action_code}"
+                    mapped_action = "view" if action_code == "read" else action_code
+                    perm_code = f"{code}.{mapped_action}"
                     perm_id = uuid.uuid4()
                     perm = Permission(id=perm_id, feature_id=feature.id, action_id=action_map[action_code], name=perm_code, code=perm_code, description="")
                     objects_to_add.append(perm)

@@ -515,17 +515,17 @@ async def create_student(data: StudentCreate, db: AsyncSession = Depends(get_db)
         if enroll_res.scalars().first():
             raise HTTPException(status_code=409, detail="Student register number already exists")
 
+    existing_user = None
     # 2. Duplicate check for email
     email_stmt = select(User).where(User.email == data.email)
     email_res = await db.execute(email_stmt)
-    if email_res.scalars().first():
-        raise HTTPException(status_code=409, detail="Student email already exists")
+    existing_user = email_res.scalars().first()
+    
     # 3. Duplicate check for phone
-    if data.phone:
+    if data.phone and not existing_user:
         phone_stmt = select(User).where(User.phone == data.phone)
         phone_res = await db.execute(phone_stmt)
-        if phone_res.scalars().first():
-            raise HTTPException(status_code=409, detail="Student phone number already exists")
+        existing_user = phone_res.scalars().first()
 
     # Resolve selected college to dynamic organization
     organization = None
@@ -582,34 +582,65 @@ async def create_student(data: StudentCreate, db: AsyncSession = Depends(get_db)
         batch_res = await db.execute(select(Batch).order_by(Batch.created_at.asc()))
         batch = batch_res.scalars().first()
 
-    # Create User
     full_name = f"{data.first_name.strip()} {data.last_name.strip()}".strip()
     
-    # Ensure username is unique
-    base_username = full_name
-    username = base_username
-    counter = 1
-    while True:
-        dup_user_stmt = select(User).where(User.username == username)
-        dup_user_res = await db.execute(dup_user_stmt)
-        if not dup_user_res.scalars().first():
-            break
-        username = f"{base_username}{counter}"
-        counter += 1
+    if existing_user:
+        new_user = existing_user
+        new_user.phone = data.phone or new_user.phone
+        # Find if student profile exists
+        prof_stmt = select(StudentProfile).where(StudentProfile.user_id == new_user.id)
+        prof_res = await db.execute(prof_stmt)
+        new_student = prof_res.scalars().first()
+        
+        if new_student:
+            new_student.organization_id = organization.id
+            new_student.department_id = department.id if department else None
+            new_student.enrollment_number = data.enrollment_number or new_student.enrollment_number
+        else:
+            new_student = StudentProfile(
+                user_id=new_user.id,
+                organization_id=organization.id,
+                department_id=department.id if department else None,
+                enrollment_number=data.enrollment_number or f"ENR-{uuid.uuid4().hex[:8].upper()}",
+            )
+            db.add(new_student)
+    else:
+        # Create User
+        # Ensure username is unique
+        base_username = full_name
+        username = base_username
+        counter = 1
+        while True:
+            dup_user_stmt = select(User).where(User.username == username)
+            dup_user_res = await db.execute(dup_user_stmt)
+            if not dup_user_res.scalars().first():
+                break
+            username = f"{base_username}{counter}"
+            counter += 1
 
-    new_user = User(
-        username=username,
-        email=data.email,
-        phone=data.phone if data.phone else None,
-        password_hash=hash_password("ChangeMe@123"),
-        account_status=data.status or "Applied",
-        email_verified=True,
-        phone_verified=False
-    )
-    db.add(new_user)
-    await db.flush()
+        new_user = User(
+            email=data.email,
+            phone=data.phone,
+            username=username,
+            password_hash=hash_password("ChangeMe@123"),
+            account_status=data.status or "Applied",
+            email_verified=True,
+            phone_verified=False
+        )
+        db.add(new_user)
+        await db.flush()
 
-    # Create StudentProfile
+        # Create Student Profile
+        new_student = StudentProfile(
+            user_id=new_user.id,
+            organization_id=organization.id,
+            department_id=department.id if department else None,
+            batch_id=batch.id if batch else None,
+            enrollment_number=data.enrollment_number or f"ENR-{uuid.uuid4().hex[:8].upper()}",
+        )
+        db.add(new_student)
+        await db.flush()
+
     skills_data = {
         "dob": data.dob or "2000-01-01",
         "gender": data.gender or "Male",
@@ -622,18 +653,12 @@ async def create_student(data: StudentCreate, db: AsyncSession = Depends(get_db)
         "internship_type": data.internship_type or "Free Internship"
     }
 
-    enrollment = data.enrollment_number or f"ENR{datetime.now().year}{uuid.uuid4().hex[:4].upper()}"
-    profile = StudentProfile(
-        user_id=new_user.id,
-        organization_id=organization.id if organization else None,
-        department_id=department.id if department else None,
-        batch_id=batch.id if batch else None,
-        enrollment_number=enrollment,
-        skills=skills_data
-    )
-    db.add(profile)
+    new_student.skills = skills_data
+    if not new_student.batch_id and batch:
+        new_student.batch_id = batch.id
+
     await db.commit()
-    await db.refresh(profile)
+    await db.refresh(new_student)
     await db.refresh(new_user)
 
     # Handle optional initial mentor assignment
@@ -645,7 +670,7 @@ async def create_student(data: StudentCreate, db: AsyncSession = Depends(get_db)
             mentor_prof = mentor_res.scalars().first()
             if mentor_prof:
                 assignment = MentorAssignment(
-                    student_profile_id=profile.id,
+                    student_profile_id=new_student.id,
                     mentor_profile_id=mentor_prof.id,
                     start_date=date.today(),
                     status="ACTIVE"
@@ -655,7 +680,7 @@ async def create_student(data: StudentCreate, db: AsyncSession = Depends(get_db)
         except ValueError:
             pass
 
-    payload = await _student_payload(profile, new_user, organization, department, batch, db)
+    payload = await _student_payload(new_student, new_user, organization, department, batch, db)
     return success_response(data=payload, message="Student enrolled successfully")
 
 @router.put("/{id}", response_model=APIResponse[dict])

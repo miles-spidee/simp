@@ -45,18 +45,19 @@ class EmailService:
             msg["To"] = real_recipients[0]
 
         def sync_send():
-            with smtplib.SMTP(smtp_host, smtp_port) as server:
+            with smtplib.SMTP(smtp_host, smtp_port, timeout=5) as server:
                 server.starttls()
                 server.login(smtp_user, smtp_password)
                 server.sendmail(smtp_user, real_recipients, msg.as_string())
 
         try:
-            await asyncio.to_thread(sync_send)
+            await asyncio.wait_for(asyncio.to_thread(sync_send), timeout=5.0)
             print(f"| SMTP EMAIL SUCCESS | Sent to: {real_recipients} | Subject: {subject} |")
             return "smtp_success"
         except Exception as e:
             print(f"| SMTP EMAIL FAILURE | Failed to send to: {real_recipients} | Error: {e} |")
-            raise e
+            # don't raise it to avoid breaking the workflow
+            return "smtp_failed"
 
 
 email_service = EmailService()
