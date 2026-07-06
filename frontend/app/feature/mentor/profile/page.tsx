@@ -52,19 +52,24 @@ export default function MentorProfilePage() {
        alert("The selected employee does not have an associated user account.");
        return;
     }
+
+    if (profiles.some(p => p.employee_id === selectedEmp.employee_id || p.user_id === selectedEmp.user_id)) {
+      alert("A Mentor Profile already exists for this employee. You can edit their existing profile instead.");
+      return;
+    }
     
-    await mentorService.createMentorProfile({
-      user_id: selectedEmp.user_id,
-      employee_id: createForm.employee_id,
-      employeeName: createForm.employeeName,
-      mentor_bio: createForm.mentor_bio,
+    try {
+      await mentorService.createMentorProfile({
+        user_id: selectedEmp.user_id,
+        employee_id: createForm.employee_id,
+        employeeName: createForm.employeeName,
+        mentor_bio: createForm.mentor_bio,
       mentor_expertise: createForm.mentor_expertise_string.split(',').map(s => s.trim()).filter(Boolean),
       years_of_experience: Number(createForm.years_of_experience),
       max_student_capacity: Number(createForm.max_student_capacity),
       current_student_count: 0,
       is_available: createForm.is_available,
     });
-    
     const updatedProfiles = await mentorService.getMentorProfiles();
     setProfiles(updatedProfiles);
     
@@ -78,6 +83,9 @@ export default function MentorProfilePage() {
       is_available: true,
     });
     setIsCreateOpen(false);
+    } catch (err: any) {
+      alert(err?.response?.data?.message || "Failed to create Mentor Profile. Please try again.");
+    }
   };
 
   const openProfile = (profile: MentorProfile) => {

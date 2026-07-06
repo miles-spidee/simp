@@ -33,7 +33,7 @@ class QuizSubmissionRepository(BaseRepository):
     async def get_all(self, current_user: Optional[User] = None):
         stmt = select(QuizSubmission)
         if current_user:
-            stmt = await apply_rls_filter(stmt, self.db, current_user, QuizSubmission)
+            stmt = await apply_program_scoped_filter(stmt, self.db, current_user, QuizSubmission)
         result = await self.db.execute(stmt)
         return result.scalars().all()
 

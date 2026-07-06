@@ -52,7 +52,7 @@ export const mentorApi = {
     if (updates.max_student_capacity !== undefined) payload.max_capacity = updates.max_student_capacity;
     if (updates.is_available !== undefined) payload.is_available = updates.is_available;
     
-    const res = await apiClient.patch(`/api/v1/mentor/${id}`, payload);
+    const res = await apiClient.put(`/api/v1/mentor/${id}`, payload);
     const result = res.data?.data || res.data;
     return mapToFrontend(result);
   },

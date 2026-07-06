@@ -70,7 +70,7 @@ async def get_courses(
     current_user: dict = Depends(require_permission("lms", "read")),
     db: AsyncSession = Depends(get_db)
 ):
-    from app.core.security_filters import apply_rls_filter
+    from app.core.security_filters import apply_program_scoped_filter
     """List all courses with their nested modules and lessons."""
     # Fetch all non-deleted courses, eagerly joining program
     course_stmt = (
@@ -79,7 +79,7 @@ async def get_courses(
         .filter(Course.deleted_at.is_(None))
         .order_by(Course.created_at.desc())
     )
-    course_stmt = await apply_rls_filter(course_stmt, db, current_user, Course)
+    course_stmt = await apply_program_scoped_filter(course_stmt, db, current_user, Course)
     course_result = await db.execute(course_stmt)
     courses = course_result.scalars().all()
 

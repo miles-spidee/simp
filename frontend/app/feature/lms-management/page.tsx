@@ -7,6 +7,7 @@ import {
 import { CommonFile } from '@/src/types/common-files.types';
 import { fileService } from '@/src/services/file.service';
 import { lmsService } from '@/src/services/lms.service';
+import { programService } from '@/src/services/program.service';
 import { CourseItem } from '@/src/api/lms.api';
 
 interface Submodule {
@@ -45,7 +46,7 @@ export default function LMSManagementPage() {
 
   // Course creator/editor states
   const [courseName, setCourseName] = useState('');
-  const [courseProgram, setCourseProgram] = useState('Software Engineering');
+  const [courseProgram, setCourseProgram] = useState('');
   const [courseDesc, setCourseDesc] = useState('');
   const [courseThumbnail, setCourseThumbnail] = useState('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&auto=format&fit=crop');
   const [creating, setCreating] = useState(false);
@@ -110,8 +111,22 @@ export default function LMSManagementPage() {
     }
   };
 
+  const [programs, setPrograms] = useState<any[]>([]);
+  const loadPrograms = async () => {
+    try {
+      const progs = await programService.getPrograms();
+      setPrograms(progs);
+      if (progs.length > 0) {
+        setCourseProgram(progs[0].title);
+      }
+    } catch (err) {
+      console.error('Failed to load programs:', err);
+    }
+  };
+
   useEffect(() => {
     loadCourses();
+    loadPrograms();
   }, []);
 
   const handleCreateCourse = async (e: React.FormEvent) => {
@@ -508,9 +523,9 @@ export default function LMSManagementPage() {
                 onChange={(e) => setCourseProgram(e.target.value)}
                 className="w-full bg-slate-50 border border-border rounded-xl px-4 py-2.5 text-xs text-text-primary outline-none cursor-pointer font-bold"
               >
-                <option value="Software Engineering">Software Engineering</option>
-                <option value="Artificial Intelligence">Artificial Intelligence</option>
-                <option value="Cloud Infrastructure">Cloud Infrastructure</option>
+                {programs.map(p => (
+                  <option key={p.id} value={p.title}>{p.title}</option>
+                ))}
               </select>
             </div>
             <div className="md:col-span-2">
