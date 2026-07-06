@@ -41,49 +41,7 @@ interface StudentTask {
   isOverdue: boolean;
 }
 
-const DEFAULT_TASKS: StudentTask[] = [
-  {
-    id: 'TSK-201',
-    title: 'Portfolio Website',
-    description: 'Design and deploy a professional developer portfolio showcasing your projects and resume details.',
-    dueDate: '2026-06-20',
-    attempts: 1,
-    requirements: ['Github Link', 'Deployment URL', 'Screenshot'],
-    examplePdf: 'portfolio_spec_v1.pdf',
-    referencePdf: 'ux_portfolio_guide.pdf',
-    starterCode: 'portfolio-starter.zip',
-    status: 'completed',
-    score: 95,
-    feedback: 'Excellent clean layout! Responsive styling works perfectly across tablet and mobile screens.',
-    isOverdue: false
-  },
-  {
-    id: 'TSK-202',
-    title: 'Attendance API Endpoints',
-    description: 'Implement backend REST endpoints for clock-in, clock-out, and monthly logs using Express and MongoDB.',
-    dueDate: '2026-06-25',
-    attempts: 2,
-    requirements: ['Github Link', 'Video'],
-    examplePdf: 'attendance_api_design.pdf',
-    referencePdf: 'rest_best_practices.pdf',
-    starterCode: 'express-mongoose-starter.zip',
-    status: 'pending',
-    isOverdue: true
-  },
-  {
-    id: 'TSK-203',
-    title: 'Employee CRUD Console',
-    description: 'Create an internal dashboard CLI or React UI to register, search, and update employee HR details.',
-    dueDate: '2026-06-30',
-    attempts: 1,
-    requirements: ['Github Link', 'Deployment URL', 'Screenshot', 'PDF'],
-    examplePdf: 'crud_requirements.pdf',
-    referencePdf: 'react_state_management.pdf',
-    starterCode: 'crud-boilerplate.zip',
-    status: 'pending',
-    isOverdue: false
-  }
-];
+const DEFAULT_TASKS: StudentTask[] = [];
 
 export default function MyTasksPage() {
   const [tasks, setTasks] = useState<StudentTask[]>(DEFAULT_TASKS);
@@ -107,71 +65,37 @@ export default function MyTasksPage() {
   };
 
   useEffect(() => {
-    const loadStateAndGrades = () => {
-      let combinedTasks = [...DEFAULT_TASKS];
-
-      if (typeof window !== 'undefined') {
-        // Load custom created tasks
-        const customTasksStr = localStorage.getItem('pinesphere_created_tasks');
-        if (customTasksStr) {
-          const parsed = JSON.parse(customTasksStr) as { batchId: string; task: any }[];
-          // Map to student-batch (AI Batch 2026 / batch-ai-2026)
-          const filtered = parsed
-            .filter(x => x.batchId === 'batch-ai-2026')
-            .map(x => ({
-              ...x.task,
-              status: 'pending' as const,
-              isOverdue: new Date(x.task.dueDate).getTime() < Date.now()
-            }));
-          
-          filtered.forEach(ct => {
-            if (!combinedTasks.some(t => t.id === ct.id)) {
-              combinedTasks.push(ct);
-            }
-          });
+    const loadStateAndGrades = async () => {
+      try {
+        const { apiClient } = await import('../../../src/api/api.client');
+        const res = await apiClient.get('/api/v1/task');
+        const tasksFromApi = res.data?.data || [];
+        
+        const mappedTasks: StudentTask[] = tasksFromApi.map((t: any) => ({
+          ...t,
+          attempts: t.attempts || 1,
+          requirements: t.requirements || ['Github Link', 'Deployment URL', 'Screenshot'],
+          examplePdf: t.examplePdf || 'task_spec_v1.pdf',
+          referencePdf: t.referencePdf || 'reference_guide.pdf',
+          starterCode: t.starterCode || 'starter-code.zip',
+          status: t.status || 'pending',
+          isOverdue: t.isOverdue || false,
+        }));
+        
+        if (mappedTasks.length > 0) {
+          setTasks(mappedTasks);
+          if (!mappedTasks.find((t:any) => t.id === selectedTaskId)) {
+            setSelectedTaskId(mappedTasks[0].id);
+          }
+        } else {
+          setTasks([]);
         }
-
-        // Load submission statuses from localStorage
-        const submissionsStr = localStorage.getItem('pinesphere_task_submissions');
-        if (submissionsStr) {
-          const parsed = JSON.parse(submissionsStr) as LocalSubmission[];
-          combinedTasks = combinedTasks.map(t => {
-            const sub = parsed.find(x => x.taskId === t.id && x.submission.studentId === 'stu-12');
-            if (sub) {
-              return {
-                ...t,
-                status: sub.submission.status === 'Graded' ? 'completed' : 'review'
-              };
-            }
-            return t;
-          });
-        }
-
-        // Load graded scores & feedback
-        const gradesStr = localStorage.getItem('pinesphere_task_grades');
-        if (gradesStr) {
-          const parsed = JSON.parse(gradesStr) as { taskId: string; studentId: string; score: number; feedback: string }[];
-          combinedTasks = combinedTasks.map(t => {
-            const gr = parsed.find(x => x.taskId === t.id && x.studentId === 'stu-12');
-            if (gr) {
-              return {
-                ...t,
-                status: 'completed',
-                score: gr.score,
-                feedback: gr.feedback
-              };
-            }
-            return t;
-          });
-        }
+      } catch (err) {
+        console.error('Failed to load tasks', err);
       }
-      setTasks(combinedTasks);
     };
 
     loadStateAndGrades();
-    // Watch for updates
-    window.addEventListener('storage', loadStateAndGrades);
-    return () => window.removeEventListener('storage', loadStateAndGrades);
   }, []);
 
   const handleSimulateScreenshot = () => {
@@ -186,49 +110,37 @@ export default function MyTasksPage() {
     triggerToast(`Attached simulated build: ${filename}`);
   };
 
-  const handleSubmitSolution = (e: React.FormEvent) => {
+  const handleSubmitSolution = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const selected = tasks.find(t => t.id === selectedTaskId);
     if (!selected) return;
 
-    // Build the submission payload
-    const submissionPayload: LocalSubmission = {
-      taskId: selectedTaskId,
-      submission: {
-        studentId: 'stu-12',
-        studentName: 'Ananya Desai',
-        githubUrl: githubUrl,
+    try {
+      const { apiClient } = await import('../../../src/api/api.client');
+      await apiClient.post('/api/v1/submission', {
+        taskId: selectedTaskId,
+        repoLink: githubUrl,
         deployUrl: deployUrl,
         videoUrl: videoUrl,
-        screenshot: screenshotName || 'solution_desktop_grid.png',
-        pdfFile: 'intern_design_spec.pdf',
-        submittedAt: new Date().toLocaleString(),
-        score: 0,
-        feedback: '',
-        status: 'Submitted'
-      }
-    };
+        screenshot: screenshotName,
+        pdfFile: 'intern_design_spec.pdf'
+      });
+      
+      setTasks(prev => prev.map(t => t.id === selectedTaskId ? { ...t, status: 'review' } : t));
+      
+      // Clear inputs
+      setGithubUrl('');
+      setDeployUrl('');
+      setVideoUrl('');
+      setScreenshotName('');
+      setZipName('');
 
-    if (typeof window !== 'undefined') {
-      const existingStr = localStorage.getItem('pinesphere_task_submissions') || '[]';
-      const existing = JSON.parse(existingStr);
-      // Remove previous attempts
-      const cleaned = existing.filter((x: LocalSubmission) => !(x.taskId === selectedTaskId && x.submission.studentId === 'stu-12'));
-      cleaned.push(submissionPayload);
-      localStorage.setItem('pinesphere_task_submissions', JSON.stringify(cleaned));
+      triggerToast("Deliverables uploaded successfully for mentor evaluation!");
+    } catch (err) {
+      console.error('Failed to submit solution', err);
+      triggerToast("Failed to upload deliverables.");
     }
-
-    setTasks(prev => prev.map(t => t.id === selectedTaskId ? { ...t, status: 'review' } : t));
-    
-    // Clear inputs
-    setGithubUrl('');
-    setDeployUrl('');
-    setVideoUrl('');
-    setScreenshotName('');
-    setZipName('');
-
-    triggerToast("Deliverables uploaded successfully for mentor evaluation!");
   };
 
   const selectedTask = tasks.find(t => t.id === selectedTaskId);

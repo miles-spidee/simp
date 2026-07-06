@@ -36,10 +36,10 @@ interface LocalAppeal {
 export default function MyAttendancePage() {
 
   const [attendanceLogs, setAttendanceLogs] = useState<AttendanceLog[]>([]);
-  const [complianceRate, setComplianceRate] = useState(88);
-  const [presentDays, setPresentDays] = useState(15);
-  const [absentDays, setAbsentDays] = useState(2);
-  const [lateDays, setLateDays] = useState(1);
+  const [complianceRate, setComplianceRate] = useState(0);
+  const [presentDays, setPresentDays] = useState(0);
+  const [absentDays, setAbsentDays] = useState(0);
+  const [lateDays, setLateDays] = useState(0);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Simulated checkin states
@@ -62,16 +62,46 @@ export default function MyAttendancePage() {
   const [myLeaves, setMyLeaves] = useState<LeaveRequest[]>([]);
 
   useEffect(() => {
-    // Load initial logs
-    const initialLogs: AttendanceLog[] = [
-      { id: 'att-1', date: '2026-06-15', clockIn: '08:55 AM', clockOut: '05:05 PM', duration: '8h 10m', status: 'Present' },
-      { id: 'att-2', date: '2026-06-12', clockIn: '08:50 AM', clockOut: '05:15 PM', duration: '8h 25m', status: 'Present' },
-      { id: 'att-3', date: '2026-06-11', clockIn: '08:58 AM', clockOut: '05:10 PM', duration: '8h 12m', status: 'Present' },
-      { id: 'att-4', date: '2026-06-10', clockIn: '09:00 AM', clockOut: '05:00 PM', duration: '8h 00m', status: 'Present' },
-      { id: 'att-5', date: '2026-06-09', clockIn: '09:30 AM', clockOut: '05:05 PM', duration: '7h 35m', status: 'Late' },
-      { id: 'att-6', date: '2026-06-08', clockIn: '-', clockOut: '-', duration: '-', status: 'Absent' },
-    ];
-    setAttendanceLogs(initialLogs);
+    const fetchAttendanceLogs = async () => {
+      try {
+        const { apiClient } = await import('../../../src/api/api.client');
+        const res = await apiClient.get('/api/v1/attendance');
+        const logs = res.data?.data || [];
+        setAttendanceLogs(logs);
+        
+        // Calculate stats
+        let present = 0;
+        let absent = 0;
+        let late = 0;
+        
+        logs.forEach((log: AttendanceLog) => {
+          if (log.status === 'Present') present++;
+          else if (log.status === 'Absent') absent++;
+          else if (log.status === 'Late') late++;
+        });
+        
+        setPresentDays(present);
+        setAbsentDays(absent);
+        setLateDays(late);
+        const total = present + absent + late;
+        if (total > 0) {
+          setComplianceRate(Math.round((present / total) * 100));
+        } else {
+          setComplianceRate(0);
+        }
+        
+        // Check if checked in today
+        const todayStr = new Date().toISOString().split('T')[0];
+        const todayLog = logs.find((l: AttendanceLog) => l.date === todayStr);
+        if (todayLog && todayLog.status === 'Present') {
+          setIsCheckedIn(true);
+          setClockInTime(todayLog.clockIn !== '-' ? todayLog.clockIn : '09:00 AM');
+        }
+      } catch (err) {
+        console.error('Failed to fetch attendance', err);
+      }
+    };
+    fetchAttendanceLogs();
 
     // Sync appeals from local storage
     if (typeof window !== 'undefined') {
@@ -94,24 +124,37 @@ export default function MyAttendancePage() {
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-  const handleCheckIn = () => {
-    const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    setIsCheckedIn(true);
-    setClockInTime(timeNow);
-    setClockOutTime(null);
-    triggerToast(`Checked in successfully at ${timeNow}. Session active.`);
+  const handleCheckIn = async () => {
+    try {
+      const { apiClient } = await import('@/api/api.client');
+      await apiClient.post('/api/v1/attendance/check-in', {});
+      
+      const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      setIsCheckedIn(true);
+      setClockInTime(timeNow);
+      setClockOutTime(null);
+      triggerToast(`Checked in successfully at ${timeNow}. Session active.`);
 
-    const todayDate = new Date().toISOString().split('T')[0];
-    const newLog: AttendanceLog = {
-      id: `att-${Date.now().toString().slice(-3)}`,
-      date: todayDate,
-      clockIn: timeNow,
-      clockOut: '-',
-      duration: 'Ongoing',
-      status: 'Present'
-    };
-    setAttendanceLogs(prev => [newLog, ...prev]);
-    setPresentDays(prev => prev + 1);
+      const todayDate = new Date().toISOString().split('T')[0];
+      const newLog: AttendanceLog = {
+        id: `att-${Date.now().toString().slice(-3)}`,
+        date: todayDate,
+        clockIn: timeNow,
+        clockOut: '-',
+        duration: 'Ongoing',
+        status: 'Present'
+      };
+      
+      setAttendanceLogs(prev => {
+        // Remove if already exists for today to avoid duplicates
+        const filtered = prev.filter(p => p.date !== todayDate);
+        return [newLog, ...filtered];
+      });
+      setPresentDays(prev => prev + 1);
+    } catch (err) {
+      console.error('Checkin failed', err);
+      triggerToast('Failed to check in. Please try again later.');
+    }
   };
 
   const handleCheckOut = () => {
@@ -335,28 +378,35 @@ export default function MyAttendancePage() {
           </div>
         </div>
 
-        {/* June 2026 Interactive Calendar */}
+        {/* Interactive Calendar */}
         <div className="bg-white border border-border rounded-2xl p-6 space-y-4 shadow-sm h-fit">
           <h3 className="font-bold text-xs text-text-secondary uppercase tracking-widest border-b border-border pb-3">
-            June 2026 Monthly Sheet
+            {new Date().toLocaleString('default', { month: 'long', year: 'numeric' })} Monthly Sheet
           </h3>
           
           <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-2">
-            <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+            <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
           </div>
 
           <div className="grid grid-cols-7 gap-2">
-            {Array.from({ length: 30 }).map((_, i) => {
+            {Array.from({ length: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate() }).map((_, i) => {
               const day = i + 1;
+              const dateStr = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+              const todayStr = new Date().toISOString().split('T')[0];
+              
+              const logForDay = attendanceLogs.find(l => l.date === dateStr);
+              
               let bg = 'bg-slate-50 border border-border rounded text-text-secondary';
-              if (day <= 15) {
-                if (day === 7 || day === 14) bg = 'bg-slate-100/50 border border-border/60 rounded text-text-secondary';
-                else if (day === 8) bg = 'bg-rose-50 text-rose-600 border border-rose-100 rounded font-bold';
-                else if (day === 9) bg = 'bg-amber-50 text-amber-600 border border-amber-100 rounded font-bold';
-                else bg = 'bg-emerald-50 text-emerald-600 border border-emerald-100 rounded font-bold';
-              } else if (day === 16) {
-                bg = isCheckedIn ? 'bg-blue-600 text-white font-bold rounded shadow-sm animate-pulse' : 'bg-blue-50 border border-blue-300 text-blue-600 rounded font-bold';
+              if (logForDay) {
+                if (logForDay.status === 'Present') bg = 'bg-emerald-50 text-emerald-600 border border-emerald-100 rounded font-bold';
+                else if (logForDay.status === 'Absent') bg = 'bg-rose-50 text-rose-600 border border-rose-100 rounded font-bold';
+                else if (logForDay.status === 'Late') bg = 'bg-amber-50 text-amber-600 border border-amber-100 rounded font-bold';
+              } else if (dateStr === todayStr && isCheckedIn) {
+                bg = 'bg-blue-600 text-white font-bold rounded shadow-sm animate-pulse';
+              } else if (dateStr === todayStr) {
+                bg = 'bg-blue-50 border border-blue-300 text-blue-600 rounded font-bold';
               }
+              
               return (
                 <div key={day} className={`h-8 flex items-center justify-center text-xs font-semibold ${bg}`}>
                   {day}
