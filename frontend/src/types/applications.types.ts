@@ -89,6 +89,7 @@ export interface Application {
   overallRecommendation?: 'Strong Hire' | 'Hire' | 'No Hire' | 'Strong No Hire' | 'Hold';
   reviewerNotes?: string;
   reviewerFeedback?: string;
+  teamsMeetLink?: string;
 
   // AI Assistance Panel
   aiMatchPercentage?: number;
