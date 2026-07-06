@@ -56,19 +56,22 @@ export default function AllocationManagementPage() {
     try {
       const res = await apiClient.get(endpoint);
       const data = res.data as any;
-      const list = data.data || [];
+      const list = Array.isArray(data) ? data : (data.data || []);
       const options = list.map((item: any) => {
+          const actualId = item.id || item.program_id || item.student_id || item.mentor_profile_id || item.employee_id || item.batch_id;
           let name = 'Unknown';
           if (type === 'student') {
-             name = `${item.first_name || ''} ${item.last_name || ''} ${item.enrollment_number ? `(${item.enrollment_number})` : ''}`.trim();
-          } else if (type === 'mentor' || type === 'user' || type === 'employee') {
-             const baseName = `${item.first_name || ''} ${item.last_name || ''}`.trim();
-             name = baseName || item.email || item.username || 'Unknown';
+             const studentName = item.personal_info?.name || `${item.first_name || ''} ${item.last_name || ''}`.trim() || item.username || '';
+             name = `${studentName} ${item.enrollment_number ? `(${item.enrollment_number})` : ''}`.trim();
+          } else if (type === 'employee' || type === 'user') {
+             name = `${item.first_name || ''} ${item.last_name || ''}`.trim() || item.username || item.official_email || item.email;
+          } else if (type === 'mentor') {
+             name = `${item.first_name || ''} ${item.last_name || ''}`.trim() || item.username || item.expertise || 'Mentor';
           } else if (type === 'program' || type === 'batch') {
-             name = item.name || item.batch_name || item.id;
+             name = item.name || item.batch_name || item.program_name;
           }
-          if (!name || name === 'Unknown') name = item.id;
-          return { id: item.id, name };
+          if (!name || name === 'Unknown') name = actualId;
+          return { id: actualId, name };
         });
         
         // Update cache
@@ -94,12 +97,12 @@ export default function AllocationManagementPage() {
       let endpoint = '';
       let type = '';
       switch (activeTab) {
-        case 'student': endpoint = '/api/v1/student/'; type = 'student'; break;
-        case 'mentor': endpoint = '/api/v1/mentor/'; type = 'mentor'; break;
+        case 'student': endpoint = '/api/v1/users/by-role/STUDENT'; type = 'user'; break;
+        case 'mentor': endpoint = '/api/v1/users/by-role/MENTOR'; type = 'user'; break;
         case 'program': endpoint = '/api/v1/program/'; type = 'program'; break;
-        case 'report_manager':
-        case 'finance_manager':
-        case 'user': endpoint = '/api/v1/employee/'; type = 'employee'; break;
+        case 'report_manager': endpoint = '/api/v1/users/by-role/MANAGEMENT'; type = 'user'; break;
+        case 'finance_manager': endpoint = '/api/v1/users/by-role/FINANCE_MANAGER'; type = 'user'; break;
+        case 'user': endpoint = '/api/v1/users/by-role/ALL'; type = 'user'; break;
       }
       
       if (endpoint) {
@@ -361,7 +364,6 @@ export default function AllocationManagementPage() {
                     >
                       <option value="PROGRAM">PROGRAM</option>
                       <option value="BATCH">BATCH</option>
-                      <option value="USER">USER</option>
                     </select>
                   </div>
                   <div>
