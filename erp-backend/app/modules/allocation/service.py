@@ -131,11 +131,13 @@ class AllocationService(BaseService):
         return allocation
 
     async def delete_allocation(self, allocation_id: UUID, user_id: UUID):
+        from datetime import datetime
         allocation = await self.db.get(Allocation, allocation_id)
         if not allocation or allocation.deleted_at:
             raise HTTPException(status_code=404, detail="Allocation not found")
             
-        await self.soft_delete(allocation, user_id)
+        allocation.deleted_at = datetime.utcnow()
+        allocation.updated_by = user_id
         
         await self.log_audit_event(
             action="DELETE_ALLOCATION",
