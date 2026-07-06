@@ -45,7 +45,7 @@ async def _get_program_details(db: AsyncSession, program_id: UUID):
     return program_name, internship_type
 
 
-@router.get("/", response_model=APIResponse[list[BatchResponse]])
+@router.get("", response_model=APIResponse[list[BatchResponse]])
 async def get_batches(
     current_user: User = Depends(require_permission("batch", "read")),
     db: AsyncSession = Depends(get_db),
@@ -134,7 +134,7 @@ async def get_batch(
     return success_response(data=response)
 
 
-@router.post("/", response_model=APIResponse[BatchResponse])
+@router.post("", response_model=APIResponse[BatchResponse])
 async def create_batch(
     payload: BatchCreate,
     current_user: User = Depends(require_permission("batch", "create")),

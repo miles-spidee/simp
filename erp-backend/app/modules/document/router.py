@@ -33,7 +33,7 @@ class GenerateDocumentRequest(BaseModel):
 class StatusUpdateRequest(BaseModel):
     status: str
 
-@router.get("/")
+@router.get("")
 async def list_generated_documents(db: AsyncSession = Depends(get_db)):
     try:
         # Fetch generated documents
@@ -154,7 +154,7 @@ async def list_document_templates(db: AsyncSession = Depends(get_db)):
         traceback.print_exc()
         return success_response(data=[])
 
-@router.post("/")
+@router.post("")
 async def generate_document(payload: GenerateDocumentRequest, db: AsyncSession = Depends(get_db)):
     try:
         # Resolve user

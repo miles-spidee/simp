@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request
 
 router = APIRouter()
 
-@router.get("/")
+@router.get("")
 async def list_degree():
     return {"success": True, "message": "degree listing", "data": []}
 
@@ -10,7 +10,7 @@ async def list_degree():
 async def get_all_degree(path: str):
     return {"success": True, "message": f"degree get {path}", "data": []}
 
-@router.post("/")
+@router.post("")
 async def create_degree_root():
     return {"success": True, "message": "degree created", "data": {}}
 

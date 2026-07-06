@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request
 
 router = APIRouter()
 
-@router.get("/")
+@router.get("")
 async def list_export():
     return {"success": True, "message": "export listing", "data": []}
 
@@ -10,7 +10,7 @@ async def list_export():
 async def get_all_export(path: str):
     return {"success": True, "message": f"export get {path}", "data": []}
 
-@router.post("/")
+@router.post("")
 async def create_export_root():
     return {"success": True, "message": "export created", "data": {}}
 

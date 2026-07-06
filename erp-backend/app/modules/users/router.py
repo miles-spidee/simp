@@ -80,7 +80,7 @@ async def patch_db_temp(db: AsyncSession = Depends(get_db)):
     except Exception as e:
         return {"status": "error", "detail": str(e)}
 
-@router.post("/", response_model=APIResponse[UserResponse])
+@router.post("", response_model=APIResponse[UserResponse])
 async def create_user(
     data: UserCreate,
     current_user: User = Depends(require_permission("users", "create")),

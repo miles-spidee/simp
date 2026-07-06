@@ -453,7 +453,7 @@ async def get_risks(
 
     return success_response(data=risks)
 
-@router.get("/")
+@router.get("")
 async def list_executive(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),

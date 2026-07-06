@@ -252,7 +252,7 @@ async def reject_leave(
     )
 
 
-@router.get("/")
+@router.get("")
 async def get_leave_requests_root(
     db: AsyncSession = Depends(get_db),
 ):
@@ -318,7 +318,7 @@ async def get_leave_requests_root(
         return []
 
 
-@router.post("/")
+@router.post("")
 async def create_leave_request_root(
     request: Request,
     db: AsyncSession = Depends(get_db),

@@ -27,7 +27,7 @@ class AlumniCreate(BaseModel):
     linkedInUrl: Optional[str] = None
     isMentoring: bool = False
 
-@router.get("/")
+@router.get("")
 async def list_alumni(db: AsyncSession = Depends(get_db)):
     try:
         # Fetch all alumni profiles joined with student profiles and users
@@ -59,7 +59,7 @@ async def list_alumni(db: AsyncSession = Depends(get_db)):
         traceback.print_exc()
         return success_response(data=[])
 
-@router.post("/")
+@router.post("")
 async def create_alumni(payload: AlumniCreate, db: AsyncSession = Depends(get_db)):
     try:
         # 1. Resolve organization

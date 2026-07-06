@@ -461,7 +461,7 @@ async def _student_payload(profile: StudentProfile, user: User, organization: Op
         "timeline": sorted(timeline_events, key=lambda x: x["date"], reverse=True)
     }
 
-@router.get("/", response_model=APIResponse[List[dict]])
+@router.get("", response_model=APIResponse[List[dict]])
 async def get_student_list(
     current_user: User = Depends(require_permission("students", "read")),
     db: AsyncSession = Depends(get_db)
@@ -543,7 +543,7 @@ async def generate_bulk_credentials(
         from app.core.responses import error_response
         return error_response(message="Failed to generate credentials", status_code=500)
 
-@router.post("/", response_model=APIResponse[dict])
+@router.post("", response_model=APIResponse[dict])
 async def create_student(data: StudentCreate, db: AsyncSession = Depends(get_db)):
     # 1. Duplicate check for enrollment
     if data.enrollment_number:

@@ -4,6 +4,6 @@ from app.core.database import get_db
 
 router = APIRouter()
 
-@router.get("/")
+@router.get("")
 async def get_super_admin_list(db: AsyncSession = Depends(get_db)):
     return []

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request
 
 router = APIRouter()
 
-@router.get("/")
+@router.get("")
 async def list_reporting_manager():
     return {"success": True, "message": "reporting_manager listing", "data": []}
 
@@ -10,7 +10,7 @@ async def list_reporting_manager():
 async def get_all_reporting_manager(path: str):
     return {"success": True, "message": f"reporting_manager get {path}", "data": []}
 
-@router.post("/")
+@router.post("")
 async def create_reporting_manager_root():
     return {"success": True, "message": "reporting_manager created", "data": {}}
 

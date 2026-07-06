@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request
 
 router = APIRouter()
 
-@router.get("/")
+@router.get("")
 async def list_communication():
     return {"success": True, "message": "communication listing", "data": []}
 
@@ -10,7 +10,7 @@ async def list_communication():
 async def get_all_communication(path: str):
     return {"success": True, "message": f"communication get {path}", "data": []}
 
-@router.post("/")
+@router.post("")
 async def create_communication_root():
     return {"success": True, "message": "communication created", "data": {}}
 

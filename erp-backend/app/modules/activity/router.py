@@ -12,7 +12,7 @@ from app.models.authentication.user import User
 
 router = APIRouter()
 
-@router.get("/")
+@router.get("")
 async def list_activity(db: AsyncSession = Depends(get_db)):
     try:
         stmt = select(ActivityLog, User.username).outerjoin(User, ActivityLog.user_id == User.id).order_by(ActivityLog.created_at.desc())
@@ -165,7 +165,7 @@ async def export_activity(
 async def get_all_activity_fallback(path: str, db: AsyncSession = Depends(get_db)):
     return await list_activity(db)
 
-@router.post("/")
+@router.post("")
 async def create_activity_root(request: Request, db: AsyncSession = Depends(get_db)):
     return success_response(data={})
 

@@ -149,7 +149,7 @@ async def _resolve_department(db: AsyncSession, organization_id, value: str):
     return result.scalars().first()
 
 
-@router.get("/", response_model=APIResponse[List[dict]])
+@router.get("", response_model=APIResponse[List[dict]])
 async def get_employee_list(
     current_user: User = Depends(require_permission("employee", "read")),
     db: AsyncSession = Depends(get_db)
@@ -277,7 +277,7 @@ async def update_employee(
     )
 
 
-@router.post("/", response_model=APIResponse[dict])
+@router.post("", response_model=APIResponse[dict])
 async def create_employee(
     data: EmployeeCreate,
     current_user: User = Depends(require_permission("employee", "create")),

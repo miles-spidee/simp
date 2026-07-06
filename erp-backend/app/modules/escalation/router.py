@@ -174,6 +174,6 @@ async def update_escalation_status(id: str, request: Request, db: AsyncSession =
         except Exception:
             return success_response(data={})
 
-@router.get("/")
+@router.get("")
 async def list_escalation_root(db: AsyncSession = Depends(get_db)):
     return await get_escalation_logs(db)

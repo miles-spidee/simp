@@ -8,7 +8,7 @@ from uuid import UUID
 
 router = APIRouter()
 
-@router.get("/")
+@router.get("")
 async def get_fees(db: AsyncSession = Depends(get_db)):
     try:
         stmt = select(FeeStructure)
@@ -34,7 +34,7 @@ async def get_fees(db: AsyncSession = Depends(get_db)):
     except Exception as e:
         return success_response(data=[])
 
-@router.post("/")
+@router.post("")
 async def create_fee(data: dict, db: AsyncSession = Depends(get_db)):
     try:
         fee = FeeStructure(

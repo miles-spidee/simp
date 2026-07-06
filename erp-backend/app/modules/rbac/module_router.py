@@ -56,7 +56,7 @@ async def _module_display_index(db: AsyncSession, module_id: UUID) -> int | None
     return ordered_ids.index(module_id) if module_id in ordered_ids else None
 
 
-@router.get("/", response_model=APIResponse[List[dict]])
+@router.get("", response_model=APIResponse[List[dict]])
 async def get_modules(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
@@ -89,7 +89,7 @@ async def get_module(
     return success_response(data=_serialize_module(module, display_index))
 
 
-@router.post("/", response_model=APIResponse[dict])
+@router.post("", response_model=APIResponse[dict])
 async def create_module(
     data: ModuleCreate,
     current_user: User = Depends(require_permission("modules", "create")),

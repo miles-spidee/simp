@@ -49,7 +49,7 @@ async def sync_applications(
         message=f"Successfully mapped {added} students to programs.",
     )
 
-@router.get("/", response_model=APIResponse[list[AllocationResponse]])
+@router.get("", response_model=APIResponse[list[AllocationResponse]])
 async def get_allocations(
     source_type: Optional[str] = Query(None),
     target_type: Optional[str] = Query(None),
@@ -61,7 +61,7 @@ async def get_allocations(
     allocations = await service.get_allocations(source_type, target_type, target_id)
     return success_response(data=[map_allocation(a) for a in allocations])
 
-@router.post("/", response_model=APIResponse[AllocationResponse])
+@router.post("", response_model=APIResponse[AllocationResponse])
 async def create_allocation(
     payload: AllocationCreate,
     current_user: User = Depends(require_permission("allocation", "create")),

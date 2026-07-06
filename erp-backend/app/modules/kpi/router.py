@@ -31,7 +31,7 @@ class KPIUpdate(BaseModel):
     trend: Optional[str] = None
     trendPercentage: Optional[float] = None
 
-@router.get("/")
+@router.get("")
 async def list_kpis(db: AsyncSession = Depends(get_db)):
     try:
         # Check if empty, and auto-seed default metrics or update existing standard metrics
@@ -114,7 +114,7 @@ async def list_kpis(db: AsyncSession = Depends(get_db)):
         traceback.print_exc()
         return success_response(data=[])
 
-@router.post("/")
+@router.post("")
 async def create_kpi(payload: KPICreate, db: AsyncSession = Depends(get_db)):
     try:
         kpi = KPIMetric(

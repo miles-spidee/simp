@@ -12,7 +12,7 @@ import uuid
 router = APIRouter()
 
 
-@router.get("/")
+@router.get("")
 async def get_self_service_dashboard(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
@@ -105,7 +105,7 @@ async def get_self_service_dashboard(
     return success_response(data=dashboard)
 
 
-@router.patch("/")
+@router.patch("")
 async def update_profile(
     request: Request,
     current_user: User = Depends(get_current_user),

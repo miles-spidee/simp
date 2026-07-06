@@ -12,7 +12,7 @@ from typing import List
 router = APIRouter()
 
 
-@router.get("/", response_model=APIResponse[List[dict]])
+@router.get("", response_model=APIResponse[List[dict]])
 async def list_announcements(db: AsyncSession = Depends(get_db)):
     try:
         stmt = select(DBAnnouncement).order_by(DBAnnouncement.created_at.desc())
@@ -40,7 +40,7 @@ async def list_announcements(db: AsyncSession = Depends(get_db)):
     except Exception as e:
         return success_response(data=[])
 
-@router.post("/", response_model=APIResponse[dict])
+@router.post("", response_model=APIResponse[dict])
 async def create_announcement(request: Request, db: AsyncSession = Depends(get_db)):
     try:
         body = await request.json()

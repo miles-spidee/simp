@@ -34,7 +34,7 @@ def map_response(profile):
     )
 
 
-@router.get("/", response_model=APIResponse[list[MentorProfileResponse]])
+@router.get("", response_model=APIResponse[list[MentorProfileResponse]])
 async def get_mentors(
     current_user: User = Depends(require_permission("mentor", "read")),
     db: AsyncSession = Depends(get_db),
@@ -63,7 +63,7 @@ async def get_mentor(
     )
 
 
-@router.post("/", response_model=APIResponse[MentorProfileResponse])
+@router.post("", response_model=APIResponse[MentorProfileResponse])
 async def create_mentor(
     payload: MentorProfileCreate,
     current_user: User = Depends(require_permission("mentor", "create")),

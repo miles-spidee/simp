@@ -8,7 +8,7 @@ import uuid
 
 router = APIRouter()
 
-@router.get("/")
+@router.get("")
 async def get_submissions(db: AsyncSession = Depends(get_db)):
     try:
         # For submissions, fetch tasks that have a submission or are in review/completed
@@ -55,7 +55,7 @@ async def get_submission(id: uuid.UUID, db: AsyncSession = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/")
+@router.post("")
 async def create_submission(data: dict, db: AsyncSession = Depends(get_db)):
     # Assuming this updates a task's submission url
     try:

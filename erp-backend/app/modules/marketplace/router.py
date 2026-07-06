@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request
 
 router = APIRouter()
 
-@router.get("/")
+@router.get("")
 async def list_marketplace():
     return {"success": True, "message": "marketplace listing", "data": []}
 
@@ -10,7 +10,7 @@ async def list_marketplace():
 async def get_all_marketplace(path: str):
     return {"success": True, "message": f"marketplace get {path}", "data": []}
 
-@router.post("/")
+@router.post("")
 async def create_marketplace_root():
     return {"success": True, "message": "marketplace created", "data": {}}
 

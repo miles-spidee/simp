@@ -21,7 +21,7 @@ from app.modules.files.service import FileService
 router = APIRouter()
 
 
-@router.get("/", response_model=APIResponse[list[FileResponse]])
+@router.get("", response_model=APIResponse[list[FileResponse]])
 async def get_files(
     current_user: User = Depends(require_permission("files", "read")),
     db: AsyncSession = Depends(get_db),
@@ -77,7 +77,7 @@ async def get_files(
     )
 
 
-@router.post("/", response_model=APIResponse[FileResponse])
+@router.post("", response_model=APIResponse[FileResponse])
 async def create_file(
     data: FileCreate,
     current_user: User = Depends(require_permission("files", "create")),
