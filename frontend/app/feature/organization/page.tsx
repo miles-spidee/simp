@@ -11,6 +11,7 @@ import {
   MoreVertical, RefreshCw, Search
 } from 'lucide-react';
 import { organizationService } from '@/src/services/organization.service';
+import { studentService } from '@/src/services/student.service';
 import { Organization, OrganizationDepartment, OrganizationCoordinator, OrganizationStudent, OrganizationProgram, OrganizationDocument, OrganizationTimelineEvent } from '@/src/types/organizations.types';
 import { useAuth } from '@/src/context/AuthContext';
 import { Drawer } from '@/components/feature/ui/Drawer';
@@ -99,8 +100,28 @@ export default function OrganizationManagementPage() {
   const loadOrganizations = async () => {
     setLoading(true);
     try {
-      const data = await organizationService.getOrganizations();
-      setOrganizations(data);
+      const [orgData, studentData] = await Promise.all([
+        organizationService.getOrganizations(),
+        studentService.getStudents().catch(e => {
+          console.error("Failed to load students", e);
+          return [];
+        })
+      ]);
+      
+      const studentsByOrg = (studentData || []).reduce((acc: any, student: any) => {
+        const orgId = student.college_id || student.organization_id;
+        if (orgId) {
+          if (!acc[orgId]) acc[orgId] = [];
+          acc[orgId].push(student);
+        }
+        return acc;
+      }, {});
+
+      const enrichedOrgs = orgData.map((org: any) => ({
+        ...org,
+        students: studentsByOrg[org.id] || []
+      }));
+      setOrganizations(enrichedOrgs);
     } catch (err) {
       console.error(err);
       showToast('Failed to load institutions data', 'error');

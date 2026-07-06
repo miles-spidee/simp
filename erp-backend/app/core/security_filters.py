@@ -18,7 +18,6 @@ async def get_allocated_target_ids(db: AsyncSession, user_id: UUID, target_type:
     """Fetch all target IDs (e.g. program_ids) allocated to a user."""
     stmt = select(Allocation.target_id).where(
         and_(
-            Allocation.source_type == 'USER',
             Allocation.source_id == user_id,
             Allocation.target_type == target_type,
             Allocation.status == 'ACTIVE'
@@ -88,11 +87,28 @@ async def apply_program_filter(query, db: AsyncSession, user: User, program_mode
         from app.models.profiles.employee_profile import EmployeeProfile
         from app.models.profiles.student_profile import StudentProfile
         from app.models.academic.batch import Batch
+        from app.models.organizations.tndce_college import TNDCECollege
+        from app.models.organizations.organization import Organization
+        
         emp_result = await db.execute(select(EmployeeProfile.organization_id).where(EmployeeProfile.user_id == user.id))
         org_id = emp_result.scalar_one_or_none()
+        
+        allocated_colleges = await get_allocated_target_ids(db, user.id, "COLLEGE")
+        org_ids = []
         if org_id:
+            org_ids.append(org_id)
+            
+        if allocated_colleges:
+            stmt = select(Organization.id).join(
+                TNDCECollege, TNDCECollege.college_code == Organization.code
+            ).where(TNDCECollege.id.in_(allocated_colleges))
+            res = await db.execute(stmt)
+            mapped_org_ids = res.scalars().all()
+            org_ids.extend(mapped_org_ids)
+            
+        if org_ids:
             stmt = select(Batch.program_id).join(StudentProfile, StudentProfile.batch_id == Batch.id).where(
-                StudentProfile.organization_id == org_id
+                StudentProfile.organization_id.in_(org_ids)
             )
             result = await db.execute(stmt)
             program_ids = result.scalars().all()
@@ -138,12 +154,29 @@ async def apply_batch_filter(query, db: AsyncSession, user: User, batch_model):
     if "COLLEGE_COORDINATOR" in roles:
         from app.models.profiles.employee_profile import EmployeeProfile
         from app.models.profiles.student_profile import StudentProfile
+        from app.models.organizations.tndce_college import TNDCECollege
+        from app.models.organizations.organization import Organization
+        
         emp_result = await db.execute(select(EmployeeProfile.organization_id).where(EmployeeProfile.user_id == user.id))
         org_id = emp_result.scalar_one_or_none()
+        
+        allocated_colleges = await get_allocated_target_ids(db, user.id, "COLLEGE")
+        org_ids = []
         if org_id:
-            # batches where at least one student from org_id is present
+            org_ids.append(org_id)
+            
+        if allocated_colleges:
+            stmt = select(Organization.id).join(
+                TNDCECollege, TNDCECollege.college_code == Organization.code
+            ).where(TNDCECollege.id.in_(allocated_colleges))
+            res = await db.execute(stmt)
+            mapped_org_ids = res.scalars().all()
+            org_ids.extend(mapped_org_ids)
+            
+        if org_ids:
+            # batches where at least one student from org_ids is present
             stmt = select(StudentProfile.batch_id).where(
-                and_(StudentProfile.organization_id == org_id, StudentProfile.batch_id != None)
+                and_(StudentProfile.organization_id.in_(org_ids), StudentProfile.batch_id != None)
             )
             result = await db.execute(stmt)
             batch_ids = result.scalars().all()
@@ -164,11 +197,27 @@ async def apply_student_filter(query, db: AsyncSession, user: User, student_prof
         
     if "COLLEGE_COORDINATOR" in roles:
         from app.models.profiles.employee_profile import EmployeeProfile
+        from app.models.organizations.tndce_college import TNDCECollege
+        from app.models.organizations.organization import Organization
+        
         emp_result = await db.execute(select(EmployeeProfile.organization_id).where(EmployeeProfile.user_id == user.id))
         org_id = emp_result.scalar_one_or_none()
         
+        allocated_colleges = await get_allocated_target_ids(db, user.id, "COLLEGE")
+        org_ids = []
         if org_id:
-            return query.where(student_profile_model.organization_id == org_id)
+            org_ids.append(org_id)
+            
+        if allocated_colleges:
+            stmt = select(Organization.id).join(
+                TNDCECollege, TNDCECollege.college_code == Organization.code
+            ).where(TNDCECollege.id.in_(allocated_colleges))
+            res = await db.execute(stmt)
+            mapped_org_ids = res.scalars().all()
+            org_ids.extend(mapped_org_ids)
+            
+        if org_ids:
+            return query.where(student_profile_model.organization_id.in_(org_ids))
         return query.where(student_profile_model.id == None)
             
     if "MENTOR" in roles:
@@ -253,12 +302,29 @@ async def apply_program_scoped_filter(query, db: AsyncSession, user: User, model
         from app.models.profiles.employee_profile import EmployeeProfile
         from app.models.profiles.student_profile import StudentProfile
         from app.models.academic.batch import Batch
+        from app.models.organizations.tndce_college import TNDCECollege
+        from app.models.organizations.organization import Organization
+        
         emp_result = await db.execute(select(EmployeeProfile.organization_id).where(EmployeeProfile.user_id == user.id))
         org_id = emp_result.scalar_one_or_none()
+        
+        allocated_colleges = await get_allocated_target_ids(db, user.id, "COLLEGE")
+        org_ids = []
         if org_id:
+            org_ids.append(org_id)
+            
+        if allocated_colleges:
+            stmt = select(Organization.id).join(
+                TNDCECollege, TNDCECollege.college_code == Organization.code
+            ).where(TNDCECollege.id.in_(allocated_colleges))
+            res = await db.execute(stmt)
+            mapped_org_ids = res.scalars().all()
+            org_ids.extend(mapped_org_ids)
+            
+        if org_ids:
             # programs associated with batches where student is present
             stmt = select(Batch.program_id).join(StudentProfile, StudentProfile.batch_id == Batch.id).where(
-                StudentProfile.organization_id == org_id
+                StudentProfile.organization_id.in_(org_ids)
             )
             result = await db.execute(stmt)
             program_ids = result.scalars().all()

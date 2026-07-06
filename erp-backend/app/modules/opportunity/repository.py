@@ -27,9 +27,9 @@ class OpportunityRepository(
         db: AsyncSession,
     ):
         result = await db.execute(
-            select(Opportunity).order_by(
-                Opportunity.created_at.desc()
-            )
+            select(Opportunity)
+            .where(Opportunity.deleted_at.is_(None))
+            .order_by(Opportunity.created_at.desc())
         )
         return result.scalars().all()
 

@@ -1,12 +1,48 @@
 import re
 
+# Patch student.service.ts
+with open('/mnt/stuffs/PROJECTS/pine/simp/frontend/src/services/student.service.ts', 'r') as f:
+    content = f.read()
+
+update_logic = """      if (updates.status) {
+        payload.status = updates.status;
+        payload.student_status = updates.status as any;
+      }
+      
+      if (updates.college_id) {
+        (payload as any).college_id = updates.college_id;
+      }
+      
+      if (updates.batch && (updates.batch as any).name) {
+        payload.batch_name = (updates.batch as any).name;
+      }"""
+
+content = content.replace("""      if (updates.status) {
+        payload.status = updates.status;
+        payload.student_status = updates.status;
+      }""", update_logic)
+
+with open('/mnt/stuffs/PROJECTS/pine/simp/frontend/src/services/student.service.ts', 'w') as f:
+    f.write(content)
+
+# Patch page.tsx
 with open('/mnt/stuffs/PROJECTS/pine/simp/frontend/app/feature/student/page.tsx', 'r') as f:
     content = f.read()
 
-# Fix batch_id to batchId and batch_name to batchName (assuming ExtendedStudent uses camelCase like other Extended types)
-# Let's check how the types are defined, but since batch_id is rejected, it's highly likely batchId.
-# Using regex to replace just inside updateStudent
-content = re.sub(r'batch_id: batchForm.name,\n\s*batch_name: realBatchName', 'batchId: batchForm.name,\n      batchName: realBatchName', content)
+# Fix handleUpdateBatch so it uses both batch and internshipInfo
+old_batch = """    const updated = await studentService.updateStudent(studentId, {
+      batch: { id: batchForm.name, name: realBatchName } as any
+    });"""
+
+new_batch = """    const updated = await studentService.updateStudent(studentId, {
+      batch: { id: batchForm.name, name: realBatchName } as any,
+      internshipInfo: {
+        ...activeProfile.internshipInfo,
+        batchName: realBatchName
+      }
+    });"""
+
+content = content.replace(old_batch, new_batch)
 
 with open('/mnt/stuffs/PROJECTS/pine/simp/frontend/app/feature/student/page.tsx', 'w') as f:
     f.write(content)

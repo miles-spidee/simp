@@ -164,7 +164,15 @@ export const studentService = {
       }
       if (updates.status) {
         payload.status = updates.status;
-        payload.student_status = updates.status;
+        payload.student_status = updates.status as any;
+      }
+      
+      if (updates.college_id) {
+        (payload as any).college_id = updates.college_id;
+      }
+      
+      if (updates.batch && (updates.batch as any).name) {
+        payload.batch_name = (updates.batch as any).name;
       }
 
       const res = await studentApi.updateStudent(id, payload);

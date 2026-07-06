@@ -7,7 +7,7 @@ import {
   Trash2, Plus, RefreshCw, Briefcase, UserCheck
 } from 'lucide-react';
 
-type TabKey = 'overview' | 'student' | 'mentor' | 'program' | 'report_manager' | 'finance_manager' | 'user';
+type TabKey = 'overview' | 'student' | 'mentor' | 'program' | 'report_manager' | 'finance_manager' | 'user' | 'college_coordinator';
 
 export default function AllocationManagementPage() {
   const [activeTab, setActiveTab] = useState<TabKey>('overview');
@@ -69,6 +69,8 @@ export default function AllocationManagementPage() {
              name = `${item.first_name || ''} ${item.last_name || ''}`.trim() || item.username || item.expertise || 'Mentor';
           } else if (type === 'program' || type === 'batch') {
              name = item.name || item.batch_name || item.program_name;
+          } else if (type === 'college') {
+             name = item.name || item.college_name || item.id;
           }
           if (!name || name === 'Unknown') name = actualId;
           return { id: actualId, name };
@@ -102,6 +104,7 @@ export default function AllocationManagementPage() {
         case 'program': endpoint = '/api/v1/program/'; type = 'program'; break;
         case 'report_manager': endpoint = '/api/v1/users/by-role/MANAGEMENT'; type = 'user'; break;
         case 'finance_manager': endpoint = '/api/v1/users/by-role/FINANCE_MANAGER'; type = 'user'; break;
+                case 'college_coordinator': endpoint = '/api/v1/users/by-role/COLLEGE_COORDINATOR'; type = 'user'; break;
         case 'user': endpoint = '/api/v1/users/by-role/ALL'; type = 'user'; break;
       }
       
@@ -128,6 +131,8 @@ export default function AllocationManagementPage() {
       switch (targetType) {
         case 'PROGRAM': endpoint = '/api/v1/program/'; type = 'program'; break;
         case 'BATCH': endpoint = '/api/v1/batch/'; type = 'batch'; break;
+                case 'BATCH': endpoint = '/api/v1/batch/'; type = 'batch'; break;
+        case 'COLLEGE': endpoint = '/api/v1/student/colleges'; type = 'college'; break;
         case 'USER': endpoint = '/api/v1/employee/'; type = 'employee'; break;
       }
       
@@ -202,7 +207,8 @@ export default function AllocationManagementPage() {
     { id: 'mentor', label: 'Mentor Mapping', icon: Award },
     { id: 'program', label: 'Program Mapping', icon: Briefcase },
     { id: 'report_manager', label: 'Report Manager Mapping', icon: Activity },
-    { id: 'finance_manager', label: 'Finance Manager Mapping', icon: Building },
+        { id: 'finance_manager', label: 'Finance Manager Mapping', icon: Building },
+    { id: 'college_coordinator', label: 'College Coordinator Mapping', icon: Building },
     { id: 'user', label: 'User Mapping', icon: UserCheck }
   ];
 
@@ -362,8 +368,9 @@ export default function AllocationManagementPage() {
                         setTargetId('');
                       }}
                     >
-                      <option value="PROGRAM">PROGRAM</option>
+                                            <option value="PROGRAM">PROGRAM</option>
                       <option value="BATCH">BATCH</option>
+                      <option value="COLLEGE">COLLEGE</option>
                     </select>
                   </div>
                   <div>
