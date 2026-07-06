@@ -40,7 +40,7 @@ export default function AllocationManagementPage() {
     setLoading(true);
     try {
       const sourceType = activeTab.toUpperCase();
-      const res = await apiClient.get(`/api/v1/allocation/?source_type=${sourceType}`);
+      const res = await apiClient.get(`/api/v1/allocation?source_type=${sourceType}`);
       const data = res.data as any;
       setAllocations(data.data || []);
     } catch (error) {
@@ -160,7 +160,7 @@ export default function AllocationManagementPage() {
       return;
     }
     try {
-      await apiClient.post('/api/v1/allocation/', {
+      await apiClient.post('/api/v1/allocation', {
         source_type: activeTab.toUpperCase(),
         source_id: sourceId,
         target_type: targetType,

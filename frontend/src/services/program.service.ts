@@ -99,6 +99,18 @@ export const programService = {
     }
   },
 
+  async deleteProgram(id: string): Promise<boolean> {
+    try {
+      await programApi.deleteProgram(id);
+      apiCache.invalidate('programs:all');
+      apiCache.invalidate(`programs:${id}`);
+      return true;
+    } catch (e) {
+      console.error("Error deleting program:", e);
+      return false;
+    }
+  },
+
   async bulkUpdateStatus(ids: string[], status: string): Promise<boolean> {
     return true;
   },

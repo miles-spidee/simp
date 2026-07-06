@@ -263,35 +263,20 @@ async def _student_payload(profile: StudentProfile, user: User, organization: Op
     mentor_alloc_res = await db.execute(mentor_alloc_stmt)
     mentor_user = mentor_alloc_res.scalars().first()
 
-    # 2. Fetch Program from Allocation
-    alloc_program_name = ""
-    prog_alloc_stmt = select(Program).join(
-        Allocation, Allocation.target_id == Program.id
-    ).where(
-        Allocation.source_type == "STUDENT",
-        Allocation.source_id == profile.id,
-        Allocation.target_type == "PROGRAM",
-        Allocation.deleted_at.is_(None)
-    ).order_by(Allocation.created_at.desc())
-    prog_alloc_res = await db.execute(prog_alloc_stmt)
-    alloc_prog = prog_alloc_res.scalars().first()
-    if alloc_prog:
-        alloc_program_name = alloc_prog.name
-        
-    # 3. Fetch Batch from Allocation
+    # 2 & 3. Fetch Batch and Program
     alloc_batch_name = ""
-    batch_alloc_stmt = select(Batch).join(
-        Allocation, Allocation.target_id == Batch.id
-    ).where(
-        Allocation.source_type == "STUDENT",
-        Allocation.source_id == profile.id,
-        Allocation.target_type == "BATCH",
-        Allocation.deleted_at.is_(None)
-    ).order_by(Allocation.created_at.desc())
-    batch_alloc_res = await db.execute(batch_alloc_stmt)
-    alloc_batch = batch_alloc_res.scalars().first()
-    if alloc_batch:
-        alloc_batch_name = alloc_batch.name
+    alloc_program_name = ""
+    if profile.batch_id:
+        batch_stmt = select(Batch).where(Batch.id == profile.batch_id)
+        batch_res = await db.execute(batch_stmt)
+        alloc_batch = batch_res.scalars().first()
+        if alloc_batch:
+            alloc_batch_name = alloc_batch.name
+            prog_stmt = select(Program).where(Program.id == alloc_batch.program_id)
+            prog_res = await db.execute(prog_stmt)
+            alloc_prog = prog_res.scalars().first()
+            if alloc_prog:
+                alloc_program_name = alloc_prog.name
 
     if not is_list:
 

@@ -85,3 +85,15 @@ async def update_program(
         "certificate_available": False,
         "status": "Active",
     }
+
+@router.delete("/{program_id}", status_code=204)
+async def delete_program(
+    program_id: UUID,
+    current_user: User = Depends(require_permission("programs", "delete")),
+    db: AsyncSession = Depends(get_db),
+):
+    service = ProgramService(db)
+    program = await service.remove(id=program_id)
+    if not program:
+        raise HTTPException(status_code=404, detail="Program not found")
+    return None

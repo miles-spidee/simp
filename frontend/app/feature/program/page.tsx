@@ -616,6 +616,17 @@ export default function ProgramManagementPage() {
     showToast('Programs roster CSV downloaded successfully');
   };
 
+  const handleDeleteProgram = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this program?")) return;
+    const success = await programService.deleteProgram(id);
+    if (success) {
+      setPrograms(programs.filter(p => p.id !== id));
+      showToast("Program deleted successfully");
+    } else {
+      showToast("Failed to delete program", "error");
+    }
+  };
+
   return (
     <div className={`space-y-6 select-none ${
       (activeActionModal?.type === 'edit' || activeActionModal?.type === 'onboard') 
@@ -1016,6 +1027,11 @@ export default function ProgramManagementPage() {
                     <PermissionGuard required="program.update">
                       <button onClick={() => openEditModal(prog)} className="p-1 hover:bg-slate-100 rounded text-text-secondary hover:text-text-primary cursor-pointer" title="Edit Program Details">
                         <Edit className="h-4 w-4" />
+                      </button>
+                    </PermissionGuard>
+                    <PermissionGuard required="program.delete">
+                      <button onClick={() => handleDeleteProgram(prog.id)} className="p-1 hover:bg-slate-100 rounded text-red-400 hover:text-red-600 cursor-pointer" title="Delete Program">
+                        <Trash className="h-4 w-4" />
                       </button>
                     </PermissionGuard>
                   </div>
