@@ -38,7 +38,8 @@ export default function AssessmentManagementPage() {
   const [asmAttempts, setAsmAttempts] = useState(1);
   const [asmPassingMarks, setAsmPassingMarks] = useState(70);
   const [asmNegativeMarking, setAsmNegativeMarking] = useState(false);
-  const [targetBatchId, setTargetBatchId] = useState('batch-ai-2026');
+  const [targetBatchId, setTargetBatchId] = useState('');
+  const [availableBatches, setAvailableBatches] = useState<{id: string, name: string}[]>([]);
 
   // MCQ Builder
   const [questionCount, setQuestionCount] = useState<number>(10);
@@ -61,6 +62,31 @@ export default function AssessmentManagementPage() {
   };
 
   useEffect(() => {
+    const fetchBatches = async () => {
+      try {
+        const { apiClient } = await import('@/src/api/api.client');
+        const res = await apiClient.get('/api/v1/task/grouped');
+        if (res.data?.data) {
+          const list = res.data.data.map((b: any) => ({
+            id: b.id,
+            name: b.name
+          }));
+          setAvailableBatches(list);
+          if (list.length > 0) {
+            setTargetBatchId(list[0].id);
+          } else {
+            setTargetBatchId('batch-ai-2026');
+          }
+        }
+      } catch (e) {
+        console.error("Failed to fetch batches", e);
+        setTargetBatchId('batch-ai-2026');
+      }
+    };
+    fetchBatches();
+  }, []);
+
+  useEffect(() => {
     const newQuestions = Array.from({ length: questionCount }).map((_, i) => {
       const existing = questions[i];
       return existing || {
@@ -73,7 +99,7 @@ export default function AssessmentManagementPage() {
     setQuestions(newQuestions);
   }, [questionCount]);
 
-  const handleCreateAssessment = (e: React.FormEvent) => {
+  const handleCreateAssessment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!asmTitle) {
       triggerToast("Please enter an assessment title.");
@@ -99,23 +125,15 @@ export default function AssessmentManagementPage() {
       questions: questions
     };
 
-    fetch('http://localhost:8000/api/v1/assessment/quizzes', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newAsm)
-    }).then(res => {
-      if(res.ok) {
-        triggerToast(`Published assessment "${asmTitle}" for batch ${targetBatchId}!`);
-        setAsmTitle('');
-      } else {
-        triggerToast(`Error publishing assessment`);
-      }
-    }).catch(err => {
-      triggerToast(`Network error`);
-    });
-
-    triggerToast(`Published assessment "${asmTitle}" for batch ${targetBatchId}!`);
-    setAsmTitle('');
+    try {
+      const { apiClient } = await import('@/src/api/api.client');
+      await apiClient.post('/api/v1/assessment/quizzes', newAsm);
+      triggerToast(`Published assessment "${asmTitle}" for batch!`);
+      setAsmTitle('');
+    } catch (err) {
+      console.error("Failed to publish assessment", err);
+      triggerToast(`Error publishing assessment`);
+    }
   };
 
   const updateQuestionText = (index: number, val: string) => {
@@ -163,7 +181,12 @@ export default function AssessmentManagementPage() {
                 onChange={(e) => setTargetBatchId(e.target.value)}
                 className="w-full bg-slate-50 border border-border rounded-xl px-4 py-2.5 text-xs text-text-primary outline-none cursor-pointer font-bold"
               >
-                <option value="batch-ai-2026">AI Batch 2026</option>
+                {availableBatches.map((b) => (
+                  <option key={b.id} value={b.id}>{b.name}</option>
+                ))}
+                {availableBatches.length === 0 && (
+                  <option value="batch-ai-2026">AI Batch 2026</option>
+                )}
               </select>
             </div>
             <div>

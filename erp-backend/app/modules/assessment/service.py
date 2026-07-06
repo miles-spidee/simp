@@ -36,17 +36,34 @@ class QuizAssessmentService(BaseService):
             from uuid import UUID
             from app.models.authentication.user import User as DBUser
             from app.models.profiles.student_profile import StudentProfile
+            from app.models.academic.batch import Batch
             from app.services.notification_service import notification_service
             
-            res_users = await self.db.execute(select(DBUser).join(StudentProfile, StudentProfile.user_id == DBUser.id).where(StudentProfile.batch_id == UUID(str(db_data["batch_id"]))))
-            students = res_users.scalars().all()
-            
-            for s in students:
-                await notification_service.send_assessment_assigned(
-                    username=s.username.title(),
-                    email=s.email,
-                    assessment_title=db_data["title"]
+            batch_id_str = str(db_data["batch_id"])
+            batch_uuid = None
+            try:
+                batch_uuid = UUID(batch_id_str)
+            except ValueError:
+                batch_stmt = select(Batch.id).where(
+                    (Batch.code == batch_id_str) | (Batch.name == batch_id_str)
                 )
+                batch_res = await self.db.execute(batch_stmt)
+                batch_uuid = batch_res.scalar_one_or_none()
+                
+            if batch_uuid:
+                res_users = await self.db.execute(
+                    select(DBUser)
+                    .join(StudentProfile, StudentProfile.user_id == DBUser.id)
+                    .where(StudentProfile.batch_id == batch_uuid)
+                )
+                students = res_users.scalars().all()
+                
+                for s in students:
+                    await notification_service.send_assessment_assigned(
+                        username=s.username.title(),
+                        email=s.email,
+                        assessment_title=db_data["title"]
+                    )
         except Exception as e:
             print("Error sending assessment assigned notifications:", e)
 

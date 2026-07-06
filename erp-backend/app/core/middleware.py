@@ -79,7 +79,7 @@ class RLSMiddleware(BaseHTTPMiddleware):
             
             # 3. Get Allocations
             alloc_stmt = select(Allocation.target_type, Allocation.target_id).where(
-                and_(Allocation.source_type == 'USER', Allocation.source_id == user_id, Allocation.status == 'ACTIVE')
+                and_(Allocation.source_id == user_id, Allocation.status == 'ACTIVE')
             )
             alloc_res = await db.execute(alloc_stmt)
             allocations = alloc_res.all()

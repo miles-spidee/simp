@@ -87,6 +87,7 @@ MODULE_MAPPING = {
     "attendance": "ATTENDANCE_MANAGEMENT",
     "tasks": "TASK_MANAGEMENT",
     "assessments": "ASSESSMENT_MANAGEMENT",
+    "assessment": "ASSESSMENT_MANAGEMENT",
     "submissions": "SUBMISSION",
     "performance": "PERFORMANCE",
     "payments": "PAYMENT_MANAGEMENT",

@@ -63,7 +63,11 @@ async def create_submission(data: dict, db: AsyncSession = Depends(get_db)):
         if task_id:
             t = await db.scalar(select(Task).where(Task.id == uuid.UUID(task_id)))
             if t:
-                t.submission_url = data.get("repoLink", "")
+                repo = data.get("repoLink", "")
+                deploy = data.get("deployUrl", "")
+                video = data.get("videoUrl", "")
+                screenshot = data.get("screenshot", "")
+                t.submission_url = f"{repo}|{deploy}|{video}|{screenshot}"
                 t.status = "SUBMITTED"
                 await db.commit()
                 return success_response(data=data)

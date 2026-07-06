@@ -39,6 +39,11 @@ apiClient.interceptors.response.use(
       localStorage.removeItem(ACCESS_TOKEN_KEY);
       localStorage.removeItem(REFRESH_TOKEN_KEY);
       localStorage.removeItem(AUTH_USER_KEY);
+      
+      const path = window.location.pathname;
+      if (path !== '/login' && path !== '/') {
+        window.location.href = '/login';
+      }
     }
 
     return Promise.reject(error);
