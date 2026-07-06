@@ -64,7 +64,7 @@ export default function MyAttendancePage() {
   useEffect(() => {
     const fetchAttendanceLogs = async () => {
       try {
-        const { apiClient } = await import('../../../src/api/api.client');
+        const { apiClient } = await import('@/src/api/api.client');
         const res = await apiClient.get('/api/v1/attendance');
         const logs = res.data?.data || [];
         setAttendanceLogs(logs);

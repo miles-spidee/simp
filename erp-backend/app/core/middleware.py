@@ -26,12 +26,15 @@ class RLSMiddleware(BaseHTTPMiddleware):
             from app.core.config import settings
             if settings.APP_ENV == "development":
                 # Get admin UUID for dev
-                async with AsyncSessionLocal() as db:
-                    from app.models.authentication.user import User
-                    res = await db.execute(select(User.id).where(User.email == "admin@pinesphere.example.com"))
-                    uid = res.scalar_one_or_none()
-                    if uid:
-                        user_id_str = str(uid)
+                try:
+                    async with AsyncSessionLocal() as db:
+                        from app.models.authentication.user import User
+                        res = await db.execute(select(User.id).where(User.email == "admin@pinesphere.example.com"))
+                        uid = res.scalar_one_or_none()
+                        if uid:
+                            user_id_str = str(uid)
+                except Exception as e:
+                    print("RLS Middleware fallback database connection failed:", e)
         
         if user_id_str:
             try:

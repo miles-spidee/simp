@@ -31,6 +31,9 @@ class ApplicationCreate(BaseModel):
 class ApplicationReviewRequest(BaseModel):
     application_status: str
     remarks: str | None = None
+    teams_meet_link: str | None = None
+    interview_date: str | None = None
+    interview_time: str | None = None
     technical_score: int | None = None
     communication_score: int | None = None
     academic_score: int | None = None

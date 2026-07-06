@@ -136,7 +136,7 @@ async def get_grouped_tasks(
                 
             batch_groups[bid]["tasks"][t.title]["submissions"].append({
                 "studentId": str(t.assignment.student_profile.id),
-                "studentName": t.assignment.student_profile.user.name or "Student",
+                "studentName": t.assignment.student_profile.user.username or "Student",
                 "status": st,
                 "score": score,
                 "submittedAt": t.updated_at.isoformat() if t.updated_at else "",

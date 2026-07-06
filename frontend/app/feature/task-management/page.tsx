@@ -415,7 +415,7 @@ export default function TaskManagementPage() {
 
                       <button
                         type="submit"
-                        className="w-full py-2 bg-blue-650 hover:bg-blue-750 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow transition-colors cursor-pointer"
+                        className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow transition-colors cursor-pointer"
                       >
                         Publish Scores & Review
                       </button>

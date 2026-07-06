@@ -30,8 +30,8 @@ const INITIAL_STUDENTS: StudentRow[] = [];
 
 export default function AttendanceManagementPage() {
   const { user } = useAuth();
-  const [selectedBatchId, setSelectedBatchId] = useState('batch-ai-2026');
-  const [selectedDate, setSelectedDate] = useState('2026-06-28');
+  const [selectedBatchId, setSelectedBatchId] = useState('');
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
   // Attendance Marking Grid State
   const [students, setStudents] = useState<StudentRow[]>(INITIAL_STUDENTS);

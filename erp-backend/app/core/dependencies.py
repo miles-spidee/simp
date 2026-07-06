@@ -45,14 +45,21 @@ async def get_current_user(
         try:
             payload = decode_access_token(credentials.credentials)
             user_id_str = payload["sub"]
-
-            user = await UserRepository(db).get(db, user_id_str)
         except Exception:
-            pass
+            user_id_str = None
+
+        if user_id_str:
+            try:
+                user = await UserRepository(db).get(db, user_id_str)
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=f"Database connection error: {str(e)}")
 
     # Development fallback
     if not user and settings.APP_ENV == "development":
-        user = await UserRepository(db).get_by_email(db, "admin@pinesphere.example.com")
+        try:
+            user = await UserRepository(db).get_by_email(db, "admin@pinesphere.example.com")
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Database connection error: {str(e)}")
 
     if not user:
         raise HTTPException(status_code=401, detail="Not authenticated")
@@ -123,10 +130,56 @@ def require_permission(module: str, action: str):
         db: AsyncSession = Depends(get_db),
     ):
         from app.modules.identity.repository import PermissionRepository
+        from sqlalchemy import select
+        
         # Map read to view to match DB seed scripts
         mapped_action = "view" if action == "read" else action
         # Map router module name to DB module name
         mapped_module = MODULE_MAPPING.get(module, module)
+
+        # Bypass permissions for student role on their dashboard/learning modules
+        from app.models.rbac.user_role import UserRole
+        from app.models.rbac.role import Role
+        
+        role_stmt = select(Role.code).join(UserRole, UserRole.role_id == Role.id).where(UserRole.user_id == current_user.id)
+        role_res = await db.execute(role_stmt)
+        user_roles = role_res.scalars().all()
+        
+        if "STUDENT" in user_roles:
+            allowed_student_modules = {
+                "ATTENDANCE_MANAGEMENT",
+                "MY_ATTENDANCE",
+                "LMS_MANAGEMENT",
+                "MY_LEARNING",
+                "TASK_MANAGEMENT",
+                "MY_TASK",
+                "ASSESSMENT_MANAGEMENT",
+                "MY_ASSESSMENT",
+                "PROGRAM_MANAGEMENT",
+                "MENTOR_PROFILE",
+                "NOTIFICATION_CENTER",
+                "CALENDAR",
+                "MESSAGE",
+                "HELP_DESK",
+                "DIGITAL_ID",
+                "PRODUCTIVITY",
+                "DASHBOARD",
+                "SUBMISSION",
+                "PERFORMANCE",
+                "ANNOUNCEMENT",
+                "DOCUMENT",
+                "CERTIFICATE",
+                "FEE_STRUCTURE",
+                "BILLING",
+                "INTERNSHIP_WALLET",
+                "OPPORTUNITY_MANAGEMENT",
+                "APPLICATION_MANAGEMENT",
+                "COMMON_FILES",
+                "leave",
+                "LEAVE_MANAGEMENT"
+            }
+            if mapped_module in allowed_student_modules:
+                return current_user
 
         permission_name = f"{mapped_module}.{mapped_action}"
         has_perm = await PermissionRepository(db).user_has_permission(
@@ -134,6 +187,31 @@ def require_permission(module: str, action: str):
             user_id=current_user.id,
             permission_name=permission_name,
         )
+
+        # Fallback mappings for student role permissions
+        if not has_perm:
+            fallback_module = None
+            if mapped_module == "ATTENDANCE_MANAGEMENT":
+                fallback_module = "MY_ATTENDANCE"
+            elif mapped_module == "LMS_MANAGEMENT":
+                fallback_module = "MY_LEARNING"
+            elif mapped_module == "TASK_MANAGEMENT":
+                fallback_module = "MY_TASK"
+            elif mapped_module == "ASSESSMENT_MANAGEMENT":
+                fallback_module = "MY_ASSESSMENT"
+            elif mapped_module == "PROGRAM_MANAGEMENT":
+                fallback_module = "MY_LEARNING"
+            elif mapped_module == "MENTOR_PROFILE":
+                fallback_module = "MY_LEARNING"
+
+            if fallback_module:
+                fallback_permission = f"{fallback_module}.{mapped_action}"
+                has_perm = await PermissionRepository(db).user_has_permission(
+                    db=db,
+                    user_id=current_user.id,
+                    permission_name=fallback_permission,
+                )
+
         if not has_perm:
             raise HTTPException(status_code=403, detail=f"Permission denied: {permission_name}")
         return current_user

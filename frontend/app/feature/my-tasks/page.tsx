@@ -67,7 +67,7 @@ export default function MyTasksPage() {
   useEffect(() => {
     const loadStateAndGrades = async () => {
       try {
-        const { apiClient } = await import('../../../src/api/api.client');
+        const { apiClient } = await import('@/src/api/api.client');
         const res = await apiClient.get('/api/v1/task');
         const tasksFromApi = res.data?.data || [];
         
@@ -117,7 +117,7 @@ export default function MyTasksPage() {
     if (!selected) return;
 
     try {
-      const { apiClient } = await import('../../../src/api/api.client');
+      const { apiClient } = await import('@/src/api/api.client');
       await apiClient.post('/api/v1/submission', {
         taskId: selectedTaskId,
         repoLink: githubUrl,
@@ -381,7 +381,7 @@ export default function MyTasksPage() {
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-                      {selectedTask.requirements.includes('Screenshots') && (
+                      {(selectedTask.requirements.includes('Screenshot') || selectedTask.requirements.includes('Screenshots')) && (
                         <div 
                           onClick={handleSimulateScreenshot}
                           className="border-2 border-dashed border-border hover:border-secondary rounded-2xl p-4 bg-slate-50/50 flex flex-col items-center justify-center text-center cursor-pointer transition-colors"
@@ -414,7 +414,7 @@ export default function MyTasksPage() {
 
                     <button
                       type="submit"
-                      className="w-full flex items-center justify-center gap-2 py-3 bg-blue-650 hover:bg-blue-750 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-blue-500/10 cursor-pointer transition-colors"
+                      className="w-full flex items-center justify-center gap-2 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-blue-500/10 cursor-pointer transition-colors"
                     >
                       <Send className="h-3.5 w-3.5" />
                       <span>Submit Solution Deliverable</span>
