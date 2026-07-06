@@ -6,7 +6,7 @@ import datetime
 
 router = APIRouter()
 
-@router.get("/")
+@router.get("")
 async def get_attendance_list(db: AsyncSession = Depends(get_db)):
     return success_response(data=[])
 

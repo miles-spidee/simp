@@ -188,7 +188,7 @@ async def verify_card(card_number: str, db: AsyncSession = Depends(get_db)):
     )
 
 
-@router.get("/")
+@router.get("")
 async def list_idcards(db: AsyncSession = Depends(get_db)):
     """List all users who have ID cards (i.e., all active users)."""
     result = await db.execute(

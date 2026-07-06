@@ -16,7 +16,7 @@ router = APIRouter()
 from app.core.dependencies import get_current_user
 from app.models.authentication.user import User
 
-@router.get("/", response_model=APIResponse[List[dict]])
+@router.get("", response_model=APIResponse[List[dict]])
 async def get_task_list(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
@@ -67,7 +67,7 @@ async def get_task_list(
     except Exception as e:
         return success_response(data=[])
 
-@router.post("/", response_model=APIResponse[dict])
+@router.post("", response_model=APIResponse[dict])
 async def create_task(request: Request, db: AsyncSession = Depends(get_db)):
     try:
         body = await request.json()

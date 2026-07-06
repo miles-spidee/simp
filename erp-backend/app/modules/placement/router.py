@@ -43,7 +43,7 @@ class OpportunityCreateSchema(BaseModel):
     tier: str = "MID"  # TOP, MID, SMALL
     requirements: Optional[str] = None
 
-@router.get("/")
+@router.get("")
 async def list_pipeline(db: AsyncSession = Depends(get_db)):
     try:
         # Fetch PlacementApplications joined with details
@@ -142,7 +142,7 @@ async def list_companies(db: AsyncSession = Depends(get_db)):
     except Exception as e:
         return success_response(data=[])
 
-@router.post("/")
+@router.post("")
 async def create_company(payload: CompanyCreate, db: AsyncSession = Depends(get_db)):
     try:
         # Check if company exists

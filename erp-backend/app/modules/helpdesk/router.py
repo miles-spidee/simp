@@ -102,7 +102,7 @@ def is_hr_category(category: str) -> bool:
 
 # ---------- routes ----------
 
-@router.get("/")
+@router.get("")
 async def list_tickets(
     user_id: str = Query(None),
     current_user: User = Depends(get_current_user),
@@ -271,7 +271,7 @@ async def get_ticket(
     return success_response(data=data)
 
 
-@router.post("/")
+@router.post("")
 async def create_ticket(
     request: Request,
     current_user: User = Depends(get_current_user),

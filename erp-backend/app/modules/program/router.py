@@ -13,7 +13,7 @@ from app.modules.program.schemas import ProgramCreate, ProgramUpdate
 
 router = APIRouter()
 
-@router.get("/")
+@router.get("")
 async def get_programs(
     current_user: User = Depends(require_permission("programs", "read")),
     db: AsyncSession = Depends(get_db)
@@ -35,7 +35,7 @@ async def get_programs(
         for p in programs
     ]
 
-@router.post("/", status_code=201)
+@router.post("", status_code=201)
 async def create_program(
     payload: ProgramCreate,
     current_user: User = Depends(require_permission("programs", "create")),

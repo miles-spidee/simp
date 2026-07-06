@@ -37,11 +37,11 @@ NOTIFICATIONS = [
     }
 ]
 
-@router.get("/", response_model=APIResponse[List[dict]])
+@router.get("", response_model=APIResponse[List[dict]])
 async def list_notifications():
     return success_response(data=NOTIFICATIONS)
 
-@router.post("/", response_model=APIResponse[dict])
+@router.post("", response_model=APIResponse[dict])
 async def create_notification(request: Request):
     try:
         body = await request.json()

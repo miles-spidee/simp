@@ -10,7 +10,7 @@ from typing import Optional
 
 router = APIRouter()
 
-@router.get("/")
+@router.get("")
 async def get_coordinators(db: AsyncSession = Depends(get_db)):
     try:
         stmt = select(OrganizationCoordinator)
@@ -35,7 +35,7 @@ async def get_coordinators(db: AsyncSession = Depends(get_db)):
     except Exception as e:
         return success_response(data=[])
 
-@router.post("/")
+@router.post("")
 async def create_coordinator(data: dict, db: AsyncSession = Depends(get_db)):
     try:
         org_id_str = data.get("collegeId")

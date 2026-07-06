@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request
 
 router = APIRouter()
 
-@router.get("/")
+@router.get("")
 async def list_feedback():
     return {"success": True, "message": "feedback listing", "data": []}
 
@@ -10,7 +10,7 @@ async def list_feedback():
 async def get_all_feedback(path: str):
     return {"success": True, "message": f"feedback get {path}", "data": []}
 
-@router.post("/")
+@router.post("")
 async def create_feedback_root():
     return {"success": True, "message": "feedback created", "data": {}}
 

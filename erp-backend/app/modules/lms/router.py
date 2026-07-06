@@ -381,6 +381,6 @@ async def delete_course(course_id: str, db: AsyncSession = Depends(get_db)):
 
 
 # Keep backward-compatible root endpoint
-@router.get("/")
+@router.get("")
 async def get_lms_list(db: AsyncSession = Depends(get_db)):
     return await get_courses(db=db)

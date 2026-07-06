@@ -19,7 +19,7 @@ from app.modules.opportunity.schemas import (
 router = APIRouter()
 
 
-@router.get("/")
+@router.get("")
 async def get_opportunities(
     db: AsyncSession = Depends(get_db),
 ):
@@ -43,7 +43,7 @@ async def get_opportunity(
     return OpportunityResponse.model_validate(opportunity)
 
 
-@router.post("/")
+@router.post("")
 async def create_opportunity(
     data: OpportunityCreate,
     db: AsyncSession = Depends(get_db),

@@ -9,7 +9,7 @@ import os
 
 router = APIRouter()
 
-@router.get("/")
+@router.get("")
 async def get_dashboard_list(db: AsyncSession = Depends(get_db)):
     # Calculate real stats
     try:

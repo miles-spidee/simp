@@ -40,7 +40,7 @@ def _serialize_bookmark(b: Bookmark) -> dict:
 
 # ---------- workspace ----------
 
-@router.get("/")
+@router.get("")
 async def get_workspace(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),

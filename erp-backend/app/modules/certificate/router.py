@@ -10,14 +10,14 @@ from .schemas import CertificateCreate, CertificateUpdateStatus, CertificateResp
 
 router = APIRouter()
 
-@router.get("/")
+@router.get("")
 async def list_certificates(db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(Certificate).order_by(desc(Certificate.created_at)))
     certificates = result.scalars().all()
     serialized = [CertificateResponse.model_validate(c).model_dump(by_alias=True, mode='json') for c in certificates]
     return {"data": serialized}
 
-@router.post("/")
+@router.post("")
 async def create_certificate(cert: CertificateCreate, db: AsyncSession = Depends(get_db)):
     from datetime import datetime
     import random

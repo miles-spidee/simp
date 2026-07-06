@@ -11,7 +11,7 @@ from .schemas import VerificationRequestResponse, VerificationResultSchema
 
 router = APIRouter()
 
-@router.get("/")
+@router.get("")
 async def list_verification(db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(VerificationRequest).order_by(desc(VerificationRequest.created_at)))
     requests = result.scalars().all()

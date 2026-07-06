@@ -109,7 +109,7 @@ async def compile_report_task(report_id: uuid.UUID, db_session_maker):
             except Exception:
                 pass
 
-@router.get("/")
+@router.get("")
 async def list_generated_reports(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
