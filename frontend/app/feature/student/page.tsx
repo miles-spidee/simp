@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { studentService } from '@/src/services/student.service';
 import { userService } from '@/src/services/user.service';
+import { batchService } from '@/src/services/batch.service';
 import { TndceCollege } from '@/src/types/api/student.types';
 import { Student, StudentDocument, StudentTimelineEvent, StudentBatch } from '@/src/types/students.types';
 import { useAuth } from '@/src/context/AuthContext';
@@ -32,6 +33,9 @@ export default function StudentLifecycleManagementPage() {
   
   // Available mentors
   const [availableMentors, setAvailableMentors] = useState<any[]>([]);
+  
+  // Available batches
+  const [availableBatches, setAvailableBatches] = useState<any[]>([]);
   
   // Drawer states
   const [activeProfile, setActiveProfile] = useState<Student | null>(null);
@@ -166,6 +170,16 @@ export default function StudentLifecycleManagementPage() {
       }
     };
     fetchMentors();
+
+    const fetchBatches = async () => {
+      try {
+        const data = await batchService.getBatches();
+        setAvailableBatches(data);
+      } catch (e) {
+        console.error('Failed to load batches', e);
+      }
+    };
+    fetchBatches();
   }, []);
 
   // Close dropdown when clicking outside
@@ -2666,22 +2680,41 @@ export default function StudentLifecycleManagementPage() {
                 <div className="space-y-3">
                   <div className="space-y-1">
                     <label className="text-[10px] font-bold text-text-secondary uppercase">Target Batch Name *</label>
-                    <input 
-                      type="text" 
+                    <select 
                       required
                       value={batchForm.name}
-                      onChange={e => setBatchForm({ ...batchForm, name: e.target.value })}
-                      placeholder="e.g. Gamma Cohort 2026"
+                      onChange={e => {
+                        const bId = e.target.value;
+                        const selectedBatch = availableBatches.find(b => b.batch_id === bId || b.id === bId);
+                        if (selectedBatch) {
+                           setBatchForm({
+                             ...batchForm,
+                             name: selectedBatch.batch_id || selectedBatch.id,
+                             program: selectedBatch.programName || selectedBatch.program_name || selectedBatch.program_id || 'Program ID',
+                             startDate: selectedBatch.startDate || selectedBatch.start_date ? (selectedBatch.startDate || selectedBatch.start_date).split('T')[0] : '',
+                             endDate: selectedBatch.endDate || selectedBatch.end_date ? (selectedBatch.endDate || selectedBatch.end_date).split('T')[0] : '',
+                           });
+                        } else {
+                           setBatchForm({ ...batchForm, name: bId, program: '', startDate: '', endDate: '' });
+                        }
+                      }}
                       className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary"
-                    />
+                    >
+                      <option value="">Select a batch...</option>
+                      {availableBatches.map(b => (
+                        <option key={b.batch_id || b.id} value={b.batch_id || b.id}>
+                          {b.batch_name || b.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div className="space-y-1">
                     <label className="text-[10px] font-bold text-text-secondary uppercase">Mapped Program</label>
                     <input 
                       type="text" 
+                      readOnly
                       value={batchForm.program}
-                      onChange={e => setBatchForm({ ...batchForm, program: e.target.value })}
-                      className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary"
+                      className="w-full bg-slate-100 border border-border rounded p-2 text-xs font-semibold text-slate-500 cursor-not-allowed"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
@@ -2689,18 +2722,18 @@ export default function StudentLifecycleManagementPage() {
                       <label className="text-[10px] font-bold text-text-secondary uppercase">Start Date</label>
                       <input 
                         type="date" 
+                        readOnly
                         value={batchForm.startDate}
-                        onChange={e => setBatchForm({ ...batchForm, startDate: e.target.value })}
-                        className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary"
+                        className="w-full bg-slate-100 border border-border rounded p-2 text-xs font-semibold text-slate-500 cursor-not-allowed"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold text-text-secondary uppercase">End Date</label>
                       <input 
                         type="date" 
+                        readOnly
                         value={batchForm.endDate}
-                        onChange={e => setBatchForm({ ...batchForm, endDate: e.target.value })}
-                        className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary"
+                        className="w-full bg-slate-100 border border-border rounded p-2 text-xs font-semibold text-slate-500 cursor-not-allowed"
                       />
                     </div>
                   </div>
@@ -2716,15 +2749,16 @@ export default function StudentLifecycleManagementPage() {
                       value={mentorForm.mentorId}
                       onChange={e => {
                         const mId = e.target.value;
-                        const selectedMentor = availableMentors.find(m => m.id === mId);
-                        const mName = selectedMentor ? selectedMentor.name : 'Unknown Mentor';
+                        const selectedMentor = availableMentors.find(m => m.employee_id === mId || m.id === mId);
+                        const mName = selectedMentor ? (selectedMentor.name || `${selectedMentor.first_name} ${selectedMentor.last_name}`) : 'Unknown Mentor';
                         setMentorForm({ mentorId: mId, mentorName: mName });
                       }}
                       className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     >
+                      <option value="">Select a mentor...</option>
                       {availableMentors.map(m => (
-                        <option key={m.id} value={m.id}>
-                          {m.name} {m.designation ? `(${m.designation})` : ''}
+                        <option key={m.employee_id || m.id} value={m.employee_id || m.id}>
+                          {m.name || `${m.first_name} ${m.last_name}`} {m.designation ? `(${m.designation})` : ''}
                         </option>
                       ))}
                     </select>

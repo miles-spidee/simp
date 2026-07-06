@@ -246,24 +246,54 @@ async def _student_payload(profile: StudentProfile, user: User, organization: Op
     quiz_score = 82.5
     documents_list = []
 
-    # 1. Fetch mentor assignment
-    assign_stmt = select(MentorAssignment).where(MentorAssignment.student_profile_id == profile.id)
-    assign_res = await db.execute(assign_stmt)
-    assignment = assign_res.scalars().first()
-    if assignment:
-        mentor_stmt = select(User).join(MentorProfile, MentorProfile.user_id == User.id).where(MentorProfile.id == assignment.mentor_profile_id)
-        mentor_res = await db.execute(mentor_stmt)
-        mentor_user = mentor_res.scalars().first()
+    from app.models.core.allocation import Allocation
+    from app.models.profiles.employee_profile import EmployeeProfile
+    from app.models.academic.program import Program
+    from app.models.academic.batch import Batch
+
+    # 1. Fetch Mentor from MentorAssignment
+    mentor_user = None
+    mentor_alloc_stmt = select(User).join(
+        MentorProfile, MentorProfile.user_id == User.id
+    ).join(
+        MentorAssignment, MentorAssignment.mentor_profile_id == MentorProfile.id
+    ).where(
+        MentorAssignment.student_profile_id == profile.id
+    ).order_by(MentorAssignment.created_at.desc())
+    mentor_alloc_res = await db.execute(mentor_alloc_stmt)
+    mentor_user = mentor_alloc_res.scalars().first()
+
+    # 2. Fetch Program from Allocation
+    alloc_program_name = ""
+    prog_alloc_stmt = select(Program).join(
+        Allocation, Allocation.target_id == Program.id
+    ).where(
+        Allocation.source_type == "STUDENT",
+        Allocation.source_id == profile.id,
+        Allocation.target_type == "PROGRAM",
+        Allocation.deleted_at.is_(None)
+    ).order_by(Allocation.created_at.desc())
+    prog_alloc_res = await db.execute(prog_alloc_stmt)
+    alloc_prog = prog_alloc_res.scalars().first()
+    if alloc_prog:
+        alloc_program_name = alloc_prog.name
+        
+    # 3. Fetch Batch from Allocation
+    alloc_batch_name = ""
+    batch_alloc_stmt = select(Batch).join(
+        Allocation, Allocation.target_id == Batch.id
+    ).where(
+        Allocation.source_type == "STUDENT",
+        Allocation.source_id == profile.id,
+        Allocation.target_type == "BATCH",
+        Allocation.deleted_at.is_(None)
+    ).order_by(Allocation.created_at.desc())
+    batch_alloc_res = await db.execute(batch_alloc_stmt)
+    alloc_batch = batch_alloc_res.scalars().first()
+    if alloc_batch:
+        alloc_batch_name = alloc_batch.name
 
     if not is_list:
-
-        # 2. Fetch program
-        if department:
-            prog_stmt = select(Program).where(Program.department_id == department.id)
-            prog_res = await db.execute(prog_stmt)
-            prog = prog_res.scalars().first()
-            if prog:
-                program_name = prog.name
 
         # 3. Fetch attendance
         att_stmt = select(Attendance).where(Attendance.student_profile_id == profile.id)
@@ -328,7 +358,7 @@ async def _student_payload(profile: StudentProfile, user: User, organization: Op
     cgpa = skills_dict.get("cgpa", 8.0)
     grad_year = skills_dict.get("graduation_year", 2024)
     intern_type = skills_dict.get("internship_type", "Free Internship")
-    mapped_prog = skills_dict.get("program", program_name or "Summer Internship")
+    mapped_prog = skills_dict.get("program", alloc_program_name or "Summer Internship")
 
     # Generate timeline
     timeline_events = [
@@ -338,6 +368,13 @@ async def _student_payload(profile: StudentProfile, user: User, organization: Op
         timeline_events.append({"date": att.date.isoformat(), "title": "Attendance Marked", "description": f"Status: {att.status}", "type": "assessment"})
     for q in quizzes[:3]:
         timeline_events.append({"date": q.created_at.date().isoformat() if q.created_at else "", "title": "Assessment Completed", "description": f"Score: {q.score}%", "type": "assessment"})
+
+    mentor_user_id = str(mentor_user.id) if mentor_user else ""
+    mentor_user_name = mentor_user.username if mentor_user else "Unassigned"
+    
+    # Fallback to direct batch object if allocation is missing
+    final_batch_name = alloc_batch_name or (batch.name if batch else "Unassigned")
+    final_batch_id = str(profile.batch_id) if profile.batch_id else ""
 
     return {
         "student_id": str(profile.id),
@@ -376,9 +413,9 @@ async def _student_payload(profile: StudentProfile, user: User, organization: Op
         "internship_info": {
             "program": mapped_prog,
             "internshipType": intern_type,
-            "batchName": batch.name if batch else "Unassigned",
-            "mentorId": str(mentor_user.id) if mentor_user else "",
-            "mentorName": mentor_user.username if mentor_user else "Unassigned",
+            "batchName": final_batch_name,
+            "mentorId": mentor_user_id,
+            "mentorName": mentor_user_name,
             "joiningDate": profile.created_at.date().isoformat() if profile.created_at else "",
             "expectedCompletion": (profile.created_at.date() + timedelta(days=180)).isoformat() if profile.created_at else ""
         },
@@ -390,8 +427,8 @@ async def _student_payload(profile: StudentProfile, user: User, organization: Op
             "assessmentAccess": True
         },
         "batch": {
-            "id": str(profile.batch_id) if profile.batch_id else "",
-            "name": batch.name if batch else "Unassigned",
+            "id": final_batch_id,
+            "name": final_batch_name,
             "startDate": batch.start_date.isoformat() if batch else "",
             "status": "Active"
         },
@@ -664,10 +701,29 @@ async def create_student(data: StudentCreate, db: AsyncSession = Depends(get_db)
     # Handle optional initial mentor assignment
     if data.mentor_id:
         try:
-            mentor_uuid = uuid.UUID(data.mentor_id)
-            mentor_stmt = select(MentorProfile).where((MentorProfile.user_id == mentor_uuid) | (MentorProfile.id == mentor_uuid))
+            mentor_uuid = uuid.UUID(str(data.mentor_id))
+            mentor_stmt = select(MentorProfile).where(
+                (MentorProfile.user_id == mentor_uuid) | 
+                (MentorProfile.id == mentor_uuid) | 
+                (MentorProfile.employee_profile_id == mentor_uuid)
+            )
             mentor_res = await db.execute(mentor_stmt)
             mentor_prof = mentor_res.scalars().first()
+            if not mentor_prof:
+                from app.models.profiles.employee_profile import EmployeeProfile
+                emp_res = await db.execute(select(EmployeeProfile).where(EmployeeProfile.id == mentor_uuid))
+                emp = emp_res.scalars().first()
+                if emp:
+                    mentor_prof = MentorProfile(
+                        user_id=emp.user_id,
+                        employee_profile_id=emp.id,
+                        expertise="General",
+                        max_capacity=10,
+                        is_available=True
+                    )
+                    db.add(mentor_prof)
+                    await db.flush()
+
             if mentor_prof:
                 assignment = MentorAssignment(
                     student_profile_id=new_student.id,
@@ -677,7 +733,7 @@ async def create_student(data: StudentCreate, db: AsyncSession = Depends(get_db)
                 )
                 db.add(assignment)
                 await db.commit()
-        except ValueError:
+        except Exception:
             pass
 
     payload = await _student_payload(new_student, new_user, organization, department, batch, db)
@@ -773,23 +829,32 @@ async def update_student(id: UUID, data: StudentUpdate, db: AsyncSession = Depen
         await db.execute(delete(MentorAssignment).where(MentorAssignment.student_profile_id == profile.id))
         if update_dict["mentor_id"]:
             m_id = update_dict["mentor_id"]
-            mentor_stmt = select(MentorProfile).where((MentorProfile.user_id == m_id) | (MentorProfile.id == m_id))
-            mentor_res = await db.execute(mentor_stmt)
-            mentor_prof = mentor_res.scalars().first()
-            if not mentor_prof:
-                try:
-                    m_uuid = UUID(str(m_id))
-                    mentor_prof = MentorProfile(
-                        user_id=m_uuid,
-                        expertise="General",
-                        max_mentees=10,
-                        current_mentees=0,
-                        rating=0.0
-                    )
-                    db.add(mentor_prof)
-                    await db.flush()
-                except:
-                    pass
+            try:
+                m_uuid = UUID(str(m_id))
+                mentor_stmt = select(MentorProfile).where(
+                    (MentorProfile.user_id == m_uuid) | 
+                    (MentorProfile.id == m_uuid) | 
+                    (MentorProfile.employee_profile_id == m_uuid)
+                )
+                mentor_res = await db.execute(mentor_stmt)
+                mentor_prof = mentor_res.scalars().first()
+                if not mentor_prof:
+                    # Look up the employee to get user_id
+                    from app.models.profiles.employee_profile import EmployeeProfile
+                    emp_res = await db.execute(select(EmployeeProfile).where(EmployeeProfile.id == m_uuid))
+                    emp = emp_res.scalars().first()
+                    if emp:
+                        mentor_prof = MentorProfile(
+                            user_id=emp.user_id,
+                            employee_profile_id=emp.id,
+                            expertise="General",
+                            max_capacity=10,
+                            is_available=True
+                        )
+                        db.add(mentor_prof)
+                        await db.flush()
+            except Exception:
+                mentor_prof = None
 
             if mentor_prof:
                 assignment = MentorAssignment(
