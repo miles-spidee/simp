@@ -65,46 +65,7 @@ async def get_task_list(
             })
         return success_response(data=data)
     except Exception as e:
-        # Fallback to returning mock tasks if DB query fails or table is empty
-        mock_tasks = [
-            {
-                "id": "TSK-201",
-                "title": "Portfolio Website",
-                "description": "Design and deploy a professional developer portfolio showcasing your projects and resume details.",
-                "batchId": "batch-ai-2026",
-                "assignedBy": "Super Admin",
-                "assignedDate": "2026-06-01",
-                "dueDate": "2026-06-20",
-                "status": "completed",
-                "isOverdue": False,
-                "isLocked": False
-            },
-            {
-                "id": "TSK-202",
-                "title": "Attendance API Endpoints",
-                "description": "Implement backend REST endpoints for clock-in, clock-out, and monthly logs using Express and MongoDB.",
-                "batchId": "batch-ai-2026",
-                "assignedBy": "Super Admin",
-                "assignedDate": "2026-06-05",
-                "dueDate": "2026-06-25",
-                "status": "pending",
-                "isOverdue": True,
-                "isLocked": False
-            },
-            {
-                "id": "TSK-203",
-                "title": "Employee CRUD Console",
-                "description": "Create an internal dashboard CLI or React UI to register, search, and update employee HR details.",
-                "batchId": "batch-ai-2026",
-                "assignedBy": "Super Admin",
-                "assignedDate": "2026-06-10",
-                "dueDate": "2026-06-30",
-                "status": "pending",
-                "isOverdue": False,
-                "isLocked": False
-            }
-        ]
-        return success_response(data=mock_tasks)
+        return success_response(data=[])
 
 @router.post("/", response_model=APIResponse[dict])
 async def create_task(request: Request, db: AsyncSession = Depends(get_db)):
@@ -171,13 +132,4 @@ async def create_task(request: Request, db: AsyncSession = Depends(get_db)):
         }
         return success_response(data=res_data)
     except Exception as e:
-        try:
-            body = await request.json()
-            # Fallback to returning the body as mock task
-            body["id"] = body.get("id") or f"TSK-{uuid.uuid4().hex[:3]}"
-            body["status"] = "pending"
-            body["isOverdue"] = False
-            body["isLocked"] = False
-            return success_response(data=body)
-        except Exception:
-            return success_response(data={})
+        raise HTTPException(status_code=500, detail=str(e))

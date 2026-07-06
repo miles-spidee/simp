@@ -93,42 +93,6 @@ async def list_pipeline(db: AsyncSession = Depends(get_db)):
                 "lastUpdated": app.updated_at.isoformat()
             })
             
-        # If pipeline is empty, let's return some mock items so the screen is not empty
-        if not data:
-            data = [
-                {
-                    "id": "mock-pipe-1",
-                    "studentId": "mock-student-1",
-                    "studentName": "Harin Nair",
-                    "program": "Data Science & Analytics",
-                    "companyId": "mock-company-1",
-                    "companyName": "Pinesphere Tech",
-                    "role": "Analyst Intern",
-                    "package": "6.5 LPA",
-                    "location": "Chennai",
-                    "stage": "HR Round",
-                    "interviewDate": "2026-07-10T11:00:00",
-                    "offerStatus": "Pending",
-                    "remarks": "Strong technical foundation in pandas/sql",
-                    "lastUpdated": datetime.now().isoformat()
-                },
-                {
-                    "id": "mock-pipe-2",
-                    "studentId": "mock-student-2",
-                    "studentName": "Ananya Sen",
-                    "program": "Full Stack Development",
-                    "companyId": "mock-company-2",
-                    "companyName": "Innovate Labs",
-                    "role": "Associate Engineer",
-                    "package": "12 LPA",
-                    "location": "Bangalore",
-                    "stage": "Joined",
-                    "joiningDate": "2026-08-01",
-                    "offerStatus": "Accepted",
-                    "remarks": "Onboarding completed successfully",
-                    "lastUpdated": datetime.now().isoformat()
-                }
-            ]
         return success_response(data=data)
     except Exception as e:
         import traceback
@@ -246,21 +210,8 @@ async def create_company(payload: CompanyCreate, db: AsyncSession = Depends(get_
 @router.get("/opportunities")
 async def get_opportunities(student_id: Optional[str] = None, db: AsyncSession = Depends(get_db)):
     try:
-        # Seeding default placement opportunities if none exist
         count_stmt = select(func.count(PlacementOpportunity.id))
         count_res = await db.execute(count_stmt)
-        if count_res.scalar() == 0:
-            # Fetch a company to link to
-            comp_res = await db.execute(select(Company).limit(1))
-            comp = comp_res.scalars().first()
-            if comp:
-                opps = [
-                    PlacementOpportunity(company_id=comp.id, title="Member Technical Staff", description="Core backend infrastructure engineer role in high scale systems.", package_lpa=18.5, location="Bangalore", tier="TOP", requirements="Strong DSA, System Design, Golang/Java"),
-                    PlacementOpportunity(company_id=comp.id, title="Associate software developer", description="Full stack product engineering using modern JavaScript/React and Node.js.", package_lpa=9.0, location="Chennai", tier="MID", requirements="React, Python, SQL, REST APIs"),
-                    PlacementOpportunity(company_id=comp.id, title="Trainee Developer", description="Entry-level trainee engineer for local IT solutions provider.", package_lpa=4.0, location="Coimbatore", tier="SMALL", requirements="Basic programming concepts, database fundamentals"),
-                ]
-                db.add_all(opps)
-                await db.commit()
 
         # Fetch opportunities joined with companies
         stmt = select(PlacementOpportunity, Company).join(Company, PlacementOpportunity.company_id == Company.id)

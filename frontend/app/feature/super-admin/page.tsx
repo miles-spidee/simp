@@ -20,6 +20,7 @@ export default function SuperAdminPage() {
   const [settings, setSettings] = useState<SystemSetting[]>([]);
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [roles, setRoles] = useState<RolePermission[]>([]);
+  const [dashboardStats, setDashboardStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,14 +29,16 @@ export default function SuperAdminPage() {
 
   const loadData = async () => {
     setLoading(true);
-    const [sysSettings, auditLogs, sysRoles] = await Promise.all([
+    const [sysSettings, auditLogs, sysRoles, stats] = await Promise.all([
       superAdminService.getSystemSettings(),
       superAdminService.getAuditLogs(),
-      superAdminService.getRolePermissions()
+      superAdminService.getRolePermissions(),
+      superAdminService.getDashboardStats()
     ]);
     setSettings(sysSettings);
     setLogs(auditLogs);
     setRoles(sysRoles);
+    setDashboardStats(stats);
     setLoading(false);
   };
 
@@ -113,28 +116,28 @@ export default function SuperAdminPage() {
                     <Users className="h-5 w-5" />
                     <span className="text-sm font-bold uppercase tracking-wider">Active Users</span>
                   </div>
-                  <div className="text-3xl font-black text-text-primary">1,245</div>
+                  <div className="text-3xl font-black text-text-primary">{dashboardStats?.activeUsers?.toLocaleString() || 0}</div>
                 </div>
                 <div className="bg-white border border-border rounded-xl p-5 shadow-sm">
                   <div className="flex items-center gap-3 text-text-secondary mb-2">
                     <Database className="h-5 w-5" />
                     <span className="text-sm font-bold uppercase tracking-wider">DB Load</span>
                   </div>
-                  <div className="text-3xl font-black text-emerald-600">24%</div>
+                  <div className="text-3xl font-black text-emerald-600">{dashboardStats?.dbLoad || 0}%</div>
                 </div>
                 <div className="bg-white border border-border rounded-xl p-5 shadow-sm">
                   <div className="flex items-center gap-3 text-text-secondary mb-2">
                     <Server className="h-5 w-5" />
                     <span className="text-sm font-bold uppercase tracking-wider">API Uptime</span>
                   </div>
-                  <div className="text-3xl font-black text-emerald-600">99.9%</div>
+                  <div className="text-3xl font-black text-emerald-600">{dashboardStats?.apiUptime || 0}%</div>
                 </div>
                 <div className="bg-white border border-border rounded-xl p-5 shadow-sm">
                   <div className="flex items-center gap-3 text-text-secondary mb-2">
                     <AlertCircle className="h-5 w-5" />
                     <span className="text-sm font-bold uppercase tracking-wider">Failed Logins</span>
                   </div>
-                  <div className="text-3xl font-black text-rose-600">12</div>
+                  <div className="text-3xl font-black text-rose-600">{dashboardStats?.failedLogins || 0}</div>
                 </div>
               </div>
 
@@ -147,28 +150,28 @@ export default function SuperAdminPage() {
                   <div>
                     <div className="flex justify-between text-sm mb-1">
                       <span className="font-medium text-text-primary">App Server Memory</span>
-                      <span className="text-text-secondary">4.2 GB / 8 GB</span>
+                      <span className="text-text-secondary">{dashboardStats?.storage?.memoryUsed || "0 GB"} / {dashboardStats?.storage?.memoryTotal || "8 GB"}</span>
                     </div>
                     <div className="w-full bg-slate-100 rounded-full h-2">
-                      <div className="bg-blue-600 h-2 rounded-full" style={{ width: '52%' }}></div>
+                      <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${dashboardStats?.storage?.memoryPct || 0}%` }}></div>
                     </div>
                   </div>
                   <div>
                     <div className="flex justify-between text-sm mb-1">
                       <span className="font-medium text-text-primary">Database Storage</span>
-                      <span className="text-text-secondary">12 GB / 50 GB</span>
+                      <span className="text-text-secondary">{dashboardStats?.storage?.dbUsed || "0 GB"} / {dashboardStats?.storage?.dbTotal || "50 GB"}</span>
                     </div>
                     <div className="w-full bg-slate-100 rounded-full h-2">
-                      <div className="bg-blue-600 h-2 rounded-full" style={{ width: '24%' }}></div>
+                      <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${dashboardStats?.storage?.dbPct || 0}%` }}></div>
                     </div>
                   </div>
                   <div>
                     <div className="flex justify-between text-sm mb-1">
                       <span className="font-medium text-text-primary">File Storage (S3)</span>
-                      <span className="text-text-secondary">450 GB / 1 TB</span>
+                      <span className="text-text-secondary">{dashboardStats?.storage?.s3Used || "0 GB"} / {dashboardStats?.storage?.s3Total || "1 TB"}</span>
                     </div>
                     <div className="w-full bg-slate-100 rounded-full h-2">
-                      <div className="bg-amber-500 h-2 rounded-full" style={{ width: '45%' }}></div>
+                      <div className="bg-amber-500 h-2 rounded-full" style={{ width: `${dashboardStats?.storage?.s3Pct || 0}%` }}></div>
                     </div>
                   </div>
                 </div>

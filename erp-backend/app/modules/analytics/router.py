@@ -22,28 +22,26 @@ async def get_analytics_summary(db: AsyncSession = Depends(get_db)):
         # 1. Total Students
         std_stmt = select(func.count(StudentProfile.id))
         std_res = await db.execute(std_stmt)
-        total_students = std_res.scalar() or 20
+        total_students = std_res.scalar() or 0
         
         # 2. Certificates count
         cert_stmt = select(func.count(Certificate.id))
         cert_res = await db.execute(cert_stmt)
-        certs = cert_res.scalar() or 12
+        certs = cert_res.scalar() or 0
         
         # 3. Average Quiz Score
         avg_score_stmt = select(func.avg(QuizAttempt.score / Quiz.max_score * 100)).join(Quiz, QuizAttempt.quiz_id == Quiz.id)
         avg_score_res = await db.execute(avg_score_stmt)
         avg_score = avg_score_res.scalar()
-        avg_score_val = float(avg_score) if avg_score else 78.5
+        avg_score_val = float(avg_score) if avg_score else 0.0
         
         # 4. Placement count (or joined alumni)
         placed_stmt = select(func.count(AlumniProfile.id))
         placed_res = await db.execute(placed_stmt)
-        placed_count = placed_res.scalar() or 8
+        placed_count = placed_res.scalar() or 0
         
         # Compute placement rate
-        placement_rate = round((placed_count / total_students * 100), 1) if total_students > 0 else 65.0
-        if placement_rate > 100.0:
-            placement_rate = 92.0
+        placement_rate = round((placed_count / total_students * 100), 1) if total_students > 0 else 0.0
             
         return success_response(data={
             "totalStudents": total_students,
@@ -100,7 +98,7 @@ async def get_attendance_trend(db: AsyncSession = Depends(get_db)):
                     "value": round(val, 1)
                 })
         else:
-            # Fallback to empty or zeros if no data in DB for the past 30 days
+            # Empty fallback if no data in DB for the past 30 days
             for i in range(30):
                 day = base_time + timedelta(days=i)
                 data.append({

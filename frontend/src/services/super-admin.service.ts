@@ -11,6 +11,15 @@ class SuperAdminService {
     }
   }
 
+  async getDashboardStats(): Promise<any> {
+    try {
+      const res = await apiClient.get('/api/v1/dashboard');
+      return res.data?.data || null;
+    } catch (error) {
+      return null;
+    }
+  }
+
   async getAuditLogs(): Promise<AuditLog[]> {
     try {
       const res = await apiClient.get('/api/v1/super-admin');

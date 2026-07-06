@@ -234,7 +234,7 @@ async def get_monitoring_data(role: str = "Mentor", db: AsyncSession = Depends(g
             "passStatus": "Pass" if sub.passed else "Fail",
             "completionTime": qa.get("completionTime", 0),
             "status": sub.status,
-            "dateCompleted": "2024-03-15T10:30:00Z", # Mock date
+            "dateCompleted": sub.created_at.isoformat() if hasattr(sub, 'created_at') and sub.created_at else "", 
             "sections": qa.get("sections", []),
             "questions": qa.get("questions", [])
         }
@@ -265,9 +265,9 @@ async def get_monitoring_data(role: str = "Mentor", db: AsyncSession = Depends(g
             "name": q.title,
             "program": "Computer Science",
             "batch": q.batch_id,
-            "assignedStudents": total_subs + (2 if role == 'Super Admin' else 0), # Mock
+            "assignedStudents": total_subs,
             "completedAttempts": total_subs,
-            "pendingAttempts": 2 if role == 'Super Admin' else 0,
+            "pendingAttempts": 0,
             "averageScore": round(avg_score, 1),
             "passPercentage": round(pass_rate, 1),
             "duration": q.duration,
@@ -321,7 +321,7 @@ async def get_monitoring_data(role: str = "Mentor", db: AsyncSession = Depends(g
             "platformAverage": round(avg_score, 1),
             "overallPassRate": round(pass_rate, 1),
             "totalStudents": len(set(s.student_id for s in submissions)),
-            "topPerformingCollege": "Mock University",
+            "topPerformingCollege": "N/A",
             "weakestCollege": "N/A",
             "highestScore": highest,
             "lowestScore": lowest
