@@ -155,11 +155,12 @@ async def get_attendance_batches(
                 batch_map[bid]["absentCount"] += att_stats["Absent"]
                 batch_map[bid]["lateCount"] += att_stats["Late"]
                 
-                initials = "".join([n[0] for n in (s.user.name or "S").split()])[:2]
+                username = s.user.username if s.user else "Student"
+                initials = "".join([n[0] for n in username.split()])[:2]
                 
                 batch_map[bid]["students"].append({
                     "id": spid,
-                    "name": s.user.name or "Student",
+                    "name": username,
                     "avatar": initials.upper(),
                     "attendanceRate": rate,
                     "presentDays": att_stats["Present"],

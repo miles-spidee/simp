@@ -24,9 +24,11 @@ class BulkCoordinatorRequest(BaseModel):
     ids: List[UUID]
     coordinator_name: str
 
+from app.core.dependencies import get_current_user
+
 @router.get("/colleges", response_model=APIResponse[List[CollegeResponse]])
 async def get_colleges(
-    current_user: User = Depends(require_permission("organizations", "read")),
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     service = OrganizationService(db)

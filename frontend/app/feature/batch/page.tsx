@@ -13,6 +13,7 @@ import { programService } from "@/src/services/program.service";
 import { batchService } from '@/src/services/batch.service';
 import { Batch, BatchStudent, BatchTimelineEvent, BatchProject } from '@/src/types/batches.types';
 import { useAuth } from '@/src/context/AuthContext';
+import { mentorService } from '@/src/services/mentor.service';
 import { Drawer } from '@/components/feature/ui/Drawer';
 import { EnhancedTable } from '@/components/feature/ui/Table';
 
@@ -26,6 +27,7 @@ export default function BatchManagementPage() {
   const [batches, setBatches] = useState<Batch[]>([]);
   const [loading, setLoading] = useState(true);
   const [programs, setPrograms] = useState<any[]>([]);
+  const [mentors, setMentors] = useState<any[]>([]);
   
   // Selected batches for bulk operations
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -96,13 +98,15 @@ export default function BatchManagementPage() {
     try {
       setLoading(true);
 
-      const [batchData, programData] = await Promise.all([
+      const [batchData, programData, mentorData] = await Promise.all([
         batchService.getBatches(),
         programService.getPrograms(),
+        mentorService.getMentorProfiles(),
       ]);
 
       setBatches(batchData);
       setPrograms(programData);
+      setMentors(mentorData);
 
     } catch (err) {
       console.error('Failed to load batch records', err);
@@ -402,13 +406,15 @@ export default function BatchManagementPage() {
     if (!activeProfile) return;
     const batchId = activeProfile?.id;
 
-    const mentorName = mentorForm.mentorId === 'emp-2' ? 'Bob Johnson' : mentorForm.mentorId === 'emp-3' ? 'Diana Prince' : 'Charlie Davis';
+    const mentor = mentors.find(m => m.mentor_profile_id === mentorForm.mentorId);
+    const mentorName = mentor?.employeeName || mentor?.user_id || mentorForm.mentorName;
+
     const updated = await batchService.updateBatch(batchId, {
       mentor: {
         id: mentorForm.mentorId,
         name: mentorName,
         department: 'Technical Operations Division',
-        expertise: 'Architecture Facilitation',
+        expertise: mentor?.mentor_expertise?.join(', ') || mentor?.mentor_bio || 'Architecture Facilitation',
         rating: 4.8,
         sessionsConducted: 0,
         studentSatisfaction: 4.8,
@@ -1418,8 +1424,8 @@ export default function BatchManagementPage() {
                   <button
                     onClick={() => {
                       setMentorForm({
-                        mentorId: activeProfile.mentor.id || 'emp-2',
-                        mentorName: activeProfile.mentor.name || 'Bob Johnson'
+                        mentorId: activeProfile.mentor.id || (mentors.length > 0 ? mentors[0].mentor_profile_id : ''),
+                        mentorName: activeProfile.mentor.name || (mentors.length > 0 ? mentors[0].employeeName || mentors[0].user_id : '')
                       });
                       setActiveActionModal({ type: 'mentorRemap' });
                     }}
@@ -2082,14 +2088,18 @@ export default function BatchManagementPage() {
                       value={mentorForm.mentorId}
                       onChange={e => {
                         const mId = e.target.value;
-                        const mName = mId === 'emp-2' ? 'Bob Johnson' : mId === 'emp-3' ? 'Diana Prince' : 'Charlie Davis';
+                        const mentor = mentors.find(m => m.mentor_profile_id === mId);
+                        const mName = mentor?.employeeName || mentor?.user_id || mId;
                         setMentorForm({ mentorId: mId, mentorName: mName });
                       }}
                       className="w-full bg-slate-50 border border-border rounded p-2 text-xs font-semibold text-text-primary focus:outline-none"
                     >
-                      <option value="emp-2">Bob Johnson (Technical Engineering)</option>
-                      <option value="emp-3">Diana Prince (Data Operations)</option>
-                      <option value="emp-4">Charlie Davis (Supervisory HR)</option>
+                      <option value="">-- Select Mentor --</option>
+                      {mentors.map(m => (
+                        <option key={m.mentor_profile_id} value={m.mentor_profile_id}>
+                          {m.employeeName || m.user_id} {m.mentor_expertise?.length ? `(${m.mentor_expertise[0]})` : ''}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>
