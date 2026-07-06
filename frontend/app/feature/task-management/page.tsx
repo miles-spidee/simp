@@ -34,68 +34,20 @@ interface LocalTask {
   starterCode: string;
 }
 
-const DEFAULT_SUBMISSIONS: StudentSubmission[] = [
-  {
-    studentId: 'stu-harini',
-    studentName: 'Harini Sundar',
-    githubUrl: 'https://github.com/harini/portfolio',
-    deployUrl: 'https://harini-portfolio.vercel.app',
-    videoUrl: 'https://loom.com/share/harini-portfolio',
-    screenshot: 'solution_preview.png',
-    pdfFile: 'internship_spec_draft.pdf',
-    submittedAt: '2026-06-20 04:30 PM',
-    score: 0,
-    feedback: '',
-    status: 'Submitted'
-  },
-  {
-    studentId: 'stu-arun',
-    studentName: 'Arun Kumar',
-    githubUrl: 'https://github.com/arun/portfolio',
-    deployUrl: 'https://arun-portfolio.vercel.app',
-    videoUrl: '',
-    screenshot: 'build_preview.png',
-    pdfFile: '',
-    submittedAt: '2026-06-19 02:15 PM',
-    score: 0,
-    feedback: '',
-    status: 'Submitted'
-  }
-];
+const DEFAULT_SUBMISSIONS: StudentSubmission[] = [];
 
-const INITIAL_TASKS: LocalTask[] = [
-  {
-    id: 'TSK-201',
-    title: 'Portfolio Website',
-    description: 'Design and deploy a professional developer portfolio showcasing your projects and resume details.',
-    dueDate: '2026-06-20',
-    attempts: 1,
-    requirements: ['Github Link', 'Deployment URL', 'Screenshot'],
-    examplePdf: 'portfolio_spec_v1.pdf',
-    referencePdf: 'ux_portfolio_guide.pdf',
-    starterCode: 'portfolio-starter.zip'
-  },
-  {
-    id: 'TSK-202',
-    title: 'Attendance API Endpoints',
-    description: 'Implement backend REST endpoints for clock-in, clock-out, and monthly logs using Express and MongoDB.',
-    dueDate: '2026-06-25',
-    attempts: 2,
-    requirements: ['Github Link', 'Video'],
-    examplePdf: 'attendance_api_design.pdf',
-    referencePdf: 'rest_best_practices.pdf',
-    starterCode: 'express-mongoose-starter.zip'
-  }
-];
+const INITIAL_TASKS: LocalTask[] = [];
 
 export default function TaskManagementPage() {
   const { user } = useAuth();
   const [tasks, setTasks] = useState<LocalTask[]>(INITIAL_TASKS);
   const [submissions, setSubmissions] = useState<StudentSubmission[]>(DEFAULT_SUBMISSIONS);
   
-  // Selection drill-down
-  const [selectedTaskId, setSelectedTaskId] = useState<string>('TSK-202');
+  const [selectedTaskTitle, setSelectedTaskTitle] = useState<string>('');
   const [selectedSub, setSelectedSub] = useState<StudentSubmission | null>(null);
+  
+  // Data loaded from backend grouped tasks
+  const [groupedData, setGroupedData] = useState<any[]>([]);
 
   // Form: Grading
   const [inputScore, setInputScore] = useState<number>(0);
@@ -123,101 +75,127 @@ export default function TaskManagementPage() {
   };
 
   useEffect(() => {
-    // Load created tasks from local storage
-    if (typeof window !== 'undefined') {
-      const storedTasks = localStorage.getItem('pinesphere_created_tasks');
-      if (storedTasks) {
-        const parsed = JSON.parse(storedTasks) as { batchId: string; task: LocalTask }[];
-        const filtered = parsed.filter(x => x.batchId === 'batch-ai-2026').map(x => x.task);
-        setTasks([...INITIAL_TASKS, ...filtered]);
+    const fetchTasks = async () => {
+      try {
+        const { apiClient } = await import('@/src/api/api.client');
+        const res = await apiClient.get('/api/v1/task/grouped');
+        if (res.data?.data) {
+          const fetchedBatches = res.data.data;
+          setGroupedData(fetchedBatches);
+          
+          let allTasks: LocalTask[] = [];
+          fetchedBatches.forEach((b: any) => {
+            b.tasks.forEach((t: any) => {
+               if (!allTasks.find(x => x.title === t.title)) {
+                  allTasks.push(t);
+               }
+            });
+          });
+          setTasks(allTasks);
+          
+          if (allTasks.length > 0 && !selectedTaskTitle) {
+             setSelectedTaskTitle(allTasks[0].title);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to fetch grouped tasks", e);
       }
+    };
+    fetchTasks();
+  }, []);
+  
+  // When selected task title changes, update submissions list
+  useEffect(() => {
+    if (!selectedTaskTitle || groupedData.length === 0) return;
+    
+    let subs: StudentSubmission[] = [];
+    groupedData.forEach(b => {
+       const taskGroup = b.tasks.find((t: any) => t.title === selectedTaskTitle);
+       if (taskGroup) {
+          subs = [...subs, ...taskGroup.submissions];
+       }
+    });
+    setSubmissions(subs);
+  }, [selectedTaskTitle, groupedData]);
 
-      // Load submissions
-      const storedSubs = localStorage.getItem('pinesphere_task_submissions');
-      if (storedSubs) {
-        const parsed = JSON.parse(storedSubs) as { taskId: string; submission: StudentSubmission }[];
-        const filtered = parsed.filter(x => x.taskId === selectedTaskId).map(x => x.submission);
-        setSubmissions([...DEFAULT_SUBMISSIONS, ...filtered]);
-      } else {
-        setSubmissions(DEFAULT_SUBMISSIONS);
-      }
-    }
-  }, [selectedTaskId]);
-
-  const handlePostGrade = (e: React.FormEvent) => {
+  const handlePostGrade = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedSub) return;
+    
+    // We need the actual underlying task id (which is stored in the submission object in our grouped API)
+    const actualTaskId = (selectedSub as any).taskId;
+    if (!actualTaskId) {
+      triggerToast("Error: Missing Task ID for this submission.");
+      return;
+    }
 
-    const updated = submissions.map(sub => {
-      if (sub.studentId === selectedSub.studentId) {
-        return {
-          ...sub,
-          score: inputScore,
-          feedback: inputFeedback,
-          status: 'Graded' as const
-        };
-      }
-      return sub;
-    });
-
-    setSubmissions(updated);
-    setSelectedSub(null);
-
-    // Save graded state to localStorage
-    if (typeof window !== 'undefined') {
-      const gradesStr = localStorage.getItem('pinesphere_task_grades') || '[]';
-      const grades = JSON.parse(gradesStr);
-      const cleaned = grades.filter((g: any) => !(g.taskId === selectedTaskId && g.studentId === selectedSub.studentId));
-      cleaned.push({
-        taskId: selectedTaskId,
-        studentId: selectedSub.studentId,
+    try {
+      const { apiClient } = await import('@/src/api/api.client');
+      await apiClient.patch(`/api/v1/task/${actualTaskId}/grade`, {
         score: inputScore,
         feedback: inputFeedback
       });
-      localStorage.setItem('pinesphere_task_grades', JSON.stringify(cleaned));
-    }
+      
+      const updated = submissions.map(sub => {
+        if (sub.studentId === selectedSub.studentId) {
+          return {
+            ...sub,
+            score: inputScore,
+            feedback: inputFeedback,
+            status: 'Graded' as const
+          };
+        }
+        return sub;
+      });
 
-    triggerToast(`Grades published for ${selectedSub.studentName}!`);
+      setSubmissions(updated);
+      setSelectedSub(null);
+      triggerToast(`Grades published for ${selectedSub.studentName}!`);
+    } catch (e) {
+      console.error("Failed to grade task", e);
+      triggerToast("Failed to grade task.");
+    }
   };
 
-  const handleCreateTask = (e: React.FormEvent) => {
+  const handleCreateTask = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTaskTitle || !newTaskDesc) {
       triggerToast("Please enter task title and description details.");
       return;
     }
 
-    const newRequirements = [];
-    if (reqGithub) newRequirements.push('Github Link');
-    if (reqDeploy) newRequirements.push('Deployment URL');
-    if (reqVideo) newRequirements.push('Video Walkthrough');
-    if (reqScreenshot) newRequirements.push('Screenshots');
-    if (reqZip) newRequirements.push('ZIP Archive');
-
-    const created: LocalTask = {
-      id: `TSK-${Date.now().toString().slice(-3)}`,
-      title: newTaskTitle,
-      description: newTaskDesc,
-      dueDate: newDueDate,
-      attempts: 1,
-      requirements: newRequirements,
-      examplePdf: 'spec_sample_sheet.pdf',
-      referencePdf: 'boilerplate_guide_v2.pdf',
-      starterCode: 'codebase_archive.zip'
-    };
-
-    setTasks(prev => [...prev, created]);
-
-    if (typeof window !== 'undefined') {
-      const savedTasksStr = localStorage.getItem('pinesphere_created_tasks') || '[]';
-      const savedTasks = JSON.parse(savedTasksStr);
-      savedTasks.push({ batchId: 'batch-ai-2026', task: created });
-      localStorage.setItem('pinesphere_created_tasks', JSON.stringify(savedTasks));
+    try {
+      const { apiClient } = await import('@/src/api/api.client');
+      await apiClient.post('/api/v1/task/bulk', {
+        title: newTaskTitle,
+        description: newTaskDesc,
+        dueDate: newDueDate,
+        batchId: 'batch-ai-2026'
+      });
+      
+      // refresh tasks
+      const res = await apiClient.get('/api/v1/task/grouped');
+      if (res.data?.data) {
+        const fetchedBatches = res.data.data;
+        setGroupedData(fetchedBatches);
+        let allTasks: LocalTask[] = [];
+        fetchedBatches.forEach((b: any) => {
+          b.tasks.forEach((t: any) => {
+             if (!allTasks.find(x => x.title === t.title)) {
+                allTasks.push(t);
+             }
+          });
+        });
+        setTasks(allTasks);
+      }
+      
+      setNewTaskTitle('');
+      setNewTaskDesc('');
+      triggerToast(`Milestone "${newTaskTitle}" published for students!`);
+    } catch (e) {
+      console.error("Failed to create task", e);
+      triggerToast("Failed to publish task.");
     }
-
-    setNewTaskTitle('');
-    setNewTaskDesc('');
-    triggerToast(`Milestone "${newTaskTitle}" published for students!`);
   };
 
   return (
@@ -317,13 +295,14 @@ export default function TaskManagementPage() {
               <div>
                 <span className="text-[10px] font-bold text-indigo-650 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-sm uppercase tracking-wide">SUBMISSIONS ASSIGNED</span>
                 <select 
-                  value={selectedTaskId}
-                  onChange={(e) => { setSelectedTaskId(e.target.value); setSelectedSub(null); }}
+                  value={selectedTaskTitle}
+                  onChange={(e) => { setSelectedTaskTitle(e.target.value); setSelectedSub(null); }}
                   className="block mt-2 bg-slate-50 border border-border rounded-xl px-4 py-2 text-xs font-bold text-text-primary outline-none cursor-pointer"
                 >
-                  {tasks.map(t => (
-                    <option key={t.id} value={t.id}>{t.title} ({t.id})</option>
+                  {tasks.map((t, idx) => (
+                    <option key={idx} value={t.title}>{t.title}</option>
                   ))}
+                  {tasks.length === 0 && <option value="">No tasks available</option>}
                 </select>
               </div>
             </div>

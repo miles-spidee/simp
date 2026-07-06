@@ -126,7 +126,7 @@ export default function MyAttendancePage() {
 
   const handleCheckIn = async () => {
     try {
-      const { apiClient } = await import('@/api/api.client');
+      const { apiClient } = await import('@/src/api/api.client');
       await apiClient.post('/api/v1/attendance/check-in', {});
       
       const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });

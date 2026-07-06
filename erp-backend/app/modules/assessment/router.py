@@ -175,7 +175,11 @@ async def create_submission(data: QuizSubmissionCreate, request: Request, db: As
     return await svc.create_submission(data, user_id)
 
 @router.get("/monitoring/data")
-async def get_monitoring_data(role: str = "Mentor", db: AsyncSession = Depends(get_db)):
+async def get_monitoring_data(
+    role: str = "Mentor",
+    current_user: dict = Depends(require_permission("assessment", "read")),
+    db: AsyncSession = Depends(get_db)
+):
     """
     Unified endpoint to fetch DashboardStats, Assessments, and StudentAssessments
     based on the requested role.

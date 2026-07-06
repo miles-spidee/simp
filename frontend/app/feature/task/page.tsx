@@ -33,43 +33,7 @@ interface BatchTasks {
   tasks: LocalTask[];
 }
 
-const INITIAL_BATCH_TASKS: BatchTasks[] = [
-  {
-    id: 'batch-ai-2026',
-    name: 'AI Batch 2026',
-    totalTasks: 2,
-    overallSubmissionRate: 92,
-    overdueCount: 1,
-    tasks: [
-      {
-        id: 'TSK-201',
-        title: 'Portfolio Website',
-        description: 'Design and deploy a professional developer portfolio showcasing your projects and resume details.',
-        dueDate: '2026-06-20',
-        attempts: 1,
-        requirements: ['Github Link', 'Deployment URL', 'Screenshot'],
-        submissions: [
-          { studentId: 'stu-harini', studentName: 'Harini Sundar', status: 'Submitted', score: 95, submittedAt: '2026-06-18' },
-          { studentId: 'stu-arun', studentName: 'Arun Kumar', status: 'Overdue' },
-          { studentId: 'stu-rahul', studentName: 'Rahul Sen', status: 'Submitted', score: 88, submittedAt: '2026-06-19' }
-        ]
-      },
-      {
-        id: 'TSK-202',
-        title: 'Attendance API Endpoints',
-        description: 'Implement backend REST endpoints for clock-in, clock-out, and monthly logs using Express and MongoDB.',
-        dueDate: '2026-06-25',
-        attempts: 2,
-        requirements: ['Github Link', 'Video'],
-        submissions: [
-          { studentId: 'stu-harini', studentName: 'Harini Sundar', status: 'Submitted', score: 90, submittedAt: '2026-06-24' },
-          { studentId: 'stu-arun', studentName: 'Arun Kumar', status: 'Pending' },
-          { studentId: 'stu-rahul', studentName: 'Rahul Sen', status: 'Submitted', score: 92, submittedAt: '2026-06-24' }
-        ]
-      }
-    ]
-  }
-];
+const INITIAL_BATCH_TASKS: BatchTasks[] = [];
 
 interface ComputedStudent {
   id: string;
@@ -88,29 +52,23 @@ export default function TaskDashboardPage() {
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
 
   useEffect(() => {
-    // Load created tasks from local storage
-    if (typeof window !== 'undefined') {
-      const storedTasks = localStorage.getItem('pinesphere_created_tasks');
-      if (storedTasks) {
-        const parsed = JSON.parse(storedTasks) as { batchId: string; task: any }[];
-        setBatches(prev => prev.map(b => {
-          const newTasks = parsed.filter(x => x.batchId === b.id).map(x => ({
-            ...x.task,
-            submissions: [] // new tasks have no submissions initially
-          }));
-          return {
-            ...b,
-            tasks: [...b.tasks, ...newTasks],
-            totalTasks: b.tasks.length + newTasks.length
-          };
-        }));
+    const fetchTasks = async () => {
+      try {
+        const { apiClient } = await import('@/src/api/api.client');
+        const res = await apiClient.get('/api/v1/task/grouped');
+        if (res.data?.data) {
+          setBatches(res.data.data);
+        }
+      } catch (e) {
+        console.error("Failed to fetch tasks", e);
       }
-    }
+    };
+    fetchTasks();
   }, []);
 
   // Calculate totals
   const totalPublishedTasks = batches.reduce((sum, b) => sum + b.totalTasks, 0);
-  const avgSubmissionRate = 92; // Mock statistic
+  const avgSubmissionRate = batches.length ? Math.round(batches.reduce((sum, b) => sum + b.overallSubmissionRate, 0) / batches.length) : 0;
   const globalOverdueCount = batches.reduce((sum, b) => sum + b.overdueCount, 0);
 
   // Derive students for the selected batch

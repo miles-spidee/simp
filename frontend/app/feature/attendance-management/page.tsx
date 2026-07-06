@@ -26,12 +26,7 @@ interface LocalAppeal {
   auditLog?: string[];
 }
 
-const INITIAL_STUDENTS: StudentRow[] = [
-  { id: 'stu-harini', name: 'Harini Sundar', avatar: 'HS', status: null },
-  { id: 'stu-arun', name: 'Arun Kumar', avatar: 'AK', status: null },
-  { id: 'stu-rahul', name: 'Rahul Sen', avatar: 'RS', status: null },
-  { id: 'stu-priya', name: 'Priya Sharma', avatar: 'PS', status: null },
-];
+const INITIAL_STUDENTS: StudentRow[] = [];
 
 export default function AttendanceManagementPage() {
   const { user } = useAuth();
@@ -51,21 +46,52 @@ export default function AttendanceManagementPage() {
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-  useEffect(() => {
-    // Load attendance status from local storage
-    if (typeof window !== 'undefined') {
-      const savedKey = `pinesphere_attendance_${selectedBatchId}_${selectedDate}`;
-      const saved = localStorage.getItem(savedKey);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        setStudents(parsed.students);
-        setIsLocked(parsed.isLocked);
-      } else {
-        setStudents(INITIAL_STUDENTS.map(s => ({ ...s, status: null })));
-        setIsLocked(false);
-      }
+  const [batchesList, setBatchesList] = useState<{id: string, name: string}[]>([]);
 
-      // Load appeals
+  useEffect(() => {
+    // Load attendance from backend
+    const fetchBatches = async () => {
+      try {
+        const { apiClient } = await import('@/src/api/api.client');
+        const res = await apiClient.get('/api/v1/attendance/batches');
+        if (res.data?.data) {
+          const fetchedBatches = res.data.data;
+          setBatchesList(fetchedBatches.map((b: any) => ({id: b.id, name: b.name})));
+          
+          if (fetchedBatches.length > 0 && !selectedBatchId) {
+             setSelectedBatchId(fetchedBatches[0].id);
+          }
+          
+          const currentBatch = fetchedBatches.find((b: any) => b.id === (selectedBatchId || fetchedBatches[0].id));
+          if (currentBatch) {
+            // Check if there is local draft
+            const savedKey = `pinesphere_attendance_${currentBatch.id}_${selectedDate}`;
+            const saved = localStorage.getItem(savedKey);
+            if (saved) {
+              const parsed = JSON.parse(saved);
+              setStudents(parsed.students);
+              setIsLocked(parsed.isLocked);
+            } else {
+              // Populate from backend
+              const day = parseInt(selectedDate.split('-')[2]);
+              const stuRows = currentBatch.students.map((s: any) => ({
+                id: s.id,
+                name: s.name,
+                avatar: s.avatar,
+                status: s.logs && s.logs[day] ? s.logs[day] : null
+              }));
+              setStudents(stuRows);
+              setIsLocked(false);
+            }
+          }
+        }
+      } catch(e) {
+        console.error(e);
+      }
+    };
+    fetchBatches();
+
+    if (typeof window !== 'undefined') {
       const appealsStr = localStorage.getItem('pinesphere_attendance_appeals') || '[]';
       setAppeals(JSON.parse(appealsStr));
     }
@@ -87,12 +113,22 @@ export default function AttendanceManagementPage() {
     }
   };
 
-  const handleLockAttendance = () => {
+  const handleLockAttendance = async () => {
     if (typeof window !== 'undefined') {
       const savedKey = `pinesphere_attendance_${selectedBatchId}_${selectedDate}`;
       localStorage.setItem(savedKey, JSON.stringify({ students, isLocked: true }));
       setIsLocked(true);
       triggerToast("Attendance roster locked! No further modifications allowed.");
+      
+      try {
+        const { apiClient } = await import('@/src/api/api.client');
+        await apiClient.post(`/api/v1/attendance/batches/${selectedBatchId}/mark`, {
+          date: selectedDate,
+          students: students.map(s => ({ id: s.id, status: s.status }))
+        });
+      } catch (e) {
+        console.error("Failed to post attendance to backend", e);
+      }
     }
   };
 
@@ -186,7 +222,10 @@ export default function AttendanceManagementPage() {
                 onChange={(e) => setSelectedBatchId(e.target.value)}
                 className="bg-slate-50 border border-border rounded-xl px-4 py-2 text-xs font-bold text-text-primary outline-none cursor-pointer"
               >
-                <option value="batch-ai-2026">AI Batch 2026</option>
+                {batchesList.map(b => (
+                  <option key={b.id} value={b.id}>{b.name}</option>
+                ))}
+                {batchesList.length === 0 && <option value="batch-ai-2026">AI Batch 2026</option>}
               </select>
               <input 
                 type="date" 

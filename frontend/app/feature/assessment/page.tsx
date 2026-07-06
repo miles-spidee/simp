@@ -57,111 +57,7 @@ interface BatchAssessments {
   assessments: AssessmentItem[];
 }
 
-const INITIAL_BATCH_ASSESSMENTS: BatchAssessments[] = [
-  {
-    id: 'batch-ai-2026',
-    name: 'AI Batch 2026',
-    assessmentsCount: 2,
-    completedCount: '38/42',
-    averageScore: 84,
-    assessments: [
-      {
-        id: 'ASM-401',
-        title: 'Python Essentials Quiz',
-        type: 'MCQ',
-        duration: 30,
-        passingMarks: 70,
-        negativeMarking: true,
-        securitySettings: {
-          secureBrowser: true,
-          disableCopy: true,
-          disableRightClick: true,
-          fullscreenOnly: true,
-          disableTabSwitch: true,
-          cameraRequired: true,
-          microphoneRequired: true
-        },
-        questions: [
-          { text: 'Which of the following is an immutable sequence in Python?', options: ['List', 'Tuple', 'Set', 'Dictionary'], answer: 'B', marks: 10 }
-        ],
-        attempts: [
-          {
-            studentId: 'stu-harini',
-            studentName: 'Harini Sundar',
-            attempts: 1,
-            score: 90,
-            status: 'Completed',
-            passed: true,
-            questionAnalysis: {
-              correctCount: 9,
-              wrongCount: 1,
-              skippedCount: 0,
-              negativeMarks: 1,
-              detailed: [
-                { question: 'Q1: Immutable sequences in Python?', correct: true, skipped: false, marksGained: 10 },
-                { question: 'Q2: Global interpreter lock purpose?', correct: true, skipped: false, marksGained: 10 },
-                { question: 'Q3: Lambda expression definition?', correct: false, skipped: false, marksGained: -1 }
-              ]
-            }
-          },
-          {
-            studentId: 'stu-arun',
-            studentName: 'Arun Kumar',
-            attempts: 1,
-            score: 78,
-            status: 'Completed',
-            passed: true,
-            questionAnalysis: {
-              correctCount: 8,
-              wrongCount: 2,
-              skippedCount: 0,
-              negativeMarks: 2,
-              detailed: [
-                { question: 'Q1: Immutable sequences in Python?', correct: true, skipped: false, marksGained: 10 },
-                { question: 'Q2: Global interpreter lock purpose?', correct: false, skipped: false, marksGained: -1 }
-              ]
-            }
-          }
-        ]
-      },
-      {
-        id: 'ASM-402',
-        title: 'AI Fundamentals Exam',
-        type: 'Mixed',
-        duration: 60,
-        passingMarks: 60,
-        negativeMarking: false,
-        securitySettings: {
-          secureBrowser: true,
-          disableCopy: true,
-          disableRightClick: true,
-          fullscreenOnly: true,
-          disableTabSwitch: true,
-          cameraRequired: false,
-          microphoneRequired: false
-        },
-        questions: [],
-        attempts: [
-          {
-            studentId: 'stu-rahul',
-            studentName: 'Rahul Sen',
-            attempts: 1,
-            score: 82,
-            status: 'Completed',
-            passed: true,
-            questionAnalysis: {
-              correctCount: 8,
-              wrongCount: 1,
-              skippedCount: 1,
-              negativeMarks: 0,
-              detailed: []
-            }
-          }
-        ]
-      }
-    ]
-  }
-];
+const INITIAL_BATCH_ASSESSMENTS: BatchAssessments[] = [];
 
 interface ComputedStudent {
   id: string;
@@ -183,11 +79,12 @@ export default function AssessmentDashboardPage() {
   useEffect(() => {
     const fetchAssessments = async () => {
       try {
-        const res = await fetch('http://localhost:8000/api/v1/assessment/quizzes');
-        if (res.ok) {
-          const data = await res.json();
-          // The API returns the exact structure expected by the batches state
-          setBatches(data);
+        const { apiClient } = await import('@/src/api/api.client');
+        const res = await apiClient.get('/api/v1/assessment/quizzes');
+        if (res.data?.data) {
+          setBatches(res.data.data);
+        } else if (res.data) {
+          setBatches(res.data);
         }
       } catch (err) {
         console.error('Error fetching assessments', err);

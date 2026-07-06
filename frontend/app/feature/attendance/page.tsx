@@ -30,90 +30,7 @@ interface BatchAttendance {
   students: StudentRosterItem[];
 }
 
-const INITIAL_BATCHES: BatchAttendance[] = [
-  {
-    id: 'batch-ai-2026',
-    name: 'AI Batch 2026',
-    presentCount: 42,
-    absentCount: 3,
-    lateCount: 2,
-    rate: 89,
-    students: [
-      {
-        id: 'stu-harini',
-        name: 'Harini Sundar',
-        avatar: 'HS',
-        attendanceRate: 95,
-        presentDays: 20,
-        absentDays: 1,
-        lateDays: 1,
-        logs: {
-          1: 'Present', 2: 'Present', 3: 'Present', 4: 'Present', 5: 'Present',
-          6: 'Late', 7: 'Present', 8: 'Present', 9: 'Present', 10: 'Absent',
-          11: 'Present', 12: 'Present', 13: 'Present', 14: 'Present', 15: 'Present',
-          16: 'Present', 17: 'Present', 18: 'Present', 19: 'Present', 20: 'Present'
-        },
-        checkIn: '08:52 AM',
-        checkOut: '05:30 PM',
-        duration: '8h 38m'
-      },
-      {
-        id: 'stu-arun',
-        name: 'Arun Kumar',
-        avatar: 'AK',
-        attendanceRate: 90,
-        presentDays: 18,
-        absentDays: 2,
-        lateDays: 2,
-        logs: {
-          1: 'Present', 2: 'Present', 3: 'Late', 4: 'Present', 5: 'Present',
-          6: 'Present', 7: 'Present', 8: 'Absent', 9: 'Present', 10: 'Present',
-          11: 'Present', 12: 'Late', 13: 'Present', 14: 'Present', 15: 'Present',
-          16: 'Present', 17: 'Present', 18: 'Absent', 19: 'Present', 20: 'Present'
-        },
-        checkIn: '09:05 AM',
-        checkOut: '05:42 PM',
-        duration: '8h 37m'
-      },
-      {
-        id: 'stu-rahul',
-        name: 'Rahul Sen',
-        avatar: 'RS',
-        attendanceRate: 85,
-        presentDays: 17,
-        absentDays: 3,
-        lateDays: 2,
-        logs: {
-          1: 'Present', 2: 'Present', 3: 'Present', 4: 'Absent', 5: 'Present',
-          6: 'Late', 7: 'Present', 8: 'Present', 9: 'Present', 10: 'Absent',
-          11: 'Present', 12: 'Present', 13: 'Present', 14: 'Present', 15: 'Present',
-          16: 'Late', 17: 'Present', 18: 'Present', 19: 'Absent', 20: 'Present'
-        },
-        checkIn: '08:48 AM',
-        checkOut: '05:15 PM',
-        duration: '8h 27m'
-      },
-      {
-        id: 'stu-priya',
-        name: 'Priya Sharma',
-        avatar: 'PS',
-        attendanceRate: 98,
-        presentDays: 21,
-        absentDays: 0,
-        lateDays: 1,
-        logs: {
-          1: 'Present', 2: 'Present', 3: 'Present', 4: 'Present', 5: 'Present',
-          6: 'Present', 7: 'Present', 8: 'Present', 9: 'Present', 10: 'Present',
-          11: 'Present', 12: 'Present', 13: 'Present', 14: 'Present', 15: 'Present',
-          16: 'Present', 17: 'Late', 18: 'Present', 19: 'Present', 20: 'Present'
-        },
-        checkIn: '08:50 AM',
-        checkOut: '05:32 PM',
-        duration: '8h 42m'
-      }
-    ]
-  }
-];
+const INITIAL_BATCHES: BatchAttendance[] = [];
 
 export default function AttendanceDashboardPage() {
   const [batches, setBatches] = useState<BatchAttendance[]>(INITIAL_BATCHES);
@@ -122,8 +39,20 @@ export default function AttendanceDashboardPage() {
   const [selectedBatch, setSelectedBatch] = useState<BatchAttendance | null>(null);
   const [selectedStudent, setSelectedStudent] = useState<StudentRosterItem | null>(null);
 
-  // Sync state corrections from approved appeals or mark daily locks
   useEffect(() => {
+    const fetchBatches = async () => {
+      try {
+        const { apiClient } = await import('@/src/api/api.client');
+        const res = await apiClient.get('/api/v1/attendance/batches');
+        if (res.data?.data) {
+          setBatches(res.data.data);
+        }
+      } catch (e) {
+        console.error("Failed to fetch batches", e);
+      }
+    };
+    fetchBatches();
+
     const syncAttendanceData = () => {
       if (typeof window !== 'undefined') {
         const storedAppeals = localStorage.getItem('pinesphere_attendance_appeals');
@@ -149,7 +78,7 @@ export default function AttendanceDashboardPage() {
                   const pres = logVals.filter(x => x === 'Present').length;
                   const abs = logVals.filter(x => x === 'Absent').length;
                   const lat = logVals.filter(x => x === 'Late').length;
-                  const rate = Math.round((pres / logVals.length) * 100);
+                  const rate = Math.round((pres / logVals.length) * 100) || 0;
 
                   return {
                     ...s,
