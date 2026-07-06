@@ -57,6 +57,10 @@ export const mentorApi = {
     return mapToFrontend(result);
   },
 
+  deleteMentorProfile: async (id: string): Promise<void> => {
+    await apiClient.delete(`/api/v1/mentor/${id}`);
+  },
+
   getAssignments: async (): Promise<MentorAssignment[]> => {
     const res = await apiClient.get<MentorAssignment[]>('/api/v1/mentor/assignments/');
     return res.data;

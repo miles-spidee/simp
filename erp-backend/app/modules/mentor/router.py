@@ -48,6 +48,22 @@ async def get_mentors(
     )
 
 
+@router.get("/assignments", response_model=APIResponse[list])
+async def get_assignments(
+    current_user: User = Depends(require_permission("mentor", "read")),
+    db: AsyncSession = Depends(get_db),
+):
+    return success_response(data=[])
+
+
+@router.get("/batch-mappings", response_model=APIResponse[list])
+async def get_batch_mappings(
+    current_user: User = Depends(require_permission("mentor", "read")),
+    db: AsyncSession = Depends(get_db),
+):
+    return success_response(data=[])
+
+
 @router.get("/{mentor_id}", response_model=APIResponse[MentorProfileResponse])
 async def get_mentor(
     mentor_id: UUID,

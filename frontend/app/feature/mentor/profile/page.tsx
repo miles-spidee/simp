@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { User, Eye, Plus, Clock, Briefcase } from 'lucide-react';
+import { User, Eye, Plus, Clock, Briefcase, Trash2 } from 'lucide-react';
 import { mentorService } from '@/src/services/mentor.service';
 import { MentorProfile } from '@/src/types/api/mentor.types';
 import { Drawer } from '@/components/feature/ui/Drawer';
@@ -100,6 +100,17 @@ export default function MentorProfilePage() {
     if (updated) {
       setProfiles(prev => prev.map(p => p.mentor_profile_id === updated.mentor_profile_id ? updated : p));
       if (selected?.mentor_profile_id === updated.mentor_profile_id) setSelected(updated);
+    }
+  };
+
+  const handleDeleteProfile = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!confirm("Are you sure you want to delete this Mentor Profile?")) return;
+    try {
+      await mentorService.deleteMentorProfile(id);
+      setProfiles(prev => prev.filter(p => p.mentor_profile_id !== id));
+    } catch (err: any) {
+      alert(err?.response?.data?.message || "Failed to delete Mentor Profile. Please try again.");
     }
   };
 
@@ -231,12 +242,20 @@ export default function MentorProfilePage() {
                 key: 'actions',
                 label: '',
                 render: (p: MentorProfile) => (
-                  <button
-                    onClick={(e) => { e.stopPropagation(); openProfile(p); }}
-                    className="p-1 text-text-secondary hover:text-blue-600 transition-colors"
-                  >
-                    <Eye className="h-4 w-4" />
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); openProfile(p); }}
+                      className="p-1 text-text-secondary hover:text-blue-600 transition-colors"
+                    >
+                      <Eye className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={(e) => handleDeleteProfile(p.mentor_profile_id, e)}
+                      className="p-1 text-text-secondary hover:text-red-600 transition-colors"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
                 ),
               },
             ]}
