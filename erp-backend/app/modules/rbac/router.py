@@ -208,9 +208,16 @@ async def get_roles(
 @router.get("/roles/{id}", response_model=APIResponse[dict])
 async def get_role(
     id: UUID, 
-    current_user: User = Depends(require_permission("roles", "read")),
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
+    from app.modules.identity.repository import PermissionRepository
+    repo = PermissionRepository(db)
+    has_roles = await repo.user_has_permission(db, current_user.id, "IDENTITY_ROLES.view")
+    has_users = await repo.user_has_permission(db, current_user.id, "IDENTITY_USER.create")
+    if not has_roles and not has_users:
+        raise HTTPException(status_code=403, detail="Permission denied: requires roles.view or users.create")
+    
     service = RoleService(db)
     result = await service.get(id)
 

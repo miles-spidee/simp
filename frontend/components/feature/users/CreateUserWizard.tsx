@@ -201,11 +201,12 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
             setSelectedEntityId(autofillData.id);
           }
           setFullName(autofillData.name);
-          setUsername('');
+          setUsername(autofillData.name);
           setEmail(autofillData.email);
           setPhone(autofillData.phone);
-          setPassword('');
-          setConfirmPassword('');
+          setPassword('ChangeMe@123');
+          setConfirmPassword('ChangeMe@123');
+          setSendEmail(true);
           setSelectedRole(null);
           setAssignedModules([]);
           setAvatar(null);
@@ -244,8 +245,12 @@ export function CreateUserWizard({ isOpen, onClose, onUserCreated, userToEdit, v
     const entity = unlinkedEntities.find(e => e.id === entityId);
     if (entity) {
       setFullName(entity.name);
+      setUsername(entity.name);
       setEmail(entity.email);
       setPhone(entity.phone);
+      setPassword('ChangeMe@123');
+      setConfirmPassword('ChangeMe@123');
+      setSendEmail(true);
     }
   };
 
