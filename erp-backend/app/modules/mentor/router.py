@@ -89,14 +89,32 @@ async def get_mentors(
     result = await db.execute(stmt)
     rows = result.all()
 
+    from app.models.core.allocation import Allocation
+    from sqlalchemy import or_
+
     # Fetch active student counts for each mentor
-    stmt_count = (
-        select(MentorAssignment.mentor_profile_id, func.count(MentorAssignment.id))
-        .where(MentorAssignment.status == "ACTIVE")
-        .group_by(MentorAssignment.mentor_profile_id)
-    )
-    res_count = await db.execute(stmt_count)
-    counts = dict(res_count.all())
+    counts = {}
+    for m, _, _ in rows:
+        stmt_count = select(func.count(func.distinct(StudentProfile.id))).select_from(StudentProfile).where(
+            or_(
+                StudentProfile.id.in_(
+                    select(MentorAssignment.student_profile_id).where(
+                        MentorAssignment.mentor_profile_id == m.id,
+                        MentorAssignment.status == "ACTIVE"
+                    )
+                ),
+                StudentProfile.batch_id.in_(
+                    select(Allocation.target_id).where(
+                        Allocation.source_type == "MENTOR",
+                        Allocation.target_type == "BATCH",
+                        Allocation.source_id == m.id,
+                        Allocation.deleted_at.is_(None)
+                    )
+                )
+            )
+        )
+        res_count = await db.execute(stmt_count)
+        counts[m.id] = res_count.scalar() or 0
 
     data = []
     for m, emp, usr in rows:
@@ -190,69 +208,52 @@ async def get_batch_mappings(
     current_user: User = Depends(require_permission("mentor", "read")),
     db: AsyncSession = Depends(get_db)
 ):
-    # We select all assignments and join profiles to group them dynamically
+    from app.models.core.allocation import Allocation
+    
     stmt = (
-        select(
-            MentorAssignment.mentor_profile_id,
-            StudentProfile.batch_id,
-            func.count(StudentProfile.id).label("student_count"),
-            func.min(MentorAssignment.id).label("mapping_id"),
-            func.min(MentorAssignment.start_date).label("mapped_date")
+        select(Allocation, MentorProfile, EmployeeProfile, User, Batch, Program)
+        .join(MentorProfile, MentorProfile.id == Allocation.source_id)
+        .outerjoin(EmployeeProfile, EmployeeProfile.id == MentorProfile.employee_profile_id)
+        .outerjoin(User, User.id == MentorProfile.user_id)
+        .join(Batch, Batch.id == Allocation.target_id)
+        .join(Program, Program.id == Batch.program_id)
+        .where(
+            Allocation.source_type == "MENTOR",
+            Allocation.target_type == "BATCH",
+            Allocation.deleted_at.is_(None)
         )
-        .join(StudentProfile, StudentProfile.id == MentorAssignment.student_profile_id)
-        .where(MentorAssignment.status == "ACTIVE")
-        .group_by(MentorAssignment.mentor_profile_id, StudentProfile.batch_id)
     )
     res = await db.execute(stmt)
-    groups = res.all()
-
+    rows = res.all()
+    
+    batch_ids = [batch.id for _, _, _, _, batch, _ in rows]
+    counts_map = {}
+    if batch_ids:
+        stmt_counts = select(StudentProfile.batch_id, func.count(StudentProfile.id)).where(StudentProfile.batch_id.in_(batch_ids)).group_by(StudentProfile.batch_id)
+        res_counts = await db.execute(stmt_counts)
+        counts_map = {b_id: count for b_id, count in res_counts.all()}
+        
     data = []
-    for mentor_prof_id, batch_id, student_count, mapping_id, mapped_date in groups:
-        if not batch_id:
-            continue
-            
-        # Fetch Mentor & Employee name
-        stmt_mentor = (
-            select(MentorProfile, EmployeeProfile)
-            .outerjoin(EmployeeProfile, EmployeeProfile.id == MentorProfile.employee_profile_id)
-            .where(MentorProfile.id == mentor_prof_id)
-        )
-        res_mentor = await db.execute(stmt_mentor)
-        mentor_row = res_mentor.first()
-        if not mentor_row:
-            continue
-        m, emp = mentor_row
-        mentor_name = f"{emp.first_name} {emp.last_name}" if emp else "Unknown Mentor"
+    for alloc, m, emp, usr, batch, prog in rows:
+        mentor_name = f"{emp.first_name} {emp.last_name}" if emp else (usr.username.title() if usr else "Unknown Mentor")
         emp_code = emp.employee_code if emp else str(m.employee_profile_id or m.user_id)
-
-        # Fetch Batch & Program details
-        stmt_batch = (
-            select(Batch, Program)
-            .join(Program, Program.id == Batch.program_id)
-            .where(Batch.id == batch_id)
-        )
-        res_batch = await db.execute(stmt_batch)
-        batch_row = res_batch.first()
-        if not batch_row:
-            continue
-        batch, prog = batch_row
-
+        
         data.append({
-            "id": str(mapping_id),
-            "mentorProfileId": str(mentor_prof_id),
+            "id": str(alloc.id),
+            "mentorProfileId": str(m.id),
             "mentorName": mentor_name,
             "employeeId": emp_code,
             "batchId": str(batch.id),
             "batchName": batch.name,
             "batchCode": batch.code or batch.name[:5].upper(),
             "programName": prog.name,
-            "studentCount": student_count,
+            "studentCount": counts_map.get(batch.id, 0),
             "batchCapacity": batch.max_capacity or 150,
-            "mappedDate": mapped_date.isoformat() if mapped_date else "",
-            "status": "Active",
+            "mappedDate": alloc.start_date.isoformat() if alloc.start_date else "",
+            "status": alloc.status.title(),
             "mappedBy": "System"
         })
-
+        
     return success_response(data=data)
 
 
@@ -263,8 +264,34 @@ async def create_batch_mapping(
     db: AsyncSession = Depends(get_db)
 ):
     from datetime import date
+    from app.models.core.allocation import Allocation
     
-    # Fetch all students in the batch
+    # 1. Create or update Allocation
+    stmt_alloc = select(Allocation).where(
+        Allocation.source_type == "MENTOR",
+        Allocation.target_type == "BATCH",
+        Allocation.target_id == payload.batchId,
+        Allocation.deleted_at.is_(None)
+    )
+    res_alloc = await db.execute(stmt_alloc)
+    existing_alloc = res_alloc.scalars().first()
+    
+    if existing_alloc:
+        existing_alloc.source_id = payload.mentorProfileId
+        db.add(existing_alloc)
+    else:
+        alloc = Allocation(
+            source_type="MENTOR",
+            source_id=payload.mentorProfileId,
+            target_type="BATCH",
+            target_id=payload.batchId,
+            role="LEAD_MENTOR",
+            status="ACTIVE",
+            allocated_by=current_user.id
+        )
+        db.add(alloc)
+    
+    # 2. Fetch all students currently in the batch
     stmt_students = select(StudentProfile).where(StudentProfile.batch_id == payload.batchId)
     res_students = await db.execute(stmt_students)
     students = res_students.scalars().all()
@@ -314,10 +341,27 @@ async def get_mentor(
 
     m, emp, usr = row
     
+    from app.models.core.allocation import Allocation
+    from sqlalchemy import or_
+
     # Fetch count
-    stmt_count = select(func.count(MentorAssignment.id)).where(
-        MentorAssignment.mentor_profile_id == m.id,
-        MentorAssignment.status == "ACTIVE"
+    stmt_count = select(func.count(func.distinct(StudentProfile.id))).select_from(StudentProfile).where(
+        or_(
+            StudentProfile.id.in_(
+                select(MentorAssignment.student_profile_id).where(
+                    MentorAssignment.mentor_profile_id == m.id,
+                    MentorAssignment.status == "ACTIVE"
+                )
+            ),
+            StudentProfile.batch_id.in_(
+                select(Allocation.target_id).where(
+                    Allocation.source_type == "MENTOR",
+                    Allocation.target_type == "BATCH",
+                    Allocation.source_id == m.id,
+                    Allocation.deleted_at.is_(None)
+                )
+            )
+        )
     )
     res_count = await db.execute(stmt_count)
     count = res_count.scalar() or 0

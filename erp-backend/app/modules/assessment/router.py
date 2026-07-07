@@ -137,10 +137,22 @@ async def get_student_assessments(student_id: str, db: AsyncSession = Depends(ge
         sec_settings = q.security_settings
         if isinstance(sec_settings, str):
             sec_settings = json.loads(sec_settings)
+        if not sec_settings:
+            sec_settings = {
+                "secureBrowser": False,
+                "disableCopy": False,
+                "disableRightClick": False,
+                "fullscreenOnly": False,
+                "disableTabSwitch": False,
+                "cameraRequired": False,
+                "microphoneRequired": False
+            }
             
         questions = q.questions
         if isinstance(questions, str):
             questions = json.loads(questions)
+        if not questions:
+            questions = []
 
         my_attempt = next((s for s in student_subs if s.assessment_id == q.id), None)
         

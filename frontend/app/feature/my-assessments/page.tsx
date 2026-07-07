@@ -183,11 +183,11 @@ export default function MyAssessmentsPage() {
     setIsExamActive(true);
 
     // Apply strict browser locks
-    if (quiz.securitySettings.disableCopy) {
+    if (quiz.securitySettings?.disableCopy) {
       document.oncopy = (e) => e.preventDefault();
       document.oncut = (e) => e.preventDefault();
     }
-    if (quiz.securitySettings.disableRightClick) {
+    if (quiz.securitySettings?.disableRightClick) {
       document.oncontextmenu = (e) => e.preventDefault();
     }
   };
@@ -267,10 +267,10 @@ export default function MyAssessmentsPage() {
 
   const formatSecurityChecklist = (quiz: StudentQuiz) => {
     const list: string[] = [];
-    if (quiz.securitySettings.secureBrowser) list.push('Strict Window Lock');
-    if (quiz.securitySettings.fullscreenOnly) list.push('Fullscreen Enforced');
-    if (quiz.securitySettings.disableCopy) list.push('No Copy-Paste');
-    if (quiz.securitySettings.cameraRequired) list.push('Camera streams');
+    if (quiz.securitySettings?.secureBrowser) list.push('Strict Window Lock');
+    if (quiz.securitySettings?.fullscreenOnly) list.push('Fullscreen Enforced');
+    if (quiz.securitySettings?.disableCopy) list.push('No Copy-Paste');
+    if (quiz.securitySettings?.cameraRequired) list.push('Camera streams');
     return list.join(', ');
   };
 
@@ -424,7 +424,7 @@ export default function MyAssessmentsPage() {
             <div className="space-y-6 flex flex-col justify-between h-full lg:col-span-1 min-h-0">
               
               {/* Video Monitor Stream Mockup */}
-              {selectedQuiz?.securitySettings.cameraRequired && (
+              {selectedQuiz?.securitySettings?.cameraRequired && (
                 <div className="bg-[#1e293b] border border-[#334155] rounded-2xl p-4 flex flex-col items-center justify-center text-center space-y-2 relative overflow-hidden h-44 shrink-0 shadow-inner">
                   {/* Fake camera green dot */}
                   <span className="absolute top-2 right-2 flex h-2 w-2">
