@@ -147,7 +147,7 @@ def require_permission(module: str, action: str):
         role_res = await db.execute(role_stmt)
         user_roles = role_res.scalars().all()
         
-        if "STUDENT" in user_roles:
+        if any(r in user_roles for r in ["STUDENT", "COLLEGE_COORDINATOR", "COLLEGE_SPOC"]):
             allowed_student_modules = {
                 "ATTENDANCE_MANAGEMENT",
                 "MY_ATTENDANCE",
@@ -178,7 +178,11 @@ def require_permission(module: str, action: str):
                 "APPLICATION_MANAGEMENT",
                 "COMMON_FILES",
                 "leave",
-                "LEAVE_MANAGEMENT"
+                "LEAVE_MANAGEMENT",
+                "STUDENT_MANAGEMENT",
+                "BATCH_MANAGEMENT",
+                "ALLOCATION",
+                "REPORTING_MANAGER_MOD"
             }
             if mapped_module in allowed_student_modules:
                 return current_user

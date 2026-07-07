@@ -5,6 +5,11 @@ from app.core.dependencies import require_permission
 from app.modules.assessment.service import QuizAssessmentService, QuizSubmissionService
 from app.modules.assessment.schemas import QuizAssessmentCreate, QuizSubmissionCreate
 import logging
+from app.models.authentication.user import User
+from app.models.profiles.student_profile import StudentProfile
+from app.models.academic.batch import Batch
+from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -67,16 +72,75 @@ async def add_version_id():
 
 @router.get("/quizzes")
 async def get_assessment_list(
-    current_user: dict = Depends(require_permission("assessment", "read")),
+    current_user: User = Depends(require_permission("assessment", "read")),
     db: AsyncSession = Depends(get_db)
 ):
     svc = QuizAssessmentService(db)
     quizzes, submissions = await svc.get_all_quizzes(current_user)
     
-    # Map back to frontend expected structure
-    result = []
+    from app.core.security_filters import apply_student_filter
+    
+    # We will get all students and group by batch
+    students_stmt = select(StudentProfile).options(joinedload(StudentProfile.user))
+    students_stmt = await apply_student_filter(students_stmt, db, current_user, StudentProfile)
+    students_res = await db.execute(students_stmt)
+    all_students = students_res.scalars().all()
+    all_students = [s for s in all_students if s.user and '_deleted_' not in (s.user.username or '')]
+
+    # Check if current user is a mentor — if so, scope to their assigned students only
+    from app.models.profiles.mentor_profile import MentorProfile
+    from app.models.internships.mentor_assignment import MentorAssignment
+    mentor_profile_stmt = select(MentorProfile).where(MentorProfile.user_id == current_user.id, MentorProfile.deleted_at.is_(None))
+    mentor_res = await db.execute(mentor_profile_stmt)
+    mentor_profile = mentor_res.scalars().first()
+
+    if mentor_profile:
+        assign_stmt = select(MentorAssignment.student_profile_id).where(
+            MentorAssignment.mentor_profile_id == mentor_profile.id,
+            MentorAssignment.status == "ACTIVE"
+        )
+        assign_res = await db.execute(assign_stmt)
+        assigned_ids = set(assign_res.scalars().all())
+        
+        if assigned_ids:
+            all_students = [s for s in all_students if s.id in assigned_ids]
+            
+    valid_student_ids = {str(s.id): s for s in all_students}
+    
+    batches_stmt = select(Batch)
+    batches_res = await db.execute(batches_stmt)
+    batches = {str(b.id): b.name for b in batches_res.scalars().all()}
+    
+    batch_map = {}
+    
+    # Pre-populate batch_map with batches that have students
+    for s in all_students:
+        bid = str(s.batch_id) if s.batch_id else "unassigned"
+        if bid not in batch_map:
+            bname = batches.get(bid, "Unassigned Students")
+            batch_map[bid] = {
+                "id": bid,
+                "name": bname,
+                "assessmentsCount": 0,
+                "completedCount": 0,
+                "averageScore": 0,
+                "assessments": []
+            }
+            
     for q in quizzes:
-        q_subs = [s for s in submissions if s.assessment_id == q.id]
+        bid = q.batch_id
+        if bid not in batch_map:
+            bname = batches.get(bid, f"Batch {bid}")
+            batch_map[bid] = {
+                "id": bid,
+                "name": bname,
+                "assessmentsCount": 0,
+                "completedCount": 0,
+                "averageScore": 0,
+                "assessments": []
+            }
+            
+        q_subs = [s for s in submissions if s.assessment_id == q.id and s.student_id in valid_student_ids]
         
         import json
         sec_settings = q.security_settings
@@ -108,21 +172,25 @@ async def get_assessment_list(
                 } for s in q_subs
             ]
         }
-        result.append(mapped)
+        batch_map[bid]["assessments"].append(mapped)
     
-    total_submissions = sum(len(q["attempts"]) for q in result)
-    total_score = sum(sum(att["score"] for att in q["attempts"]) for q in result)
-    avg_score = round(total_score / total_submissions) if total_submissions > 0 else 0
+    res_data = []
+    for b in batch_map.values():
+        if len(b["assessments"]) == 0:
+            continue
+            
+        b["assessmentsCount"] = len(b["assessments"])
+        
+        total_subs = sum(len(q["attempts"]) for q in b["assessments"])
+        b["completedCount"] = str(total_subs)
+        
+        if total_subs > 0:
+            total_score = sum(sum(att["score"] for att in q["attempts"]) for q in b["assessments"])
+            b["averageScore"] = round(total_score / total_subs)
+        
+        res_data.append(b)
 
-    # Return inside batches for the dashboard
-    return [{
-        "id": "batch-ai-2026",
-        "name": "AI Batch 2026",
-        "assessmentsCount": len(result),
-        "completedCount": f"{total_submissions}",
-        "averageScore": avg_score,
-        "assessments": result
-    }]
+    return res_data
 
 @router.get("/quizzes/student/{student_id}")
 async def get_student_assessments(student_id: str, db: AsyncSession = Depends(get_db)):
@@ -208,24 +276,13 @@ async def get_monitoring_data(
     # -------------------------------------------------------------
     # 1. APPLY ROLE-BASED FILTERING
     # -------------------------------------------------------------
-    submissions = []
-    if role == 'Mentor':
-        # Get all students assigned to ANY mentor for demo purposes (or a specific mentor in prod)
-        # Here we query all MentorAssignments to get valid student user_ids
-        stmt = select(StudentProfile.user_id).join(MentorAssignment, MentorAssignment.student_profile_id == StudentProfile.id)
-        result = await db.execute(stmt)
-        valid_student_ids = [str(uid) for uid in result.scalars().all()]
-        submissions = [s for s in all_submissions if s.student_id in valid_student_ids]
+    from app.core.security_filters import apply_student_filter
     
-    elif role == 'College Coordinator':
-        # Get all students belonging to a college
-        stmt = select(StudentProfile.user_id).join(Organization, Organization.id == StudentProfile.organization_id).where(Organization.type == 'COLLEGE')
-        result = await db.execute(stmt)
-        valid_student_ids = [str(uid) for uid in result.scalars().all()]
-        submissions = [s for s in all_submissions if s.student_id in valid_student_ids]
-        
-    else: # Super Admin
-        submissions = all_submissions
+    stmt = select(StudentProfile.user_id)
+    stmt = await apply_student_filter(stmt, db, current_user, StudentProfile)
+    result = await db.execute(stmt)
+    valid_student_ids = [str(uid) for uid in result.scalars().all()]
+    submissions = [s for s in all_submissions if s.student_id in valid_student_ids]
 
     # -------------------------------------------------------------
     # 2. Build StudentAssessments

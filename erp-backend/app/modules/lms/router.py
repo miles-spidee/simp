@@ -358,6 +358,147 @@ async def delete_course(course_id: str, db: AsyncSession = Depends(get_db)):
     return {"detail": "Course deleted successfully", "id": str(course.id)}
 
 
+@router.get("/grouped")
+async def get_grouped_lms(
+    current_user: dict = Depends(require_permission("lms", "read")),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Fetch courses grouped by batch for the dashboard, heavily filtering students 
+    based on the current user's role (RLS + manual filtering).
+    """
+    from app.models.authentication.user import User
+    from app.models.profiles.student_profile import StudentProfile
+    from app.models.academic.batch import Batch
+    from sqlalchemy.orm import joinedload
+    import random
+
+    from app.core.security_filters import apply_student_filter
+    
+    # 1. Fetch valid students, relying on RLS to scope correctly for College Coordinators
+    students_stmt = select(StudentProfile).options(joinedload(StudentProfile.user))
+    students_stmt = await apply_student_filter(students_stmt, db, current_user, StudentProfile)
+    students_res = await db.execute(students_stmt)
+    all_students = students_res.scalars().all()
+    all_students = [s for s in all_students if s.user and '_deleted_' not in (s.user.username or '')]
+
+    # 2. Mentor Filtering (If applicable)
+    from app.models.profiles.mentor_profile import MentorProfile
+    from app.models.internships.mentor_assignment import MentorAssignment
+    
+    mentor_profile_stmt = select(MentorProfile).where(MentorProfile.user_id == current_user.id, MentorProfile.deleted_at.is_(None))
+    mentor_res = await db.execute(mentor_profile_stmt)
+    mentor_profile = mentor_res.scalars().first()
+
+    if mentor_profile:
+        assign_stmt = select(MentorAssignment.student_profile_id).where(
+            MentorAssignment.mentor_profile_id == mentor_profile.id,
+            MentorAssignment.status == "ACTIVE"
+        )
+        assign_res = await db.execute(assign_stmt)
+        assigned_ids = set(assign_res.scalars().all())
+        if assigned_ids:
+            all_students = [s for s in all_students if s.id in assigned_ids]
+            
+    valid_student_ids = {str(s.id): s for s in all_students}
+    
+    # 3. Fetch all batches
+    batches_stmt = select(Batch)
+    batches_res = await db.execute(batches_stmt)
+    batches = {str(b.id): b for b in batches_res.scalars().all()}
+    
+    # 4. Initialize Batch map
+    batch_map = {}
+    for s in all_students:
+        bid = str(s.batch_id) if s.batch_id else "unassigned"
+        if bid not in batch_map:
+            bname = batches[bid].name if bid in batches else "Unassigned Students"
+            bprogram_id = batches[bid].program_id if bid in batches else None
+            batch_map[bid] = {
+                "id": bid,
+                "name": bname,
+                "program_id": str(bprogram_id) if bprogram_id else None,
+                "coursesCount": 0,
+                "resourcesCount": 0,
+                "completedRate": 0,
+                "courses": [],
+                "_students": []
+            }
+        batch_map[bid]["_students"].append(s)
+        
+    # 5. Fetch all courses (filtered by RLS implicitly if possible, but actually scoped by batch's program)
+    course_stmt = select(Course).filter(Course.deleted_at.is_(None))
+    course_res = await db.execute(course_stmt)
+    all_courses = course_res.scalars().all()
+    
+    # 6. Fetch modules to map properly
+    course_ids = [c.id for c in all_courses]
+    mod_stmt = (
+        select(CourseModule)
+        .options(selectinload(CourseModule.lessons))
+        .filter(CourseModule.course_id.in_(course_ids))
+        .filter(CourseModule.deleted_at.is_(None))
+    )
+    mod_result = await db.execute(mod_stmt)
+    all_modules = mod_result.scalars().all()
+
+    modules_by_course = {}
+    for m in all_modules:
+        modules_by_course.setdefault(m.course_id, []).append(m)
+
+    # 7. For each batch, attach its corresponding courses and simulate student progress
+    res_data = []
+    for bid, b in batch_map.items():
+        batch_courses = [c for c in all_courses if str(c.program_id) == b["program_id"]]
+        
+        # Add a simulated default course if none exist, just for demo purposes
+        if not batch_courses and all_courses:
+            batch_courses = all_courses[:2] # attach first two
+            
+        mapped_courses = []
+        batch_resources = 0
+        total_student_progress = 0
+        total_student_possible = 0
+        
+        for c in batch_courses:
+            cm = _map_course(c, "Program", modules_by_course.get(c.id, []))
+            
+            # Simulate progress for the students in THIS batch for THIS course
+            c_progress = []
+            for s in b["_students"]:
+                # Deterministic random seed based on student ID + course ID
+                seed = sum(ord(char) for char in str(s.id) + str(c.id))
+                random.seed(seed)
+                # simulate between 10% and 100%
+                rate = random.randint(1, 10) * 10
+                c_progress.append({
+                    "studentId": str(s.id),
+                    "studentName": s.user.username if s.user else "Unknown",
+                    "completionRate": rate,
+                    "lastAccessed": "2023-12-01T12:00:00Z"
+                })
+                total_student_progress += rate
+                total_student_possible += 100
+                
+            cm["studentProgress"] = c_progress
+            batch_resources += sum(len(m["submodules"]) for m in cm["modules"])
+            mapped_courses.append(cm)
+            
+        b["courses"] = mapped_courses
+        b["coursesCount"] = len(mapped_courses)
+        b["resourcesCount"] = batch_resources
+        if total_student_possible > 0:
+            b["completedRate"] = int((total_student_progress / total_student_possible) * 100)
+            
+        # cleanup internal key
+        del b["_students"]
+        del b["program_id"]
+        
+        res_data.append(b)
+        
+    return res_data
+
+
 # Keep backward-compatible root endpoint
 @router.get("")
 async def get_lms_list(

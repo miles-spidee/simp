@@ -287,6 +287,33 @@ async def startup_event():
     except Exception as e:
         logger.error(f"Failed to apply REPORTING_MANAGER permissions: {e}")
 
+    try:
+        from app.core.database import AsyncSessionLocal
+        import uuid
+        logger.info("Allocating batch to joshua...")
+        async with AsyncSessionLocal() as db:
+            import json
+            debug_info = {}
+            res = await db.execute(text("SELECT id FROM auth_users WHERE username = 'joshua'"))
+            u = res.first()
+            if u:
+                uid = u[0]
+                debug_info['user_id'] = str(uid)
+                from app.modules.reporting_manager.service import ReportingManagerService
+                svc = ReportingManagerService(db)
+                try:
+                    batches = await svc.get_allocated_batches(uid)
+                    debug_info['batches'] = batches
+                except Exception as e:
+                    debug_info['error_get_batches'] = str(e)
+                    import traceback
+                    debug_info['traceback'] = traceback.format_exc()
+            
+            with open('/Users/test/Documents/simp/joshua_debug.json', 'w') as f:
+                json.dump(debug_info, f, indent=2)
+    except Exception as e:
+        logger.error(f"Failed to allocate batch to joshua: {e}")
+
 
 @app.get("/", tags=["Health"])
 async def health_check():

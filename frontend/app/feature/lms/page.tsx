@@ -8,9 +8,6 @@ import {  Student } from '@/src/types/students.types';
 import { Pagination } from '@/components/common/Pagination';
 import { lmsService } from '@/src/services/lms.service';
 import { CourseItem } from '@/src/api/lms.api';
-
-const MOCK_STUDENTS: any[] = [];
-
 interface Submodule {
   id: string;
   title: string;
@@ -54,30 +51,49 @@ export default function LMSDashboardPage() {
     setCurrentPage(1);
   }, [selectedBatch?.id]);
 
+  // Derive students for the selected batch
+  let batchStudents: any[] = [];
+  if (selectedBatch) {
+    const studentMap = new Map<string, any>();
+    selectedBatch.courses.forEach(crs => {
+      if ((crs as any).studentProgress) {
+        (crs as any).studentProgress.forEach((p: any) => {
+          if (!studentMap.has(p.studentId)) {
+            studentMap.set(p.studentId, { 
+              id: p.studentId,
+              personalInfo: { 
+                name: p.studentName, 
+                avatar: p.studentName.split(' ').map((n: string) => n[0]).join('') 
+              },
+              performance: { overallPerformance: 0 },
+              totalProgress: 0,
+              coursesCount: 0
+            });
+          }
+          const data = studentMap.get(p.studentId)!;
+          data.totalProgress += p.completionRate;
+          data.coursesCount += 1;
+        });
+      }
+    });
+    batchStudents = Array.from(studentMap.values()).map(s => {
+      s.performance.overallPerformance = s.coursesCount > 0 ? Math.round(s.totalProgress / s.coursesCount) : 0;
+      return s;
+    });
+  }
+
   // Fetch courses from the database on mount
   useEffect(() => {
     async function loadCourses() {
       setLoading(true);
       try {
-        const courses = await lmsService.getCourses();
-        
-        // Build batch structure dynamically from courses
-        const totalResources = courses.reduce((sum, c) => 
-          sum + c.modules.reduce((mSum, m) => mSum + m.submodules.length, 0), 0
-        );
-
-        const batch: BatchLms = {
-          id: 'batch-all',
-          name: 'All Courses',
-          coursesCount: courses.length,
-          resourcesCount: totalResources,
-          completedRate: courses.length > 0 
-            ? Math.round(courses.reduce((sum, c) => sum + c.progressRate, 0) / courses.length) 
-            : 0,
-          courses,
-        };
-
-        setBatches(courses.length > 0 ? [batch] : []);
+        const { apiClient } = await import('@/src/api/api.client');
+        const res = await apiClient.get('/api/v1/lms/grouped');
+        if (res.data?.data) {
+          setBatches(res.data.data);
+        } else if (res.data) {
+          setBatches(res.data);
+        }
       } catch (err) {
         console.error('Failed to load LMS courses:', err);
         setBatches([]);
@@ -197,13 +213,13 @@ export default function LMSDashboardPage() {
           </div>
 
           <div className="grid grid-cols-1 gap-4">
-            {MOCK_STUDENTS.length === 0 ? (
+            {batchStudents.length === 0 ? (
               <div className="text-center py-10 text-sm text-text-secondary">
                 <Users className="h-10 w-10 mx-auto text-slate-300 mb-3" />
                 No students enrolled yet.
               </div>
             ) : (
-              MOCK_STUDENTS.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(student => (
+              batchStudents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(student => (
                 <div 
                   key={student.id}
                   onClick={() => setSelectedStudent(student)}
@@ -215,7 +231,7 @@ export default function LMSDashboardPage() {
                     </div>
                     <div>
                       <h4 className="text-base font-black text-text-primary">{student.personalInfo.name}</h4>
-                      <p className="text-xs text-text-secondary">{student.academicInfo.college} • {student.academicInfo.department}</p>
+                      <p className="text-xs text-text-secondary">{student.id}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-6 shrink-0 text-xs font-bold text-text-secondary">
@@ -230,11 +246,11 @@ export default function LMSDashboardPage() {
               ))
             )}
           </div>
-          {MOCK_STUDENTS.length > itemsPerPage && (
+          {batchStudents.length > itemsPerPage && (
             <div className="mt-4">
               <Pagination 
                 currentPage={currentPage} 
-                totalPages={Math.ceil(MOCK_STUDENTS.length / itemsPerPage)} 
+                totalPages={Math.ceil(batchStudents.length / itemsPerPage)} 
                 onPageChange={setCurrentPage} 
               />
             </div>

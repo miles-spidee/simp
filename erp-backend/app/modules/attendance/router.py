@@ -114,8 +114,11 @@ async def get_attendance_batches(
         batches_res = await db.execute(batches_stmt)
         batches = batches_res.scalars().all()
         
+        from app.core.security_filters import apply_student_filter
+        
         # We will get all students and group by batch
         students_stmt = select(StudentProfile).options(joinedload(StudentProfile.user))
+        students_stmt = await apply_student_filter(students_stmt, db, current_user, StudentProfile)
         students_res = await db.execute(students_stmt)
         all_students = students_res.scalars().all()
 

@@ -74,7 +74,7 @@ def map_single_response(m: MentorProfile, emp: EmployeeProfile | None, usr: User
     )
 
 
-@router.get("/", response_model=APIResponse[list[MentorProfileResponse]])
+@router.get("", response_model=APIResponse[list[MentorProfileResponse]])
 async def get_mentors(
     current_user: User = Depends(require_permission("mentor", "read")),
     db: AsyncSession = Depends(get_db),

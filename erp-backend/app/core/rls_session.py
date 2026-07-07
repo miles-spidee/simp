@@ -40,7 +40,7 @@ class RLSSession(AsyncSession):
             table_name = from_obj.name
             
             # Student Profile RLS
-            if table_name == 'profiles_students':
+            if table_name == 'profile_students':
                 if "COLLEGE_COORDINATOR" in self.rls_context["roles"]:
                     org_id = self.rls_context.get("organization_id")
                     if org_id:
@@ -63,7 +63,7 @@ class RLSSession(AsyncSession):
                         stmt = stmt.where(from_obj.c.id == None)
 
             # Program RLS
-            if table_name == 'core_programs':
+            if table_name == 'acad_programs':
                 if "MENTOR" in self.rls_context["roles"]:
                     alloc_progs = self.rls_context.get("allocated_programs", [])
                     if alloc_progs:
@@ -72,7 +72,7 @@ class RLSSession(AsyncSession):
                         stmt = stmt.where(from_obj.c.id == None)
 
             # Batch RLS
-            if table_name == 'core_batches':
+            if table_name == 'acad_batches':
                 if "FINANCE_MANAGER" in self.rls_context["roles"] or "REPORTING_MANAGER" in self.rls_context["roles"]:
                     alloc_batches = self.rls_context.get("allocated_batches", [])
                     if alloc_batches:

@@ -12,6 +12,7 @@ from app.models.internships.mentor_assignment import MentorAssignment
 from app.models.authentication.user import User
 from app.models.profiles.employee_profile import EmployeeProfile
 
+from fastapi import HTTPException
 
 class ReportingManagerService:
     def __init__(self, db: AsyncSession):
@@ -25,6 +26,25 @@ class ReportingManagerService:
         )
         result = await self.db.scalar(stmt)
         return result
+
+    async def _verify_batch_access(self, user_id: UUID, batch_id: UUID):
+        """Verify that the user is allocated to the given batch."""
+        source_ids = [user_id]
+        emp_id = await self._get_employee_profile_id(user_id)
+        if emp_id:
+            source_ids.append(emp_id)
+
+        stmt = select(Allocation).where(
+            Allocation.source_type.in_(["REPORTING_MANAGER", "EMPLOYEE", "USER"]),
+            Allocation.source_id.in_(source_ids),
+            Allocation.target_type == "BATCH",
+            Allocation.target_id == batch_id,
+            Allocation.status == "ACTIVE",
+            Allocation.deleted_at == None,
+        )
+        result = await self.db.scalar(stmt)
+        if not result:
+            raise HTTPException(status_code=403, detail="You do not have access to this batch.")
 
     async def get_allocated_batches(self, user_id: UUID) -> List[dict]:
         """
@@ -89,8 +109,12 @@ class ReportingManagerService:
 
         return batches
 
-    async def get_students_in_batch(self, batch_id: UUID) -> List[dict]:
-        """Return all students in the given batch with their user info."""
+    async def get_students_in_batch(self, user_id: UUID, batch_id: UUID) -> List[dict]:
+        """Return all students in the given batch with their user info.
+        Enforces Row Level Security by checking if the batch is allocated to the user.
+        """
+        await self._verify_batch_access(user_id, batch_id)
+
         stmt = (
             select(StudentProfile, User)
             .join(User, StudentProfile.user_id == User.id, isouter=True)
@@ -125,11 +149,14 @@ class ReportingManagerService:
 
         return students
 
-    async def get_mentors_in_batch(self, batch_id: UUID) -> List[dict]:
+    async def get_mentors_in_batch(self, user_id: UUID, batch_id: UUID) -> List[dict]:
         """
         Return mentors who are assigned to at least one student in the given batch.
         Uses MentorAssignment -> StudentProfile (filtered by batch_id).
+        Enforces Row Level Security by checking if the batch is allocated to the user.
         """
+        await self._verify_batch_access(user_id, batch_id)
+
         # Subquery: student_profile_ids in this batch
         student_ids_stmt = (
             select(StudentProfile.id)

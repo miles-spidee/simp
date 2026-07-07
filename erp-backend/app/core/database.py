@@ -38,6 +38,7 @@ AsyncSessionLocal = async_sessionmaker(
 
 async def get_db(request: Request = None) -> AsyncGenerator[AsyncSession, None]:
     rls_context = getattr(request.state, "rls_context", None) if request else None
+    print(f"DEBUG: get_db called with rls_context={rls_context is not None}")
     async with AsyncSessionLocal(rls_context=rls_context) as session:
         try:
             yield session

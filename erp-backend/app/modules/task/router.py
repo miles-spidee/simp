@@ -74,11 +74,14 @@ async def get_grouped_tasks(
     current_user: User = Depends(require_permission("tasks", "read")),
     db: AsyncSession = Depends(get_db)
 ):
+    from app.core.security_filters import apply_student_filter
     try:
         # Get all tasks, grouping them by title for Batch view
         stmt = select(Task).options(
             joinedload(Task.assignment).joinedload(MentorAssignment.student_profile).joinedload(StudentProfile.user)
-        )
+        ).join(MentorAssignment, Task.assignment_id == MentorAssignment.id).join(StudentProfile, MentorAssignment.student_profile_id == StudentProfile.id)
+        
+        stmt = await apply_student_filter(stmt, db, current_user, StudentProfile)
         result = await db.execute(stmt)
         tasks = result.scalars().all()
         
