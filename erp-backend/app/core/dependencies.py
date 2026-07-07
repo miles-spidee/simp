@@ -114,6 +114,7 @@ MODULE_MAPPING = {
     "users": "IDENTITY_USER",
     "roles": "IDENTITY_ROLES",
     "employee": "EMPLOYEE_MANAGEMENT",
+    "reporting_manager": "REPORTING_MANAGER_MOD",
 }
 
 def require_permission(module: str, action: str):

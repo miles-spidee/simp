@@ -116,6 +116,11 @@ ROLE_MODULES = {
     "FINANCE_MANAGER": [
         "DASHBOARD", "FINANCE_DASHBOARD", "REVENUE_ANALYTICS", "PAYMENT_MANAGEMENT", 
         "FEE_STRUCTURE", "BILLING", "ANALYTICS_DASHBOARD", "REPORTS", "EXECUTIVE_DASHBOARD"
+    ],
+    "REPORTING_MANAGER": [
+        "DASHBOARD", "REPORTING_MANAGER_MOD", "EXECUTIVE_DASHBOARD", "ANALYTICS_DASHBOARD", "KPI_MANAGEMENT", 
+        "LEAVE_MANAGEMENT", "ACTIVITY_TRACKING", "NOTIFICATION_CENTER", "ANNOUNCEMENT", "HELP_DESK", 
+        "DIGITAL_ID", "SELF_SERVICE_PORTAL", "PRODUCTIVITY", "MESSAGE", "CALENDAR", "EMAIL"
     ]
 }
 
@@ -187,7 +192,8 @@ async def seed_db():
             ("Mentor", "MENTOR"),
             ("Student", "STUDENT"),
             ("Management", "MANAGEMENT"),
-            ("Finance Manager", "FINANCE_MANAGER")
+            ("Finance Manager", "FINANCE_MANAGER"),
+            ("Reporting Manager", "REPORTING_MANAGER")
         ]
         
         roles_objects = []

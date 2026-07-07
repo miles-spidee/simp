@@ -35,10 +35,60 @@ app.add_middleware(RLSMiddleware)
 register_exception_handlers(app)
 
 # Register module routers
-# Uncomment each line as you complete that module
+
+@app.get("/api/v1/check-joshua")
+async def check_joshua(db: AsyncSession = Depends(get_db)):
+    from sqlalchemy import text
+    # Find Joshua by email pattern
+    res = await db.execute(text("SELECT id, email, username FROM auth_users WHERE email ILIKE '%joshua%' OR username ILIKE '%joshua%'"))
+    users = res.fetchall()
+    if not users:
+        return {"error": "No user named Joshua found. Try /api/v1/check-joshua/all to list all users"}
+    
+    results = []
+    for uid, email, username in users:
+        info = {"email": email, "username": username, "user_id": str(uid)}
+        
+        # Get employee profile
+        emp_res = await db.execute(text("SELECT id FROM profiles_employees WHERE user_id = :uid"), {"uid": uid})
+        emp_row = emp_res.first()
+        info["employee_profile_id"] = str(emp_row[0]) if emp_row else None
+        
+        # Get roles
+        role_res = await db.execute(text("SELECT r.code, r.name FROM rbac_user_roles ur JOIN rbac_roles r ON r.id = ur.role_id WHERE ur.user_id = :uid"), {"uid": uid})
+        info["roles"] = [{"code": r[0], "name": r[1]} for r in role_res.fetchall()]
+        
+        # Check ALL allocations for this user_id as source
+        alloc_res = await db.execute(text("SELECT a.source_id, a.source_type, a.target_id, a.target_type, a.status FROM core_allocations a WHERE a.source_id = :uid"), {"uid": uid})
+        allocs_by_uid = alloc_res.fetchall()
+        
+        # Check ALL allocations for employee_profile_id as source
+        allocs_by_empid = []
+        if emp_row:
+            alloc_res_emp = await db.execute(text("SELECT a.source_id, a.source_type, a.target_id, a.target_type, a.status FROM core_allocations a WHERE a.source_id = :eid"), {"eid": emp_row[0]})
+            allocs_by_empid = alloc_res_emp.fetchall()
+        
+        info["allocations_by_user_id"] = [{"source_type": a[1], "target_type": a[3], "status": a[4]} for a in allocs_by_uid]
+        info["allocations_by_employee_profile_id"] = [{"source_type": a[1], "target_type": a[3], "status": a[4]} for a in allocs_by_empid]
+        
+        # Also check ALL batch allocations to see source_types used
+        alloc_res_batches = await db.execute(text("SELECT DISTINCT source_type, target_type FROM core_allocations WHERE target_type = 'BATCH' LIMIT 20"))
+        info["all_batch_allocation_types"] = [{"source_type": r[0], "target_type": r[1]} for r in alloc_res_batches.fetchall()]
+        
+        results.append(info)
+    
+    return {"joshua": results}
+
+@app.get("/api/v1/check-joshua/all")
+async def list_all_users(db: AsyncSession = Depends(get_db)):
+    from sqlalchemy import text
+    res = await db.execute(text("SELECT id, email, username FROM auth_users ORDER BY email LIMIT 50"))
+    return {"users": [{"id": str(r[0]), "email": r[1], "username": r[2]} for r in res.fetchall()]}
+
 
 from app.modules.identity.router import router as identity_router
 app.include_router(identity_router, prefix="/api/v1/auth", tags=["Identity"])
+
 
 from app.modules.users.router import router as users_router
 app.include_router(users_router, prefix="/api/v1/users", tags=["Users"])
@@ -208,6 +258,34 @@ async def startup_event():
         else:
             raise e
 
+
+    try:
+        from app.core.database import AsyncSessionLocal
+        import uuid
+        logger.info("Applying REPORTING_MANAGER missing permissions...")
+        async with AsyncSessionLocal() as db:
+            res = await db.execute(text("SELECT id FROM rbac_roles WHERE code = 'REPORTING_MANAGER'"))
+            row = res.first()
+            if row:
+                role_id = row[0]
+                res = await db.execute(text("SELECT id FROM rbac_permissions WHERE code LIKE 'REPORTING_MANAGER_MOD.%'"))
+                perm_ids = [r[0] for r in res.fetchall()]
+                if perm_ids:
+                    res = await db.execute(text("SELECT permission_id FROM rbac_role_permissions WHERE role_id = :rid"), {"rid": role_id})
+                    existing_perm_ids = {r[0] for r in res.fetchall()}
+                    added = 0
+                    for pid in perm_ids:
+                        if pid not in existing_perm_ids:
+                            await db.execute(
+                                text("INSERT INTO rbac_role_permissions (id, role_id, permission_id) VALUES (:id, :rid, :pid)"),
+                                {"id": uuid.uuid4(), "rid": role_id, "pid": pid}
+                            )
+                            added += 1
+                    await db.commit()
+                    logger.info(f"Added {added} permissions to REPORTING_MANAGER")
+                    
+    except Exception as e:
+        logger.error(f"Failed to apply REPORTING_MANAGER permissions: {e}")
 
 
 @app.get("/", tags=["Health"])

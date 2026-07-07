@@ -2,19 +2,33 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { reportingManagerService } from '../../../src/services/reportingManager.service';
-import { ManagerAssignment, ManagerEvaluation } from '../../../src/types/reporting-manager.types';
-import { Briefcase, Users, AlertCircle, TrendingUp, Search, ChevronDown, X, Star, FileText, Eye, Loader2 } from 'lucide-react';
-import { Drawer } from '../ui/Drawer';
-import { Pagination } from "@/components/common/Pagination";
+import { RMBatch, RMStudent, RMMentor } from '../../../src/types/reporting-manager.types';
+import {
+  Users,
+  BookOpen,
+  ChevronDown,
+  Search,
+  X,
+  GraduationCap,
+  Briefcase,
+  Link2,
+  ExternalLink,
+  Mail,
+  Phone,
+  Star,
+  Calendar,
+  CheckCircle2,
+  AlertCircle,
+  UserCheck,
+} from 'lucide-react';
 
-type Tab = 'interns' | 'evaluations';
-type RiskFilter = 'All' | 'Low' | 'Medium' | 'High';
+// ─── Skeleton helpers ────────────────────────────────────────────────────────
 
 function SkeletonCard() {
   return (
-    <div className="bg-white/60 backdrop-blur-xl border border-white/40 rounded-2xl p-6 animate-pulse">
-      <div className="flex justify-between items-start mb-4">
-        <div className="h-12 w-12 rounded-2xl bg-slate-200" />
+    <div className="bg-white border border-border rounded-2xl p-5 animate-pulse">
+      <div className="flex items-start justify-between mb-4">
+        <div className="h-11 w-11 rounded-xl bg-slate-200" />
       </div>
       <div className="h-3 w-24 bg-slate-200 rounded mb-2" />
       <div className="h-7 w-16 bg-slate-200 rounded" />
@@ -22,427 +36,544 @@ function SkeletonCard() {
   );
 }
 
-function SkeletonTable() {
+function SkeletonRow({ cols = 5 }: { cols?: number }) {
   return (
-    <div className="animate-pulse">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="flex gap-4 px-5 py-4 border-b border-border">
-          <div className="h-4 w-28 bg-slate-200 rounded" />
-          <div className="h-4 w-16 bg-slate-200 rounded" />
-          <div className="h-4 w-32 bg-slate-200 rounded flex-1" />
-          <div className="h-4 w-32 bg-slate-200 rounded flex-1" />
-          <div className="h-4 w-20 bg-slate-200 rounded" />
-        </div>
+    <tr>
+      {Array.from({ length: cols }).map((_, i) => (
+        <td key={i} className="px-5 py-4">
+          <div className="h-4 bg-slate-200 rounded animate-pulse" style={{ width: `${60 + (i * 13) % 40}%` }} />
+        </td>
       ))}
+    </tr>
+  );
+}
+
+// ─── Avatar initials ─────────────────────────────────────────────────────────
+
+function Avatar({ name, color = 'from-indigo-500 to-violet-600' }: { name: string; color?: string }) {
+  const initials = name
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+  return (
+    <div className={`h-8 w-8 rounded-full bg-gradient-to-br ${color} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
+      {initials || '?'}
     </div>
   );
 }
 
-function ProgressBar({ value, color }: { value: number; color: string }) {
+// ─── Batch Selector ──────────────────────────────────────────────────────────
+
+function BatchSelector({
+  batches,
+  selectedBatch,
+  onSelect,
+}: {
+  batches: RMBatch[];
+  selectedBatch: RMBatch | null;
+  onSelect: (b: RMBatch) => void;
+}) {
+  const [open, setOpen] = useState(false);
+
+  if (!batches.length) return null;
+
   return (
-    <div className="flex items-center gap-2.5 min-w-[120px]">
-      <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
-        <div
-          className={`h-full rounded-full transition-all duration-700 ease-out ${color}`}
-          style={{ width: `${Math.min(value, 100)}%` }}
-        />
-      </div>
-      <span className="text-xs font-semibold text-text-secondary tabular-nums w-9 text-right">{value}%</span>
+    <div className="relative">
+      <button
+        onClick={() => setOpen(v => !v)}
+        className="flex items-center gap-2.5 px-4 py-2.5 bg-white border border-border rounded-xl shadow-sm hover:border-indigo-400 transition-all text-sm font-medium text-text-primary min-w-[260px]"
+      >
+        <BookOpen className="w-4 h-4 text-indigo-500 shrink-0" />
+        <span className="flex-1 text-left truncate">
+          {selectedBatch ? `${selectedBatch.batch_name} — ${selectedBatch.batch_code}` : 'Select batch'}
+        </span>
+        <ChevronDown className={`w-4 h-4 text-text-secondary transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+
+      {open && (
+        <div className="absolute top-full left-0 mt-1.5 z-50 bg-white border border-border rounded-xl shadow-xl w-full min-w-[320px] py-1 overflow-hidden">
+          {batches.map(b => (
+            <button
+              key={b.batch_id}
+              onClick={() => { onSelect(b); setOpen(false); }}
+              className={`w-full px-4 py-3 text-left hover:bg-slate-50 transition-colors flex items-start gap-3 ${selectedBatch?.batch_id === b.batch_id ? 'bg-indigo-50' : ''}`}
+            >
+              <div className="h-8 w-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+                <BookOpen className="w-4 h-4" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-text-primary leading-tight">{b.batch_name}</p>
+                <p className="text-xs text-text-secondary mt-0.5">{b.batch_code} · {b.program_name}</p>
+              </div>
+              {selectedBatch?.batch_id === b.batch_id && (
+                <CheckCircle2 className="w-4 h-4 text-indigo-600 ml-auto shrink-0 mt-0.5" />
+              )}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
+
+// ─── Students Table ──────────────────────────────────────────────────────────
+
+function StudentsTable({ students, loading }: { students: RMStudent[]; loading: boolean }) {
+  const [search, setSearch] = useState('');
+
+  const filtered = useMemo(() =>
+    students.filter(s =>
+      !search ||
+      s.name.toLowerCase().includes(search.toLowerCase()) ||
+      s.email.toLowerCase().includes(search.toLowerCase()) ||
+      s.enrollment_number.toLowerCase().includes(search.toLowerCase())
+    ),
+    [students, search]
+  );
+
+  return (
+    <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
+      {/* Filter bar */}
+      <div className="p-4 border-b border-border flex items-center gap-3">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" />
+          <input
+            type="text"
+            placeholder="Search by name, email, or enrollment..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full pl-9 pr-8 py-2 text-sm border border-border rounded-lg bg-slate-50 focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none transition-all"
+          />
+          {search && (
+            <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary">
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+        <span className="text-xs font-semibold text-text-secondary px-2.5 py-1 bg-slate-100 rounded-lg">
+          {filtered.length} student{filtered.length !== 1 ? 's' : ''}
+        </span>
+      </div>
+
+      {/* Table */}
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm text-left">
+          <thead className="bg-slate-50 text-xs uppercase text-text-secondary tracking-wider border-b border-border">
+            <tr>
+              <th className="px-5 py-3.5 font-semibold">Student</th>
+              <th className="px-5 py-3.5 font-semibold">Enrollment No.</th>
+              <th className="px-5 py-3.5 font-semibold">Contact</th>
+              <th className="px-5 py-3.5 font-semibold">Profiles</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {loading ? (
+              Array.from({ length: 5 }).map((_, i) => <SkeletonRow key={i} cols={4} />)
+            ) : filtered.length === 0 ? (
+              <tr>
+                <td colSpan={4} className="px-5 py-16 text-center">
+                  <div className="flex flex-col items-center gap-2 text-text-secondary">
+                    <GraduationCap className="w-10 h-10 opacity-30" />
+                    <p className="font-medium">{search ? 'No students match your search.' : 'No students in this batch yet.'}</p>
+                  </div>
+                </td>
+              </tr>
+            ) : (
+              filtered.map(student => (
+                <tr key={student.student_profile_id} className="hover:bg-slate-50/70 transition-colors">
+                  <td className="px-5 py-3.5">
+                    <div className="flex items-center gap-3">
+                      <Avatar name={student.name || student.enrollment_number} />
+                      <div>
+                        <p className="font-semibold text-text-primary">{student.name || '—'}</p>
+                        <p className="text-xs text-text-secondary mt-0.5 flex items-center gap-1">
+                          <Mail className="w-3 h-3" />{student.email || '—'}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-5 py-3.5">
+                    <span className="px-2.5 py-1 bg-slate-100 rounded-md text-xs font-mono font-medium text-text-primary">
+                      {student.enrollment_number}
+                    </span>
+                  </td>
+                  <td className="px-5 py-3.5">
+                    {student.phone ? (
+                      <span className="flex items-center gap-1 text-text-secondary text-xs">
+                        <Phone className="w-3 h-3" />{student.phone}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-text-secondary/50">—</span>
+                    )}
+                  </td>
+                  <td className="px-5 py-3.5">
+                    <div className="flex items-center gap-2">
+                      {student.github_url && (
+                        <a href={student.github_url} target="_blank" rel="noreferrer"
+                          className="text-text-secondary hover:text-text-primary transition-colors"
+                          title="GitHub">
+                          <Link2 className="w-4 h-4" />
+                        </a>
+                      )}
+                      {student.linkedin_url && (
+                        <a href={student.linkedin_url} target="_blank" rel="noreferrer"
+                          className="text-text-secondary hover:text-blue-600 transition-colors"
+                          title="LinkedIn">
+                          <ExternalLink className="w-4 h-4" />
+                        </a>
+                      )}
+                      {!student.github_url && !student.linkedin_url && (
+                        <span className="text-xs text-text-secondary/50">—</span>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+// ─── Mentors Table ────────────────────────────────────────────────────────────
+
+function MentorsTable({ mentors, loading }: { mentors: RMMentor[]; loading: boolean }) {
+  const [search, setSearch] = useState('');
+
+  const filtered = useMemo(() =>
+    mentors.filter(m =>
+      !search ||
+      m.name.toLowerCase().includes(search.toLowerCase()) ||
+      m.email.toLowerCase().includes(search.toLowerCase()) ||
+      (m.expertise || '').toLowerCase().includes(search.toLowerCase())
+    ),
+    [mentors, search]
+  );
+
+  return (
+    <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
+      <div className="p-4 border-b border-border flex items-center gap-3">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" />
+          <input
+            type="text"
+            placeholder="Search by name, email, or expertise..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full pl-9 pr-8 py-2 text-sm border border-border rounded-lg bg-slate-50 focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none transition-all"
+          />
+          {search && (
+            <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary">
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+        <span className="text-xs font-semibold text-text-secondary px-2.5 py-1 bg-slate-100 rounded-lg">
+          {filtered.length} mentor{filtered.length !== 1 ? 's' : ''}
+        </span>
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm text-left">
+          <thead className="bg-slate-50 text-xs uppercase text-text-secondary tracking-wider border-b border-border">
+            <tr>
+              <th className="px-5 py-3.5 font-semibold">Mentor</th>
+              <th className="px-5 py-3.5 font-semibold">Expertise</th>
+              <th className="px-5 py-3.5 font-semibold">Experience</th>
+              <th className="px-5 py-3.5 font-semibold">Students Assigned</th>
+              <th className="px-5 py-3.5 font-semibold">Availability</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {loading ? (
+              Array.from({ length: 4 }).map((_, i) => <SkeletonRow key={i} cols={5} />)
+            ) : filtered.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="px-5 py-16 text-center">
+                  <div className="flex flex-col items-center gap-2 text-text-secondary">
+                    <UserCheck className="w-10 h-10 opacity-30" />
+                    <p className="font-medium">{search ? 'No mentors match your search.' : 'No mentors assigned to this batch yet.'}</p>
+                  </div>
+                </td>
+              </tr>
+            ) : (
+              filtered.map(mentor => (
+                <tr key={mentor.mentor_profile_id} className="hover:bg-slate-50/70 transition-colors">
+                  <td className="px-5 py-3.5">
+                    <div className="flex items-center gap-3">
+                      <Avatar name={mentor.name} color="from-emerald-500 to-teal-600" />
+                      <div>
+                        <p className="font-semibold text-text-primary">{mentor.name || '—'}</p>
+                        <p className="text-xs text-text-secondary mt-0.5 flex items-center gap-1">
+                          <Mail className="w-3 h-3" />{mentor.email || '—'}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-5 py-3.5">
+                    {mentor.expertise ? (
+                      <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-medium">
+                        {mentor.expertise}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-text-secondary/50">—</span>
+                    )}
+                  </td>
+                  <td className="px-5 py-3.5">
+                    {mentor.years_of_experience != null ? (
+                      <span className="text-text-primary font-medium">
+                        {mentor.years_of_experience} yr{mentor.years_of_experience !== 1 ? 's' : ''}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-text-secondary/50">—</span>
+                    )}
+                  </td>
+                  <td className="px-5 py-3.5">
+                    <div className="flex items-center gap-1.5">
+                      <div className="h-6 w-6 rounded-full bg-violet-100 flex items-center justify-center">
+                        <Users className="w-3 h-3 text-violet-600" />
+                      </div>
+                      <span className="font-semibold text-text-primary">{mentor.assigned_student_count}</span>
+                      <span className="text-xs text-text-secondary">student{mentor.assigned_student_count !== 1 ? 's' : ''}</span>
+                    </div>
+                  </td>
+                  <td className="px-5 py-3.5">
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                      mentor.is_available
+                        ? 'bg-emerald-100 text-emerald-700'
+                        : 'bg-slate-100 text-text-secondary'
+                    }`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${mentor.is_available ? 'bg-emerald-500' : 'bg-slate-400'}`} />
+                      {mentor.is_available ? 'Available' : 'Busy'}
+                    </span>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main Dashboard ───────────────────────────────────────────────────────────
+
+type ActiveTab = 'students' | 'mentors';
 
 export default function ReportingManagerDashboard() {
+  const [batchesLoading, setBatchesLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(false);
 
-      // Pagination State
-      const [currentPage, setCurrentPage] = React.useState(1);
-      const itemsPerPage = 10;
+  const [batches, setBatches] = useState<RMBatch[]>([]);
+  const [selectedBatch, setSelectedBatch] = useState<RMBatch | null>(null);
+  const [students, setStudents] = useState<RMStudent[]>([]);
+  const [mentors, setMentors] = useState<RMMentor[]>([]);
 
-  const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({ totalInterns: 0, averagePerformance: 0, highRiskInterns: 0, evaluationCount: 0 });
-  const [assignments, setAssignments] = useState<ManagerAssignment[]>([]);
-  const [evaluations, setEvaluations] = useState<ManagerEvaluation[]>([]);
-  const [activeTab, setActiveTab] = useState<Tab>('interns');
-  const [search, setSearch] = useState('');
-  const [riskFilter, setRiskFilter] = useState<RiskFilter>('All');
-  const [selectedIntern, setSelectedIntern] = useState<ManagerAssignment | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<ActiveTab>('students');
 
+  // Load allocated batches on mount
   useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      try {
-        const [dashboardStats, data, evals] = await Promise.all([
-          reportingManagerService.getDashboardKPIs('rm-1'),
-          reportingManagerService.getInternAssignments('rm-1'),
-          reportingManagerService.getEvaluations('rm-1'),
-        ]);
-        setStats({ ...dashboardStats, evaluationCount: evals.length });
-        setAssignments(data);
-        setEvaluations(evals);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
+    const load = async () => {
+      setBatchesLoading(true);
+      const data = await reportingManagerService.getMyBatches();
+      setBatches(data);
+      if (data.length > 0) setSelectedBatch(data[0]);
+      setBatchesLoading(false);
     };
-    loadData();
+    load();
   }, []);
 
-  const filteredAssignments = useMemo(() => {
-    return assignments.filter(a => {
-      const matchesSearch = !search || a.internName.toLowerCase().includes(search.toLowerCase()) || a.batch.toLowerCase().includes(search.toLowerCase()) || a.college.toLowerCase().includes(search.toLowerCase());
-      const matchesRisk = riskFilter === 'All' || a.riskLevel === riskFilter;
-      return matchesSearch && matchesRisk;
-    });
-  }, [assignments, search, riskFilter]);
+  // Load students + mentors whenever selected batch changes
+  useEffect(() => {
+    if (!selectedBatch) return;
+    const load = async () => {
+      setDataLoading(true);
+      const [studs, ments] = await Promise.all([
+        reportingManagerService.getStudentsInBatch(selectedBatch.batch_id),
+        reportingManagerService.getMentorsInBatch(selectedBatch.batch_id),
+      ]);
+      setStudents(studs);
+      setMentors(ments);
+      setDataLoading(false);
+    };
+    load();
+  }, [selectedBatch]);
 
-  const handleViewIntern = (intern: ManagerAssignment) => {
-    setSelectedIntern(intern);
-    setDrawerOpen(true);
+  const handleBatchSelect = (b: RMBatch) => {
+    setSelectedBatch(b);
+    setActiveTab('students');
   };
 
-  const statCards = [
-    { title: 'Total Interns', value: stats.totalInterns, icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { title: 'Avg Performance', value: `${stats.averagePerformance.toFixed(1)}/10`, icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { title: 'High Risk', value: stats.highRiskInterns, icon: AlertCircle, color: 'text-rose-600', bg: 'bg-rose-50' },
-    { title: 'Evaluations', value: stats.evaluationCount, icon: Star, color: 'text-violet-600', bg: 'bg-violet-50' },
-  ];
-
-  const tabs: { id: Tab; label: string; count: number }[] = [
-    { id: 'interns', label: 'Assigned Interns', count: assignments.length },
-    { id: 'evaluations', label: 'Evaluations', count: evaluations.length },
-  ];
-
-  const riskOptions: RiskFilter[] = ['All', 'Low', 'Medium', 'High'];
+  // ── KPI cards ──
+  const kpiCards = selectedBatch
+    ? [
+        {
+          label: 'Total Students',
+          value: students.length || selectedBatch.student_count,
+          icon: GraduationCap,
+          color: 'text-indigo-600',
+          bg: 'bg-indigo-50',
+          border: 'border-indigo-100',
+        },
+        {
+          label: 'Mentors in Batch',
+          value: mentors.length,
+          icon: UserCheck,
+          color: 'text-emerald-600',
+          bg: 'bg-emerald-50',
+          border: 'border-emerald-100',
+        },
+        {
+          label: 'Batch Capacity',
+          value: selectedBatch.max_capacity,
+          icon: Users,
+          color: 'text-violet-600',
+          bg: 'bg-violet-50',
+          border: 'border-violet-100',
+        },
+        {
+          label: 'Availability',
+          value: mentors.filter(m => m.is_available).length + ' / ' + mentors.length,
+          icon: Star,
+          color: 'text-amber-600',
+          bg: 'bg-amber-50',
+          border: 'border-amber-100',
+        },
+      ]
+    : [];
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col h-full bg-slate-50 min-h-screen">
+      {/* ── Page Header ── */}
+      <div className="bg-white border-b border-border px-6 py-4 flex items-center justify-between shrink-0 gap-4 flex-wrap">
         <div className="flex items-center gap-4">
-          <div className="h-12 w-12 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600">
-            <Briefcase size={24} />
+          <div className="h-11 w-11 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+            <Briefcase className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-text-primary tracking-tight">Reporting Manager</h1>
-            <p className="text-sm text-text-secondary mt-0.5">Manage assigned interns and track their performance.</p>
+            <h1 className="text-xl font-bold text-text-primary tracking-tight">Reporting Manager</h1>
+            <p className="text-sm text-text-secondary mt-0.5">Track students and mentors in your allocated batch.</p>
           </div>
         </div>
-        <button className="bg-slate-900 hover:bg-black text-white px-4 py-2.5 rounded-xl font-medium text-sm transition-all flex items-center gap-2 shadow-lg shadow-slate-900/10 hover:shadow-xl hover:shadow-slate-900/20">
-          <FileText className="w-4 h-4" />
-          Add Evaluation
-        </button>
-      </div>
 
-      {/* Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {loading ? (
-          Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
+        {/* Batch Selector */}
+        {batchesLoading ? (
+          <div className="h-10 w-64 bg-slate-200 rounded-xl animate-pulse" />
         ) : (
-          statCards.map((c, i) => (
-            <div key={i} className="bg-white/80 backdrop-blur-xl border border-white/40 p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group">
-              <div className="flex justify-between items-start mb-4">
-                <div className={`h-12 w-12 rounded-2xl flex items-center justify-center ${c.bg} ${c.color} group-hover:scale-110 transition-transform duration-300`}>
-                  <c.icon size={22} />
-                </div>
-              </div>
-              <p className="text-sm text-text-secondary font-medium mb-1">{c.title}</p>
-              <h3 className="text-2xl font-bold text-text-primary">{c.value}</h3>
-            </div>
-          ))
+          <BatchSelector
+            batches={batches}
+            selectedBatch={selectedBatch}
+            onSelect={handleBatchSelect}
+          />
         )}
       </div>
 
-      {/* Tab Bar */}
-      <div className="flex items-center gap-1 bg-slate-100 rounded-xl p-1 w-fit">
-        {tabs.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
-              activeTab === tab.id
-                ? 'bg-white text-text-primary shadow-sm'
-                : 'text-text-secondary hover:text-text-primary'
-            }`}
-          >
-            {tab.label}
-            <span className={`text-xs px-1.5 py-0.5 rounded-md ${
-              activeTab === tab.id ? 'bg-slate-100 text-text-secondary' : 'bg-slate-200/60 text-text-secondary'
-            }`}>{tab.count}</span>
-          </button>
-        ))}
-      </div>
+      <div className="flex-1 overflow-auto p-6 space-y-6 max-w-7xl mx-auto w-full">
 
-      {/* Assigned Interns Tab */}
-      {activeTab === 'interns' && (
-        <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
-          {/* Filter Bar */}
-          <div className="p-4 border-b border-border flex flex-wrap items-center gap-3">
-            <div className="relative flex-1 min-w-[220px]">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" />
-              <input
-                type="text"
-                placeholder="Search by name, batch, or college..."
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2.5 text-sm border border-border rounded-xl bg-slate-50 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary transition-all outline-none"
-              />
-              {search && (
-                <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-secondary">
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
+        {/* ── No batches state ── */}
+        {!batchesLoading && batches.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-24 text-text-secondary gap-3">
+            <div className="h-16 w-16 rounded-2xl bg-slate-100 flex items-center justify-center">
+              <AlertCircle className="w-8 h-8 opacity-40" />
             </div>
-            <div className="flex items-center gap-2">
-              {riskOptions.map(opt => (
+            <h3 className="font-semibold text-text-primary text-lg">No batch allocated</h3>
+            <p className="text-sm text-center max-w-md">
+              You have not been assigned to any batch yet. Please contact your HR team to get allocated to a batch.
+            </p>
+          </div>
+        )}
+
+        {/* ── Batch summary card ── */}
+        {selectedBatch && (
+          <div className="bg-gradient-to-r from-indigo-600 to-violet-700 rounded-2xl p-5 text-white shadow-lg shadow-indigo-200">
+            <div className="flex items-start justify-between flex-wrap gap-4">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <BookOpen className="w-4 h-4 opacity-80" />
+                  <span className="text-xs font-semibold opacity-80 uppercase tracking-wider">{selectedBatch.program_name}</span>
+                </div>
+                <h2 className="text-xl font-bold">{selectedBatch.batch_name}</h2>
+                <p className="text-sm opacity-80 mt-0.5 font-mono">{selectedBatch.batch_code}</p>
+              </div>
+              <div className="flex items-center gap-6 text-sm">
+                <div className="text-center">
+                  <p className="text-xs opacity-70 uppercase tracking-wider mb-0.5">Start</p>
+                  <p className="font-semibold flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 opacity-80" />
+                    {new Date(selectedBatch.start_date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                  </p>
+                </div>
+                <div className="w-px h-8 bg-white/20" />
+                <div className="text-center">
+                  <p className="text-xs opacity-70 uppercase tracking-wider mb-0.5">End</p>
+                  <p className="font-semibold flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 opacity-80" />
+                    {new Date(selectedBatch.end_date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── KPI Cards ── */}
+        {selectedBatch && (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {batchesLoading || dataLoading ? (
+              Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
+            ) : (
+              kpiCards.map((kpi, i) => (
+                <div key={i} className={`bg-white border ${kpi.border} rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-200 group`}>
+                  <div className={`h-11 w-11 rounded-xl ${kpi.bg} ${kpi.color} flex items-center justify-center mb-3 group-hover:scale-105 transition-transform`}>
+                    <kpi.icon className="w-5 h-5" />
+                  </div>
+                  <p className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-1">{kpi.label}</p>
+                  <p className="text-2xl font-black text-text-primary tracking-tight">{kpi.value}</p>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
+        {/* ── Tab switcher + Tables ── */}
+        {selectedBatch && (
+          <>
+            <div className="flex items-center gap-1 bg-slate-100 rounded-xl p-1 w-fit">
+              {(['students', 'mentors'] as ActiveTab[]).map(tab => (
                 <button
-                  key={opt}
-                  onClick={() => setRiskFilter(opt)}
-                  className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
-                    riskFilter === opt
-                      ? opt === 'High' ? 'bg-rose-100 text-rose-700' : opt === 'Medium' ? 'bg-amber-100 text-amber-700' : opt === 'Low' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-900 text-white'
-                      : 'bg-slate-100 text-text-secondary hover:bg-slate-200'
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 capitalize flex items-center gap-2 ${
+                    activeTab === tab
+                      ? 'bg-white text-text-primary shadow-sm'
+                      : 'text-text-secondary hover:text-text-primary'
                   }`}
                 >
-                  {opt}
+                  {tab === 'students' ? <GraduationCap className="w-4 h-4" /> : <UserCheck className="w-4 h-4" />}
+                  {tab}
+                  <span className={`text-xs px-1.5 py-0.5 rounded-md font-bold ${
+                    activeTab === tab ? 'bg-slate-100 text-text-secondary' : 'bg-slate-200/60 text-text-secondary'
+                  }`}>
+                    {tab === 'students' ? students.length : mentors.length}
+                  </span>
                 </button>
               ))}
             </div>
-          </div>
 
-          {/* Table */}
-          {loading ? (
-            <SkeletonTable />
-          ) : filteredAssignments.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-text-secondary">
-              <Users className="w-12 h-12 mb-3 opacity-40" />
-              <p className="font-medium text-text-secondary">No interns found</p>
-              <p className="text-sm mt-1">Try adjusting your search or filter criteria.</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-slate-50/80 text-xs uppercase text-text-secondary tracking-wider">
-                  <tr>
-                    <th className="px-5 py-3.5 font-semibold">Intern</th>
-                    <th className="px-5 py-3.5 font-semibold">Batch</th>
-                    <th className="px-5 py-3.5 font-semibold">Attendance</th>
-                    <th className="px-5 py-3.5 font-semibold">Assessment</th>
-                    <th className="px-5 py-3.5 font-semibold">Tasks</th>
-                    <th className="px-5 py-3.5 font-semibold">Performance</th>
-                    <th className="px-5 py-3.5 font-semibold">Risk</th>
-                    <th className="px-5 py-3.5 font-semibold text-right">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border text-text-secondary">
-                  {filteredAssignments.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(a => (
-                    <tr key={a.id} className="hover:bg-slate-50/80 transition-colors cursor-pointer" onClick={() => handleViewIntern(a)}>
-                      <td className="px-5 py-3.5">
-                        <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
-                            {a.internName.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                          </div>
-                          <div>
-                            <span className="font-semibold text-text-primary">{a.internName}</span>
-                            <p className="text-xs text-text-secondary mt-0.5">{a.college}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-5 py-3.5">
-                        <span className="px-2 py-1 rounded-md bg-slate-100 text-text-secondary text-xs font-medium">{a.batch}</span>
-                      </td>
-                      <td className="px-5 py-3.5"><ProgressBar value={a.attendancePercent} color="bg-blue-500" /></td>
-                      <td className="px-5 py-3.5"><ProgressBar value={a.assessmentPercent} color="bg-violet-500" /></td>
-                      <td className="px-5 py-3.5"><ProgressBar value={a.taskCompletionPercent} color="bg-emerald-500" /></td>
-                      <td className="px-5 py-3.5">
-                        <div className="flex items-center gap-1.5">
-                          <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                          <span className="font-semibold text-text-primary">{a.performanceScore}</span>
-                          <span className="text-text-secondary text-xs">/10</span>
-                        </div>
-                      </td>
-                      <td className="px-5 py-3.5">
-                        <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full ${
-                          a.riskLevel === 'High' ? 'bg-rose-100 text-rose-700' :
-                          a.riskLevel === 'Medium' ? 'bg-amber-100 text-amber-700' :
-                          'bg-emerald-100 text-emerald-700'
-                        }`}>
-                          {a.riskLevel}
-                        </span>
-                      </td>
-                      <td className="px-5 py-3.5 text-right">
-                        <button
-                          onClick={e => { e.stopPropagation(); handleViewIntern(a); }}
-                          className="text-indigo-600 hover:text-indigo-800 font-medium text-sm flex items-center gap-1 ml-auto"
-                        >
-                          <Eye className="w-4 h-4" />
-                          View
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            <Pagination 
-          currentPage={currentPage} 
-          totalPages={Math.ceil((filteredAssignments?.length || 0) / itemsPerPage)} 
-          onPageChange={setCurrentPage} 
-        />
-          </div>
-          )}
-        </div>
-      )}
-
-      {/* Evaluations Tab */}
-      {activeTab === 'evaluations' && (
-        <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
-          <div className="p-5 border-b border-border">
-            <h2 className="text-base font-semibold text-text-primary">Recent Evaluations</h2>
-            <p className="text-xs text-text-secondary mt-0.5">Performance evaluations submitted for assigned interns</p>
-          </div>
-          {loading ? <SkeletonTable /> : evaluations.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-text-secondary">
-              <Star className="w-12 h-12 mb-3 opacity-40" />
-              <p className="font-medium text-text-secondary">No evaluations yet</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-slate-50/80 text-xs uppercase text-text-secondary tracking-wider">
-                  <tr>
-                    <th className="px-5 py-3.5 font-semibold">Intern ID</th>
-                    <th className="px-5 py-3.5 font-semibold">Date</th>
-                    <th className="px-5 py-3.5 font-semibold">Score</th>
-                    <th className="px-5 py-3.5 font-semibold">Feedback</th>
-                    <th className="px-5 py-3.5 font-semibold">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border text-text-secondary">
-                  {evaluations.map(ev => (
-                    <tr key={ev.id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="px-5 py-3.5 font-medium text-text-primary">{ev.internId}</td>
-                      <td className="px-5 py-3.5 text-text-secondary">{new Date(ev.evaluationDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
-                      <td className="px-5 py-3.5">
-                        <div className="flex items-center gap-1.5">
-                          <Star className={`w-3.5 h-3.5 ${ev.score >= 7 ? 'text-amber-500 fill-amber-500' : ev.score >= 5 ? 'text-text-secondary fill-slate-300' : 'text-rose-400 fill-rose-300'}`} />
-                          <span className="font-semibold text-text-primary">{ev.score}</span>
-                          <span className="text-xs text-text-secondary">/10</span>
-                        </div>
-                      </td>
-                      <td className="px-5 py-3.5 max-w-[300px] truncate text-text-secondary">{ev.feedback}</td>
-                      <td className="px-5 py-3.5">
-                        <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full ${
-                          ev.status === 'Submitted' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-text-secondary'
-                        }`}>
-                          {ev.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Detail Drawer */}
-      <Drawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} title="Intern Details">
-        {selectedIntern && (
-          <div className="flex-1 overflow-y-auto p-6 space-y-6">
-            {/* Intern Header */}
-            <div className="flex items-center gap-4">
-              <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xl font-bold shadow-lg">
-                {selectedIntern.internName.split(' ').map(n => n[0]).join('').slice(0, 2)}
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-text-primary">{selectedIntern.internName}</h3>
-                <p className="text-sm text-text-secondary">{selectedIntern.college} · {selectedIntern.batch}</p>
-                <span className={`inline-block mt-1 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full ${
-                  selectedIntern.riskLevel === 'High' ? 'bg-rose-100 text-rose-700' :
-                  selectedIntern.riskLevel === 'Medium' ? 'bg-amber-100 text-amber-700' :
-                  'bg-emerald-100 text-emerald-700'
-                }`}>
-                  {selectedIntern.riskLevel} Risk
-                </span>
-              </div>
-            </div>
-
-            {/* Performance Score */}
-            <div className="bg-gradient-to-r from-indigo-50 to-violet-50 rounded-2xl p-5 border border-indigo-100">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium text-text-secondary">Overall Performance</span>
-                <div className="flex items-center gap-1">
-                  <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
-                  <span className="text-2xl font-bold text-text-primary">{selectedIntern.performanceScore}</span>
-                  <span className="text-text-secondary">/10</span>
-                </div>
-              </div>
-              <div className="h-3 bg-white rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 transition-all duration-700"
-                  style={{ width: `${selectedIntern.performanceScore * 10}%` }}
-                />
-              </div>
-            </div>
-
-            {/* Metrics Grid */}
-            <div className="grid grid-cols-3 gap-4">
-              <div className="bg-blue-50 rounded-xl p-4 text-center">
-                <p className="text-xs font-medium text-blue-600 mb-1">Attendance</p>
-                <p className="text-2xl font-bold text-blue-700">{selectedIntern.attendancePercent}%</p>
-              </div>
-              <div className="bg-violet-50 rounded-xl p-4 text-center">
-                <p className="text-xs font-medium text-violet-600 mb-1">Assessment</p>
-                <p className="text-2xl font-bold text-violet-700">{selectedIntern.assessmentPercent}%</p>
-              </div>
-              <div className="bg-emerald-50 rounded-xl p-4 text-center">
-                <p className="text-xs font-medium text-emerald-600 mb-1">Tasks</p>
-                <p className="text-2xl font-bold text-emerald-700">{selectedIntern.taskCompletionPercent}%</p>
-              </div>
-            </div>
-
-            {/* Info Section */}
-            <div className="space-y-3">
-              <h4 className="text-sm font-semibold text-text-primary">Assignment Details</h4>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-slate-50 rounded-xl p-3">
-                  <p className="text-xs text-text-secondary">Assigned Date</p>
-                  <p className="text-sm font-medium text-text-primary mt-0.5">{new Date(selectedIntern.assignedDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
-                </div>
-                <div className="bg-slate-50 rounded-xl p-3">
-                  <p className="text-xs text-text-secondary">Status</p>
-                  <p className="text-sm font-medium text-text-primary mt-0.5">{selectedIntern.status}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Related Evaluations */}
-            <div className="space-y-3">
-              <h4 className="text-sm font-semibold text-text-primary">Evaluation History</h4>
-              {evaluations.filter(e => e.internId === selectedIntern.internId).length === 0 ? (
-                <p className="text-sm text-text-secondary bg-slate-50 rounded-xl p-4 text-center">No evaluations recorded yet.</p>
-              ) : (
-                <div className="space-y-2">
-                  {evaluations.filter(e => e.internId === selectedIntern.internId).map(ev => (
-                    <div key={ev.id} className="bg-slate-50 rounded-xl p-3 flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-text-primary">{new Date(ev.evaluationDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
-                        <p className="text-xs text-text-secondary mt-0.5 line-clamp-1">{ev.feedback}</p>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                        <span className="font-bold text-text-primary">{ev.score}/10</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
+            {activeTab === 'students' && (
+              <StudentsTable students={students} loading={dataLoading} />
+            )}
+            {activeTab === 'mentors' && (
+              <MentorsTable mentors={mentors} loading={dataLoading} />
+            )}
+          </>
         )}
-      </Drawer>
+      </div>
     </div>
   );
 }

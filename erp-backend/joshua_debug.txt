@@ -1,0 +1,4 @@
+(sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedTableError'>: relation "profiles_employees" does not exist
+[SQL: SELECT a.source_type, a.source_id, a.target_type, a.target_id, a.role FROM core_allocations a WHERE a.source_id = $1 OR a.source_id IN (SELECT id FROM profiles_employees WHERE user_id = $1)]
+[parameters: (UUID('2b9d2ae0-6d08-4a23-a3d5-b92df171d850'),)]
+(Background on this error at: https://sqlalche.me/e/20/f405)

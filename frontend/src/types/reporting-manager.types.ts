@@ -1,3 +1,5 @@
+// ─── Existing types (kept for backward compat) ──────────────────────────────
+
 export interface ReportingManager {
   id: string;
   userId: string;
@@ -34,4 +36,40 @@ export interface ManagerEvaluation {
   score: number;
   feedback: string;
   status: 'Draft' | 'Submitted';
+}
+
+// ─── New real-API types ───────────────────────────────────────────────────────
+
+export interface RMBatch {
+  batch_id: string;
+  batch_name: string;
+  batch_code: string;
+  program_id: string;
+  program_name: string;
+  start_date: string;
+  end_date: string;
+  max_capacity: number;
+  student_count: number;
+}
+
+export interface RMStudent {
+  student_profile_id: string;
+  user_id: string | null;
+  enrollment_number: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  github_url: string | null;
+  linkedin_url: string | null;
+}
+
+export interface RMMentor {
+  mentor_profile_id: string;
+  user_id: string | null;
+  name: string;
+  email: string;
+  expertise: string | null;
+  years_of_experience: number | null;
+  is_available: boolean;
+  assigned_student_count: number;
 }
