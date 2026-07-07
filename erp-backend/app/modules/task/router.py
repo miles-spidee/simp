@@ -134,13 +134,26 @@ async def get_grouped_tasks(
                 except:
                     pass
                 
+            github_url = ""
+            video_url = ""
+            if t.submission_url:
+                parts = t.submission_url.split("|")
+                if len(parts) > 0:
+                    github_url = parts[0]
+                if len(parts) > 2:
+                    video_url = parts[2]
+                if not github_url and not t.submission_url.startswith("http"):
+                    github_url = t.submission_url
+                    
             batch_groups[bid]["tasks"][t.title]["submissions"].append({
                 "studentId": str(t.assignment.student_profile.id),
-                "studentName": t.assignment.student_profile.user.username if t.assignment and t.assignment.student_profile and t.assignment.student_profile.user else "Student",
+                "studentName": t.assignment.student_profile.user.username or "Student",
                 "status": st,
                 "score": score,
                 "submittedAt": t.updated_at.isoformat() if t.updated_at else "",
-                "taskId": str(t.id) # the actual task id for grading
+                "taskId": str(t.id), # the actual task id for grading
+                "githubUrl": github_url,
+                "videoUrl": video_url
             })
 
         # Calculate aggregations

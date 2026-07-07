@@ -67,6 +67,7 @@ export const applicationService = {
       reviewerFeedback: rd.reviewer_feedback || app.remarks || '',
       amountPaid: rd.amount_paid || undefined,
       paymentVerified: rd.payment_verified || undefined,
+      teamsMeetLink: rd.teams_meet_link || '',
     } as any;
   },
 
@@ -110,8 +111,14 @@ export const applicationService = {
     }
   },
 
-  async updateApplicationStatus(id: string, newStatus: string, remarks: string = ''): Promise<ExtendedApplication | undefined> {
-    const req: ApplicationReviewRequest = { application_status: newStatus, remarks: remarks };
+  async updateApplicationStatus(id: string, newStatus: string, remarks: string = '', teamsMeetLink?: string, interviewDate?: string, interviewTime?: string): Promise<ExtendedApplication | undefined> {
+    const req: any = { 
+      application_status: newStatus, 
+      remarks: remarks,
+      teams_meet_link: teamsMeetLink,
+      interview_date: interviewDate,
+      interview_time: interviewTime
+    };
     try {
       const res = await applicationApi.reviewApplication(id, req);
       return this.mapToExtended(res);

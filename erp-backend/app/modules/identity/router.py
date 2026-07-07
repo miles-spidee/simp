@@ -48,8 +48,28 @@ async def get_me(current_user: User = Depends(get_current_user), db: AsyncSessio
     from sqlalchemy import or_
     
     db_modules = []
-    if role and role.code == "SUPER_ADMIN":
+    role_code = role.code if role else "STUDENT"
+    if role_code == "SUPER_ADMIN":
         module_result = await db.execute(select(Module))
+        db_modules = module_result.scalars().all()
+    elif role_code == "STUDENT":
+        student_module_codes = {
+            "MY_ATTENDANCE",
+            "MY_LEARNING",
+            "MY_TASK",
+            "MY_ASSESSMENT",
+            "LEAVE_MANAGEMENT",
+            "NOTIFICATION_CENTER",
+            "CALENDAR",
+            "MESSAGE",
+            "HELP_DESK",
+            "DIGITAL_ID",
+            "PRODUCTIVITY",
+            "COMMON_FILES"
+        }
+        module_result = await db.execute(
+            select(Module).where(Module.code.in_(student_module_codes))
+        )
         db_modules = module_result.scalars().all()
     else:
         role_module_ids_query = (

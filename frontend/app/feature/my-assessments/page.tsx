@@ -100,10 +100,10 @@ export default function MyAssessmentsPage() {
     const loadQuizzes = async () => {
       if (!user) return;
       try {
-        const res = await fetch(`http://localhost:8000/api/v1/assessment/quizzes/student/${user.user_id}`);
-        if (res.ok) {
-          const data = await res.json();
-          setQuizzes(data);
+        const { apiClient } = await import('@/src/api/api.client');
+        const res = await apiClient.get(`/api/v1/assessment/quizzes/student/${user.user_id}`);
+        if (res.data) {
+          setQuizzes(res.data);
         }
       } catch (err) {
         console.error('Error fetching quizzes', err);
@@ -242,11 +242,15 @@ export default function MyAssessmentsPage() {
         }
       };
 
-      fetch('http://localhost:8000/api/v1/assessment/submissions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(submissionAttempt)
-      }).catch(err => console.error("Error saving submission", err));
+      const submitResult = async () => {
+        try {
+          const { apiClient } = await import('@/src/api/api.client');
+          await apiClient.post('/api/v1/assessment/submissions', submissionAttempt);
+        } catch (err) {
+          console.error("Error saving submission", err);
+        }
+      };
+      submitResult();
 
       setQuizzes(prev => prev.map(q => q.id === selectedQuiz.id ? { ...q, status: 'Completed', score, passed: isPassed } : q));
     }

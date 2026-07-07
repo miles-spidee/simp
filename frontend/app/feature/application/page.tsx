@@ -6,7 +6,7 @@ import {
   FileText, Plus, ChevronRight, Briefcase, User,
   CheckCircle2, XCircle, AlertTriangle, TrendingUp, Download,
   ExternalLink, FileSpreadsheet, Check, Users, BarChart3,
-  Sparkles, MapPin, GraduationCap, Eye, BookOpen, AlertCircle, Layers, Trash2
+  Sparkles, MapPin, GraduationCap, Eye, BookOpen, AlertCircle, Layers, Trash2, Video
 } from 'lucide-react';
 import { applicationService } from '@/src/services/application.service';
 import { applicationApi } from '@/src/api/application.api';
@@ -59,6 +59,7 @@ export default function ApplicationPage() {
   const [showInterviewModal, setShowInterviewModal] = useState(false);
   const [interviewDate, setInterviewDate] = useState('');
   const [interviewTime, setInterviewTime] = useState('');
+  const [teamsMeetLink, setTeamsMeetLink] = useState('');
   const [interviewAppId, setInterviewAppId] = useState<string | null>(null);
 
   const [paymentAmount, setPaymentAmount] = useState<string>('');
@@ -97,6 +98,7 @@ export default function ApplicationPage() {
     setInterviewAppId(appId);
     setInterviewDate('');
     setInterviewTime('');
+    setTeamsMeetLink('');
     setShowInterviewModal(true);
   };
 
@@ -108,7 +110,7 @@ export default function ApplicationPage() {
     setShowInterviewModal(false);
     setActionLoading('Interview Scheduled');
     try {
-      const updated = await applicationService.updateApplicationStatus(interviewAppId, 'Interview Scheduled', `Interview set for ${interviewDate} at ${interviewTime}`);
+      const updated = await applicationService.updateApplicationStatus(interviewAppId, 'Interview Scheduled', `Interview set for ${interviewDate} at ${interviewTime}`, teamsMeetLink, interviewDate, interviewTime);
       if (updated) {
         setApplications(applications.map(a => a.id === interviewAppId ? updated : a));
         if (reviewApp && reviewApp.id === interviewAppId) setReviewApp(updated);
@@ -1218,6 +1220,32 @@ export default function ApplicationPage() {
               {/* Left Column: Applicant Details Portfolio */}
               <div className="flex-1 overflow-y-auto p-6 space-y-6">
 
+                {/* Section: Interview Schedule Banner */}
+                {reviewApp.status === 'Interview Scheduled' && (
+                  <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-5 shadow-sm space-y-2.5">
+                    <h4 className="text-xs font-black text-indigo-900 uppercase tracking-wider flex items-center gap-1.5 pb-1">
+                      <Video className="h-4 w-4 text-indigo-600" />
+                      Interview Scheduling & Meeting Details
+                    </h4>
+                    <p className="text-xs text-indigo-700 font-semibold leading-relaxed">
+                      {reviewApp.reviewerFeedback || 'Interview has been scheduled.'}
+                    </p>
+                    {reviewApp.teamsMeetLink && (
+                      <div className="pt-2 border-t border-indigo-100 flex items-center gap-2">
+                        <span className="text-[10px] font-black text-indigo-800 uppercase tracking-wider">Teams Meet Link:</span>
+                        <a 
+                          href={reviewApp.teamsMeetLink} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-xs font-bold text-blue-600 hover:text-blue-800 underline truncate max-w-[400px]"
+                        >
+                          {reviewApp.teamsMeetLink}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* Section 1: Personal Info */}
                 <div className="bg-white border border-border rounded-xl p-5 shadow-sm space-y-4">
                   <h4 className="text-xs font-black text-text-primary uppercase tracking-wider flex items-center gap-1.5 border-b border-border pb-2">
@@ -1802,6 +1830,16 @@ export default function ApplicationPage() {
                   type="time"
                   value={interviewTime}
                   onChange={(e) => setInterviewTime(e.target.value)}
+                  className="w-full border border-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest block mb-1.5">Microsoft Teams Meeting Link</label>
+                <input
+                  type="text"
+                  placeholder="https://teams.microsoft.com/l/meetup-join/..."
+                  value={teamsMeetLink}
+                  onChange={(e) => setTeamsMeetLink(e.target.value)}
                   className="w-full border border-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>

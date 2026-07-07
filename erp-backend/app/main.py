@@ -159,47 +159,55 @@ async def startup_event():
     logger = logging.getLogger("app")
     logger.info("Verifying database connection...")
     try:
-        async with engine.connect() as conn:
-            await conn.execute(text("SELECT 1"))
-        logger.info("Database connection verified successfully.")
+        try:
+            async with engine.connect() as conn:
+                await conn.execute(text("SELECT 1"))
+            logger.info("Database connection verified successfully.")
+        except Exception as e:
+            logger.error(f"Database connection failed: {e}")
+            raise e
+
+        if settings.DB_CREATE_TABLES_ON_STARTUP:
+            logger.info("Running Base.metadata.create_all (DB_CREATE_TABLES_ON_STARTUP is True)...")
+            from app.models.core.base import Base
+            import app.models
+            async with engine.begin() as conn:
+                await conn.run_sync(Base.metadata.create_all)
+            logger.info("Database tables verified/created.")
+
+        # Always ensure TNDCE colleges table exists and is seeded (safe with checkfirst)
+        try:
+            from app.models.organizations.tndce_college import TNDCECollege
+            from app.models.core.base import Base
+            from app.core.database import AsyncSessionLocal
+            from sqlalchemy import select, func
+
+            logger.info("Ensuring ref_tndce_colleges table exists...")
+            async with engine.begin() as conn:
+                await conn.run_sync(
+                    lambda sync_conn: TNDCECollege.__table__.create(sync_conn, checkfirst=True)
+                )
+
+            # Seed if empty
+            async with AsyncSessionLocal() as db:
+                count_res = await db.execute(select(func.count()).select_from(TNDCECollege))
+                count = count_res.scalar()
+                if count == 0:
+                    logger.info("Seeding TNDCE colleges...")
+                    from app.modules.student.router import sync_colleges_task
+                    await sync_colleges_task(db)
+                    logger.info("TNDCE colleges seeded successfully.")
+                else:
+                    logger.info(f"TNDCE colleges table already has {count} records.")
+        except Exception as e:
+            logger.error(f"TNDCE colleges setup failed (non-critical): {e}")
+
     except Exception as e:
-        logger.error(f"Database connection failed: {e}")
-        raise e
+        if settings.APP_ENV == "development":
+            logger.warning("WARNING: Database connection failed at startup. Continuing anyway in development mode.")
+        else:
+            raise e
 
-    if settings.DB_CREATE_TABLES_ON_STARTUP:
-        logger.info("Running Base.metadata.create_all (DB_CREATE_TABLES_ON_STARTUP is True)...")
-        from app.models.core.base import Base
-        import app.models
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
-        logger.info("Database tables verified/created.")
-
-    # Always ensure TNDCE colleges table exists and is seeded (safe with checkfirst)
-    try:
-        from app.models.organizations.tndce_college import TNDCECollege
-        from app.models.core.base import Base
-        from app.core.database import AsyncSessionLocal
-        from sqlalchemy import select, func
-
-        logger.info("Ensuring ref_tndce_colleges table exists...")
-        async with engine.begin() as conn:
-            await conn.run_sync(
-                lambda sync_conn: TNDCECollege.__table__.create(sync_conn, checkfirst=True)
-            )
-
-        # Seed if empty
-        async with AsyncSessionLocal() as db:
-            count_res = await db.execute(select(func.count()).select_from(TNDCECollege))
-            count = count_res.scalar()
-            if count == 0:
-                logger.info("Seeding TNDCE colleges...")
-                from app.modules.student.router import sync_colleges_task
-                await sync_colleges_task(db)
-                logger.info("TNDCE colleges seeded successfully.")
-            else:
-                logger.info(f"TNDCE colleges table already has {count} records.")
-    except Exception as e:
-        logger.error(f"TNDCE colleges setup failed (non-critical): {e}")
 
 
 @app.get("/", tags=["Health"])

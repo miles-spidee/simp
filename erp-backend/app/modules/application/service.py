@@ -351,29 +351,43 @@ class ApplicationService(BaseService):
                 from app.services.notification_service import notification_service
                 import asyncio
                 
-                # Fetch user details
+                # Fetch user details (fallback)
                 user_stmt = select(DBUser).join(StudentProfile, StudentProfile.user_id == DBUser.id).where(StudentProfile.id == application.student_profile_id)
                 user_res = await self.db.execute(user_stmt)
                 user_obj = user_res.scalars().first()
                 
-                # The remarks contain "Interview set for YYYY-MM-DD at HH:MM"
-                remarks = data.remarks or ""
-                date_str = ""
-                time_str = ""
-                if "set for " in remarks and " at " in remarks:
-                    parts = remarks.split("set for ")[1].split(" at ")
-                    date_str = parts[0]
-                    time_str = parts[1].strip()
+                # Retrieve details directly from application_data
+                ad = application.application_data or {}
+                pi = ad.get("personalInformation", {})
                 
-                if user_obj and date_str and time_str:
+                email = ad.get("email") or pi.get("email") or (user_obj.email if user_obj else None)
+                username = ad.get("first_name") or pi.get("firstName") or (user_obj.username if user_obj else "Candidate")
+                phone = ad.get("mobile_number") or pi.get("mobileNumber") or (user_obj.phone if user_obj else "+919876543210")
+                
+                # Direct parameters or fallback to remarks parsing
+                date_str = getattr(data, "interview_date", None)
+                time_str = getattr(data, "interview_time", None)
+                remarks = data.remarks or ""
+                
+                if not date_str or not time_str:
+                    if "set for " in remarks and " at " in remarks:
+                        parts = remarks.split("set for ")[1].split(" at ")
+                        date_str = parts[0]
+                        time_str = parts[1].strip()
+                    else:
+                        date_str = "TBD"
+                        time_str = "TBD"
+                
+                if email:
+                    venue = f"Microsoft Teams (Link: {data.teams_meet_link})" if data.teams_meet_link else "Online/Virtual"
                     asyncio.create_task(
                         notification_service.send_interview_scheduled(
-                            username=user_obj.username.title(),
-                            email=user_obj.email,
-                            phone=user_obj.phone or "+919876543210",
+                            username=username.title(),
+                            email=email,
+                            phone=phone,
                             date_str=date_str,
                             time_str=time_str,
-                            venue="Online/Virtual"
+                            venue=venue
                         )
                     )
             except Exception as e:

@@ -107,6 +107,9 @@ async def get_attendance_batches(
 ):
     # Fetch all batches and their stats
     try:
+        from app.models.profiles.mentor_profile import MentorProfile
+        from app.models.internships.mentor_assignment import MentorAssignment
+
         batches_stmt = select(Batch)
         batches_res = await db.execute(batches_stmt)
         batches = batches_res.scalars().all()
@@ -114,7 +117,27 @@ async def get_attendance_batches(
         # We will get all students and group by batch
         students_stmt = select(StudentProfile).options(joinedload(StudentProfile.user))
         students_res = await db.execute(students_stmt)
-        students = students_res.scalars().all()
+        all_students = students_res.scalars().all()
+
+        # Filter: only non-deleted users
+        all_students = [s for s in all_students if s.user and '_deleted_' not in (s.user.username or '')]
+
+        # Check if current user is a mentor — if so, scope to their assigned students only
+        mentor_profile_stmt = select(MentorProfile).where(MentorProfile.user_id == current_user.id, MentorProfile.deleted_at.is_(None))
+        mentor_res = await db.execute(mentor_profile_stmt)
+        mentor_profile = mentor_res.scalars().first()
+
+        if mentor_profile:
+            # Get assigned student profile IDs
+            assign_stmt = select(MentorAssignment.student_profile_id).where(
+                MentorAssignment.mentor_profile_id == mentor_profile.id,
+                MentorAssignment.status == "ACTIVE"
+            )
+            assign_res = await db.execute(assign_stmt)
+            assigned_ids = set(assign_res.scalars().all())
+            
+            if assigned_ids:
+                all_students = [s for s in all_students if s.id in assigned_ids]
         
         # Get all attendance
         att_stmt = select(Attendance)
@@ -132,6 +155,18 @@ async def get_attendance_batches(
                 "rate": 0,
                 "students": []
             }
+
+        # Add a virtual "Unassigned" batch for students without batch_id
+        unassigned_key = "unassigned"
+        batch_map[unassigned_key] = {
+            "id": unassigned_key,
+            "name": "Unassigned Students",
+            "presentCount": 0,
+            "absentCount": 0,
+            "lateCount": 0,
+            "rate": 0,
+            "students": []
+        }
             
         student_att_map = {}
         for att in attendances:
@@ -143,34 +178,35 @@ async def get_attendance_batches(
             student_att_map[spid][st] += 1
             student_att_map[spid]["logs"][day] = st
 
-        for s in students:
-            bid = str(s.batch_id) if s.batch_id else None
-            if bid and bid in batch_map:
-                spid = str(s.id)
-                att_stats = student_att_map.get(spid, {"Present": 0, "Absent": 0, "Late": 0, "logs": {}})
-                total_days = att_stats["Present"] + att_stats["Absent"] + att_stats["Late"]
-                rate = round((att_stats["Present"] / total_days * 100) if total_days > 0 else 0)
-                
-                batch_map[bid]["presentCount"] += att_stats["Present"]
-                batch_map[bid]["absentCount"] += att_stats["Absent"]
-                batch_map[bid]["lateCount"] += att_stats["Late"]
-                
-                username = s.user.username if s.user else "Student"
-                initials = "".join([n[0] for n in username.split()])[:2]
-                
-                batch_map[bid]["students"].append({
-                    "id": spid,
-                    "name": username,
-                    "avatar": initials.upper(),
-                    "attendanceRate": rate,
-                    "presentDays": att_stats["Present"],
-                    "absentDays": att_stats["Absent"],
-                    "lateDays": att_stats["Late"],
-                    "logs": att_stats["logs"],
-                    "checkIn": "09:00 AM",
-                    "checkOut": "05:00 PM",
-                    "duration": "8h 00m"
-                })
+        for s in all_students:
+            bid = str(s.batch_id) if s.batch_id else unassigned_key
+            if bid not in batch_map:
+                bid = unassigned_key
+            
+            spid = str(s.id)
+            att_stats = student_att_map.get(spid, {"Present": 0, "Absent": 0, "Late": 0, "logs": {}})
+            total_days = att_stats["Present"] + att_stats["Absent"] + att_stats["Late"]
+            rate = round((att_stats["Present"] / total_days * 100) if total_days > 0 else 0)
+            
+            batch_map[bid]["presentCount"] += att_stats["Present"]
+            batch_map[bid]["absentCount"] += att_stats["Absent"]
+            batch_map[bid]["lateCount"] += att_stats["Late"]
+            
+            initials = "".join([n[0] for n in (s.user.username or "S").split()])[:2]
+            
+            batch_map[bid]["students"].append({
+                "id": spid,
+                "name": s.user.username or "Student",
+                "avatar": initials.upper(),
+                "attendanceRate": rate,
+                "presentDays": att_stats["Present"],
+                "absentDays": att_stats["Absent"],
+                "lateDays": att_stats["Late"],
+                "logs": att_stats["logs"],
+                "checkIn": "09:00 AM",
+                "checkOut": "05:00 PM",
+                "duration": "8h 00m"
+            })
 
         for b in batch_map.values():
             total = b["presentCount"] + b["absentCount"] + b["lateCount"]
@@ -181,6 +217,8 @@ async def get_attendance_batches(
         return success_response(data=res_data)
     except Exception as e:
         print("Error getting batches:", e)
+        import traceback
+        traceback.print_exc()
         return success_response(data=[])
 
 @router.post("/batches/{batch_id}/mark")

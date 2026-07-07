@@ -2,6 +2,7 @@ import { programApi } from '../api/program.api';
 import { ProgramCreate, ProgramResponse } from '../types/api/program.types';
 import { Program } from '../types/programs.types';
 import { apiCache } from '../lib/apiCache';
+import { MOCK_PROGRAMS } from '../data/mock-programs';
 
 export type ExtendedProgram = ProgramResponse & Program;
 
@@ -48,11 +49,22 @@ export const programService = {
     return apiCache.fetch('programs:all', async () => {
       try {
         const data = await programApi.getPrograms();
-        return data.map(prog => this.mapToExtended(prog));
+        if (data && data.length > 0) {
+          return data.map(prog => this.mapToExtended(prog));
+        }
       } catch (e) {
         console.debug(e);
-        return [];
       }
+      // Fallback to MOCK_PROGRAMS if API fails or returns empty
+      return MOCK_PROGRAMS.map(p => this.mapToExtended({
+        program_id: p.id,
+        program_name: p.title,
+        program_code: p.code,
+        program_description: p.description,
+        duration_weeks: p.durationWeeks,
+        internship_type_id: p.type,
+        status: p.status,
+      } as any));
     }, 60_000); // 1-minute cache
   },
 

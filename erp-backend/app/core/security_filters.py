@@ -244,6 +244,9 @@ async def apply_student_filter(query, db: AsyncSession, user: User, student_prof
             return query.where(student_profile_model.batch_id.in_(allocated_batches))
         return query.where(student_profile_model.id == None)
 
+    if "STUDENT" in roles:
+        return query.where(student_profile_model.user_id == user.id)
+
     return query.where(student_profile_model.id == None)
 
 async def apply_program_scoped_filter(query, db: AsyncSession, user: User, model, program_id_field="program_id"):

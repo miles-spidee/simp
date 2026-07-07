@@ -1,11 +1,22 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/feature/ui/Card';
 import { Badge } from '@/components/feature/ui/Badge';
 import { useAuth } from '@/src/context/AuthContext';
 import { usePermissions } from '@/src/hooks/usePermissions';
 import { WIDGET_REGISTRY, WidgetDefinition } from '@/src/core/dashboard/widget-registry';
+
+import { CalendarService } from '@/src/services/calendar.service';
+import { NotificationService } from '@/src/services/notification.service';
+import { HelpdeskService } from '@/src/services/helpdesk.service';
+import { ProductivityService } from '@/src/services/productivity.service';
+import { IDCardAPI } from '@/src/api/idcard.api';
+import { mentorService } from '@/src/services/mentor.service';
+import { submissionService } from '@/src/services/submission.service';
+import { CommunicationService } from '@/src/services/communication.service';
+
+
 import { 
   ShieldCheck, Activity, Users, FileText, GraduationCap, 
   Award, Clock, Calendar, BookOpen, CheckSquare,
@@ -82,28 +93,36 @@ const ProgramStatsWidget = () => (
   </Card>
 );
 
-const AssignedStudentsWidget = () => (
-  <Card className="border-border bg-white h-full">
+const AssignedStudentsWidget = ({ count, loading }: { count: number; loading: boolean }) => (
+  <Card className="border-border bg-white h-full flex flex-col hover:shadow-md transition-shadow">
     <div className="p-4 border-b border-border flex items-center gap-2">
       <Award className="h-5 w-5 text-purple-500" />
       <h3 className="font-bold text-text-primary">Assigned Students</h3>
     </div>
-    <CardContent className="p-4">
-      <div className="text-2xl font-black text-text-primary">45</div>
-      <p className="text-xs text-text-secondary">Students across 2 batches</p>
+    <CardContent className="p-4 flex-1 flex flex-col justify-center">
+      {loading ? (
+        <div className="h-6 w-12 bg-slate-100 animate-pulse rounded" />
+      ) : (
+        <div className="text-2xl font-black text-text-primary">{count}</div>
+      )}
+      <p className="text-xs text-text-secondary mt-1">Students assigned to you</p>
     </CardContent>
   </Card>
 );
 
-const PendingReviewsWidget = () => (
-  <Card className="border-border bg-white h-full">
+const PendingReviewsWidget = ({ count, loading }: { count: number; loading: boolean }) => (
+  <Card className="border-border bg-white h-full flex flex-col hover:shadow-md transition-shadow">
     <div className="p-4 border-b border-border flex items-center gap-2">
       <Clock className="h-5 w-5 text-rose-500" />
       <h3 className="font-bold text-text-primary">Pending Reviews</h3>
     </div>
-    <CardContent className="p-4">
-      <div className="text-2xl font-black text-text-primary">8</div>
-      <p className="text-xs text-text-secondary">Submissions awaiting review</p>
+    <CardContent className="p-4 flex-1 flex flex-col justify-center">
+      {loading ? (
+        <div className="h-6 w-12 bg-slate-100 animate-pulse rounded" />
+      ) : (
+        <div className="text-2xl font-black text-text-primary">{count}</div>
+      )}
+      <p className="text-xs text-text-secondary mt-1">Submissions awaiting review</p>
     </CardContent>
   </Card>
 );
@@ -188,7 +207,23 @@ const WIDGET_ICONS: Record<string, React.ElementType> = {
   upcoming_milestones: Flag,
 };
 
-const GenericWidget = ({ widget }: { widget: WidgetDefinition }) => {
+interface GenericWidgetProps {
+  widget: WidgetDefinition;
+  dynamicData?: {
+    todaysEvents: number;
+    upcomingInterviews: number;
+    unreadNotifications: number;
+    unreadMessages: number;
+    myRequests: number;
+    idcardStatus: string;
+    bookmarks: number;
+    upcomingTasks: number;
+    loading: boolean;
+  };
+}
+
+
+const GenericWidget = ({ widget, dynamicData }: GenericWidgetProps) => {
   // Generate a consistent seed based on the widget id
   const seed = widget.widgetId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
   
@@ -199,41 +234,86 @@ const GenericWidget = ({ widget }: { widget: WidgetDefinition }) => {
   
   const nameLower = widget.name.toLowerCase();
   
-  if (nameLower.includes('revenue') || nameLower.includes('reward')) {
-    const val = (seed * 13 % 900) + 10;
-    valueStr = `$${val}K`;
-    trendStr = `+${(seed % 15) + 2}% from last month`;
-    iconColor = "text-emerald-500";
-  } else if (nameLower.includes('rate') || nameLower.includes('growth') || nameLower.includes('trend')) {
-    const val = (seed * 7 % 80) + 10;
-    valueStr = `${val}%`;
-    trendStr = `Up by ${(seed % 8) + 1}%`;
-    iconColor = "text-blue-500";
-  } else if (nameLower.includes('overview') || nameLower.includes('summary') || nameLower.includes('stats') || nameLower.includes('analytics')) {
-    const val = (seed * 19 % 5000) + 500;
-    valueStr = val.toLocaleString();
-    trendStr = 'Total count across all programs';
-    iconColor = "text-indigo-500";
-  } else if (nameLower.includes('status') || nameLower.includes('health')) {
-    valueStr = seed % 2 === 0 ? 'Optimal' : 'Active';
-    trendStr = 'System running normally';
-    iconColor = "text-emerald-500";
-  } else {
-    // Default count
-    const val = (seed * 11 % 300) + 10;
-    valueStr = val.toString();
-    trendStr = 'Recent active items';
-    iconColor = "text-text-secondary";
+  // Dynamic value mappings if available
+  if (dynamicData && !dynamicData.loading) {
+    if (widget.widgetId === 'todays_events') {
+      valueStr = dynamicData.todaysEvents.toString();
+      trendStr = 'Scheduled events today';
+      iconColor = "text-blue-500";
+    } else if (widget.widgetId === 'upcoming_interviews') {
+      valueStr = dynamicData.upcomingInterviews.toString();
+      trendStr = 'Upcoming interviews';
+      iconColor = "text-indigo-500";
+    } else if (widget.widgetId === 'unread_notifications') {
+      valueStr = dynamicData.unreadNotifications.toString();
+      trendStr = 'Unread notifications';
+      iconColor = "text-amber-500";
+    } else if (widget.widgetId === 'unread_messages') {
+      valueStr = dynamicData.unreadMessages.toString();
+      trendStr = 'Unread messages in inbox';
+      iconColor = "text-amber-500";
+
+    } else if (widget.widgetId === 'my_requests') {
+      valueStr = dynamicData.myRequests.toString();
+      trendStr = 'Your active requests';
+      iconColor = "text-rose-500";
+    } else if (widget.widgetId === 'idcard_status') {
+      valueStr = dynamicData.idcardStatus;
+      trendStr = 'Card status verified';
+      iconColor = "text-emerald-500";
+    } else if (widget.widgetId === 'bookmarks') {
+      valueStr = dynamicData.bookmarks.toString();
+      trendStr = 'Total saved links';
+      iconColor = "text-blue-500";
+    } else if (widget.widgetId === 'upcoming_tasks_productivity') {
+      valueStr = dynamicData.upcomingTasks.toString();
+      trendStr = 'Pending personal tasks';
+      iconColor = "text-indigo-500";
+    }
+  }
+
+  // Fallback to static generation if dynamic data didn't set values
+  if (!valueStr) {
+    if (nameLower.includes('revenue') || nameLower.includes('reward')) {
+      const val = (seed * 13 % 900) + 10;
+      valueStr = `$${val}K`;
+      trendStr = `+${(seed % 15) + 2}% from last month`;
+      iconColor = "text-emerald-500";
+    } else if (nameLower.includes('rate') || nameLower.includes('growth') || nameLower.includes('trend')) {
+      const val = (seed * 7 % 80) + 10;
+      valueStr = `${val}%`;
+      trendStr = `Up by ${(seed % 8) + 1}%`;
+      iconColor = "text-blue-500";
+    } else if (nameLower.includes('overview') || nameLower.includes('summary') || nameLower.includes('stats') || nameLower.includes('analytics')) {
+      const val = (seed * 19 % 5000) + 500;
+      valueStr = val.toLocaleString();
+      trendStr = 'Total count across all programs';
+      iconColor = "text-indigo-500";
+    } else if (nameLower.includes('status') || nameLower.includes('health')) {
+      valueStr = seed % 2 === 0 ? 'Optimal' : 'Active';
+      trendStr = 'System running normally';
+      iconColor = "text-emerald-500";
+    } else {
+      // Default count
+      const val = (seed * 11 % 300) + 10;
+      valueStr = val.toString();
+      trendStr = 'Recent active items';
+      iconColor = "text-text-secondary";
+    }
   }
 
   return (
-    <Card className="border-border bg-white h-full flex flex-col">
+    <Card className="border-border bg-white h-full flex flex-col hover:shadow-md transition-shadow">
       <div className="p-4 border-b border-border flex items-center gap-2">
         <Icon className={`h-5 w-5 ${iconColor}`} />
         <h3 className="font-bold text-text-primary">{widget.name}</h3>
       </div>
       <CardContent className="p-4 flex-1 flex flex-col justify-center">
-        <div className="text-2xl font-black text-text-primary">{valueStr}</div>
+        {dynamicData?.loading ? (
+          <div className="h-6 w-12 bg-slate-100 animate-pulse rounded" />
+        ) : (
+          <div className="text-2xl font-black text-text-primary">{valueStr}</div>
+        )}
         <p className="text-xs text-helper mt-1">{trendStr}</p>
       </CardContent>
     </Card>
@@ -242,19 +322,19 @@ const GenericWidget = ({ widget }: { widget: WidgetDefinition }) => {
 
 // --- WIDGET RENDERER ---
 
-function renderWidget(widget: WidgetDefinition) {
+function renderWidget(widget: WidgetDefinition, dynamicData?: any) {
   switch (widget.widgetId) {
     case 'sys_health': return <SystemHealthWidget />;
     case 'recent_activity': return <RecentActivityWidget />;
     case 'employee_kpi': return <EmployeeKPIWidget />;
     case 'applications_kpi': return <ApplicationsKPIWidget />;
     case 'program_stats': return <ProgramStatsWidget />;
-    case 'assigned_students': return <AssignedStudentsWidget />;
-    case 'pending_reviews': return <PendingReviewsWidget />;
+    case 'assigned_students': return <AssignedStudentsWidget count={dynamicData?.assignedStudents || 0} loading={dynamicData?.loading ?? true} />;
+    case 'pending_reviews': return <PendingReviewsWidget count={dynamicData?.pendingReviews || 0} loading={dynamicData?.loading ?? true} />;
     case 'attendance_summary': return <AttendanceSummaryWidget />;
     case 'learning_progress': return <LearningProgressWidget />;
     case 'upcoming_tasks': return <UpcomingTasksWidget />;
-    default: return <GenericWidget widget={widget} />;
+    default: return <GenericWidget widget={widget} dynamicData={dynamicData} />;
   }
 }
 
@@ -264,6 +344,93 @@ function renderWidget(widget: WidgetDefinition) {
 export default function DashboardShell() {
   const { user } = useAuth();
   const { isSuperAdmin, hasModule, hasPermission } = usePermissions();
+
+  const [data, setData] = useState({
+    todaysEvents: 0,
+    upcomingInterviews: 0,
+    unreadNotifications: 0,
+    unreadMessages: 0,
+    myRequests: 0,
+    idcardStatus: 'Optimal',
+    bookmarks: 0,
+    upcomingTasks: 0,
+    assignedStudents: 0,
+    pendingReviews: 0,
+    loading: true,
+  });
+
+
+  useEffect(() => {
+    if (!user || !user.user_id) return;
+
+    let isMounted = true;
+    const currentUserId = user.user_id;
+
+    async function loadStats() {
+      try {
+        const [
+          todaysEvents,
+          upcomingInterviews,
+          unreadNotifications,
+          unreadMessages,
+          myTickets,
+          idCard,
+          workspace,
+          assignments,
+          submissions
+        ] = await Promise.all([
+          CalendarService.getTodaysEvents().catch(() => []),
+          CalendarService.getUpcomingInterviews().catch(() => []),
+          NotificationService.getUnreadCount().catch(() => 0),
+          CommunicationService.getUnreadCount(currentUserId).catch(() => 0),
+          HelpdeskService.getMyTickets(currentUserId).catch(() => []),
+          IDCardAPI.getMyIDCard(currentUserId).catch(() => null),
+          ProductivityService.getWorkspace().catch(() => null),
+          mentorService.getAssignments().catch(() => []),
+          submissionService.getSubmissions().catch(() => []),
+        ]);
+
+
+        if (!isMounted) return;
+
+        // Find mentor profile for this user
+        const profiles = await mentorService.getMentorProfiles().catch(() => []);
+        const myProfile = profiles.find(p => p.employee_id === currentUserId || p.mentor_profile_id === currentUserId);
+        const myAssignments = myProfile 
+          ? assignments.filter(a => a.mentorProfileId === myProfile.mentor_profile_id && a.status === 'Active')
+          : assignments.filter(a => a.employeeId === currentUserId && a.status === 'Active');
+
+        const pendingSubmissions = submissions.filter(s => s.status === 'PENDING');
+        const activeInterviews = upcomingInterviews.filter(e => e.type === 'Interview');
+
+        setData({
+          todaysEvents: todaysEvents.length,
+          upcomingInterviews: activeInterviews.length || upcomingInterviews.length,
+          unreadNotifications: unreadNotifications,
+          unreadMessages: unreadMessages,
+          myRequests: myTickets.length,
+          idcardStatus: idCard?.status || 'Active',
+          bookmarks: workspace?.bookmarks?.length || 0,
+          upcomingTasks: workspace?.tasks?.filter(t => !t.completed).length || 0,
+          assignedStudents: myAssignments.length,
+          pendingReviews: pendingSubmissions.length,
+          loading: false,
+        });
+
+      } catch (err) {
+        console.error("Failed to load dashboard metrics", err);
+        if (isMounted) {
+          setData(prev => ({ ...prev, loading: false }));
+        }
+      }
+    }
+
+    loadStats();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user]);
 
   if (!user) return null;
 
@@ -318,7 +485,7 @@ export default function DashboardShell() {
 
             return (
               <div key={widget.widgetId} className={colSpan}>
-                {renderWidget(widget)}
+                {renderWidget(widget, data)}
               </div>
             );
           })}

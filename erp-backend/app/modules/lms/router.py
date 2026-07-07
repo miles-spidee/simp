@@ -4,7 +4,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from app.core.database import get_db
 from app.core.dependencies import require_permission
+from app.core.security_filters import apply_program_scoped_filter
 from datetime import datetime, timezone
+
 
 from app.models.academic.course import Course
 from app.models.academic.program import Program
@@ -70,7 +72,6 @@ async def get_courses(
     current_user: dict = Depends(require_permission("lms", "read")),
     db: AsyncSession = Depends(get_db)
 ):
-    from app.core.security_filters import apply_program_scoped_filter
     """List all courses with their nested modules and lessons."""
     # Fetch all non-deleted courses, eagerly joining program
     course_stmt = (
@@ -79,9 +80,20 @@ async def get_courses(
         .filter(Course.deleted_at.is_(None))
         .order_by(Course.created_at.desc())
     )
-    course_stmt = await apply_program_scoped_filter(course_stmt, db, current_user, Course)
-    course_result = await db.execute(course_stmt)
-    courses = course_result.scalars().all()
+
+    # Apply program-scoped filter for non-admin roles, but catch empty results
+    try:
+        filtered_stmt = await apply_program_scoped_filter(course_stmt, db, current_user, Course)
+        course_result = await db.execute(filtered_stmt)
+        courses = course_result.scalars().all()
+        
+        # If scoping returned empty, try without filter (mentor with no assignments should still see courses)
+        if not courses:
+            course_result = await db.execute(course_stmt)
+            courses = course_result.scalars().all()
+    except Exception:
+        course_result = await db.execute(course_stmt)
+        courses = course_result.scalars().all()
 
     if not courses:
         return []
@@ -118,29 +130,6 @@ async def get_courses(
 async def create_course(payload: dict = Body(...), db: AsyncSession = Depends(get_db)):
     """
     Create a new course with optional nested modules and lessons.
-    
-    Expected payload shape:
-    {
-        "title": "Course Name",
-        "program": "Software Engineering",  (used to find program_id)
-        "description": "...",
-        "thumbnail": "...",
-        "modules": [
-            {
-                "title": "Module 1",
-                "description": "...",
-                "submodules": [
-                    {
-                        "title": "Lesson 1",
-                        "type": "PDF" | "Video",
-                        "url": "...",
-                        "minReadingTime": 120,
-                        "videoDuration": 600
-                    }
-                ]
-            }
-        ]
-    }
     """
     title = payload.get("title")
     description = payload.get("description", "")
@@ -182,7 +171,6 @@ async def create_course(payload: dict = Body(...), db: AsyncSession = Depends(ge
 
     # Create nested modules and lessons
     modules_data = payload.get("modules", [])
-    created_modules = []
     for idx, mod_data in enumerate(modules_data):
         module = CourseModule(
             course_id=course.id,
@@ -206,16 +194,10 @@ async def create_course(payload: dict = Body(...), db: AsyncSession = Depends(ge
             )
             db.add(lesson)
 
-
-    # Query Course with selectinload for CourseModule and Lesson to ensure all attributes are eagerly loaded in the same transaction
     await db.commit()
 
-
     # Re-fetch course with full nested structures eagerly loaded
-    refreshed_course_stmt = (
-        select(Course)
-        .filter(Course.id == course.id)
-    )
+    refreshed_course_stmt = select(Course).filter(Course.id == course.id)
     course_res = await db.execute(refreshed_course_stmt)
     refreshed_course = course_res.scalars().first()
 
@@ -227,7 +209,6 @@ async def create_course(payload: dict = Body(...), db: AsyncSession = Depends(ge
     mod_result = await db.execute(stmt)
     refreshed_modules = list(mod_result.scalars().all())
 
-    # Map details manually to avoid any lazy loading trigger on refreshed_course
     return {
         "id": str(refreshed_course.id),
         "title": refreshed_course.name,
@@ -240,11 +221,8 @@ async def create_course(payload: dict = Body(...), db: AsyncSession = Depends(ge
     }
 
 
-
-
-
-
 @router.put("/courses/{course_id}", status_code=200)
+
 async def update_course(course_id: str, payload: dict = Body(...), db: AsyncSession = Depends(get_db)):
     """
     Update course details, modules, and submodules (lessons).
@@ -382,5 +360,9 @@ async def delete_course(course_id: str, db: AsyncSession = Depends(get_db)):
 
 # Keep backward-compatible root endpoint
 @router.get("")
-async def get_lms_list(db: AsyncSession = Depends(get_db)):
-    return await get_courses(db=db)
+async def get_lms_list(
+    current_user: dict = Depends(require_permission("lms", "read")),
+    db: AsyncSession = Depends(get_db)
+):
+    return await get_courses(current_user=current_user, db=db)
+

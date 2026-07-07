@@ -84,6 +84,9 @@ export interface ApplicationResponse {
 export interface ApplicationReviewRequest {
   application_status: string;
   remarks: string;
+  teams_meet_link?: string;
+  interview_date?: string;
+  interview_time?: string;
   technical_score?: number;
   communication_score?: number;
   academic_score?: number;
